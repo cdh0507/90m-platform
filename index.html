@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Google Identity Services — 녹화 파일을 구글 드라이브에 저장하는 기능에 사용 (설정 전엔 비활성 상태) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
@@ -55,9 +57,9 @@
     </style>
 </head>
 <body class="antialiased min-h-screen">
-
+ 
     <div id="toast-container"></div>
-
+ 
     <!-- =====================================================================
          AUTH GATE — 로그인 전에는 이 화면만 보입니다.
     ===================================================================== -->
@@ -70,13 +72,13 @@
                 <h1 class="text-2xl font-extrabold tracking-tight">AgeLess Lab</h1>
                 <p class="text-sm mt-1" style="color:var(--ink-soft);">경험이 경력이 되는 시간</p>
             </div>
-
+ 
             <div class="card p-6">
                 <div class="flex border-b border-slate-100 mb-5">
                     <button id="tab-auth-login" onclick="switchAuthTab('login')" class="w-1/2 pb-3 font-bold text-sm" style="border-bottom:2px solid var(--ink);">로그인</button>
                     <button id="tab-auth-signup" onclick="switchAuthTab('signup')" class="w-1/2 pb-3 font-bold text-sm text-slate-400">회원가입</button>
                 </div>
-
+ 
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3 text-sm">
                     <button type="button" onclick="showToast('카카오 로그인은 추후 지원 예정입니다.', 'info')" class="w-full bg-[#FEE500] text-[#191600] font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                         <i class="fa-solid fa-comment"></i> 카카오로 계속하기
@@ -88,7 +90,7 @@
                     <input type="password" id="login-pw" required placeholder="비밀번호" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <button type="submit" class="w-full accent-btn py-3 rounded-xl text-sm">로그인</button>
                 </form>
-
+ 
                 <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-3 text-sm hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <label class="signup-role-option cursor-pointer flex items-center justify-center gap-1.5 p-2.5 rounded-xl border-2 font-bold text-sm" style="border-color:var(--ink); background:#f4f4f5;">
@@ -103,7 +105,7 @@
                     <input type="text" id="signup-name" required placeholder="이름" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="email" id="signup-email" required placeholder="이메일" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="password" id="signup-pw" required placeholder="비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
-
+ 
                     <div id="signup-mentor-fields" class="space-y-3 hidden">
                         <select id="signup-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                             <option value="1">업무 적응 & 실무 커뮤니케이션</option>
@@ -113,18 +115,18 @@
                         </select>
                         <input type="text" id="signup-title" placeholder="직함 (예: 前 H중공업 수석연구원)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     </div>
-
+ 
                     <button type="submit" class="w-full accent-btn py-3 rounded-xl text-sm">가입하고 시작하기</button>
                 </form>
             </div>
         </div>
     </div>
-
+ 
     <!-- =====================================================================
          APP SHELL — 로그인 후에만 보임
     ===================================================================== -->
     <div id="app-shell" class="hidden min-h-screen flex flex-col">
-
+ 
         <header class="sticky top-0 z-40 bg-[#f5f5f7]/90 backdrop-blur-md">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
@@ -133,12 +135,21 @@
                 </div>
                 <div class="flex items-center gap-3 text-sm">
                     <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 예약</button>
+                    <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 대시보드</button>
+                    <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">관리자 홈</button>
                     <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
                     <button onclick="handleLogout()" class="ghost-btn px-3 py-1.5 rounded-full">로그아웃</button>
                 </div>
             </div>
+            <!-- 현재 위치 안내 (뒤로가기 구조 보강) -->
+            <div id="breadcrumb-bar" class="max-w-5xl mx-auto px-4 pb-2 -mt-1 text-sm flex items-center gap-2" style="color:var(--ink-soft);">
+                <button onclick="goHome()" class="font-bold hover:underline" style="color:var(--ink);"><i class="fa-solid fa-house text-xs mr-1"></i>홈</button>
+                <span id="breadcrumb-sep" class="hidden">/</span>
+                <span id="breadcrumb-current" class="font-bold"></span>
+                <button id="breadcrumb-back" onclick="goBack()" class="hidden ml-auto ghost-btn px-3 py-1 rounded-full text-xs"><i class="fa-solid fa-arrow-left mr-1"></i>뒤로</button>
+            </div>
         </header>
-
+ 
         <!-- 대기 중인 멘티 알림 (실시간) — 어떤 화면에 있든(대시보드/통화방) 항상 보이도록 header 바로 아래 고정 -->
         <div id="mentor-waiting-banner" class="hidden card p-4 mx-4 mt-3 max-w-5xl lg:mx-auto flex items-center justify-between gap-3" style="border:2px solid var(--accent);">
             <div class="flex items-center gap-2 text-sm font-bold">
@@ -150,16 +161,16 @@
                 <button onclick="mentorRejectWaiting()" class="ghost-btn px-4 py-1.5 rounded-full text-sm">거절</button>
             </div>
         </div>
-
+ 
         <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-1">
-
+ 
             <!-- ============================== 멘티 홈: 멘토 목록 ============================== -->
             <div id="view-mentee-home" class="view space-y-5">
                 <div>
                     <h1 class="fluid-title font-extrabold">어떤 고민을 상담받고 싶으신가요?</h1>
                     <p class="text-sm mt-1" style="color:var(--ink-soft);">분야를 고르고 멘토를 비교해보세요.</p>
                 </div>
-
+ 
                 <div class="flex flex-wrap gap-2" id="mentee-sector-filter">
                     <button onclick="setMenteeSectorFilter(0, this)" class="filter-chip pill px-4 py-2 text-sm font-bold" style="background:var(--ink); color:#fff;">전체</button>
                     <button onclick="setMenteeSectorFilter(1, this)" class="filter-chip pill px-4 py-2 text-sm font-bold ghost-btn">업무 적응</button>
@@ -167,29 +178,29 @@
                     <button onclick="setMenteeSectorFilter(3, this)" class="filter-chip pill px-4 py-2 text-sm font-bold ghost-btn">커리어·이직</button>
                     <button onclick="setMenteeSectorFilter(4, this)" class="filter-chip pill px-4 py-2 text-sm font-bold ghost-btn">포트폴리오</button>
                 </div>
-
+ 
                 <div id="mentor-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </div>
-
+ 
             <!-- ============================== 멘토 상세 (멘티가 봄) ============================== -->
             <div id="view-mentor-detail" class="view space-y-5">
-                <button onclick="showView('view-mentee-home')" class="text-sm font-bold flex items-center gap-1.5" style="color:var(--ink-soft);"><i class="fa-solid fa-arrow-left"></i> 목록으로</button>
+                <button onclick="goBack()" class="text-sm font-bold flex items-center gap-1.5" style="color:var(--ink-soft);"><i class="fa-solid fa-arrow-left"></i> 목록으로</button>
                 <div id="mentor-detail-content" class="card p-6 space-y-6"></div>
             </div>
-
+ 
             <!-- ============================== 내 예약 목록 (멘티) ============================== -->
             <div id="view-mentee-bookings" class="view space-y-5">
                 <h1 class="fluid-title font-extrabold">내 예약</h1>
                 <div id="mentee-bookings-list" class="space-y-3"></div>
             </div>
-
+ 
             <!-- ============================== 멘토 대시보드 ============================== -->
             <div id="view-mentor-dashboard" class="view space-y-6">
                 <div>
                     <h1 class="fluid-title font-extrabold">내 대시보드</h1>
                     <p class="text-sm mt-1" style="color:var(--ink-soft);">프로필, 예약, 일정, 상담을 한 곳에서 관리하세요.</p>
                 </div>
-
+ 
                 <!-- 프로필 -->
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">내 프로필</h2>
@@ -214,7 +225,7 @@
                     </div>
                     <button onclick="saveMentorProfile()" class="accent-btn px-5 py-2 rounded-full text-sm">저장</button>
                 </section>
-
+ 
                 <!-- 지금 바로 상담 -->
                 <section class="card p-6 flex items-center justify-between gap-3 flex-wrap">
                     <div>
@@ -223,19 +234,19 @@
                     </div>
                     <button onclick="openAdhocRoom()" class="accent-btn px-5 py-2.5 rounded-full text-sm">상담방 열기</button>
                 </section>
-
+ 
                 <!-- 예약 요청 -->
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">예약 요청</h2>
                     <div id="mentor-booking-requests" class="space-y-2 text-sm"></div>
                 </section>
-
+ 
                 <!-- 승인된 예약 (상담 시작 가능) -->
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">예정된 상담</h2>
                     <div id="mentor-approved-bookings" class="space-y-2 text-sm"></div>
                 </section>
-
+ 
                 <!-- 내 일정 -->
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">내 일정 추가</h2>
@@ -252,29 +263,93 @@
                     </div>
                     <div id="mentor-slots-list" class="text-sm space-y-1.5 pt-2"></div>
                 </section>
-
+ 
+                <!-- 받은 메시지 -->
+                <section class="card p-6 space-y-3">
+                    <h2 class="font-bold text-lg">받은 메시지</h2>
+                    <div id="mentor-message-list" class="space-y-2 text-sm"></div>
+                </section>
+ 
                 <!-- 최근 멘토링 로그 -->
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">최근 멘토링 로그</h2>
                     <div id="mentor-logs-list" class="space-y-2 text-sm"></div>
                 </section>
             </div>
-
-            <!-- ============================== 1:1 화상 상담방 ============================== -->
+ 
+            <!-- ============================== 관리자 대시보드 ============================== -->
+            <div id="view-admin-dashboard" class="view space-y-6">
+                <div>
+                    <h1 class="fluid-title font-extrabold">관리자 홈</h1>
+                    <p class="text-sm mt-1" style="color:var(--ink-soft);">전체 회원, 예약, 매출 현황을 관리합니다.</p>
+                </div>
+ 
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘토 수</p><p id="admin-stat-mentors" class="text-2xl font-extrabold">-</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘티 수</p><p id="admin-stat-mentees" class="text-2xl font-extrabold">-</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">전체 예약</p><p id="admin-stat-bookings" class="text-2xl font-extrabold">-</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">완료 세션</p><p id="admin-stat-completed" class="text-2xl font-extrabold">-</p></div>
+                </div>
+ 
+                <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
+                    <h2 class="font-bold text-lg">진행 중인 상담 (관전)</h2>
+                    <p class="text-sm" style="color:var(--ink-soft);">열려있거나 진행 중인 1:1 상담방에 조용히 접속해 화면을 확인할 수 있습니다. 관리자의 모습·음성은 상대방에게 전달되지 않습니다.</p>
+                    <div id="admin-live-rooms-list" class="space-y-2 text-sm"></div>
+                </section>
+ 
+                <section class="card p-6 space-y-3">
+                    <h2 class="font-bold text-lg">멘토 계정 관리</h2>
+                    <p class="text-sm" style="color:var(--ink-soft);">테스트로 만들어진 멘토 계정은 여기서 삭제할 수 있습니다.</p>
+                    <div id="admin-mentor-list" class="space-y-2 text-sm"></div>
+                </section>
+ 
+                <section class="card p-6 space-y-3">
+                    <h2 class="font-bold text-lg">멘티 계정 관리</h2>
+                    <div id="admin-mentee-list" class="space-y-2 text-sm"></div>
+                </section>
+ 
+                <section class="card p-6 space-y-3">
+                    <h2 class="font-bold text-lg">최근 예약</h2>
+                    <div id="admin-bookings-list" class="space-y-2 text-sm"></div>
+                </section>
+            </div>
+ 
+            <!-- ============================== 관리자 관전(참관) 화면 — 2분할 화면, 무음/무비디오 ============================== -->
+            <div id="view-admin-observe" class="view space-y-4">
+                <div class="card p-4 flex items-center justify-between gap-2 flex-wrap text-sm">
+                    <span class="font-bold"><i class="fa-solid fa-eye mr-1.5"></i> 관전 모드 — 나의 모습과 음성은 전달되지 않습니다</span>
+                    <div class="flex gap-2">
+                        <button onclick="toggleAdminRecording()" id="admin-record-btn" class="ghost-btn px-4 py-1.5 rounded-full text-sm"><i class="fa-solid fa-circle text-[10px] text-rose-500 mr-1"></i><span id="admin-record-text">화면 녹화</span></button>
+                        <button onclick="leaveAdminObserve()" class="ghost-btn px-4 py-1.5 rounded-full text-sm">관전 종료</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video relative card">
+                        <video id="admin-observe-video-a" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <span class="absolute top-2 left-2 bg-slate-800/80 text-white text-xs px-2 py-1 rounded-full" id="admin-observe-label-a">멘토</span>
+                    </div>
+                    <div class="bg-slate-900 rounded-2xl overflow-hidden aspect-video relative card">
+                        <video id="admin-observe-video-b" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <span class="absolute top-2 left-2 bg-slate-800/80 text-white text-xs px-2 py-1 rounded-full" id="admin-observe-label-b">멘티</span>
+                    </div>
+                </div>
+                <canvas id="admin-observe-canvas" width="1280" height="360" class="hidden"></canvas>
+            </div>
+ 
             <div id="view-call-room" class="view space-y-4">
                 <div id="mentee-waiting-overlay" class="hidden card p-4 text-center text-sm font-bold" style="border:2px solid var(--accent);">
                     <i class="fa-solid fa-hourglass-half mr-1.5"></i> 대기 중입니다. 멘토가 입장을 승인하면 자동으로 연결됩니다.
                 </div>
-
+ 
                 <div id="connection-status" class="card px-4 py-3 text-sm flex items-center justify-between gap-2 flex-wrap">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-slate-300" id="status-dot"></span>
                         <span id="status-text">초기화 대기 중...</span>
                     </div>
                 </div>
-
+ 
                 <div id="troubleshoot-box" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-sm p-4 rounded-2xl space-y-1"></div>
-
+ 
                 <div class="bg-slate-900 rounded-2xl relative aspect-video flex flex-col justify-between overflow-hidden card">
                     <div class="w-full h-full relative flex items-center justify-center bg-slate-900">
                         <video id="remote-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
@@ -297,7 +372,7 @@
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 실시간 연결 중
                         </div>
                     </div>
-
+ 
                     <div class="absolute bottom-0 inset-x-0 bg-slate-900/90 px-4 py-3 flex items-center justify-between border-t border-slate-700">
                         <div class="w-20 h-14 bg-slate-800 rounded-lg overflow-hidden relative shadow-lg">
                             <video id="local-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
@@ -313,7 +388,7 @@
                         </div>
                     </div>
                 </div>
-
+ 
                 <div class="bg-white rounded-2xl overflow-hidden card">
                     <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
                         <span class="text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-note-sticky"></i> 실시간 공유 메모</span>
@@ -321,20 +396,21 @@
                     </div>
                     <textarea id="shared-notepad" oninput="handleNotepadInput()" placeholder="상담 중 메모를 남기면 상대방 화면에도 실시간으로 보입니다." class="w-full text-sm p-4 outline-none resize-none" rows="4"></textarea>
                 </div>
-
+ 
                 <!-- 통화 종료 후에만 노출: 다음 단계로 -->
                 <div id="after-call-next" class="hidden card p-4 flex items-center justify-between gap-3">
                     <span class="text-sm font-bold">상담이 종료되었습니다.</span>
                     <button onclick="goToSessionEnd()" class="accent-btn px-5 py-2 rounded-full text-sm">다음 단계로 <i class="fa-solid fa-arrow-right ml-1"></i></button>
                 </div>
             </div>
-
+ 
             <!-- ============================== 세션 종료 화면 ============================== -->
             <div id="view-session-end" class="view">
                 <div class="card p-8 text-center max-w-md mx-auto space-y-4">
                     <div class="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-check text-2xl" style="color:var(--accent-ink);"></i></div>
                     <h2 class="text-xl font-extrabold">상담이 종료되었습니다</h2>
                     <div id="session-end-recording" class="text-sm"></div>
+                    <button id="session-end-drive-btn" onclick="saveLastRecordingToDrive()" class="ghost-btn py-3 rounded-full text-sm hidden"><i class="fa-brands fa-google-drive mr-1"></i> 구글 드라이브에 저장</button>
                     <div class="flex flex-col gap-2 pt-2">
                         <button id="session-end-review-btn" onclick="showView('view-review')" class="accent-btn py-3 rounded-full text-sm hidden">후기 남기기</button>
                         <button id="session-end-ai-btn" onclick="openAiSummary()" class="ghost-btn py-3 rounded-full text-sm">Career Report 보기</button>
@@ -342,7 +418,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- ============================== 후기 작성 (멘티) ============================== -->
             <div id="view-review" class="view">
                 <div class="card p-6 max-w-md mx-auto space-y-4">
@@ -358,7 +434,7 @@
                     <button onclick="saveReview()" class="w-full accent-btn py-3 rounded-full text-sm">후기 저장하기</button>
                 </div>
             </div>
-
+ 
             <!-- ============================== AI 요약 (Career Action Report) ============================== -->
             <div id="view-ai-summary" class="view">
                 <div class="card p-6 max-w-lg mx-auto space-y-4">
@@ -369,10 +445,10 @@
                     <button onclick="goHome()" class="text-sm font-bold underline" style="color:var(--ink-soft);">홈으로</button>
                 </div>
             </div>
-
+ 
         </main>
     </div>
-
+ 
     <!-- ============================== 예약 모달 ============================== -->
     <div id="booking-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="card max-w-sm w-full p-6 space-y-4">
@@ -388,7 +464,22 @@
             <button onclick="confirmBooking()" class="w-full accent-btn py-3 rounded-full text-sm">예약 신청하기</button>
         </div>
     </div>
-
+ 
+    <!-- ============================== DM 채팅 모달 ============================== -->
+    <div id="chat-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card max-w-sm w-full flex flex-col" style="height:70vh;">
+            <div class="flex items-center justify-between p-4 border-b border-slate-100">
+                <h3 class="font-extrabold" id="chat-modal-title">메시지</h3>
+                <button onclick="closeChatModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+            <div class="p-3 border-t border-slate-100 flex gap-2">
+                <input type="text" id="chat-input" placeholder="메시지 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();">
+                <button onclick="sendChatMessage()" class="accent-btn w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+            </div>
+        </div>
+    </div>
+ 
     <script>
         // =====================================================================
         // 전역 상태
@@ -396,9 +487,9 @@
         const SUPABASE_URL = 'https://pthbtzfppnlrptelvzpc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0aGJ0emZwcG5scnB0ZWx2enBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NjEwODAsImV4cCI6MjEwMzEzNzA4MH0.58VOdbDvJVaCTyxlGgzBn3_lSISYB5Pbtqea66ihycc';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+ 
         const sectorLabels = { 1: '업무 적응 & 실무 커뮤니케이션', 2: '조직생활 & 인간관계', 3: '커리어 방향 & 이직 고민', 4: '포트폴리오 & 성과 피드백' };
-
+ 
         let currentUser = null;          // { id, name, role, email, sector_id, title, intro }
         let menteeSectorFilter = 0;      // 0 = 전체
         let viewingMentor = null;        // 멘티가 상세보기 중인 멘토 프로필
@@ -409,13 +500,13 @@
         let roomChannel = null;          // 현재 방 realtime 채널
         let lobbyChannel = null;         // 멘티 홈 화면에서 "지금 상담 가능" 실시간 구독 채널
         let currentRating = 5;
-
+ 
         // 화상통화 관련 상태 (기존 PeerJS 로직 재사용)
         let localStream = null, peer = null, currentCall = null, dataConn = null;
         let mediaRecorder = null, recordedChunks = [], isRecording = false;
         let cameraOn = true, micOn = true, needsManualPlay = false, receivingRemoteNote = false;
         let lastRecordingBlob = null;
-
+ 
         // --- 토스트 ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -427,25 +518,60 @@
             requestAnimationFrame(() => toast.classList.add('show'));
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 250); }, 2800);
         }
-
+ 
         // --- 뷰 전환 ---
+        let previousViewId = null;
+        const breadcrumbLabels = {
+            'view-mentor-detail': '멘토 상세',
+            'view-mentee-bookings': '내 예약',
+            'view-mentor-dashboard': '내 대시보드',
+            'view-admin-dashboard': '관리자 홈',
+            'view-call-room': '상담 진행 중',
+            'view-session-end': '상담 종료',
+            'view-review': '후기 작성',
+            'view-ai-summary': 'Career Report',
+            'view-admin-observe': '상담 관전 중'
+        };
+        // 뒤로가기 버튼을 눌렀을 때 굳이 되돌아갈 필요 없는(항상 "홈"으로 취급하는) 화면들
+        const homeLikeViews = ['view-mentee-home', 'view-mentor-dashboard', 'view-admin-dashboard'];
+ 
         function showView(id) {
+            const activeEl = document.querySelector('.view.active');
+            if (activeEl && activeEl.id !== id && !homeLikeViews.includes(id)) previousViewId = activeEl.id;
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const el = document.getElementById(id);
             if (el) el.classList.add('active');
+            updateBreadcrumb(id);
         }
-
-        function goHome() {
-            if (!currentUser) return;
-            if (currentUser.role === 'mentor') {
-                showView('view-mentor-dashboard');
-                renderMentorDashboard();
+ 
+        function updateBreadcrumb(id) {
+            const label = breadcrumbLabels[id];
+            const sep = document.getElementById('breadcrumb-sep');
+            const cur = document.getElementById('breadcrumb-current');
+            const backBtn = document.getElementById('breadcrumb-back');
+            if (label) {
+                sep.classList.remove('hidden'); cur.classList.remove('hidden'); cur.innerText = label;
+                backBtn.classList.toggle('hidden', !previousViewId || previousViewId === id);
             } else {
-                showView('view-mentee-home');
-                renderMenteeHome();
+                sep.classList.add('hidden'); cur.classList.add('hidden'); backBtn.classList.add('hidden');
             }
         }
-
+ 
+        function goBack() {
+            if (previousViewId && previousViewId !== 'view-auth') { showView(previousViewId); }
+            else { goHome(); }
+        }
+ 
+        // 로고("홈") 클릭 시: 멘토·멘티·관리자 모두 "멘토 둘러보기" 화면으로 이동합니다.
+        // 멘토는 여기서 다른 멘토는 물론 본인 카드를 눌러 자기 프로필/대시보드로 이동할 수 있습니다.
+        // 관리자 전용 기능(계정 관리·상담 관전)은 상단 "관리자 홈" 버튼에서 별도로 들어갑니다.
+        function goHome() {
+            if (!currentUser) return;
+            previousViewId = null;
+            showView('view-mentee-home');
+            renderMenteeHome();
+        }
+ 
         // =====================================================================
         // 인증: 로그인 전에는 view-auth만 보이고, 로그인 후에만 app-shell이 열립니다.
         // =====================================================================
@@ -466,7 +592,7 @@
                 signupTab.classList.remove('text-slate-400'); loginTab.classList.add('text-slate-400');
             }
         }
-
+ 
         function onSignupRoleChange() {
             const isMentor = document.getElementById('role-mentor').checked;
             document.getElementById('signup-mentor-fields').classList.toggle('hidden', !isMentor);
@@ -476,7 +602,7 @@
                 else { label.style.borderColor = '#e2e8f0'; label.style.background = '#fff'; label.classList.add('text-slate-400'); }
             });
         }
-
+ 
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -486,7 +612,7 @@
             await loadCurrentUserProfile(data.user);
             enterApp();
         }
-
+ 
         async function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signup-name').value.trim();
@@ -495,23 +621,25 @@
             const role = document.querySelector('input[name="signup-role"]:checked')?.value || 'mentee';
             const sectorId = role === 'mentor' ? document.getElementById('signup-sector').value : null;
             const title = role === 'mentor' ? document.getElementById('signup-title').value.trim() : null;
-
+ 
             const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { name, role, sector_id: sectorId, title } } });
             if (error) { showToast('회원가입 실패: ' + error.message, 'error'); return; }
             showToast(`${name}님, 환영합니다!`, 'success');
             await loadCurrentUserProfile(data.user);
             enterApp();
         }
-
+ 
         async function handleLogout() {
+            stopAllMediaAndPeer(); // 카메라/마이크가 켜진 채로 로그아웃해도 확실히 꺼지도록
             teardownLobbyChannel();
             teardownRoomChannel();
+            if (mentorOwnRoomChannel) { supabaseClient.removeChannel(mentorOwnRoomChannel); mentorOwnRoomChannel = null; }
             await supabaseClient.auth.signOut();
             currentUser = null;
             document.getElementById('app-shell').classList.add('hidden');
             document.getElementById('view-auth').classList.remove('hidden');
         }
-
+ 
         async function loadCurrentUserProfile(authUser) {
             const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).single();
             currentUser = {
@@ -524,31 +652,35 @@
                 intro: profile?.intro
             };
         }
-
+ 
         function enterApp() {
             document.getElementById('view-auth').classList.add('hidden');
             document.getElementById('app-shell').classList.remove('hidden');
-            document.getElementById('topbar-user').innerText = `${currentUser.name} · ${currentUser.role === 'mentor' ? '멘토' : '멘티'}`;
+            const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? '관리자' : '멘티');
+            document.getElementById('topbar-user').innerText = `${currentUser.name} · ${roleLabel}`;
             document.getElementById('topbar-user').classList.remove('hidden');
             document.getElementById('nav-my-bookings').classList.toggle('hidden', currentUser.role !== 'mentee');
+            document.getElementById('nav-my-dashboard').classList.toggle('hidden', currentUser.role !== 'mentor');
+            document.getElementById('nav-admin-home').classList.toggle('hidden', currentUser.role !== 'admin');
+            if (currentUser.role === 'mentor') setupMentorOwnRoomWatch(); // 대시보드에 들어가지 않아도 입장 대기 알림을 받을 수 있도록 즉시 구독
             goHome();
         }
-
+ 
         async function restoreSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) return;
             await loadCurrentUserProfile(session.user);
             enterApp();
         }
-
+ 
         restoreSession();
-
+ 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
         // =====================================================================
         let allMentorsCache = [];
         let openAdhocRoomsCache = {}; // mentor_id -> live_room row (즉석 상담 가능)
-
+ 
         function setMenteeSectorFilter(sectorId, btn) {
             menteeSectorFilter = sectorId;
             document.querySelectorAll('#mentee-sector-filter .filter-chip').forEach(b => {
@@ -558,43 +690,45 @@
             btn.style.background = 'var(--ink)'; btn.style.color = '#fff';
             renderMentorGrid();
         }
-
+ 
         async function renderMenteeHome() {
             if (!lobbyChannel) setupLobbyChannel();
             await fetchAndRenderMentors();
         }
-
+ 
         async function fetchAndRenderMentors() {
             const { data: mentors } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
             const { data: ratings } = await supabaseClient.from('mentor_rating_summary').select('*');
             const { data: openRooms } = await supabaseClient.from('live_rooms').select('*').eq('status', 'open').is('booking_id', null).is('mentee_admitted_id', null);
-
+ 
             allMentorsCache = (mentors || []).map(m => {
                 const r = (ratings || []).find(x => x.mentor_id === m.id);
                 return { ...m, avg_rating: r?.avg_rating || null, review_count: r?.review_count || 0 };
             });
             openAdhocRoomsCache = {};
             (openRooms || []).forEach(room => { openAdhocRoomsCache[room.mentor_id] = room; });
-
+ 
             renderMentorGrid();
         }
-
+ 
         function renderMentorGrid() {
             const grid = document.getElementById('mentor-grid');
             const list = allMentorsCache.filter(m => menteeSectorFilter === 0 || String(m.sector_id) === String(menteeSectorFilter));
-
+ 
             if (list.length === 0) {
                 grid.innerHTML = `<p class="text-sm col-span-2 text-center py-10" style="color:var(--ink-soft);">아직 이 분야에 등록된 멘토가 없습니다.</p>`;
                 return;
             }
-
+ 
             grid.innerHTML = list.map(m => {
                 const live = openAdhocRoomsCache[m.id];
+                const isSelf = currentUser.role === 'mentor' && m.id === currentUser.id;
                 const ratingHtml = m.avg_rating
                     ? `<span class="text-sm font-bold"><i class="fa-solid fa-star text-amber-400"></i> ${m.avg_rating} <span style="color:var(--ink-soft);font-weight:500;">(${m.review_count})</span></span>`
                     : `<span class="text-sm" style="color:var(--ink-soft);">아직 후기 없음</span>`;
+                const clickAction = isSelf ? `showView('view-mentor-dashboard'); renderMentorDashboard();` : `openMentorDetail('${m.id}')`;
                 return `
-                <div class="card p-5 space-y-3 cursor-pointer hover:shadow-lg transition" onclick="openMentorDetail('${m.id}')">
+                <div class="card p-5 space-y-3 cursor-pointer hover:shadow-lg transition" onclick="${clickAction}" style="${isSelf ? 'border:2px solid var(--accent);' : ''}">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg" style="background:var(--accent); color:var(--accent-ink);">${(m.name||'멘')[0]}</div>
@@ -603,7 +737,7 @@
                                 <p class="text-sm" style="color:var(--ink-soft);">${m.title || ''}</p>
                             </div>
                         </div>
-                        ${live ? `<span class="pill px-2.5 py-1 text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);">지금 가능</span>` : ''}
+                        ${isSelf ? `<span class="pill px-2.5 py-1 text-xs font-bold ghost-btn">내 프로필</span>` : (live ? `<span class="pill px-2.5 py-1 text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);">지금 가능</span>` : '')}
                     </div>
                     <div class="flex items-center justify-between">
                         ${ratingHtml}
@@ -612,7 +746,7 @@
                 </div>`;
             }).join('');
         }
-
+ 
         function setupLobbyChannel() {
             teardownLobbyChannel();
             lobbyChannel = supabaseClient
@@ -626,7 +760,7 @@
         function teardownLobbyChannel() {
             if (lobbyChannel) { supabaseClient.removeChannel(lobbyChannel); lobbyChannel = null; }
         }
-
+ 
         // =====================================================================
         // 멘토 상세 (멘티 시점) — 일정 / 후기 / 예약
         // =====================================================================
@@ -635,19 +769,23 @@
             if (!mentor) return;
             viewingMentor = mentor;
             showView('view-mentor-detail');
-
+ 
             const { data: slots } = await supabaseClient.from('availability_slots')
                 .select('*').eq('mentor_id', mentorId).eq('is_booked', false)
                 .gt('start_time', new Date().toISOString()).order('start_time', { ascending: true });
             const { data: reviews } = await supabaseClient.from('reviews')
                 .select('*').eq('mentor_id', mentorId).order('created_at', { ascending: false }).limit(10);
-
+ 
             const live = openAdhocRoomsCache[mentorId];
-
+            const canBook = currentUser.role === 'mentee';
+ 
             const slotsHtml = (slots && slots.length > 0)
-                ? slots.map(s => `<button onclick='openBookingModal(${JSON.stringify(s)})' class="ghost-btn px-3 py-2 rounded-xl text-sm">${formatDateTime(s.start_time)}</button>`).join('')
+                ? slots.map(s => canBook
+                    ? `<button onclick='openBookingModal(${JSON.stringify(s)})' class="ghost-btn px-3 py-2 rounded-xl text-sm">${formatDateTime(s.start_time)}</button>`
+                    : `<span class="pill px-3 py-2 text-sm ghost-btn">${formatDateTime(s.start_time)}</span>`
+                  ).join('')
                 : `<p class="text-sm" style="color:var(--ink-soft);">현재 예약 가능한 시간이 없습니다.</p>`;
-
+ 
             const reviewsHtml = (reviews && reviews.length > 0)
                 ? reviews.map(r => `
                     <div class="border-t border-slate-100 pt-3">
@@ -656,7 +794,7 @@
                         <p class="text-xs mt-1" style="color:var(--ink-soft);">${escapeHtml(r.mentee_display_name || '멘티')}</p>
                     </div>`).join('')
                 : `<p class="text-sm" style="color:var(--ink-soft);">아직 등록된 후기가 없습니다.</p>`;
-
+ 
             document.getElementById('mentor-detail-content').innerHTML = `
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl" style="background:var(--accent); color:var(--accent-ink);">${(mentor.name||'멘')[0]}</div>
@@ -667,7 +805,9 @@
                     </div>
                 </div>
                 <p class="text-sm">${escapeHtml(mentor.intro || '아직 소개글이 없습니다.')}</p>
-                ${live ? `<button onclick="requestJoinAdhoc('${live.id}')" class="w-full accent-btn py-3 rounded-full text-sm"><i class="fa-solid fa-bolt mr-1"></i> 지금 바로 입장 요청</button>` : ''}
+                ${(live && canBook) ? `<button onclick="requestJoinAdhoc('${live.id}')" class="w-full accent-btn py-3 rounded-full text-sm"><i class="fa-solid fa-bolt mr-1"></i> 지금 바로 입장 요청</button>` : ''}
+                ${(!canBook) ? `<p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>예약은 멘티 계정으로 로그인했을 때만 가능합니다.</p>` : ''}
+                ${canBook ? `<button onclick="openChatWith('${mentor.id}', '${escapeHtml(mentor.name)}')" class="w-full ghost-btn py-3 rounded-full text-sm"><i class="fa-solid fa-comment-dots mr-1"></i> 메시지 보내기</button>` : ''}
                 <div>
                     <h3 class="font-bold mb-2">예약 가능한 시간</h3>
                     <div class="flex flex-wrap gap-2">${slotsHtml}</div>
@@ -678,7 +818,7 @@
                 </div>
             `;
         }
-
+ 
         function openBookingModal(slot) {
             pendingSlot = slot;
             document.getElementById('booking-modal-slot-info').innerText = `${viewingMentor.name} 멘토 · ${formatDateTime(slot.start_time)} ~ ${formatDateTime(slot.end_time)}`;
@@ -686,7 +826,7 @@
             document.getElementById('booking-modal').classList.remove('hidden');
         }
         function closeBookingModal() { document.getElementById('booking-modal').classList.add('hidden'); }
-
+ 
         async function confirmBooking() {
             const reason = document.getElementById('booking-reason').value.trim();
             if (!reason) return showToast('상담받고 싶은 내용을 입력해주세요.', 'error');
@@ -697,13 +837,13 @@
             showView('view-mentee-bookings');
             renderMenteeBookings();
         }
-
+ 
         // 즉석(예약 없이 열린) 상담방에 바로 입장 요청
         async function requestJoinAdhoc(roomId) {
             currentBooking = null;
             await joinRoomFlow(roomId);
         }
-
+ 
         // =====================================================================
         // 내 예약 목록 (멘티)
         // =====================================================================
@@ -711,15 +851,15 @@
             const { data: bookings } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentee_id', currentUser.id).order('created_at', { ascending: false });
-
+ 
             const container = document.getElementById('mentee-bookings-list');
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p class="text-sm" style="color:var(--ink-soft);">아직 예약이 없습니다.</p>`;
                 return;
             }
-
+ 
             const statusLabel = { requested: '승인 대기', approved: '승인됨', rejected: '거절됨', completed: '완료', no_show: '노쇼', cancelled: '취소됨' };
-
+ 
             container.innerHTML = (await Promise.all(bookings.map(async b => {
                 const mentor = allMentorsCache.find(m => m.id === b.mentor_id) || (await supabaseClient.from('profiles').select('name').eq('id', b.mentor_id).single()).data;
                 const slotTime = b.availability_slots ? `${formatDateTime(b.availability_slots.start_time)}` : '';
@@ -744,7 +884,7 @@
                 </div>`;
             }))).join('');
         }
-
+ 
         // --- 유틸 ---
         function formatDateTime(iso) {
             const d = new Date(iso);
@@ -755,7 +895,7 @@
             div.innerText = str || '';
             return div.innerHTML;
         }
-
+ 
         // =====================================================================
         // 멘토 대시보드
         // =====================================================================
@@ -763,14 +903,15 @@
             document.getElementById('mentor-edit-title').value = currentUser.title || '';
             document.getElementById('mentor-edit-sector').value = currentUser.sector_id || 1;
             document.getElementById('mentor-edit-intro').value = currentUser.intro || '';
-
+ 
             await renderBookingRequests();
             await renderApprovedBookings();
             await renderMentorSlots();
+            await renderMentorMessages();
             await renderMentorLogs();
             setupMentorOwnRoomWatch();
         }
-
+ 
         async function saveMentorProfile() {
             const title = document.getElementById('mentor-edit-title').value.trim();
             const sector_id = document.getElementById('mentor-edit-sector').value;
@@ -780,12 +921,12 @@
             currentUser.title = title; currentUser.sector_id = sector_id; currentUser.intro = intro;
             showToast('프로필이 저장되었습니다.', 'success');
         }
-
+ 
         async function renderBookingRequests() {
             const { data: bookings } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentor_id', currentUser.id).eq('status', 'requested').order('created_at', { ascending: false });
-
+ 
             const container = document.getElementById('mentor-booking-requests');
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p style="color:var(--ink-soft);">대기 중인 예약 요청이 없습니다.</p>`;
@@ -805,7 +946,7 @@
                 </div>`;
             }))).join('');
         }
-
+ 
         async function respondBooking(bookingId, approve) {
             const { error } = await supabaseClient.rpc('respond_to_booking', { p_booking_id: bookingId, p_approve: approve });
             if (error) return showToast('처리 실패', 'error');
@@ -813,12 +954,20 @@
             renderBookingRequests();
             renderApprovedBookings();
         }
-
+ 
+        async function cancelMentorBooking(bookingId) {
+            if (!confirm('이 예약을 취소하시겠습니까? 멘티에게 별도로 안내해주세요.')) return;
+            const { error } = await supabaseClient.rpc('cancel_booking', { p_booking_id: bookingId });
+            if (error) return showToast('취소 실패', 'error');
+            showToast('예약이 취소되었습니다.', 'info');
+            renderApprovedBookings();
+        }
+ 
         async function renderApprovedBookings() {
             const { data: bookings } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentor_id', currentUser.id).eq('status', 'approved').order('created_at', { ascending: false });
-
+ 
             const container = document.getElementById('mentor-approved-bookings');
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p style="color:var(--ink-soft);">예정된 상담이 없습니다.</p>`;
@@ -832,11 +981,14 @@
                         <p class="font-bold">${menteeProfile?.name || '멘티'} · ${b.availability_slots ? formatDateTime(b.availability_slots.start_time) : ''}</p>
                         <p class="text-sm" style="color:var(--ink-soft);">${escapeHtml(b.reason || '')}</p>
                     </div>
-                    <button onclick="startScheduledRoom('${b.id}')" class="accent-btn px-3 py-1.5 rounded-full text-xs">상담 시작</button>
+                    <div class="flex gap-2">
+                        <button onclick="startScheduledRoom('${b.id}')" class="accent-btn px-3 py-1.5 rounded-full text-xs">상담 시작</button>
+                        <button onclick="cancelMentorBooking('${b.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">예약 취소</button>
+                    </div>
                 </div>`;
             }))).join('');
         }
-
+ 
         async function renderMentorSlots() {
             const { data: slots } = await supabaseClient.from('availability_slots')
                 .select('*').eq('mentor_id', currentUser.id).gt('start_time', new Date().toISOString())
@@ -845,7 +997,7 @@
             if (!slots || slots.length === 0) { container.innerHTML = `<p style="color:var(--ink-soft);">등록된 일정이 없습니다.</p>`; return; }
             container.innerHTML = slots.map(s => `<div class="flex items-center gap-2"><i class="fa-solid fa-clock text-xs" style="color:var(--ink-soft);"></i> ${formatDateTime(s.start_time)} ~ ${formatDateTime(s.end_time)} ${s.is_booked ? '<span class="text-xs font-bold" style="color:var(--ink-soft);">(예약됨)</span>' : ''}</div>`).join('');
         }
-
+ 
         async function addAvailabilitySlot() {
             const start = document.getElementById('slot-start').value;
             const end = document.getElementById('slot-end').value;
@@ -857,7 +1009,7 @@
             showToast('일정이 추가되었습니다.', 'success');
             renderMentorSlots();
         }
-
+ 
         async function renderMentorLogs() {
             const { data: bookings } = await supabaseClient.from('bookings')
                 .select('*, recordings(*)').eq('mentor_id', currentUser.id).eq('status', 'completed')
@@ -880,11 +1032,261 @@
                 </div>`;
             }))).join('');
         }
-
+ 
         // =====================================================================
-        // 방 생성 / 입장 / 승인 흐름 (2인 정원 강제)
+        // DM 채팅 (멘티 ↔ 멘토)
         // =====================================================================
-
+        let chatPartnerId = null;
+        let chatChannel = null;
+ 
+        function openChatWith(partnerId, partnerName) {
+            chatPartnerId = partnerId;
+            document.getElementById('chat-modal-title').innerText = partnerName + '님과의 대화';
+            document.getElementById('chat-modal').classList.remove('hidden');
+            loadChatMessages();
+            setupChatChannel();
+        }
+        function closeChatModal() {
+            document.getElementById('chat-modal').classList.add('hidden');
+            if (chatChannel) { supabaseClient.removeChannel(chatChannel); chatChannel = null; }
+            chatPartnerId = null;
+        }
+ 
+        async function loadChatMessages() {
+            const { data: msgs } = await supabaseClient.from('messages')
+                .select('*')
+                .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${chatPartnerId}),and(sender_id.eq.${chatPartnerId},receiver_id.eq.${currentUser.id})`)
+                .order('created_at', { ascending: true });
+            renderChatMessages(msgs || []);
+        }
+ 
+        function renderChatMessages(msgs) {
+            const box = document.getElementById('chat-messages');
+            box.innerHTML = msgs.map(m => {
+                const mine = m.sender_id === currentUser.id;
+                return `<div class="flex ${mine ? 'justify-end' : 'justify-start'}">
+                    <div class="max-w-[75%] px-3 py-2 rounded-2xl text-sm" style="${mine ? 'background:var(--accent);color:var(--accent-ink);' : 'background:#f1f1f3;color:var(--ink);'}">${escapeHtml(m.content)}</div>
+                </div>`;
+            }).join('') || `<p class="text-sm text-center py-8" style="color:var(--ink-soft);">아직 대화가 없습니다.</p>`;
+            box.scrollTop = box.scrollHeight;
+        }
+ 
+        function setupChatChannel() {
+            if (chatChannel) supabaseClient.removeChannel(chatChannel);
+            chatChannel = supabaseClient
+                .channel('chat-' + [currentUser.id, chatPartnerId].sort().join('-'))
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+                    const m = payload.new;
+                    const isThisThread = (m.sender_id === currentUser.id && m.receiver_id === chatPartnerId) || (m.sender_id === chatPartnerId && m.receiver_id === currentUser.id);
+                    if (isThisThread) loadChatMessages();
+                })
+                .subscribe();
+        }
+ 
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const content = input.value.trim();
+            if (!content || !chatPartnerId) return;
+            input.value = '';
+            const { error } = await supabaseClient.from('messages').insert({ sender_id: currentUser.id, receiver_id: chatPartnerId, content });
+            if (error) showToast('메시지 전송 실패', 'error');
+        }
+ 
+        // 멘토 대시보드: 받은 메시지함 — 대화 상대(멘티)별로 최근 메시지 하나씩만 모아 보여준다
+        async function renderMentorMessages() {
+            const { data: msgs } = await supabaseClient.from('messages')
+                .select('*').or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                .order('created_at', { ascending: false });
+            const container = document.getElementById('mentor-message-list');
+            if (!msgs || msgs.length === 0) { container.innerHTML = `<p style="color:var(--ink-soft);">받은 메시지가 없습니다.</p>`; return; }
+ 
+            const latestByPartner = {};
+            msgs.forEach(m => {
+                const partnerId = m.sender_id === currentUser.id ? m.receiver_id : m.sender_id;
+                if (!latestByPartner[partnerId]) latestByPartner[partnerId] = m;
+            });
+            const partnerIds = Object.keys(latestByPartner);
+            const { data: partners } = await supabaseClient.from('profiles').select('id,name').in('id', partnerIds);
+            const nameById = {}; (partners || []).forEach(p => nameById[p.id] = p.name);
+ 
+            container.innerHTML = partnerIds.map(pid => {
+                const m = latestByPartner[pid];
+                return `<div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap cursor-pointer hover:bg-slate-50" onclick="openChatWith('${pid}', '${escapeHtml(nameById[pid] || '멘티')}')">
+                    <div><p class="font-bold">${escapeHtml(nameById[pid] || '멘티')}</p><p class="text-xs" style="color:var(--ink-soft);">${escapeHtml(m.content).slice(0,40)}</p></div>
+                    <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(m.created_at)}</span>
+                </div>`;
+            }).join('');
+        }
+ 
+        // =====================================================================
+        // 관리자 대시보드
+        // =====================================================================
+        async function renderAdminDashboard() {
+            const { data: mentors } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
+            const { data: mentees } = await supabaseClient.from('profiles').select('*').eq('role', 'mentee');
+            const { data: bookings } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
+            const { data: liveRooms } = await supabaseClient.from('live_rooms').select('*').in('status', ['open','in_call']).order('created_at', { ascending: false });
+ 
+            document.getElementById('admin-stat-mentors').innerText = (mentors || []).length;
+            document.getElementById('admin-stat-mentees').innerText = (mentees || []).length;
+            document.getElementById('admin-stat-bookings').innerText = (bookings || []).length;
+            document.getElementById('admin-stat-completed').innerText = (bookings || []).filter(b => b.status === 'completed').length;
+ 
+            const mentorNameById = {}; (mentors || []).forEach(m => mentorNameById[m.id] = m.name);
+            document.getElementById('admin-live-rooms-list').innerHTML = (liveRooms || []).length === 0
+                ? `<p style="color:var(--ink-soft);">현재 진행 중이거나 열려있는 상담방이 없습니다.</p>`
+                : (await Promise.all(liveRooms.map(async r => {
+                    let menteeName = '(대기 중)';
+                    if (r.mentee_admitted_id) {
+                        const { data: mp } = await supabaseClient.from('profiles').select('name').eq('id', r.mentee_admitted_id).maybeSingle();
+                        menteeName = mp?.name || '멘티';
+                    }
+                    return `<div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
+                        <div>
+                            <p class="font-bold">${mentorNameById[r.mentor_id] || '멘토'} ↔ ${menteeName}</p>
+                            <p class="text-xs" style="color:var(--ink-soft);">${r.status === 'in_call' ? '통화 진행 중' : '대기 중인 방'}</p>
+                        </div>
+                        <button onclick="adminJoinObserve('${r.id}')" class="accent-btn px-3 py-1.5 rounded-full text-xs" ${r.status !== 'in_call' ? 'disabled style="opacity:.5;cursor:not-allowed;"' : ''}>관전 입장</button>
+                    </div>`;
+                }))).join('');
+ 
+            document.getElementById('admin-mentor-list').innerHTML = (mentors || []).length === 0
+                ? `<p style="color:var(--ink-soft);">등록된 멘토가 없습니다.</p>`
+                : mentors.map(m => `
+                    <div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
+                        <div><p class="font-bold">${m.name}</p><p class="text-xs" style="color:var(--ink-soft);">${m.title || ''} · ${sectorLabels[m.sector_id] || ''}</p></div>
+                        <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">삭제</button>
+                    </div>`).join('');
+ 
+            document.getElementById('admin-mentee-list').innerHTML = (mentees || []).length === 0
+                ? `<p style="color:var(--ink-soft);">등록된 멘티가 없습니다.</p>`
+                : mentees.map(m => `
+                    <div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
+                        <span class="font-bold">${m.name}</span>
+                        <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">삭제</button>
+                    </div>`).join('');
+ 
+            document.getElementById('admin-bookings-list').innerHTML = (bookings || []).length === 0
+                ? `<p style="color:var(--ink-soft);">예약 내역이 없습니다.</p>`
+                : bookings.slice(0, 15).map(b => `
+                    <div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
+                        <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(b.created_at)}</span>
+                        <span>${escapeHtml(b.reason || '')}</span>
+                        <span class="pill px-2 py-0.5 text-xs font-bold ghost-btn">${b.status}</span>
+                    </div>`).join('');
+        }
+ 
+        async function adminDeleteUser(userId, name) {
+            if (!confirm(`${name} 계정을 정말 삭제하시겠습니까? 되돌릴 수 없습니다.`)) return;
+            const { error } = await supabaseClient.rpc('admin_delete_user', { p_target_id: userId });
+            if (error) return showToast('삭제 실패: 관리자 권한을 확인해주세요.', 'error');
+            showToast('계정이 삭제되었습니다.', 'success');
+            renderAdminDashboard();
+        }
+ 
+        // =====================================================================
+        // 관리자 관전(참관) — 멘토·멘티 양쪽 화면을 2분할로만 조용히 확인, 녹화만 가능
+        // =====================================================================
+        let observePeer = null;
+        let observeCallA = null, observeCallB = null;
+        let observeCanvasInterval = null;
+        let observeMediaRecorder = null;
+        let observeChunks = [];
+        let isObserveRecording = false;
+        let observingRoom = null;
+ 
+        async function adminJoinObserve(roomId) {
+            const { data: room, error } = await supabaseClient.rpc('admin_join_observe', { p_room_id: roomId });
+            if (error) return showToast('입장할 수 없는 방입니다 (이미 종료되었거나 대기 중인 방일 수 있어요).', 'error');
+            observingRoom = room;
+            showView('view-admin-observe');
+            document.getElementById('admin-observe-video-a').srcObject = null;
+            document.getElementById('admin-observe-video-b').srcObject = null;
+ 
+            observePeer = new Peer({
+                config: { iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+                    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' }
+                ]}
+            });
+            const silentStream = new MediaStream(); // 관리자는 영상/음성을 아무것도 보내지 않음
+ 
+            observePeer.on('open', () => {
+                if (room.room_peer_id) {
+                    observeCallA = observePeer.call(room.room_peer_id, silentStream, { metadata: { role: 'admin_observer' } });
+                    observeCallA.on('stream', (s) => { document.getElementById('admin-observe-video-a').srcObject = s; });
+                }
+                if (room.mentee_peer_id) {
+                    observeCallB = observePeer.call(room.mentee_peer_id, silentStream, { metadata: { role: 'admin_observer' } });
+                    observeCallB.on('stream', (s) => { document.getElementById('admin-observe-video-b').srcObject = s; });
+                }
+                if (!room.mentee_peer_id) showToast('멘티가 아직 입장 전이라 멘티 화면은 보이지 않을 수 있습니다.', 'info');
+            });
+            observePeer.on('error', (err) => { console.error(err); showToast('관전 연결 오류: ' + err.type, 'error'); });
+        }
+ 
+        function leaveAdminObserve() {
+            if (isObserveRecording) toggleAdminRecording(); // 녹화 중이었다면 먼저 저장
+            if (observeCallA) { observeCallA.close(); observeCallA = null; }
+            if (observeCallB) { observeCallB.close(); observeCallB = null; }
+            if (observePeer) { observePeer.destroy(); observePeer = null; }
+            if (observingRoom) supabaseClient.rpc('admin_leave_observe', { p_room_id: observingRoom.id });
+            observingRoom = null;
+            showView('view-admin-dashboard');
+            renderAdminDashboard();
+        }
+ 
+        // 2분할 화면을 canvas에 합성해서 하나의 영상으로 녹화 ("화면 녹화" 기능)
+        function toggleAdminRecording() {
+            const btn = document.getElementById('admin-record-btn');
+            const text = document.getElementById('admin-record-text');
+            if (!isObserveRecording) {
+                const canvas = document.getElementById('admin-observe-canvas');
+                const ctx = canvas.getContext('2d');
+                const videoA = document.getElementById('admin-observe-video-a');
+                const videoB = document.getElementById('admin-observe-video-b');
+                observeCanvasInterval = setInterval(() => {
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    if (videoA.readyState >= 2) ctx.drawImage(videoA, 0, 0, canvas.width/2, canvas.height);
+                    if (videoB.readyState >= 2) ctx.drawImage(videoB, canvas.width/2, 0, canvas.width/2, canvas.height);
+                }, 1000/24);
+                const canvasStream = canvas.captureStream(24);
+                observeChunks = [];
+                observeMediaRecorder = new MediaRecorder(canvasStream);
+                observeMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) observeChunks.push(e.data); };
+                observeMediaRecorder.onstop = async () => {
+                    clearInterval(observeCanvasInterval);
+                    const blob = new Blob(observeChunks, { type: 'video/webm' });
+                    await uploadAdminRecording(blob);
+                };
+                observeMediaRecorder.start();
+                isObserveRecording = true;
+                text.innerText = '녹화 중지';
+                btn.style.background = '#fecdd3';
+            } else {
+                observeMediaRecorder.stop();
+                isObserveRecording = false;
+                text.innerText = '화면 녹화';
+                btn.style.background = '';
+            }
+        }
+ 
+        async function uploadAdminRecording(blob) {
+            if (!observingRoom) return;
+            showToast('관전 녹화 파일 업로드 중...', 'info');
+            const path = `admin-${observingRoom.id}/${Date.now()}.webm`;
+            const { error: upErr } = await supabaseClient.storage.from('recordings').upload(path, blob, { contentType: 'video/webm' });
+            if (upErr) return showToast('업로드 실패', 'error');
+            await supabaseClient.from('recordings').insert({
+                booking_id: observingRoom.booking_id || null, room_id: observingRoom.id,
+                mentor_id: observingRoom.mentor_id, mentee_id: observingRoom.mentee_admitted_id,
+                storage_path: path, is_admin_recording: true
+            });
+            showToast('관전 녹화 파일이 저장되었습니다.', 'success');
+        }
+        // =====================================================================
+ 
         // 멘토: 즉석(예약 없는) 상담방 열기
         async function openAdhocRoom() {
             currentBooking = null;
@@ -898,7 +1300,7 @@
             await initVideoCall();
             setupRoomChannel(room.id, true);
         }
-
+ 
         // 멘토: 예약된(승인된) 상담을 시작 — booking_id를 연결해 방을 엶
         async function startScheduledRoom(bookingId) {
             const booking = bookingCache[bookingId];
@@ -913,7 +1315,7 @@
             await initVideoCall();
             setupRoomChannel(room.id, true);
         }
-
+ 
         // 멘티: 방에 입장 요청 (노크) — 예약된 방이든 즉석 방이든 공통 사용
         async function joinRoomFlow(roomId, bookingId) {
             currentBooking = bookingId ? bookingCache[bookingId] : null;
@@ -927,7 +1329,7 @@
             await initVideoCall(); // 카메라는 미리 준비해둔다 (승인되면 바로 연결)
             setupRoomChannel(room.id, false);
         }
-
+ 
         // 대시보드에서 자기 방에 대기자가 생기면 배너로 알려주는 실시간 구독
         let mentorOwnRoomChannel = null;
         function setupMentorOwnRoomWatch() {
@@ -947,7 +1349,7 @@
                 })
                 .subscribe();
         }
-
+ 
         async function mentorAdmitWaiting() {
             if (!currentRoom) return;
             const { data: room, error } = await supabaseClient.rpc('admit_mentee', { p_room_id: currentRoom.id });
@@ -956,15 +1358,16 @@
             document.getElementById('mentor-waiting-banner').classList.add('hidden');
             showView('view-call-room');
         }
-
+ 
         async function mentorRejectWaiting() {
             if (!currentRoom) return;
             await supabaseClient.rpc('reject_waiting_mentee', { p_room_id: currentRoom.id });
             document.getElementById('mentor-waiting-banner').classList.add('hidden');
             showToast('입장 요청을 거절했습니다.', 'info');
         }
-
+ 
         // 방(call room) 안에서의 realtime 구독 — 승인/종료를 실시간으로 감지
+        let adminWatchingNotified = false; // 같은 관전 상태에 대해 알림을 중복으로 띄우지 않기 위한 플래그
         function setupRoomChannel(roomId, isMentor) {
             teardownRoomChannel();
             roomChannel = supabaseClient
@@ -977,6 +1380,13 @@
                         document.getElementById('mentee-waiting-overlay').classList.add('hidden');
                         connectToMentor(room.room_peer_id);
                     }
+                    // 관리자가 관전을 시작/종료하면 작은 알림만 표시 (관리자의 모습/음성은 절대 노출되지 않음)
+                    if (room.admin_watching_id && !adminWatchingNotified) {
+                        adminWatchingNotified = true;
+                        showToast('관리자가 상담 품질 확인을 위해 조용히 참관 중입니다.', 'info');
+                    } else if (!room.admin_watching_id) {
+                        adminWatchingNotified = false;
+                    }
                     if (room.status === 'closed') {
                         showToast('상담이 종료되었습니다.', 'info');
                         cleanupAfterCallClosedRemotely();
@@ -987,7 +1397,7 @@
         function teardownRoomChannel() {
             if (roomChannel) { supabaseClient.removeChannel(roomChannel); roomChannel = null; }
         }
-
+ 
         // =====================================================================
         // 화상통화 (PeerJS) — 방 승인 흐름에 맞춰 자동으로 연결됩니다
         // =====================================================================
@@ -1000,7 +1410,7 @@
         }
         function showTroubleshoot(html) { const box = document.getElementById('troubleshoot-box'); box.innerHTML = html; box.classList.remove('hidden'); }
         function hideTroubleshoot() { document.getElementById('troubleshoot-box').classList.add('hidden'); }
-
+ 
         function resetCallUI() {
             hideTroubleshoot();
             document.getElementById('after-call-next').classList.add('hidden');
@@ -1011,13 +1421,13 @@
             document.getElementById('btn-record').classList.toggle('hidden', currentUser.role !== 'mentor');
             lastRecordingBlob = null;
         }
-
+ 
         async function initVideoCall() {
             hideTroubleshoot();
             const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
             if (!isSecure) { setStatus('HTTPS 환경이 아닙니다.', 'bg-rose-500'); return; }
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { setStatus('이 브라우저는 카메라 API를 지원하지 않습니다.', 'bg-rose-500'); return; }
-
+ 
             try {
                 setStatus('카메라/마이크 권한 요청 중...', 'bg-amber-400');
                 const needNewStream = !localStream || localStream.getTracks().every(t => t.readyState === 'ended');
@@ -1028,7 +1438,7 @@
                     localVideoEl.play().catch(()=>{});
                 }
                 setStatus('카메라/마이크 연결 완료.', 'bg-emerald-400');
-
+ 
                 if (!peer) {
                     peer = new Peer({
                         config: { iceServers: [
@@ -1039,7 +1449,7 @@
                             { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
                         ]}
                     });
-
+ 
                     peer.on('open', async (id) => {
                         setStatus(currentUser.role === 'mentor' ? '준비 완료 — 멘티 입장을 기다리는 중' : '준비 완료 — 승인을 기다리는 중', 'bg-emerald-400');
                         // 멘토라면 방 정보에 내 peer id를 기록해서 멘티가 연결할 수 있게 한다
@@ -1047,9 +1457,21 @@
                             const { data } = await supabaseClient.from('live_rooms').update({ room_peer_id: id }).eq('id', currentRoom.id).select().single();
                             if (data) currentRoom = data;
                         }
+                        // 멘티도 자신의 peer id를 기록해두면, 관리자가 관전 시 멘티 화면에도 직접 연결할 수 있다
+                        if (currentUser.role !== 'mentor' && currentUser.role !== 'admin' && currentRoom) {
+                            const { data } = await supabaseClient.from('live_rooms').update({ mentee_peer_id: id }).eq('id', currentRoom.id).select().single();
+                            if (data) currentRoom = data;
+                        }
                     });
-
+ 
+                    // 상대방(멘토/멘티)의 통화든, 관리자의 "조용한 관전" 연결이든 모두 여기로 들어온다.
+                    // 관전 연결은 metadata로 구분해서 화면에 절대 노출되지 않게 별도 처리한다.
                     peer.on('call', (call) => {
+                        if (call.metadata && call.metadata.role === 'admin_observer') {
+                            // 관리자에게는 내 화면을 보여주되, 내 화면에는 아무것도 표시하지 않는다 (완전히 조용한 참관)
+                            call.answer(localStream);
+                            return;
+                        }
                         setStatus('상대방이 연결을 시도합니다...', 'bg-amber-400');
                         call.answer(localStream);
                         attachCallHandlers(call);
@@ -1064,7 +1486,7 @@
                 showTroubleshoot(`<p class="font-bold">카메라/마이크 권한을 확인해주세요.</p><p>주소창 왼쪽 자물쇠 아이콘 → 사이트 설정에서 허용으로 바꾼 뒤 새로고침하세요.</p>`);
             }
         }
-
+ 
         // 멘티가 승인된 순간, 저장해둔 멘토의 peer id로 실제 통화를 건다
         function connectToMentor(mentorPeerId) {
             if (!peer || !localStream || !mentorPeerId) return;
@@ -1074,7 +1496,7 @@
             const conn = peer.connect(mentorPeerId, { reliable: true });
             bindDataConnection(conn);
         }
-
+ 
         function attachCallHandlers(call) {
             currentCall = call;
             call.on('stream', (remoteStream) => {
@@ -1091,7 +1513,7 @@
             });
             call.on('error', (err) => { console.error(err); setStatus('통화 오류: ' + err, 'bg-rose-500'); });
         }
-
+ 
         function bindDataConnection(conn) {
             dataConn = conn;
             const statusEl = document.getElementById('notepad-sync-status');
@@ -1104,13 +1526,13 @@
             });
             conn.on('close', () => { statusEl.innerText = '동기화 연결 종료'; dataConn = null; });
         }
-
+ 
         function handleNotepadInput() {
             if (receivingRemoteNote) return;
             const notepad = document.getElementById('shared-notepad');
             if (dataConn && dataConn.open) dataConn.send({ type: 'note', text: notepad.value });
         }
-
+ 
         function attemptRemotePlay() {
             const remoteVideoEl = document.getElementById('remote-video');
             const p = remoteVideoEl.play();
@@ -1129,13 +1551,13 @@
             }
         }
         ['click','touchend'].forEach(evt => document.addEventListener(evt, () => { if (needsManualPlay) attemptRemotePlay(); }, { passive: true }));
-
+ 
         function unmuteRemote() {
             document.getElementById('remote-video').muted = false;
             document.getElementById('unmute-btn').classList.add('hidden');
             document.getElementById('unmute-btn').classList.remove('flex');
         }
-
+ 
         // 마이크 on/off — 하드웨어까지 완전히 해제/재요청
         async function toggleAudio() {
             const btn = document.getElementById('btn-audio'); const icon = btn.querySelector('i');
@@ -1154,7 +1576,7 @@
                 } catch (e) { showToast('마이크를 다시 켤 수 없습니다.', 'error'); }
             }
         }
-
+ 
         // 카메라 on/off — 하드웨어까지 완전히 해제/재요청
         async function toggleCamera() {
             const btn = document.getElementById('btn-camera'); const icon = btn.querySelector('i');
@@ -1175,7 +1597,7 @@
                 } catch (e) { showToast('카메라를 다시 켤 수 없습니다.', 'error'); }
             }
         }
-
+ 
         // 녹화: 멘토만 시작/종료 가능. 종료 시 Supabase Storage에 업로드해 멘토/멘티 모두 링크로 받습니다.
         function toggleRecording() {
             if (currentUser.role !== 'mentor') return;
@@ -1201,7 +1623,7 @@
                 document.getElementById('btn-record').className = 'bg-amber-500 text-slate-900 px-3 h-10 rounded-xl font-bold text-sm flex items-center gap-1.5';
             }
         }
-
+ 
         async function uploadRecording(blob) {
             if (!currentRoom) return;
             showToast('녹화 파일 업로드 중...', 'info');
@@ -1221,18 +1643,24 @@
             if (insertErr) { showToast('녹화 정보 저장 실패', 'error'); return; }
             showToast('녹화 파일이 저장되었습니다.', 'success');
         }
-
+ 
         // 통화 종료 — 트랙/연결만 정리하고, 다음 화면 이동은 사용자가 버튼으로 직접 진행
-        async function endCall() {
+        // 카메라/마이크/PeerJS 연결을 완전히 정리하는 공통 함수 — endCall/로그아웃/원격종료 모두 여기를 거칩니다.
+        function stopAllMediaAndPeer() {
             if (currentCall) { currentCall.close(); currentCall = null; }
             if (dataConn) { dataConn.close(); dataConn = null; }
-            if (isRecording && mediaRecorder) { mediaRecorder.stop(); isRecording = false; }
+            if (isRecording && mediaRecorder) { try { mediaRecorder.stop(); } catch(e){} isRecording = false; }
             if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-            document.getElementById('local-video').srcObject = null;
-            document.getElementById('remote-video').srcObject = null;
-            document.getElementById('remote-placeholder').classList.remove('hidden');
+            const lv = document.getElementById('local-video'); if (lv) lv.srcObject = null;
+            const rv = document.getElementById('remote-video'); if (rv) rv.srcObject = null;
             if (peer) { peer.destroy(); peer = null; }
-
+            cameraOn = true; micOn = true;
+        }
+ 
+        async function endCall() {
+            stopAllMediaAndPeer();
+            document.getElementById('remote-placeholder').classList.remove('hidden');
+ 
             if (currentUser.role === 'mentor' && currentRoom) {
                 await supabaseClient.rpc('close_room', { p_room_id: currentRoom.id });
             }
@@ -1240,27 +1668,99 @@
             setStatus('통화를 종료했습니다.', 'bg-slate-400');
             document.getElementById('after-call-next').classList.remove('hidden');
         }
-
+ 
         // 상대방이 먼저 종료한 경우 — 내 쪽 미디어도 정리
         function cleanupAfterCallClosedRemotely() {
-            if (currentCall) { currentCall.close(); currentCall = null; }
-            if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-            if (peer) { peer.destroy(); peer = null; }
-            document.getElementById('local-video').srcObject = null;
-            document.getElementById('remote-video').srcObject = null;
+            stopAllMediaAndPeer();
+            document.getElementById('remote-placeholder').classList.remove('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
             teardownRoomChannel();
             document.getElementById('after-call-next').classList.remove('hidden');
         }
-
+ 
         function goToSessionEnd() {
             const isMentee = currentUser.role !== 'mentor';
             document.getElementById('session-end-review-btn').classList.toggle('hidden', !isMentee);
             document.getElementById('session-end-recording').innerHTML = lastRecordingBlob
                 ? `<p style="color:var(--ink-soft);">녹화 파일이 준비되면 대시보드/예약 목록에서 다운로드할 수 있어요.</p>` : '';
+            // 구글 드라이브 연동이 설정되어 있고(=Client ID가 채워져 있고) 녹화 파일이 있을 때만 버튼 노출
+            const driveReady = GOOGLE_DRIVE_CLIENT_ID && GOOGLE_DRIVE_CLIENT_ID.includes('.apps.googleusercontent.com');
+            document.getElementById('session-end-drive-btn').classList.toggle('hidden', !(lastRecordingBlob && driveReady && currentUser.role === 'mentor'));
             showView('view-session-end');
         }
-
+ 
+        // =====================================================================
+        // 구글 드라이브 저장 (설정 방법은 채팅 답변의 가이드를 참고하세요)
+        // =====================================================================
+        const GOOGLE_DRIVE_CLIENT_ID = ''; // TODO: Google Cloud Console에서 발급받은 OAuth Client ID를 여기에 붙여넣으세요
+        let gisTokenClient = null;
+        let googleAccessToken = null;
+ 
+        window.addEventListener('load', () => {
+            if (window.google && GOOGLE_DRIVE_CLIENT_ID) {
+                gisTokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: GOOGLE_DRIVE_CLIENT_ID,
+                    scope: 'https://www.googleapis.com/auth/drive.file',
+                    callback: () => {} // requestGoogleDriveAccess()에서 매번 재지정
+                });
+            }
+        });
+ 
+        function requestGoogleDriveAccess() {
+            return new Promise((resolve, reject) => {
+                if (!gisTokenClient) return reject(new Error('구글 드라이브 연동이 아직 설정되지 않았습니다.'));
+                gisTokenClient.callback = (resp) => {
+                    if (resp.error) return reject(resp);
+                    googleAccessToken = resp.access_token;
+                    resolve(resp.access_token);
+                };
+                gisTokenClient.requestAccessToken({ prompt: googleAccessToken ? '' : 'consent' });
+            });
+        }
+ 
+        async function uploadBlobToGoogleDrive(blob, filename) {
+            await requestGoogleDriveAccess();
+            const metadata = { name: filename, mimeType: 'video/webm' };
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', blob);
+            const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+                method: 'POST',
+                headers: { Authorization: 'Bearer ' + googleAccessToken },
+                body: form
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return await res.json(); // { id, webViewLink }
+        }
+ 
+        // 업로드한 파일을 멘티 이메일과 공유 (예약 기반 세션에서만 이메일을 알 수 있어 지원됩니다)
+        async function shareGoogleDriveFile(fileId, email) {
+            if (!email) return;
+            await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+                method: 'POST',
+                headers: { Authorization: 'Bearer ' + googleAccessToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'user', role: 'reader', emailAddress: email })
+            });
+        }
+ 
+        async function saveLastRecordingToDrive() {
+            if (!lastRecordingBlob) return showToast('저장할 녹화 파일이 없습니다.', 'error');
+            const btn = document.getElementById('session-end-drive-btn');
+            btn.disabled = true; btn.innerText = '업로드 중...';
+            try {
+                const filename = `AgeLessLab_상담녹화_${Date.now()}.webm`;
+                const file = await uploadBlobToGoogleDrive(lastRecordingBlob, filename);
+                const menteeEmail = currentBooking?.mentee_email; // 즉석 상담은 이메일 정보가 없어 공유가 생략됩니다
+                if (menteeEmail) await shareGoogleDriveFile(file.id, menteeEmail);
+                showToast('구글 드라이브에 저장되었습니다.', 'success');
+                btn.innerHTML = `<a href="${file.webViewLink}" target="_blank" class="underline">드라이브에서 열기</a>`;
+            } catch (e) {
+                console.error(e);
+                showToast('구글 드라이브 저장 실패 — 설정을 확인해주세요.', 'error');
+                btn.disabled = false; btn.innerText = '구글 드라이브에 저장';
+            }
+        }
+ 
         // =====================================================================
         // 후기
         // =====================================================================
@@ -1271,7 +1771,7 @@
             });
         }
         setRating(5);
-
+ 
         async function saveReview() {
             if (!currentBooking || !currentRoom) return showToast('예약 정보를 찾을 수 없습니다.', 'error');
             const comment = document.getElementById('review-textarea').value.trim();
@@ -1283,7 +1783,7 @@
             showToast('후기가 저장되었습니다. 감사합니다!', 'success');
             setTimeout(goHome, 1000);
         }
-
+ 
         // =====================================================================
         // AI 요약 (Career Action Report) — Edge Function 호출, 세션당 3회 제한
         // =====================================================================
@@ -1295,7 +1795,7 @@
             document.getElementById('ai-remaining').innerText = '3';
             document.getElementById('ai-generate-btn').disabled = false;
         }
-
+ 
         async function generateAiSummaryReal() {
             if (!aiSummaryTargetBooking) return showToast('예약 정보를 찾을 수 없습니다.', 'error');
             const btn = document.getElementById('ai-generate-btn');
@@ -1335,3 +1835,4 @@
     </script>
 </body>
 </html>
+ 
