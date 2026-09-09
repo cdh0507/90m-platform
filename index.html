@@ -301,11 +301,13 @@
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">멘토 계정 관리</h2>
                     <p class="text-sm" style="color:var(--ink-soft);">계정을 정지(기간제 페널티)하거나, 완전히 추방(삭제)할 수 있습니다.</p>
+                    <input type="text" id="admin-mentor-search" oninput="filterAdminList('mentor')" placeholder="이름으로 검색" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-slate-400">
                     <div id="admin-mentor-list" class="space-y-2 text-sm"></div>
                 </section>
 
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">멘티 계정 관리</h2>
+                    <input type="text" id="admin-mentee-search" oninput="filterAdminList('mentee')" placeholder="이름으로 검색" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-slate-400">
                     <div id="admin-mentee-list" class="space-y-2 text-sm"></div>
                 </section>
 
@@ -418,12 +420,10 @@
                         <button id="unmute-btn" onclick="unmuteRemote()" class="hidden absolute top-14 right-3 z-30 bg-white/95 text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-1.5">
                             <i class="fa-solid fa-volume-xmark"></i> 소리 켜기
                         </button>
-                        <div id="manual-play-btn" class="hidden absolute inset-0 z-30" style="pointer-events:none;">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-900/85 text-white" style="pointer-events:none;">
-                                <i class="fa-solid fa-circle-play text-4xl" style="color:var(--accent);"></i>
-                                <span class="text-sm font-bold">화면을 탭하면 재생됩니다</span>
-                            </div>
-                        </div>
+                        <button id="manual-play-btn" onclick="attemptRemotePlay()" class="hidden absolute inset-0 z-30 flex-col items-center justify-center gap-2 bg-slate-900/85 text-white cursor-pointer w-full h-full border-0">
+                            <i class="fa-solid fa-circle-play text-4xl" style="color:var(--accent);"></i>
+                            <span class="text-sm font-bold">화면을 탭하면 재생됩니다</span>
+                        </button>
                         <div id="remote-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/95 text-white p-4 text-center">
                             <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3" style="background:rgba(179,253,139,.15); border:1px solid rgba(179,253,139,.4);">
                                 <i class="fa-solid fa-user-tie text-3xl" style="color:var(--accent);"></i>
@@ -1419,6 +1419,19 @@
         // =====================================================================
         // 관리자 대시보드
         // =====================================================================
+        let adminMentorsCache = [];
+        let adminMenteesCache = [];
+
+        function filterAdminList(type) {
+            const q = document.getElementById(`admin-${type}-search`).value.trim().toLowerCase();
+            const source = type === 'mentor' ? adminMentorsCache : adminMenteesCache;
+            const filtered = q ? source.filter(m => (m.name || '').toLowerCase().includes(q)) : source;
+            const container = document.getElementById(`admin-${type}-list`);
+            container.innerHTML = filtered.length === 0
+                ? `<p style="color:var(--ink-soft);">검색 결과가 없습니다.</p>`
+                : filtered.map(m => renderAdminAccountRow(m)).join('');
+        }
+
         async function renderAdminDashboard() {
             const { data: mentors } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
             const { data: mentees } = await supabaseClient.from('profiles').select('*').eq('role', 'mentee');
@@ -1482,6 +1495,12 @@
             document.getElementById('admin-mentee-list').innerHTML = (mentees || []).length === 0
                 ? `<p style="color:var(--ink-soft);">등록된 멘티가 없습니다.</p>`
                 : mentees.map(m => renderAdminAccountRow(m)).join('');
+
+            // 이름 검색을 위해 원본 목록을 캐시해둔다
+            adminMentorsCache = mentors || [];
+            adminMenteesCache = mentees || [];
+            document.getElementById('admin-mentor-search').value = '';
+            document.getElementById('admin-mentee-search').value = '';
 
             document.getElementById('admin-bookings-list').innerHTML = (bookings || []).length === 0
                 ? `<p style="color:var(--ink-soft);">예약 내역이 없습니다.</p>`
@@ -1798,6 +1817,10 @@
             document.getElementById('remote-placeholder').classList.remove('hidden');
             document.getElementById('remote-camera-off-overlay').classList.add('hidden');
             document.getElementById('remote-camera-off-overlay').classList.remove('flex');
+            document.getElementById('manual-play-btn').classList.add('hidden');
+            document.getElementById('manual-play-btn').classList.remove('flex');
+            if (remotePlayRetryTimer) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; }
+            needsManualPlay = false;
             document.getElementById('remote-name').innerText = currentUser.role === 'mentor' ? '멘티를 기다리는 중' : '멘토를 기다리는 중';
             document.getElementById('btn-record').classList.toggle('flex', currentUser.role === 'mentor');
             document.getElementById('btn-record').classList.toggle('hidden', currentUser.role !== 'mentor');
@@ -1922,6 +1945,7 @@
             if (dataConn && dataConn.open) dataConn.send({ type: 'note', text: notepad.value });
         }
 
+        let remotePlayRetryTimer = null;
         function attemptRemotePlay() {
             const remoteVideoEl = document.getElementById('remote-video');
             const p = remoteVideoEl.play();
@@ -1929,13 +1953,31 @@
                 p.then(() => {
                     needsManualPlay = false;
                     document.getElementById('manual-play-btn').classList.add('hidden');
+                    document.getElementById('manual-play-btn').classList.remove('flex');
+                    if (remotePlayRetryTimer) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; }
                     setStatus('연결 성공 — 상담이 진행 중입니다.', 'bg-emerald-400');
                     document.getElementById('unmute-btn').classList.remove('hidden');
                     document.getElementById('unmute-btn').classList.add('flex');
                 }).catch(() => {
                     needsManualPlay = true;
                     document.getElementById('manual-play-btn').classList.remove('hidden');
+                    document.getElementById('manual-play-btn').classList.add('flex');
                     setStatus('화면을 탭하면 재생됩니다.', 'bg-amber-400');
+                    // 탭을 못 누르는 상황(자동 재생 정책이 풀리는 경우 등)에 대비해 몇 초간 자동으로도 재시도한다
+                    if (!remotePlayRetryTimer) {
+                        let tries = 0;
+                        remotePlayRetryTimer = setInterval(() => {
+                            tries++;
+                            if (!needsManualPlay || tries > 8) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; return; }
+                            remoteVideoEl.play().then(() => {
+                                needsManualPlay = false;
+                                document.getElementById('manual-play-btn').classList.add('hidden');
+                                document.getElementById('manual-play-btn').classList.remove('flex');
+                                setStatus('연결 성공 — 상담이 진행 중입니다.', 'bg-emerald-400');
+                                clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null;
+                            }).catch(() => {});
+                        }, 1500);
+                    }
                 });
             }
         }
