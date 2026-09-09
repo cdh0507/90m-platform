@@ -96,29 +96,10 @@
                 </form>
 
                 <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-3 text-sm hidden">
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="signup-role-option cursor-pointer flex items-center justify-center gap-1.5 p-2.5 rounded-xl border-2 font-bold text-sm" style="border-color:var(--ink); background:#f4f4f5;">
-                            <input type="radio" name="signup-role" id="role-mentee" value="mentee" checked onchange="onSignupRoleChange()">
-                            멘티
-                        </label>
-                        <label class="signup-role-option cursor-pointer flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-slate-200 text-slate-400 font-bold text-sm">
-                            <input type="radio" name="signup-role" id="role-mentor" value="mentor" onchange="onSignupRoleChange()">
-                            멘토
-                        </label>
-                    </div>
+                    <p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>가입은 멘티로 시작합니다. 멘토가 되고 싶으시면 가입 후 '멘토 신청' 메뉴에서 지원하실 수 있어요.</p>
                     <input type="text" id="signup-name" required placeholder="이름" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="email" id="signup-email" required placeholder="이메일" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="password" id="signup-pw" required placeholder="비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
-
-                    <div id="signup-mentor-fields" class="space-y-3 hidden">
-                        <select id="signup-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
-                            <option value="1">업무 적응 & 실무 커뮤니케이션</option>
-                            <option value="2">조직생활 & 인간관계</option>
-                            <option value="3">커리어 방향 & 이직 고민</option>
-                            <option value="4">포트폴리오 & 성과 피드백</option>
-                        </select>
-                        <input type="text" id="signup-title" placeholder="직함 (예: 前 H중공업 수석연구원)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
-                    </div>
 
                     <label class="flex items-center gap-2 text-sm cursor-pointer select-none" style="color:var(--ink-soft);">
                         <input type="checkbox" id="signup-keep-signed-in" class="accent-[var(--accent)]">
@@ -142,6 +123,8 @@
                     <span class="font-extrabold tracking-tight">AgeLess Lab</span>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
+                    <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn px-3 py-1.5 rounded-full">공지</button>
+                    <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn px-3 py-1.5 rounded-full hidden">멘토 신청</button>
                     <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 예약</button>
                     <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 대시보드</button>
                     <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">관리자 홈</button>
@@ -304,6 +287,12 @@
                 </div>
 
                 <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
+                    <h2 class="font-bold text-lg">멘토 신청 심사</h2>
+                    <p class="text-sm" style="color:var(--ink-soft);">신청서와 증빙 파일을 확인하고 승인/거절할 수 있습니다.</p>
+                    <div id="admin-applications-list" class="space-y-3 text-sm"></div>
+                </section>
+
+                <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
                     <h2 class="font-bold text-lg">진행 중인 상담 (관전)</h2>
                     <p class="text-sm" style="color:var(--ink-soft);">열려있거나 진행 중인 1:1 상담방에 조용히 접속해 화면을 확인할 수 있습니다. 관리자의 모습·음성은 상대방에게 전달되지 않습니다.</p>
                     <div id="admin-live-rooms-list" class="space-y-2 text-sm"></div>
@@ -311,7 +300,7 @@
 
                 <section class="card p-6 space-y-3">
                     <h2 class="font-bold text-lg">멘토 계정 관리</h2>
-                    <p class="text-sm" style="color:var(--ink-soft);">테스트로 만들어진 멘토 계정은 여기서 삭제할 수 있습니다.</p>
+                    <p class="text-sm" style="color:var(--ink-soft);">계정을 정지(기간제 페널티)하거나, 완전히 추방(삭제)할 수 있습니다.</p>
                     <div id="admin-mentor-list" class="space-y-2 text-sm"></div>
                 </section>
 
@@ -324,6 +313,60 @@
                     <h2 class="font-bold text-lg">최근 예약</h2>
                     <div id="admin-bookings-list" class="space-y-2 text-sm"></div>
                 </section>
+            </div>
+
+            <!-- ============================== 멘토 신청 ============================== -->
+            <div id="view-mentor-application" class="view space-y-5">
+                <h1 class="fluid-title font-extrabold">멘토 신청</h1>
+                <div id="mentor-application-status" class="hidden card p-6 text-sm"></div>
+
+                <form id="mentor-application-form" onsubmit="submitMentorApplication(event)" class="card p-6 space-y-4 text-sm">
+                    <div>
+                        <label class="block font-bold mb-1">희망 분야</label>
+                        <select id="apply-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                            <option value="1">업무 적응 & 실무 커뮤니케이션</option>
+                            <option value="2">조직생활 & 인간관계</option>
+                            <option value="3">커리어 방향 & 이직 고민</option>
+                            <option value="4">포트폴리오 & 성과 피드백</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">희망 직함 / 한 줄 소개</label>
+                        <input type="text" id="apply-title" required placeholder="예: 前 H중공업 기계설계 수석연구원" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">경력 사항</label>
+                        <textarea id="apply-career" required rows="4" placeholder="주요 경력을 연도/회사/직무 위주로 적어주세요." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">학력 사항</label>
+                        <textarea id="apply-education" required rows="2" placeholder="최종 학력, 학교/전공을 적어주세요." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">지원 동기 / 각오</label>
+                        <textarea id="apply-motivation" required rows="4" placeholder="멘토로서 어떤 도움을 주고 싶으신지 자유롭게 적어주세요." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">증빙 파일 (경력·학력 증명서 등)</label>
+                        <input type="file" id="apply-file" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm" accept="image/*,.pdf,.doc,.docx,.hwp">
+                        <p class="text-xs mt-1" style="color:var(--ink-soft);">15MB 이하 파일만 가능합니다.</p>
+                    </div>
+                    <button type="submit" class="w-full accent-btn py-3 rounded-full text-sm">신청서 제출하기</button>
+                </form>
+            </div>
+
+            <!-- ============================== 공지사항 ============================== -->
+            <div id="view-notices" class="view space-y-5">
+                <div class="flex items-center justify-between">
+                    <h1 class="fluid-title font-extrabold">공지사항</h1>
+                    <button id="notice-write-btn" onclick="toggleNoticeForm()" class="hidden accent-btn px-4 py-2 rounded-full text-sm">공지 작성</button>
+                </div>
+                <form id="notice-form" onsubmit="submitNotice(event)" class="hidden card p-5 space-y-3 text-sm">
+                    <input type="text" id="notice-title" required placeholder="공지 제목" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                    <textarea id="notice-content" required rows="4" placeholder="공지 내용" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400"></textarea>
+                    <button type="submit" class="accent-btn px-5 py-2 rounded-full text-sm">등록하기</button>
+                </form>
+                <div id="notices-list" class="space-y-3"></div>
             </div>
 
             <!-- ============================== 메시지 (채팅 목록) ============================== -->
@@ -511,6 +554,26 @@
         </div>
     </div>
 
+    <!-- ============================== 관리자 정지(페널티) 모달 ============================== -->
+    <div id="suspend-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card max-w-sm w-full p-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-lg">계정 정지</h3>
+                <button onclick="closeSuspendModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-sm" id="suspend-modal-target" style="color:var(--ink-soft);"></p>
+            <div>
+                <label class="block text-sm font-bold mb-1">정지 기간 (일)</label>
+                <input type="number" id="suspend-days" value="7" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-slate-400">
+            </div>
+            <div>
+                <label class="block text-sm font-bold mb-1">사유</label>
+                <textarea id="suspend-reason" rows="2" placeholder="정지 사유를 입력하세요" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-slate-400"></textarea>
+            </div>
+            <button onclick="confirmSuspendUser()" class="w-full py-3 rounded-full text-sm font-bold text-white" style="background:#f43f5e;">정지 확정</button>
+        </div>
+    </div>
+
     <script>
         // =====================================================================
         // 전역 상태
@@ -580,7 +643,9 @@
             'view-review': '후기 작성',
             'view-ai-summary': 'Career Report',
             'view-admin-observe': '상담 관전 중',
-            'view-messages-hub': '메시지'
+            'view-messages-hub': '메시지',
+            'view-mentor-application': '멘토 신청',
+            'view-notices': '공지사항'
         };
         // 뒤로가기 버튼을 눌렀을 때 굳이 되돌아갈 필요 없는(항상 "홈"으로 취급하는) 화면들
         const homeLikeViews = ['view-mentee-home', 'view-mentor-dashboard', 'view-admin-dashboard'];
@@ -643,16 +708,6 @@
             }
         }
 
-        function onSignupRoleChange() {
-            const isMentor = document.getElementById('role-mentor').checked;
-            document.getElementById('signup-mentor-fields').classList.toggle('hidden', !isMentor);
-            document.querySelectorAll('.signup-role-option').forEach(label => {
-                const input = label.querySelector('input');
-                if (input.checked) { label.style.borderColor = 'var(--ink)'; label.style.background = '#f4f4f5'; label.classList.remove('text-slate-400'); }
-                else { label.style.borderColor = '#e2e8f0'; label.style.background = '#fff'; label.classList.add('text-slate-400'); }
-            });
-        }
-
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -662,6 +717,7 @@
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) { showToast('로그인 실패: ' + error.message, 'error'); return; }
             await loadCurrentUserProfile(data.user);
+            if (await blockIfSuspended()) return;
             enterApp();
         }
 
@@ -670,17 +726,29 @@
             const name = document.getElementById('signup-name').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-pw').value;
-            const role = document.querySelector('input[name="signup-role"]:checked')?.value || 'mentee';
-            const sectorId = role === 'mentor' ? document.getElementById('signup-sector').value : null;
-            const title = role === 'mentor' ? document.getElementById('signup-title').value.trim() : null;
             setKeepLoggedInPref(document.getElementById('signup-keep-signed-in').checked);
 
-            const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { name, role, sector_id: sectorId, title } } });
+            // 회원가입은 항상 멘티로 시작합니다. 멘토가 되고 싶으면 가입 후 "멘토 신청"으로 지원해야 합니다.
+            const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { name, role: 'mentee' } } });
             if (error) { showToast('회원가입 실패: ' + error.message, 'error'); return; }
             showToast(`${name}님, 환영합니다!`, 'success');
             await loadCurrentUserProfile(data.user);
             enterApp();
         }
+
+        // 정지된 계정이면 앱 진입을 막고 즉시 로그아웃한다
+        async function blockIfSuspended() {
+            if (currentUser && currentUser.suspended_until && new Date(currentUser.suspended_until) > new Date()) {
+                const until = new Date(currentUser.suspended_until).toLocaleString('ko-KR');
+                const reason = currentUser.suspension_reason ? `\n사유: ${currentUser.suspension_reason}` : '';
+                showToast(`이용이 정지된 계정입니다. (${until}까지)${reason}`, 'error');
+                await supabaseClient.auth.signOut();
+                currentUser = null;
+                return true;
+            }
+            return false;
+        }
+
 
         async function handleLogout() {
             stopAllMediaAndPeer(); // 카메라/마이크가 켜진 채로 로그아웃해도 확실히 꺼지도록
@@ -705,7 +773,9 @@
                 role: profile?.role || 'mentee',
                 sector_id: profile?.sector_id,
                 title: profile?.title,
-                intro: profile?.intro
+                intro: profile?.intro,
+                suspended_until: profile?.suspended_until,
+                suspension_reason: profile?.suspension_reason
             };
         }
 
@@ -718,6 +788,7 @@
             document.getElementById('nav-my-bookings').classList.toggle('hidden', currentUser.role !== 'mentee');
             document.getElementById('nav-my-dashboard').classList.toggle('hidden', currentUser.role !== 'mentor');
             document.getElementById('nav-admin-home').classList.toggle('hidden', currentUser.role !== 'admin');
+            document.getElementById('nav-mentor-apply').classList.toggle('hidden', currentUser.role !== 'mentee');
             if (currentUser.role === 'mentor') setupMentorOwnRoomWatch(); // 대시보드에 들어가지 않아도 입장 대기 알림을 받을 수 있도록 즉시 구독
             setupGlobalMessageWatch(); // 어느 화면에 있든 새 메시지 배지가 실시간으로 갱신되도록
             goHome();
@@ -727,6 +798,7 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) return;
             await loadCurrentUserProfile(session.user);
+            if (await blockIfSuspended()) return;
             enterApp();
         }
 
@@ -1209,7 +1281,13 @@
             if (file.size > 15 * 1024 * 1024) return showToast('파일은 15MB 이하만 보낼 수 있습니다.', 'error');
 
             showToast('파일 업로드 중...', 'info');
-            const path = `${currentUser.id}/${Date.now()}_${file.name}`;
+            // Supabase Storage 경로는 띄어쓰기/한글이 들어가면 "Invalid key" 에러가 나므로,
+            // 저장 경로는 영문/숫자로만 안전하게 만들고, 실제 파일명은 attachment_name에 그대로 저장해서 화면엔 원래 이름으로 보여준다.
+            const extMatch = file.name.match(/\.([a-zA-Z0-9]+)$/);
+            const safeExt = extMatch ? '.' + extMatch[1].toLowerCase() : '';
+            const randomPart = Math.random().toString(36).slice(2, 10);
+            const path = `${currentUser.id}/${Date.now()}_${randomPart}${safeExt}`;
+
             const { error: upErr } = await supabaseClient.storage.from('chat-files').upload(path, file);
             if (upErr) return showToast('업로드 실패: ' + upErr.message, 'error');
 
@@ -1346,11 +1424,38 @@
             const { data: mentees } = await supabaseClient.from('profiles').select('*').eq('role', 'mentee');
             const { data: bookings } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
             const { data: liveRooms } = await supabaseClient.from('live_rooms').select('*').in('status', ['open','in_call']).order('created_at', { ascending: false });
+            const { data: applications } = await supabaseClient.from('mentor_applications').select('*').eq('status', 'pending').order('created_at', { ascending: false });
 
             document.getElementById('admin-stat-mentors').innerText = (mentors || []).length;
             document.getElementById('admin-stat-mentees').innerText = (mentees || []).length;
             document.getElementById('admin-stat-bookings').innerText = (bookings || []).length;
             document.getElementById('admin-stat-completed').innerText = (bookings || []).filter(b => b.status === 'completed').length;
+
+            // ---- 멘토 신청 심사 ----
+            document.getElementById('admin-applications-list').innerHTML = (applications || []).length === 0
+                ? `<p style="color:var(--ink-soft);">대기 중인 멘토 신청이 없습니다.</p>`
+                : (await Promise.all(applications.map(async a => {
+                    let fileLink = '<span style="color:var(--ink-soft);">첨부 없음</span>';
+                    if (a.proof_file_path) {
+                        const { data: signed } = await supabaseClient.storage.from('mentor-applications').createSignedUrl(a.proof_file_path, 3600);
+                        if (signed) fileLink = `<a href="${signed.signedUrl}" target="_blank" class="underline font-bold" style="color:var(--accent-ink);">${escapeHtml(a.proof_file_name || '증빙파일 보기')}</a>`;
+                    }
+                    return `<div class="border border-slate-100 rounded-xl p-4 space-y-1.5">
+                        <div class="flex justify-between items-start flex-wrap gap-1">
+                            <p class="font-bold">${escapeHtml(a.name)} <span class="text-xs font-normal" style="color:var(--ink-soft);">${escapeHtml(a.email || '')}</span></p>
+                            <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(a.created_at)}</span>
+                        </div>
+                        <p class="text-xs font-bold" style="color:var(--ink-soft);">${sectorLabels[a.sector_id] || ''} · ${escapeHtml(a.title || '')}</p>
+                        <p><strong>경력:</strong> ${escapeHtml(a.career || '')}</p>
+                        <p><strong>학력:</strong> ${escapeHtml(a.education || '')}</p>
+                        <p><strong>각오:</strong> ${escapeHtml(a.motivation || '')}</p>
+                        <p>${fileLink}</p>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="adminApproveApplication('${a.id}')" class="accent-btn px-3 py-1.5 rounded-full text-xs">승인</button>
+                            <button onclick="adminRejectApplication('${a.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">거절(기각)</button>
+                        </div>
+                    </div>`;
+                }))).join('');
 
             const mentorNameById = {}; (mentors || []).forEach(m => mentorNameById[m.id] = m.name);
             document.getElementById('admin-live-rooms-list').innerHTML = (liveRooms || []).length === 0
@@ -1372,19 +1477,11 @@
 
             document.getElementById('admin-mentor-list').innerHTML = (mentors || []).length === 0
                 ? `<p style="color:var(--ink-soft);">등록된 멘토가 없습니다.</p>`
-                : mentors.map(m => `
-                    <div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
-                        <div><p class="font-bold">${m.name}</p><p class="text-xs" style="color:var(--ink-soft);">${m.title || ''} · ${sectorLabels[m.sector_id] || ''}</p></div>
-                        <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">삭제</button>
-                    </div>`).join('');
+                : mentors.map(m => renderAdminAccountRow(m)).join('');
 
             document.getElementById('admin-mentee-list').innerHTML = (mentees || []).length === 0
                 ? `<p style="color:var(--ink-soft);">등록된 멘티가 없습니다.</p>`
-                : mentees.map(m => `
-                    <div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
-                        <span class="font-bold">${m.name}</span>
-                        <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">삭제</button>
-                    </div>`).join('');
+                : mentees.map(m => renderAdminAccountRow(m)).join('');
 
             document.getElementById('admin-bookings-list').innerHTML = (bookings || []).length === 0
                 ? `<p style="color:var(--ink-soft);">예약 내역이 없습니다.</p>`
@@ -1396,11 +1493,74 @@
                     </div>`).join('');
         }
 
+        // 멘토/멘티 공통 계정 행 (정지 상태 표시 + 정지/추방 버튼)
+        function renderAdminAccountRow(m) {
+            const isSuspended = m.suspended_until && new Date(m.suspended_until) > new Date();
+            return `<div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap">
+                <div>
+                    <p class="font-bold">${escapeHtml(m.name)} ${isSuspended ? `<span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:#fee2e2;color:#b91c1c;">정지 중 (~${new Date(m.suspended_until).toLocaleDateString('ko-KR')})</span>` : ''}</p>
+                    <p class="text-xs" style="color:var(--ink-soft);">${m.title || ''} ${m.sector_id ? '· ' + (sectorLabels[m.sector_id] || '') : ''}</p>
+                </div>
+                <div class="flex gap-2">
+                    ${isSuspended
+                        ? `<button onclick="adminUnsuspendUser('${m.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs">정지 해제</button>`
+                        : `<button onclick="openSuspendModal('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs" style="color:#b45309;">정지</button>`
+                    }
+                    <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">추방(삭제)</button>
+                </div>
+            </div>`;
+        }
+
         async function adminDeleteUser(userId, name) {
-            if (!confirm(`${name} 계정을 정말 삭제하시겠습니까? 되돌릴 수 없습니다.`)) return;
+            if (!confirm(`${name} 계정을 정말 삭제(추방)하시겠습니까? 되돌릴 수 없습니다.`)) return;
             const { error } = await supabaseClient.rpc('admin_delete_user', { p_target_id: userId });
             if (error) return showToast('삭제 실패: 관리자 권한을 확인해주세요.', 'error');
             showToast('계정이 삭제되었습니다.', 'success');
+            renderAdminDashboard();
+        }
+
+        // ---- 정지(페널티) ----
+        let suspendTargetId = null;
+        function openSuspendModal(userId, name) {
+            suspendTargetId = userId;
+            document.getElementById('suspend-modal-target').innerText = `${name}님을 정지합니다.`;
+            document.getElementById('suspend-days').value = 7;
+            document.getElementById('suspend-reason').value = '';
+            document.getElementById('suspend-modal').classList.remove('hidden');
+        }
+        function closeSuspendModal() {
+            document.getElementById('suspend-modal').classList.add('hidden');
+            suspendTargetId = null;
+        }
+        async function confirmSuspendUser() {
+            const days = parseInt(document.getElementById('suspend-days').value, 10) || 1;
+            const reason = document.getElementById('suspend-reason').value.trim();
+            const { error } = await supabaseClient.rpc('admin_suspend_user', { p_target_id: suspendTargetId, p_days: days, p_reason: reason });
+            if (error) return showToast('정지 처리 실패', 'error');
+            showToast(`${days}일 정지되었습니다.`, 'success');
+            closeSuspendModal();
+            renderAdminDashboard();
+        }
+        async function adminUnsuspendUser(userId) {
+            const { error } = await supabaseClient.rpc('admin_unsuspend_user', { p_target_id: userId });
+            if (error) return showToast('정지 해제 실패', 'error');
+            showToast('정지가 해제되었습니다.', 'success');
+            renderAdminDashboard();
+        }
+
+        // ---- 멘토 신청 승인/거절 ----
+        async function adminApproveApplication(appId) {
+            if (!confirm('이 신청을 승인하시겠습니까? 승인 즉시 해당 계정이 멘토로 전환됩니다.')) return;
+            const { error } = await supabaseClient.rpc('admin_approve_mentor_application', { p_application_id: appId });
+            if (error) return showToast('승인 실패', 'error');
+            showToast('승인되었습니다. 해당 계정이 멘토로 전환되었습니다.', 'success');
+            renderAdminDashboard();
+        }
+        async function adminRejectApplication(appId) {
+            const note = prompt('거절(기각) 사유를 입력해주세요 (신청자에게 참고용으로 표시됩니다).') || '';
+            const { error } = await supabaseClient.rpc('admin_reject_mentor_application', { p_application_id: appId, p_note: note });
+            if (error) return showToast('거절 처리 실패', 'error');
+            showToast('신청이 거절되었습니다.', 'info');
             renderAdminDashboard();
         }
 
@@ -2093,6 +2253,109 @@
                 showToast('AI 요약 서버에 연결할 수 없습니다. (Edge Function 배포 필요)', 'error');
                 btn.disabled = false; btn.innerText = '요약 생성하기';
             }
+        }
+
+        // =====================================================================
+        // 멘토 신청
+        // =====================================================================
+        async function renderMentorApplicationView() {
+            const { data: apps } = await supabaseClient.from('mentor_applications')
+                .select('*').eq('applicant_id', currentUser.id).order('created_at', { ascending: false }).limit(1);
+            const latest = apps && apps[0];
+            const statusBox = document.getElementById('mentor-application-status');
+            const form = document.getElementById('mentor-application-form');
+
+            if (latest && latest.status === 'pending') {
+                statusBox.innerHTML = `<p class="font-bold"><i class="fa-solid fa-hourglass-half mr-1.5"></i>심사 대기 중입니다.</p><p class="mt-1" style="color:var(--ink-soft);">${formatDateTime(latest.created_at)}에 제출한 신청서를 관리자가 검토하고 있어요.</p>`;
+                statusBox.classList.remove('hidden');
+                form.classList.add('hidden');
+            } else if (latest && latest.status === 'rejected') {
+                statusBox.innerHTML = `<p class="font-bold text-rose-600"><i class="fa-solid fa-circle-xmark mr-1.5"></i>이전 신청이 거절되었습니다.</p><p class="mt-1" style="color:var(--ink-soft);">사유: ${escapeHtml(latest.admin_note || '미기재')}</p><p class="mt-2 text-xs" style="color:var(--ink-soft);">아래에서 다시 신청하실 수 있습니다.</p>`;
+                statusBox.classList.remove('hidden');
+                form.classList.remove('hidden');
+            } else {
+                statusBox.classList.add('hidden');
+                form.classList.remove('hidden');
+            }
+        }
+
+        async function submitMentorApplication(e) {
+            e.preventDefault();
+            const sectorId = document.getElementById('apply-sector').value;
+            const title = document.getElementById('apply-title').value.trim();
+            const career = document.getElementById('apply-career').value.trim();
+            const education = document.getElementById('apply-education').value.trim();
+            const motivation = document.getElementById('apply-motivation').value.trim();
+            const fileInput = document.getElementById('apply-file');
+            const file = fileInput.files[0];
+            if (!file) return showToast('증빙 파일을 첨부해주세요.', 'error');
+            if (file.size > 15 * 1024 * 1024) return showToast('파일은 15MB 이하만 가능합니다.', 'error');
+
+            showToast('신청서 제출 중...', 'info');
+            const extMatch = file.name.match(/\.([a-zA-Z0-9]+)$/);
+            const safeExt = extMatch ? '.' + extMatch[1].toLowerCase() : '';
+            const path = `${currentUser.id}/${Date.now()}_${Math.random().toString(36).slice(2,10)}${safeExt}`;
+            const { error: upErr } = await supabaseClient.storage.from('mentor-applications').upload(path, file);
+            if (upErr) return showToast('파일 업로드 실패: ' + upErr.message, 'error');
+
+            const { error } = await supabaseClient.from('mentor_applications').insert({
+                applicant_id: currentUser.id, name: currentUser.name, email: currentUser.email,
+                sector_id: sectorId, title, career, education, motivation,
+                proof_file_path: path, proof_file_name: file.name
+            });
+            if (error) return showToast('제출 실패: ' + error.message, 'error');
+            showToast('신청서가 제출되었습니다. 심사 결과를 기다려주세요!', 'success');
+            renderMentorApplicationView();
+        }
+
+        // =====================================================================
+        // 공지사항
+        // =====================================================================
+        function toggleNoticeForm() {
+            document.getElementById('notice-form').classList.toggle('hidden');
+        }
+
+        async function renderNotices() {
+            document.getElementById('notice-write-btn').classList.toggle('hidden', currentUser.role !== 'admin');
+
+            const { data: notices } = await supabaseClient.from('notices').select('*').order('created_at', { ascending: false });
+            const container = document.getElementById('notices-list');
+            if (!notices || notices.length === 0) {
+                container.innerHTML = `<p class="text-sm text-center py-10" style="color:var(--ink-soft);">등록된 공지가 없습니다.</p>`;
+                return;
+            }
+            container.innerHTML = notices.map(n => `
+                <div class="card p-5">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <h3 class="font-bold">${escapeHtml(n.title)}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(n.created_at)}</span>
+                            ${currentUser.role === 'admin' ? `<button onclick="deleteNotice('${n.id}')" class="text-xs text-rose-600 underline">삭제</button>` : ''}
+                        </div>
+                    </div>
+                    <p class="text-sm mt-2 whitespace-pre-wrap" style="color:var(--ink-soft);">${escapeHtml(n.content)}</p>
+                </div>`).join('');
+        }
+
+        async function submitNotice(e) {
+            e.preventDefault();
+            const title = document.getElementById('notice-title').value.trim();
+            const content = document.getElementById('notice-content').value.trim();
+            if (!title || !content) return;
+            const { error } = await supabaseClient.from('notices').insert({ title, content, created_by: currentUser.id });
+            if (error) return showToast('등록 실패: ' + error.message, 'error');
+            document.getElementById('notice-title').value = '';
+            document.getElementById('notice-content').value = '';
+            document.getElementById('notice-form').classList.add('hidden');
+            showToast('공지가 등록되었습니다.', 'success');
+            renderNotices();
+        }
+
+        async function deleteNotice(id) {
+            if (!confirm('이 공지를 삭제하시겠습니까?')) return;
+            const { error } = await supabaseClient.from('notices').delete().eq('id', id);
+            if (error) return showToast('삭제 실패', 'error');
+            renderNotices();
         }
     </script>
 </body>
