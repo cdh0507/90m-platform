@@ -1699,7 +1699,16 @@
             cameraOn = true; micOn = true;
         }
 
+        // 실시간 공유 메모를 DB에 저장 — 나중에 Career Report를 다시 열어도 정확한 내용으로 요약되도록
+        async function saveSessionNotes() {
+            if (!currentBooking) return; // 즉석(예약 없는) 상담은 애초에 Career Report 대상이 아님
+            const notes = document.getElementById('shared-notepad')?.value || '';
+            const { error } = await supabaseClient.from('bookings').update({ session_notes: notes }).eq('id', currentBooking.id);
+            if (!error) currentBooking.session_notes = notes; // 화면에 들고 있는 객체도 최신화
+        }
+
         async function endCall() {
+            await saveSessionNotes();
             stopAllMediaAndPeer();
             document.getElementById('remote-placeholder').classList.remove('hidden');
 
@@ -1712,7 +1721,8 @@
         }
 
         // 상대방이 먼저 종료한 경우 — 내 쪽 미디어도 정리
-        function cleanupAfterCallClosedRemotely() {
+        async function cleanupAfterCallClosedRemotely() {
+            await saveSessionNotes();
             stopAllMediaAndPeer();
             document.getElementById('remote-placeholder').classList.remove('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
@@ -1843,7 +1853,13 @@
             const btn = document.getElementById('ai-generate-btn');
             btn.disabled = true; btn.innerText = '생성 중...';
             const { data: { session } } = await supabaseClient.auth.getSession();
-            const notes = document.getElementById('shared-notepad')?.value || '';
+
+            // 화면(DOM)의 메모가 아니라, 상담 종료 시 DB에 저장해둔 실제 메모를 사용한다.
+            // (세션 종료 직후라 아직 로컬 객체가 최신이 아닐 수 있으니, 최신값을 다시 조회한다)
+            let notes = aiSummaryTargetBooking.session_notes || '';
+            const { data: freshBooking } = await supabaseClient.from('bookings').select('session_notes').eq('id', aiSummaryTargetBooking.id).maybeSingle();
+            if (freshBooking && freshBooking.session_notes) notes = freshBooking.session_notes;
+
             try {
                 const res = await fetch(`${SUPABASE_URL}/functions/v1/ai-summary`, {
                     method: 'POST',
