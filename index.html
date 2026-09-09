@@ -88,6 +88,10 @@
                     </div>
                     <input type="email" id="login-email" required placeholder="이메일" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="password" id="login-pw" required placeholder="비밀번호" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                    <label class="flex items-center gap-2 text-sm cursor-pointer select-none" style="color:var(--ink-soft);">
+                        <input type="checkbox" id="login-keep-signed-in" class="accent-[var(--accent)]">
+                        로그인 상태 유지 (체크 안 하면 브라우저를 닫을 때 로그아웃됩니다)
+                    </label>
                     <button type="submit" class="w-full accent-btn py-3 rounded-xl text-sm">로그인</button>
                 </form>
 
@@ -116,6 +120,10 @@
                         <input type="text" id="signup-title" placeholder="직함 (예: 前 H중공업 수석연구원)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     </div>
 
+                    <label class="flex items-center gap-2 text-sm cursor-pointer select-none" style="color:var(--ink-soft);">
+                        <input type="checkbox" id="signup-keep-signed-in" class="accent-[var(--accent)]">
+                        로그인 상태 유지 (체크 안 하면 브라우저를 닫을 때 로그아웃됩니다)
+                    </label>
                     <button type="submit" class="w-full accent-btn py-3 rounded-xl text-sm">가입하고 시작하기</button>
                 </form>
             </div>
@@ -486,7 +494,25 @@
         // =====================================================================
         const SUPABASE_URL = 'https://pthbtzfppnlrptelvzpc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0aGJ0emZwcG5scnB0ZWx2enBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1NjEwODAsImV4cCI6MjEwMzEzNzA4MH0.58VOdbDvJVaCTyxlGgzBn3_lSISYB5Pbtqea66ihycc';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // "로그인 상태 유지" 체크박스 대응 — 체크했을 때만 localStorage(브라우저를 꺼도 유지)에 저장하고,
+        // 체크 안 했으면 sessionStorage(탭/브라우저를 닫으면 사라짐)에 저장한다.
+        const KEEP_LOGGED_IN_KEY = 'agelesslab_keep_logged_in';
+        function getKeepLoggedInPref() {
+            return localStorage.getItem(KEEP_LOGGED_IN_KEY) === 'true';
+        }
+        function setKeepLoggedInPref(keep) {
+            localStorage.setItem(KEEP_LOGGED_IN_KEY, keep ? 'true' : 'false');
+        }
+        const dynamicAuthStorage = {
+            getItem: (key) => (getKeepLoggedInPref() ? window.localStorage : window.sessionStorage).getItem(key),
+            setItem: (key, value) => (getKeepLoggedInPref() ? window.localStorage : window.sessionStorage).setItem(key, value),
+            removeItem: (key) => { window.localStorage.removeItem(key); window.sessionStorage.removeItem(key); }
+        };
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { storage: dynamicAuthStorage, persistSession: true, autoRefreshToken: true }
+        });
 
         const sectorLabels = { 1: '업무 적응 & 실무 커뮤니케이션', 2: '조직생활 & 인간관계', 3: '커리어 방향 & 이직 고민', 4: '포트폴리오 & 성과 피드백' };
 
@@ -607,6 +633,8 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-pw').value;
+            // 로그인 시도(세션 저장) 전에 먼저 "로그인 유지" 여부를 반영해야, 세션이 올바른 저장소(local/session)에 기록됩니다.
+            setKeepLoggedInPref(document.getElementById('login-keep-signed-in').checked);
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) { showToast('로그인 실패: ' + error.message, 'error'); return; }
             await loadCurrentUserProfile(data.user);
@@ -621,6 +649,7 @@
             const role = document.querySelector('input[name="signup-role"]:checked')?.value || 'mentee';
             const sectorId = role === 'mentor' ? document.getElementById('signup-sector').value : null;
             const title = role === 'mentor' ? document.getElementById('signup-title').value.trim() : null;
+            setKeepLoggedInPref(document.getElementById('signup-keep-signed-in').checked);
 
             const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { name, role, sector_id: sectorId, title } } });
             if (error) { showToast('회원가입 실패: ' + error.message, 'error'); return; }
@@ -635,6 +664,7 @@
             teardownRoomChannel();
             if (mentorOwnRoomChannel) { supabaseClient.removeChannel(mentorOwnRoomChannel); mentorOwnRoomChannel = null; }
             await supabaseClient.auth.signOut();
+            setKeepLoggedInPref(false); // 다음 로그인 화면에서는 기본값(체크 안 됨)으로 되돌린다
             currentUser = null;
             document.getElementById('app-shell').classList.add('hidden');
             document.getElementById('view-auth').classList.remove('hidden');
