@@ -376,6 +376,13 @@
                             </div>
                             <p class="font-bold text-base text-white" id="remote-name">상대방을 기다리는 중</p>
                         </div>
+                        <!-- 상대방이 카메라를 끄면(연결 자체는 유지된 채) 이 오버레이가 대신 뜹니다 -->
+                        <div id="remote-camera-off-overlay" class="hidden absolute inset-0 flex-col items-center justify-center bg-slate-900 text-white p-4 text-center z-10">
+                            <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 bg-slate-800">
+                                <i class="fa-solid fa-video-slash text-2xl text-slate-400"></i>
+                            </div>
+                            <p class="font-bold text-sm text-slate-300">상대방이 카메라를 껐습니다</p>
+                        </div>
                         <div class="absolute top-3 left-3 bg-slate-800/80 px-3 py-1 rounded-full text-xs text-emerald-300 font-bold flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 실시간 연결 중
                         </div>
@@ -1458,6 +1465,8 @@
             document.getElementById('after-call-next').classList.add('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
             document.getElementById('remote-placeholder').classList.remove('hidden');
+            document.getElementById('remote-camera-off-overlay').classList.add('hidden');
+            document.getElementById('remote-camera-off-overlay').classList.remove('flex');
             document.getElementById('remote-name').innerText = currentUser.role === 'mentor' ? '멘티를 기다리는 중' : '멘토를 기다리는 중';
             document.getElementById('btn-record').classList.toggle('flex', currentUser.role === 'mentor');
             document.getElementById('btn-record').classList.toggle('hidden', currentUser.role !== 'mentor');
@@ -1559,11 +1568,18 @@
         function bindDataConnection(conn) {
             dataConn = conn;
             const statusEl = document.getElementById('notepad-sync-status');
-            conn.on('open', () => { statusEl.innerText = '실시간 동기화 중'; });
+            conn.on('open', () => {
+                statusEl.innerText = '실시간 동기화 중';
+                // 연결이 열리는 순간, 지금 내 카메라 상태를 상대방에게 즉시 알려준다 (늦게 입장한 쪽도 바로 정확한 상태를 보게)
+                conn.send({ type: 'camera_state', on: cameraOn });
+            });
             conn.on('data', (payload) => {
                 if (payload && payload.type === 'note') {
                     const notepad = document.getElementById('shared-notepad');
                     if (notepad && document.activeElement !== notepad) { receivingRemoteNote = true; notepad.value = payload.text; receivingRemoteNote = false; }
+                } else if (payload && payload.type === 'camera_state') {
+                    document.getElementById('remote-camera-off-overlay').classList.toggle('hidden', payload.on);
+                    document.getElementById('remote-camera-off-overlay').classList.toggle('flex', !payload.on);
                 }
             });
             conn.on('close', () => { statusEl.innerText = '동기화 연결 종료'; dataConn = null; });
@@ -1619,7 +1635,8 @@
             }
         }
 
-        // 카메라 on/off — 하드웨어까지 완전히 해제/재요청
+        // 카메라 on/off — 하드웨어까지 완전히 해제/재요청. 상대방에게도 데이터채널로 상태를 알려서
+        // 화면이 멈춘 것처럼 보이지 않고 "카메라 꺼짐" 안내가 뜨도록 한다.
         async function toggleCamera() {
             const btn = document.getElementById('btn-camera'); const icon = btn.querySelector('i');
             const localVideoEl = document.getElementById('local-video'); const off = document.getElementById('local-camera-off-overlay');
@@ -1629,6 +1646,7 @@
                 if (t) { t.stop(); localStream.removeTrack(t); }
                 if (currentCall?.peerConnection) currentCall.peerConnection.getSenders().forEach(s => { if (s.track?.kind === 'video') s.replaceTrack(null).catch(()=>{}); });
                 cameraOn = false; icon.className = 'fa-solid fa-video-slash text-sm'; btn.classList.add('media-btn-off'); off.classList.remove('hidden');
+                if (dataConn && dataConn.open) dataConn.send({ type: 'camera_state', on: false });
             } else {
                 try {
                     const ns = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -1636,6 +1654,7 @@
                     localVideoEl.srcObject = localStream; localVideoEl.play().catch(()=>{});
                     if (currentCall?.peerConnection) { const s = currentCall.peerConnection.getSenders().find(s => !s.track || s.track.kind === 'video'); if (s) s.replaceTrack(nt).catch(()=>{}); }
                     cameraOn = true; icon.className = 'fa-solid fa-video text-sm'; btn.classList.remove('media-btn-off'); off.classList.add('hidden');
+                    if (dataConn && dataConn.open) dataConn.send({ type: 'camera_state', on: true });
                 } catch (e) { showToast('카메라를 다시 켤 수 없습니다.', 'error'); }
             }
         }
