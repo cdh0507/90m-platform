@@ -372,7 +372,7 @@
                 <div class="bg-slate-900 rounded-2xl relative aspect-video flex flex-col justify-between overflow-hidden card">
                     <div class="w-full h-full relative flex items-center justify-center bg-slate-900">
                         <video id="remote-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                        <button id="unmute-btn" onclick="unmuteRemote()" class="hidden absolute bottom-16 right-3 z-20 bg-white/95 text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-1.5">
+                        <button id="unmute-btn" onclick="unmuteRemote()" class="hidden absolute top-14 right-3 z-30 bg-white/95 text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-1.5">
                             <i class="fa-solid fa-volume-xmark"></i> 소리 켜기
                         </button>
                         <div id="manual-play-btn" class="hidden absolute inset-0 z-30" style="pointer-events:none;">
@@ -500,9 +500,13 @@
                 <button onclick="closeChatModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
-            <div class="p-3 border-t border-slate-100 flex gap-2">
+            <div class="p-3 border-t border-slate-100 flex gap-2 items-center">
+                <input type="file" id="chat-file-input" class="hidden" accept="image/*,.pdf,.doc,.docx,.hwp,.zip,.txt" onchange="handleChatFileSelected(event)">
+                <button onclick="document.getElementById('chat-file-input').click()" class="ghost-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" title="사진/파일 첨부">
+                    <i class="fa-solid fa-paperclip text-sm"></i>
+                </button>
                 <input type="text" id="chat-input" placeholder="메시지 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();">
-                <button onclick="sendChatMessage()" class="accent-btn w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                <button onclick="sendChatMessage()" class="accent-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
             </div>
         </div>
     </div>
@@ -1122,14 +1126,25 @@
 
         async function loadChatMessages() {
             // 채팅창을 여는(=읽는) 순간, 상대방이 보낸 안 읽은 메시지를 전부 읽음 처리
-            await supabaseClient.from('messages').update({ read_at: new Date().toISOString() })
+            const { error: readErr } = await supabaseClient.from('messages').update({ read_at: new Date().toISOString() })
                 .eq('sender_id', chatPartnerId).eq('receiver_id', currentUser.id).is('read_at', null);
+            if (readErr) console.error('읽음 처리 실패 (read_at 컬럼이 없을 수 있어요):', readErr);
 
             const { data: msgs } = await supabaseClient.from('messages')
                 .select('*')
                 .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${chatPartnerId}),and(sender_id.eq.${chatPartnerId},receiver_id.eq.${currentUser.id})`)
                 .order('created_at', { ascending: true });
-            renderChatMessages(msgs || []);
+
+            const msgList = msgs || [];
+            // 첨부파일이 있는 메시지는 표시용 signed URL을 미리 받아둔다
+            await Promise.all(msgList.map(async m => {
+                if (m.attachment_url) {
+                    const { data: signed } = await supabaseClient.storage.from('chat-files').createSignedUrl(m.attachment_url, 3600);
+                    m._signedUrl = signed?.signedUrl || null;
+                }
+            }));
+
+            renderChatMessages(msgList);
             updateMessagesBadge();
         }
 
@@ -1142,8 +1157,23 @@
             box.innerHTML = msgs.map((m, i) => {
                 const mine = m.sender_id === currentUser.id;
                 const showRead = mine && i === lastReadMineIndex;
+
+                let attachmentHtml = '';
+                if (m.attachment_url) {
+                    if (m.attachment_type === 'image') {
+                        attachmentHtml = m._signedUrl
+                            ? `<a href="${m._signedUrl}" target="_blank"><img src="${m._signedUrl}" class="rounded-xl max-w-[200px] max-h-[200px] object-cover" /></a>`
+                            : `<span class="text-xs">이미지를 불러올 수 없습니다</span>`;
+                    } else {
+                        attachmentHtml = m._signedUrl
+                            ? `<a href="${m._signedUrl}" target="_blank" class="flex items-center gap-2 underline"><i class="fa-solid fa-file-lines"></i> ${escapeHtml(m.attachment_name || '파일')}</a>`
+                            : `<span class="text-xs">파일을 불러올 수 없습니다</span>`;
+                    }
+                }
+                const textHtml = m.content ? `<div class="${attachmentHtml ? 'mt-1.5' : ''}">${escapeHtml(m.content)}</div>` : '';
+
                 return `<div class="flex flex-col ${mine ? 'items-end' : 'items-start'}">
-                    <div class="max-w-[75%] px-3 py-2 rounded-2xl text-sm" style="${mine ? 'background:var(--accent);color:var(--accent-ink);' : 'background:#f1f1f3;color:var(--ink);'}">${escapeHtml(m.content)}</div>
+                    <div class="max-w-[75%] px-3 py-2 rounded-2xl text-sm" style="${mine ? 'background:var(--accent);color:var(--accent-ink);' : 'background:#f1f1f3;color:var(--ink);'}">${attachmentHtml}${textHtml}</div>
                     ${showRead ? `<span class="text-[10px] mt-0.5 mr-1" style="color:var(--ink-soft);">읽음</span>` : ''}
                 </div>`;
             }).join('') || `<p class="text-sm text-center py-8" style="color:var(--ink-soft);">아직 대화가 없습니다.</p>`;
@@ -1171,7 +1201,35 @@
             if (error) showToast('메시지 전송 실패', 'error');
         }
 
+        // 사진/파일 첨부 전송
+        async function handleChatFileSelected(e) {
+            const file = e.target.files[0];
+            e.target.value = ''; // 같은 파일을 다시 선택해도 change 이벤트가 다시 뜨도록 초기화
+            if (!file || !chatPartnerId) return;
+            if (file.size > 15 * 1024 * 1024) return showToast('파일은 15MB 이하만 보낼 수 있습니다.', 'error');
+
+            showToast('파일 업로드 중...', 'info');
+            const path = `${currentUser.id}/${Date.now()}_${file.name}`;
+            const { error: upErr } = await supabaseClient.storage.from('chat-files').upload(path, file);
+            if (upErr) return showToast('업로드 실패: ' + upErr.message, 'error');
+
+            const attachmentType = file.type.startsWith('image/') ? 'image' : 'file';
+            const { error } = await supabaseClient.from('messages').insert({
+                sender_id: currentUser.id, receiver_id: chatPartnerId, content: null,
+                attachment_url: path, attachment_type: attachmentType, attachment_name: file.name
+            });
+            if (error) showToast('전송 실패: ' + error.message, 'error');
+        }
+
         // ---- 메시지 허브(채팅 목록) — 카톡처럼 전체 대화 목록 + 이름 검색 + 안읽음 배지 ----
+        // 마지막 메시지 미리보기 텍스트 — 첨부파일만 있는 메시지도 [사진]/[파일]로 표시
+        function messagePreviewText(m) {
+            if (m.content) return m.content;
+            if (m.attachment_type === 'image') return '[사진]';
+            if (m.attachment_url) return '[파일]';
+            return '';
+        }
+
         async function renderMessagesHub() {
             const { data: msgs } = await supabaseClient.from('messages')
                 .select('*').or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
@@ -1218,7 +1276,7 @@
                         <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold flex-shrink-0" style="background:var(--accent); color:var(--accent-ink);">${(c.partnerName || '?')[0]}</div>
                         <div class="min-w-0">
                             <p class="font-bold truncate">${escapeHtml(c.partnerName)} <span class="text-xs font-normal" style="color:var(--ink-soft);">${c.partnerRole}</span></p>
-                            <p class="text-sm truncate" style="color:var(--ink-soft); max-width:220px;">${escapeHtml(c.lastMessage.content)}</p>
+                            <p class="text-sm truncate" style="color:var(--ink-soft); max-width:220px;">${escapeHtml(messagePreviewText(c.lastMessage))}</p>
                         </div>
                     </div>
                     <div class="text-right flex-shrink-0">
@@ -1274,7 +1332,7 @@
             container.innerHTML = partnerIds.map(pid => {
                 const m = latestByPartner[pid];
                 return `<div class="border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-2 flex-wrap cursor-pointer hover:bg-slate-50" onclick="openChatWith('${pid}', '${escapeHtml(nameById[pid] || '멘티')}')">
-                    <div><p class="font-bold">${escapeHtml(nameById[pid] || '멘티')}</p><p class="text-xs" style="color:var(--ink-soft);">${escapeHtml(m.content).slice(0,40)}</p></div>
+                    <div><p class="font-bold">${escapeHtml(nameById[pid] || '멘티')}</p><p class="text-xs" style="color:var(--ink-soft);">${escapeHtml(messagePreviewText(m)).slice(0,40)}</p></div>
                     <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(m.created_at)}</span>
                 </div>`;
             }).join('');
