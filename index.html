@@ -1686,6 +1686,7 @@
                     <p class="text-xs" style="color:var(--ink-soft);">${m.title || ''} ${m.sector_id ? '· ' + (sectorLabels[m.sector_id] || '') : ''}</p>
                 </div>
                 <div class="flex gap-2">
+                    <button onclick="openChatWith('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs">메시지</button>
                     ${isSuspended
                         ? `<button onclick="adminUnsuspendUser('${m.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs">정지 해제</button>`
                         : `<button onclick="openSuspendModal('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs" style="color:#b45309;">정지</button>`
