@@ -61,10 +61,79 @@
     <div id="toast-container"></div>
 
     <!-- =====================================================================
-         AUTH GATE — 로그인 전에는 이 화면만 보입니다.
+         홈페이지(랜딩) — 로그인 전 가장 먼저 보이는 화면
     ===================================================================== -->
-    <div id="view-auth" class="min-h-screen flex items-center justify-center p-4">
+    <div id="view-landing" class="min-h-screen flex flex-col">
+        <header class="border-b border-slate-100">
+            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-seedling text-sm" style="color:var(--accent-ink);"></i></span>
+                    <span class="font-extrabold tracking-tight">AgeLess Lab</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="showLandingLogin()" class="ghost-btn px-4 py-2 rounded-full text-sm">로그인</button>
+                    <button onclick="showLandingSignup()" class="accent-btn px-4 py-2 rounded-full text-sm">회원가입</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1">
+            <!-- 히어로 -->
+            <section class="max-w-5xl mx-auto px-4 py-16 md:py-24 text-center">
+                <span class="inline-block bg-slate-50 border border-slate-200 text-sm font-bold px-3 py-1.5 rounded-full mb-4" style="color:var(--ink-soft);">은퇴 전문가 × 사회초년생</span>
+                <h1 class="fluid-title font-extrabold tracking-tight" style="font-size:clamp(1.8rem, 1.5vw + 1.5rem, 3rem); line-height:1.3;">
+                    직장생활의 첫 고비,<br class="hidden sm:block"><span style="color:var(--accent-ink);">먼저 겪은 선배</span>에게 물어보세요
+                </h1>
+                <p class="mt-5 text-base md:text-lg max-w-2xl mx-auto" style="color:var(--ink-soft);">
+                    AgeLess Lab은 은퇴 전문가와 입사 1~3년 차 사회초년생을 1:1 화상 상담으로 연결합니다.<br class="hidden md:block">
+                    업무 적응부터 이직 고민까지, 경력이 검증된 선배의 조언을 받아보세요.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                    <button onclick="showLandingSignup()" class="accent-btn px-8 py-3.5 rounded-full text-base">지금 시작하기</button>
+                    <button onclick="showLandingLogin()" class="ghost-btn px-8 py-3.5 rounded-full text-base">이미 계정이 있어요</button>
+                </div>
+            </section>
+
+            <!-- 이용 방법 -->
+            <section class="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="card p-6">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-magnifying-glass" style="color:var(--accent-ink);"></i></div>
+                    <p class="font-bold mb-1">1. 멘토 둘러보기</p>
+                    <p class="text-sm" style="color:var(--ink-soft);">고민 분야별로 검증된 은퇴 전문가 멘토를 찾아보세요.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-calendar-check" style="color:var(--accent-ink);"></i></div>
+                    <p class="font-bold mb-1">2. 예약 신청</p>
+                    <p class="text-sm" style="color:var(--ink-soft);">원하는 시간에 사유를 적어 예약하면, 멘토가 승인 후 상담이 확정돼요.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-video" style="color:var(--accent-ink);"></i></div>
+                    <p class="font-bold mb-1">3. 1:1 화상 상담</p>
+                    <p class="text-sm" style="color:var(--ink-soft);">화상으로 만나 실질적인 조언을 얻고, 상담 후 Career Report까지 받아보세요.</p>
+                </div>
+            </section>
+
+            <!-- 멘토 지원 CTA -->
+            <section class="max-w-5xl mx-auto px-4 py-12">
+                <div class="card p-8 md:p-10 text-center" style="background:#f4faf0;">
+                    <p class="font-extrabold text-xl mb-2">은퇴 전문가이신가요?</p>
+                    <p class="text-sm md:text-base mb-6" style="color:var(--ink-soft);">회원가입 후 멘토 신청서를 제출하시면, 심사를 거쳐 멘토로 활동하실 수 있어요.</p>
+                    <button onclick="showLandingSignup()" class="accent-btn px-8 py-3 rounded-full text-sm">멘토 신청하러 가기</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t border-slate-100 py-6 text-center text-xs" style="color:var(--ink-soft);">
+            © 2026 AgeLess Lab
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         로그인 / 회원가입 화면 — 랜딩페이지에서 버튼을 눌러야 보입니다.
+    ===================================================================== -->
+    <div id="view-auth" class="hidden min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-sm">
+            <button onclick="showLanding()" class="text-sm font-bold mb-4 flex items-center gap-1.5" style="color:var(--ink-soft);"><i class="fa-solid fa-arrow-left"></i> 홈으로</button>
             <div class="text-center mb-8">
                 <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3" style="background:var(--accent);">
                     <i class="fa-solid fa-seedling text-2xl" style="color:var(--accent-ink);"></i>
@@ -708,6 +777,22 @@
             }
         }
 
+        // 홈페이지(랜딩) ↔ 로그인/회원가입 화면 전환
+        function showLanding() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-landing').classList.remove('hidden');
+        }
+        function showLandingLogin() {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-auth').classList.remove('hidden');
+            switchAuthTab('login');
+        }
+        function showLandingSignup() {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-auth').classList.remove('hidden');
+            switchAuthTab('signup');
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -761,7 +846,8 @@
             setKeepLoggedInPref(false); // 다음 로그인 화면에서는 기본값(체크 안 됨)으로 되돌린다
             currentUser = null;
             document.getElementById('app-shell').classList.add('hidden');
-            document.getElementById('view-auth').classList.remove('hidden');
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-landing').classList.remove('hidden');
         }
 
         async function loadCurrentUserProfile(authUser) {
@@ -780,6 +866,7 @@
         }
 
         function enterApp() {
+            document.getElementById('view-landing').classList.add('hidden');
             document.getElementById('view-auth').classList.add('hidden');
             document.getElementById('app-shell').classList.remove('hidden');
             const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? '관리자' : '멘티');
@@ -796,7 +883,7 @@
 
         async function restoreSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) return;
+            if (!session) return; // 로그인 안 된 상태 → 기본값인 랜딩 화면이 그대로 보임
             await loadCurrentUserProfile(session.user);
             if (await blockIfSuspended()) return;
             enterApp();
@@ -1856,15 +1943,20 @@
                     });
 
                     peer.on('open', async (id) => {
-                        setStatus(currentUser.role === 'mentor' ? '준비 완료 — 멘티 입장을 기다리는 중' : '준비 완료 — 승인을 기다리는 중', 'bg-emerald-400');
+                        // 역할(profiles.role) 값이 아니라, 예약 방 정보(mentor_id) 자체로 "내가 이 방의 멘토인지"를
+                        // 직접 판단한다 — 프로필 읽기에 문제가 있어도 통화 연결만큼은 항상 정확하게 동작하도록.
+                        const isMentorOfThisRoom = currentRoom && currentRoom.mentor_id === currentUser.id;
+                        setStatus(isMentorOfThisRoom ? '준비 완료 — 멘티 입장을 기다리는 중' : '준비 완료 — 승인을 기다리는 중', 'bg-emerald-400');
                         // 멘토라면 방 정보에 내 peer id를 기록해서 멘티가 연결할 수 있게 한다
-                        if (currentUser.role === 'mentor' && currentRoom) {
-                            const { data } = await supabaseClient.from('live_rooms').update({ room_peer_id: id }).eq('id', currentRoom.id).select().single();
+                        if (isMentorOfThisRoom) {
+                            const { data, error } = await supabaseClient.from('live_rooms').update({ room_peer_id: id }).eq('id', currentRoom.id).select().single();
+                            if (error) console.error('room_peer_id 저장 실패:', error);
                             if (data) currentRoom = data;
                         }
-                        // 멘티도 자신의 peer id를 기록해두면, 관리자가 관전 시 멘티 화면에도 직접 연결할 수 있다
-                        if (currentUser.role !== 'mentor' && currentUser.role !== 'admin' && currentRoom) {
-                            const { data } = await supabaseClient.from('live_rooms').update({ mentee_peer_id: id }).eq('id', currentRoom.id).select().single();
+                        // 멘토가 아니라면(=멘티) 자신의 peer id를 기록해두면, 관리자가 관전 시 멘티 화면에도 직접 연결할 수 있다
+                        else if (currentRoom) {
+                            const { data, error } = await supabaseClient.from('live_rooms').update({ mentee_peer_id: id }).eq('id', currentRoom.id).select().single();
+                            if (error) console.error('mentee_peer_id 저장 실패:', error);
                             if (data) currentRoom = data;
                         }
                     });
@@ -1894,7 +1986,22 @@
 
         // 멘티가 승인된 순간, 저장해둔 멘토의 peer id로 실제 통화를 건다
         function connectToMentor(mentorPeerId) {
-            if (!peer || !localStream || !mentorPeerId) return;
+            console.log('[통화] connectToMentor 호출됨. peer 준비:', !!peer, '/ 로컬영상 준비:', !!localStream, '/ 멘토 peer id:', mentorPeerId);
+            if (!mentorPeerId) {
+                setStatus('멘토의 연결 번호를 아직 받지 못했습니다. 잠시 후 다시 시도해주세요.', 'bg-rose-500');
+                showToast('멘토가 아직 상담방을 완전히 열지 못한 상태예요. 몇 초 후 자동으로 다시 시도합니다.', 'error');
+                // room_peer_id가 아직 안 채워졌을 수 있으니, 최신 방 정보를 다시 읽어서 몇 초 뒤 재시도
+                setTimeout(async () => {
+                    if (!currentRoom) return;
+                    const { data } = await supabaseClient.from('live_rooms').select('*').eq('id', currentRoom.id).maybeSingle();
+                    if (data) { currentRoom = data; if (data.room_peer_id) connectToMentor(data.room_peer_id); }
+                }, 2500);
+                return;
+            }
+            if (!peer || !localStream) {
+                setStatus('내 카메라 연결이 아직 준비되지 않았습니다.', 'bg-rose-500');
+                return;
+            }
             setStatus('멘토에게 연결 중...', 'bg-amber-400');
             const call = peer.call(mentorPeerId, localStream);
             attachCallHandlers(call);
@@ -2104,7 +2211,7 @@
             stopAllMediaAndPeer();
             document.getElementById('remote-placeholder').classList.remove('hidden');
 
-            if (currentUser.role === 'mentor' && currentRoom) {
+            if (currentRoom && currentRoom.mentor_id === currentUser.id) {
                 await supabaseClient.rpc('close_room', { p_room_id: currentRoom.id });
             }
             teardownRoomChannel();
