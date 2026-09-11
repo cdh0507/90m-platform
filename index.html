@@ -473,6 +473,10 @@
                 <div id="mentee-waiting-overlay" class="hidden card p-4 text-center text-sm font-bold" style="border:2px solid var(--accent);">
                     <i class="fa-solid fa-hourglass-half mr-1.5"></i> 대기 중입니다. 멘토가 입장을 승인하면 자동으로 연결됩니다.
                 </div>
+                <div id="mentee-rejected-overlay" class="hidden card p-4 text-center text-sm font-bold space-y-2" style="border:2px solid #f43f5e;">
+                    <p><i class="fa-solid fa-circle-xmark mr-1.5" style="color:#f43f5e;"></i> 멘토가 입장을 거절했습니다.</p>
+                    <button onclick="requestRejoin()" class="accent-btn px-5 py-2 rounded-full text-sm">다시 요청하기</button>
+                </div>
 
                 <div id="connection-status" class="card px-4 py-3 text-sm flex items-center justify-between gap-2 flex-wrap">
                     <div class="flex items-center gap-2">
@@ -486,12 +490,21 @@
                 <!-- 실제 영상 위젯(call-widget)은 여기 담겨 있다가, 다른 화면으로 이동하면 우측 하단 미니플레이어로 옮겨갑니다 -->
                 <div id="call-widget-mount-full"></div>
 
-                <div class="bg-white rounded-2xl overflow-hidden card">
-                    <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
-                        <span class="text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-note-sticky"></i> 실시간 공유 메모</span>
-                        <span id="notepad-sync-status" class="text-xs" style="color:var(--ink-soft);">동기화 대기 중</span>
+                <div class="bg-white rounded-2xl overflow-hidden card grid grid-cols-1 sm:grid-cols-2 sm:divide-x divide-slate-100">
+                    <div class="divide-y divide-slate-100 border-b sm:border-b-0 border-slate-100">
+                        <div class="flex items-center justify-between px-4 py-2.5">
+                            <span class="text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-note-sticky"></i> 멘토 노트</span>
+                            <span id="mentor-notepad-sync-status" class="text-xs" style="color:var(--ink-soft);"></span>
+                        </div>
+                        <textarea id="mentor-notepad" oninput="handleNotepadInput('mentor')" placeholder="멘토만 작성할 수 있는 메모입니다." class="w-full text-sm p-4 outline-none resize-none" rows="4"></textarea>
                     </div>
-                    <textarea id="shared-notepad" oninput="handleNotepadInput()" placeholder="상담 중 메모를 남기면 상대방 화면에도 실시간으로 보입니다." class="w-full text-sm p-4 outline-none resize-none" rows="4"></textarea>
+                    <div class="divide-y divide-slate-100">
+                        <div class="flex items-center justify-between px-4 py-2.5">
+                            <span class="text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-note-sticky"></i> 멘티 노트</span>
+                            <span id="mentee-notepad-sync-status" class="text-xs" style="color:var(--ink-soft);"></span>
+                        </div>
+                        <textarea id="mentee-notepad" oninput="handleNotepadInput('mentee')" placeholder="멘티만 작성할 수 있는 메모입니다." class="w-full text-sm p-4 outline-none resize-none" rows="4"></textarea>
+                    </div>
                 </div>
 
                 <!-- 통화 종료 후에만 노출: 다음 단계로 -->
@@ -1944,7 +1957,13 @@
                     if (!isMentor && room.mentee_admitted_id === currentUser.id && room.status === 'in_call') {
                         // 멘티: 승인됨 → 대기 오버레이 숨기고 멘토에게 연결
                         document.getElementById('mentee-waiting-overlay').classList.add('hidden');
+                        document.getElementById('mentee-rejected-overlay').classList.add('hidden');
                         connectToMentor(room.room_peer_id);
+                    }
+                    // 멘티: 방금 내 입장 요청이 거절됨 → 거절 안내 + 다시 요청하기 버튼 노출
+                    if (!isMentor && room.last_rejected_mentee_id === currentUser.id && !room.mentee_admitted_id) {
+                        document.getElementById('mentee-waiting-overlay').classList.add('hidden');
+                        document.getElementById('mentee-rejected-overlay').classList.remove('hidden');
                     }
                     // 관리자가 관전을 시작/종료하면 작은 알림만 표시 (관리자의 모습/음성은 절대 노출되지 않음)
                     if (room.admin_watching_id && !adminWatchingNotified) {
@@ -1959,6 +1978,17 @@
                     }
                 })
                 .subscribe();
+        }
+
+        // 멘티: 거절당한 뒤 다시 입장 요청하기
+        async function requestRejoin() {
+            if (!currentRoom) return;
+            const { data, error } = await supabaseClient.rpc('request_join_room', { p_room_id: currentRoom.id });
+            if (error) { showToast('재요청 실패: 방이 닫혔거나 이미 다른 분이 있을 수 있어요.', 'error'); return; }
+            currentRoom = data;
+            document.getElementById('mentee-rejected-overlay').classList.add('hidden');
+            document.getElementById('mentee-waiting-overlay').classList.remove('hidden');
+            setStatus('멘토의 입장 승인을 다시 기다리는 중...', 'bg-amber-400');
         }
         function teardownRoomChannel() {
             if (roomChannel) { supabaseClient.removeChannel(roomChannel); roomChannel = null; }
@@ -1982,6 +2012,7 @@
             initCallWidgetForRoom(); // 통화 위젯을 활성화하고 전체화면으로 마운트
             document.getElementById('after-call-next').classList.add('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
+            document.getElementById('mentee-rejected-overlay').classList.add('hidden');
             document.getElementById('remote-placeholder').classList.remove('hidden');
             document.getElementById('remote-camera-off-overlay').classList.add('hidden');
             document.getElementById('remote-camera-off-overlay').classList.remove('flex');
@@ -1989,10 +2020,23 @@
             document.getElementById('manual-play-btn').classList.remove('flex');
             if (remotePlayRetryTimer) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; }
             needsManualPlay = false;
-            document.getElementById('remote-name').innerText = currentUser.role === 'mentor' ? '멘티를 기다리는 중' : '멘토를 기다리는 중';
-            document.getElementById('btn-record').classList.toggle('flex', currentUser.role === 'mentor');
-            document.getElementById('btn-record').classList.toggle('hidden', currentUser.role !== 'mentor');
+            // 역할(profiles.role)이 아니라 방 정보 자체(mentor_id)로 "내가 이 방의 멘토인지" 직접 판단 — 항상 정확하게 동작하도록
+            const isMentorOfThisRoom = currentRoom && currentRoom.mentor_id === currentUser.id;
+            document.getElementById('remote-name').innerText = isMentorOfThisRoom ? '멘티를 기다리는 중' : '멘토를 기다리는 중';
+            document.getElementById('btn-record').classList.toggle('flex', isMentorOfThisRoom);
+            document.getElementById('btn-record').classList.toggle('hidden', !isMentorOfThisRoom);
             lastRecordingBlob = null;
+
+            // 멘토 노트는 멘토만, 멘티 노트는 멘티만 쓸 수 있게 하고 두 노트 모두 초기화
+            const mentorNotepad = document.getElementById('mentor-notepad');
+            const menteeNotepad = document.getElementById('mentee-notepad');
+            mentorNotepad.value = ''; menteeNotepad.value = '';
+            mentorNotepad.readOnly = !isMentorOfThisRoom;
+            menteeNotepad.readOnly = isMentorOfThisRoom;
+            mentorNotepad.classList.toggle('bg-slate-50', !isMentorOfThisRoom);
+            menteeNotepad.classList.toggle('bg-slate-50', isMentorOfThisRoom);
+            document.getElementById('mentor-notepad-sync-status').innerText = isMentorOfThisRoom ? '내 메모' : '동기화 대기 중';
+            document.getElementById('mentee-notepad-sync-status').innerText = isMentorOfThisRoom ? '동기화 대기 중' : '내 메모';
         }
 
         async function initVideoCall() {
@@ -2116,28 +2160,34 @@
 
         function bindDataConnection(conn) {
             dataConn = conn;
-            const statusEl = document.getElementById('notepad-sync-status');
             conn.on('open', () => {
-                statusEl.innerText = '실시간 동기화 중';
+                document.getElementById('mentor-notepad-sync-status').innerText = (currentRoom && currentRoom.mentor_id === currentUser.id) ? '내 메모' : '실시간 동기화 중';
+                document.getElementById('mentee-notepad-sync-status').innerText = (currentRoom && currentRoom.mentor_id === currentUser.id) ? '실시간 동기화 중' : '내 메모';
                 // 연결이 열리는 순간, 지금 내 카메라 상태를 상대방에게 즉시 알려준다 (늦게 입장한 쪽도 바로 정확한 상태를 보게)
                 conn.send({ type: 'camera_state', on: cameraOn });
             });
             conn.on('data', (payload) => {
                 if (payload && payload.type === 'note') {
-                    const notepad = document.getElementById('shared-notepad');
+                    // who는 'mentor' 또는 'mentee' — 그 사람의 메모장에만 반영한다 (상대방 메모는 항상 읽기 전용)
+                    const notepad = document.getElementById(payload.who + '-notepad');
                     if (notepad && document.activeElement !== notepad) { receivingRemoteNote = true; notepad.value = payload.text; receivingRemoteNote = false; }
                 } else if (payload && payload.type === 'camera_state') {
                     document.getElementById('remote-camera-off-overlay').classList.toggle('hidden', payload.on);
                     document.getElementById('remote-camera-off-overlay').classList.toggle('flex', !payload.on);
                 }
             });
-            conn.on('close', () => { statusEl.innerText = '동기화 연결 종료'; dataConn = null; });
+            conn.on('close', () => {
+                document.getElementById('mentor-notepad-sync-status').innerText = '동기화 연결 종료';
+                document.getElementById('mentee-notepad-sync-status').innerText = '동기화 연결 종료';
+                dataConn = null;
+            });
         }
 
-        function handleNotepadInput() {
+        // who는 'mentor' 또는 'mentee' — 본인 메모장에 입력했을 때만 상대방에게 전송한다
+        function handleNotepadInput(who) {
             if (receivingRemoteNote) return;
-            const notepad = document.getElementById('shared-notepad');
-            if (dataConn && dataConn.open) dataConn.send({ type: 'note', text: notepad.value });
+            const notepad = document.getElementById(who + '-notepad');
+            if (dataConn && dataConn.open) dataConn.send({ type: 'note', who, text: notepad.value });
         }
 
         let remotePlayRetryTimer = null;
@@ -2289,7 +2339,9 @@
         // 실시간 공유 메모를 DB에 저장 — 나중에 Career Report를 다시 열어도 정확한 내용으로 요약되도록
         async function saveSessionNotes() {
             if (!currentBooking) return; // 즉석(예약 없는) 상담은 애초에 Career Report 대상이 아님
-            const notes = document.getElementById('shared-notepad')?.value || '';
+            const mentorNotes = document.getElementById('mentor-notepad')?.value || '';
+            const menteeNotes = document.getElementById('mentee-notepad')?.value || '';
+            const notes = `[멘토 메모]\n${mentorNotes}\n\n[멘티 메모]\n${menteeNotes}`;
             const { error } = await supabaseClient.from('bookings').update({ session_notes: notes }).eq('id', currentBooking.id);
             if (!error) currentBooking.session_notes = notes; // 화면에 들고 있는 객체도 최신화
         }
