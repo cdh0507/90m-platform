@@ -483,49 +483,8 @@
 
                 <div id="troubleshoot-box" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-sm p-4 rounded-2xl space-y-1"></div>
 
-                <div class="bg-slate-900 rounded-2xl relative aspect-video flex flex-col justify-between overflow-hidden card">
-                    <div class="w-full h-full relative flex items-center justify-center bg-slate-900">
-                        <video id="remote-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                        <button id="unmute-btn" onclick="unmuteRemote()" class="hidden absolute top-14 right-3 z-30 bg-white/95 text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-1.5">
-                            <i class="fa-solid fa-volume-xmark"></i> 소리 켜기
-                        </button>
-                        <button id="manual-play-btn" onclick="attemptRemotePlay()" class="hidden absolute inset-0 z-30 flex-col items-center justify-center gap-2 bg-slate-900/85 text-white cursor-pointer w-full h-full border-0">
-                            <i class="fa-solid fa-circle-play text-4xl" style="color:var(--accent);"></i>
-                            <span class="text-sm font-bold">화면을 탭하면 재생됩니다</span>
-                        </button>
-                        <div id="remote-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/95 text-white p-4 text-center">
-                            <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3" style="background:rgba(179,253,139,.15); border:1px solid rgba(179,253,139,.4);">
-                                <i class="fa-solid fa-user-tie text-3xl" style="color:var(--accent);"></i>
-                            </div>
-                            <p class="font-bold text-base text-white" id="remote-name">상대방을 기다리는 중</p>
-                        </div>
-                        <!-- 상대방이 카메라를 끄면(연결 자체는 유지된 채) 이 오버레이가 대신 뜹니다 -->
-                        <div id="remote-camera-off-overlay" class="hidden absolute inset-0 flex-col items-center justify-center bg-slate-900 text-white p-4 text-center z-10">
-                            <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 bg-slate-800">
-                                <i class="fa-solid fa-video-slash text-2xl text-slate-400"></i>
-                            </div>
-                            <p class="font-bold text-sm text-slate-300">상대방이 카메라를 껐습니다</p>
-                        </div>
-                        <div class="absolute top-3 left-3 bg-slate-800/80 px-3 py-1 rounded-full text-xs text-emerald-300 font-bold flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 실시간 연결 중
-                        </div>
-                    </div>
-
-                    <div class="absolute bottom-0 inset-x-0 bg-slate-900/90 px-4 py-3 flex items-center justify-between border-t border-slate-700 z-20">
-                        <div class="w-20 h-14 bg-slate-800 rounded-lg overflow-hidden relative shadow-lg">
-                            <video id="local-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                            <div id="local-camera-off-overlay" class="hidden absolute inset-0 bg-slate-800 flex items-center justify-center">
-                                <i class="fa-solid fa-video-slash text-slate-400 text-sm"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleAudio()" id="btn-audio" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-microphone text-sm"></i></button>
-                            <button onclick="toggleCamera()" id="btn-camera" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-video text-sm"></i></button>
-                            <button onclick="toggleRecording()" id="btn-record" class="hidden bg-amber-500 text-slate-900 px-3 h-10 rounded-xl font-bold text-sm items-center gap-1.5"><i class="fa-solid fa-circle text-[10px]"></i> <span id="record-text">녹화</span></button>
-                            <button onclick="endCall()" id="btn-end-call" class="bg-rose-600 hover:bg-rose-500 text-white px-3 h-10 rounded-xl font-bold text-sm flex items-center gap-1.5"><i class="fa-solid fa-phone-slash"></i> 종료</button>
-                        </div>
-                    </div>
-                </div>
+                <!-- 실제 영상 위젯(call-widget)은 여기 담겨 있다가, 다른 화면으로 이동하면 우측 하단 미니플레이어로 옮겨갑니다 -->
+                <div id="call-widget-mount-full"></div>
 
                 <div class="bg-white rounded-2xl overflow-hidden card">
                     <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
@@ -587,6 +546,60 @@
 
         </main>
     </div>
+
+    <!-- =====================================================================
+         통화 영상 위젯 — 화면 전환에 영향받지 않는 영역에 둡니다.
+         상담 화면(view-call-room)에 있을 땐 call-widget-mount-full 안으로,
+         다른 화면으로 이동하면 아래 미니플레이어(call-widget-mount-mini) 안으로 옮겨집니다.
+    ===================================================================== -->
+    <div id="call-widget" class="hidden bg-slate-900 rounded-2xl relative aspect-video flex flex-col justify-between overflow-hidden card">
+        <div class="w-full h-full relative flex items-center justify-center bg-slate-900">
+            <video id="remote-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+            <button id="unmute-btn" onclick="unmuteRemote()" class="hidden absolute top-14 right-3 z-30 bg-white/95 text-amber-600 border border-amber-300 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-1.5">
+                <i class="fa-solid fa-volume-xmark"></i> 소리 켜기
+            </button>
+            <button id="manual-play-btn" onclick="attemptRemotePlay()" class="hidden absolute inset-0 z-30 flex-col items-center justify-center gap-2 bg-slate-900/85 text-white cursor-pointer w-full h-full border-0">
+                <i class="fa-solid fa-circle-play text-4xl" style="color:var(--accent);"></i>
+                <span class="text-sm font-bold">화면을 탭하면 재생됩니다</span>
+            </button>
+            <div id="remote-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/95 text-white p-4 text-center">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3" style="background:rgba(179,253,139,.15); border:1px solid rgba(179,253,139,.4);">
+                    <i class="fa-solid fa-user-tie text-3xl" style="color:var(--accent);"></i>
+                </div>
+                <p class="font-bold text-base text-white" id="remote-name">상대방을 기다리는 중</p>
+            </div>
+            <!-- 상대방이 카메라를 끄면(연결 자체는 유지된 채) 이 오버레이가 대신 뜹니다 -->
+            <div id="remote-camera-off-overlay" class="hidden absolute inset-0 flex-col items-center justify-center bg-slate-900 text-white p-4 text-center z-10">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 bg-slate-800">
+                    <i class="fa-solid fa-video-slash text-2xl text-slate-400"></i>
+                </div>
+                <p class="font-bold text-sm text-slate-300">상대방이 카메라를 껐습니다</p>
+            </div>
+            <div class="absolute top-3 left-3 bg-slate-800/80 px-3 py-1 rounded-full text-xs text-emerald-300 font-bold flex items-center gap-2" id="call-widget-live-badge">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 실시간 연결 중
+            </div>
+            <!-- 미니 모드일 때만 보이는 "펼치기" 오버레이 -->
+            <button id="call-widget-expand-btn" onclick="showView('view-call-room')" class="hidden absolute inset-0 z-40 bg-transparent border-0 cursor-pointer"></button>
+        </div>
+
+        <div id="call-widget-controlbar" class="absolute bottom-0 inset-x-0 bg-slate-900/90 px-4 py-3 flex items-center justify-between border-t border-slate-700 z-20">
+            <div class="w-20 h-14 bg-slate-800 rounded-lg overflow-hidden relative shadow-lg">
+                <video id="local-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                <div id="local-camera-off-overlay" class="hidden absolute inset-0 bg-slate-800 flex items-center justify-center">
+                    <i class="fa-solid fa-video-slash text-slate-400 text-sm"></i>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleAudio()" id="btn-audio" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-microphone text-sm"></i></button>
+                <button onclick="toggleCamera()" id="btn-camera" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-video text-sm"></i></button>
+                <button onclick="toggleRecording()" id="btn-record" class="hidden bg-amber-500 text-slate-900 px-3 h-10 rounded-xl font-bold text-sm items-center gap-1.5"><i class="fa-solid fa-circle text-[10px]"></i> <span id="record-text">녹화</span></button>
+                <button onclick="endCall()" id="btn-end-call" class="bg-rose-600 hover:bg-rose-500 text-white px-3 h-10 rounded-xl font-bold text-sm flex items-center gap-1.5"><i class="fa-solid fa-phone-slash"></i> 종료</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 미니플레이어가 들어갈 자리 — 항상 화면 우측 하단에 고정 -->
+    <div id="call-widget-mount-mini" class="hidden fixed bottom-4 right-4 z-40" style="width:220px;"></div>
 
     <!-- ============================== 예약 모달 ============================== -->
     <div id="booking-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -726,6 +739,55 @@
             const el = document.getElementById(id);
             if (el) el.classList.add('active');
             updateBreadcrumb(id);
+            updateCallWidgetMode();
+        }
+
+        // =====================================================================
+        // 통화 미니플레이어 — 상담 화면을 벗어나도 화면 우측 하단에 작게 계속 떠 있게 합니다.
+        // =====================================================================
+        let callWidgetActive = false;
+
+        function initCallWidgetForRoom() {
+            callWidgetActive = true;
+            document.getElementById('call-widget').classList.remove('hidden');
+            mountCallWidgetFull();
+        }
+
+        function mountCallWidgetFull() {
+            const widget = document.getElementById('call-widget');
+            document.getElementById('call-widget-mount-full').appendChild(widget);
+            widget.style.width = ''; widget.style.boxShadow = '';
+            document.getElementById('call-widget-controlbar').classList.remove('hidden');
+            document.getElementById('call-widget-expand-btn').classList.add('hidden');
+            document.getElementById('call-widget-mount-mini').classList.add('hidden');
+        }
+
+        function mountCallWidgetMini() {
+            const widget = document.getElementById('call-widget');
+            const mini = document.getElementById('call-widget-mount-mini');
+            mini.appendChild(widget);
+            mini.classList.remove('hidden');
+            widget.style.width = '100%';
+            widget.style.boxShadow = '0 10px 30px rgba(0,0,0,.35)';
+            document.getElementById('call-widget-controlbar').classList.add('hidden');
+            document.getElementById('call-widget-expand-btn').classList.remove('hidden');
+        }
+
+        // 화면(view)이 바뀔 때마다 호출됨 — 상담 화면이면 크게, 아니면 자동으로 미니플레이어로 전환
+        function updateCallWidgetMode() {
+            if (!callWidgetActive) return;
+            const onCallRoom = document.getElementById('view-call-room').classList.contains('active');
+            if (onCallRoom) mountCallWidgetFull();
+            else mountCallWidgetMini();
+        }
+
+        function teardownCallWidget() {
+            callWidgetActive = false;
+            const widget = document.getElementById('call-widget');
+            widget.classList.add('hidden');
+            widget.style.width = ''; widget.style.boxShadow = '';
+            document.getElementById('call-widget-mount-mini').classList.add('hidden');
+            document.getElementById('call-widget-mount-full').appendChild(widget); // 다음 세션을 위해 원위치로
         }
 
         function updateBreadcrumb(id) {
@@ -837,6 +899,8 @@
 
         async function handleLogout() {
             stopAllMediaAndPeer(); // 카메라/마이크가 켜진 채로 로그아웃해도 확실히 꺼지도록
+            teardownCallWidget();
+            teardownAdminLiveRoomsWatch();
             teardownLobbyChannel();
             teardownRoomChannel();
             if (mentorOwnRoomChannel) { supabaseClient.removeChannel(mentorOwnRoomChannel); mentorOwnRoomChannel = null; }
@@ -1520,6 +1584,7 @@
         }
 
         async function renderAdminDashboard() {
+            setupAdminLiveRoomsWatch(); // 실시간으로 상담방 상태가 바뀌면 자동으로 목록을 갱신
             const { data: mentors } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
             const { data: mentees } = await supabaseClient.from('profiles').select('*').eq('role', 'mentee');
             const { data: bookings } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
@@ -1680,6 +1745,21 @@
         let observeChunks = [];
         let isObserveRecording = false;
         let observingRoom = null;
+
+        // 관리자 대시보드에 있는 동안 상담방 상태 변화를 실시간 감지 — 종료되면 목록에서 즉시 사라짐
+        let adminLiveRoomsChannel = null;
+        function setupAdminLiveRoomsWatch() {
+            if (adminLiveRoomsChannel) return; // 이미 구독 중이면 중복 구독하지 않음
+            adminLiveRoomsChannel = supabaseClient
+                .channel('admin-live-rooms-watch')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'live_rooms' }, () => {
+                    if (document.getElementById('view-admin-dashboard').classList.contains('active')) renderAdminDashboard();
+                })
+                .subscribe();
+        }
+        function teardownAdminLiveRoomsWatch() {
+            if (adminLiveRoomsChannel) { supabaseClient.removeChannel(adminLiveRoomsChannel); adminLiveRoomsChannel = null; }
+        }
 
         async function adminJoinObserve(roomId) {
             const { data: room, error } = await supabaseClient.rpc('admin_join_observe', { p_room_id: roomId });
@@ -1899,6 +1979,7 @@
 
         function resetCallUI() {
             hideTroubleshoot();
+            initCallWidgetForRoom(); // 통화 위젯을 활성화하고 전체화면으로 마운트
             document.getElementById('after-call-next').classList.add('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
             document.getElementById('remote-placeholder').classList.remove('hidden');
@@ -2013,10 +2094,17 @@
             currentCall = call;
             call.on('stream', (remoteStream) => {
                 const remoteVideoEl = document.getElementById('remote-video');
+                // 음소거 자동재생은 브라우저 정책상 거의 항상 허용되므로, 여러 방식으로 확실히 음소거해둔다
+                remoteVideoEl.muted = true;
+                remoteVideoEl.defaultMuted = true;
+                remoteVideoEl.setAttribute('muted', '');
+                remoteVideoEl.playsInline = true;
                 remoteVideoEl.srcObject = remoteStream;
                 document.getElementById('remote-placeholder').classList.add('hidden');
-                remoteVideoEl.muted = true;
-                attemptRemotePlay();
+                // srcObject가 실제로 반영될 시간을 아주 짧게 준 뒤 재생을 시도한다 (일부 브라우저에서 타이밍 문제 방지)
+                setTimeout(attemptRemotePlay, 50);
+                // 스트림 메타데이터가 늦게 준비되는 경우에도 재생을 다시 시도한다
+                remoteVideoEl.onloadedmetadata = () => { if (needsManualPlay) attemptRemotePlay(); };
             });
             call.on('close', () => {
                 document.getElementById('remote-video').srcObject = null;
@@ -2055,6 +2143,7 @@
         let remotePlayRetryTimer = null;
         function attemptRemotePlay() {
             const remoteVideoEl = document.getElementById('remote-video');
+            if (!remoteVideoEl.srcObject) return; // 아직 스트림이 없으면 시도할 필요 없음
             const p = remoteVideoEl.play();
             if (p !== undefined) {
                 p.then(() => {
@@ -2065,17 +2154,16 @@
                     setStatus('연결 성공 — 상담이 진행 중입니다.', 'bg-emerald-400');
                     document.getElementById('unmute-btn').classList.remove('hidden');
                     document.getElementById('unmute-btn').classList.add('flex');
-                }).catch(() => {
+                }).catch((err) => {
+                    console.warn('원격 영상 재생 실패, 재시도합니다:', err?.name || err);
                     needsManualPlay = true;
                     document.getElementById('manual-play-btn').classList.remove('hidden');
                     document.getElementById('manual-play-btn').classList.add('flex');
                     setStatus('화면을 탭하면 재생됩니다.', 'bg-amber-400');
-                    // 탭을 못 누르는 상황(자동 재생 정책이 풀리는 경우 등)에 대비해 몇 초간 자동으로도 재시도한다
+                    // 탭을 못 누르는 상황에도 끊기지 않도록, 통화가 끝날 때까지 계속(약 1초 간격) 자동으로도 재시도한다
                     if (!remotePlayRetryTimer) {
-                        let tries = 0;
                         remotePlayRetryTimer = setInterval(() => {
-                            tries++;
-                            if (!needsManualPlay || tries > 8) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; return; }
+                            if (!needsManualPlay || !remoteVideoEl.srcObject) { clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null; return; }
                             remoteVideoEl.play().then(() => {
                                 needsManualPlay = false;
                                 document.getElementById('manual-play-btn').classList.add('hidden');
@@ -2083,12 +2171,12 @@
                                 setStatus('연결 성공 — 상담이 진행 중입니다.', 'bg-emerald-400');
                                 clearInterval(remotePlayRetryTimer); remotePlayRetryTimer = null;
                             }).catch(() => {});
-                        }, 1500);
+                        }, 1000);
                     }
                 });
             }
         }
-        ['click','touchend'].forEach(evt => document.addEventListener(evt, () => { if (needsManualPlay) attemptRemotePlay(); }, { passive: true }));
+        ['click','touchend','touchstart'].forEach(evt => document.addEventListener(evt, () => { if (needsManualPlay) attemptRemotePlay(); }, { passive: true }));
 
         function unmuteRemote() {
             document.getElementById('remote-video').muted = false;
@@ -2209,6 +2297,7 @@
         async function endCall() {
             await saveSessionNotes();
             stopAllMediaAndPeer();
+            teardownCallWidget();
             document.getElementById('remote-placeholder').classList.remove('hidden');
 
             if (currentRoom && currentRoom.mentor_id === currentUser.id) {
@@ -2223,6 +2312,7 @@
         async function cleanupAfterCallClosedRemotely() {
             await saveSessionNotes();
             stopAllMediaAndPeer();
+            teardownCallWidget();
             document.getElementById('remote-placeholder').classList.remove('hidden');
             document.getElementById('mentee-waiting-overlay').classList.add('hidden');
             teardownRoomChannel();
