@@ -173,6 +173,103 @@
             animation: spin .6s linear infinite; vertical-align:-2px; margin-right:.4rem;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ---------- 멘토 카드 아바타: 카드에 호버하면 살짝 확대+기울어짐 ---------- */
+        .avatar-fx { transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+        .card:hover .avatar-fx { transform: scale(1.08) rotate(-4deg); }
+
+        /* ---------- 배지/알림: 은은한 펄스로 시선 유도 ---------- */
+        .badge-pulse { animation: badgePulse 1.8s ease-in-out infinite; }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,63,94,.45); }
+            50% { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(244,63,94,0); }
+        }
+        .badge-pulse-accent { animation: badgePulseAccent 1.8s ease-in-out infinite; }
+        @keyframes badgePulseAccent {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(179,253,139,.55); }
+            50% { box-shadow: 0 0 0 6px rgba(179,253,139,0); }
+        }
+        #mentor-waiting-banner { animation: waitingBannerGlow 2s ease-in-out infinite; }
+        @keyframes waitingBannerGlow {
+            0%, 100% { box-shadow: 0 1px 2px rgba(20,20,20,0.04), 0 8px 24px rgba(20,20,20,0.05); }
+            50% { box-shadow: 0 1px 2px rgba(20,20,20,0.04), 0 8px 28px rgba(179,253,139,.55); }
+        }
+
+        /* ---------- 리스트 등장: 카드가 순서대로 살짝 아래에서 올라오며 페이드인 ---------- */
+        .stagger-item {
+            opacity: 0; transform: translateY(10px);
+            animation: staggerIn .45s cubic-bezier(.22,1,.36,1) forwards;
+            animation-delay: calc(var(--stagger-i, 0) * 55ms);
+        }
+        @keyframes staggerIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* ---------- 토스트: 타입별로 다른 등장 모션 ---------- */
+        .toast-item.show.toast-success { animation: toastBounceIn .45s cubic-bezier(.34,1.56,.64,1); }
+        .toast-item.show.toast-error { animation: toastShake .4s ease; }
+        @keyframes toastBounceIn {
+            0% { opacity:0; transform: translateY(14px) scale(.9); }
+            60% { opacity:1; transform: translateY(-3px) scale(1.02); }
+            100% { opacity:1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(2px); }
+        }
+
+        /* ---------- 작성 중 표시 (노트/채팅 공용) ---------- */
+        .typing-dots { display:inline-flex; align-items:center; gap:3px; }
+        .typing-dots span {
+            width:5px; height:5px; border-radius:50%; background: currentColor; opacity:.5;
+            animation: typingBounce 1s ease-in-out infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: .15s; }
+        .typing-dots span:nth-child(3) { animation-delay: .3s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { opacity:.3; transform: translateY(0); }
+            30% { opacity:1; transform: translateY(-2px); }
+        }
+
+        /* ---------- 통화 연결 대기: 레이더 핑 애니메이션 ---------- */
+        .radar-ping-wrap { position:relative; display:inline-flex; align-items:center; justify-content:center; }
+        .radar-ping-ring {
+            position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent);
+            animation: radarPing 1.8s cubic-bezier(.22,.61,.36,1) infinite;
+        }
+        .radar-ping-ring:nth-child(2) { animation-delay: .6s; }
+        .radar-ping-ring:nth-child(3) { animation-delay: 1.2s; }
+        @keyframes radarPing {
+            0% { transform: scale(1); opacity:.7; }
+            100% { transform: scale(2.2); opacity:0; }
+        }
+
+        /* ---------- 랜딩페이지 스크롤 등장 ---------- */
+        .reveal-on-scroll {
+            opacity: 0; transform: translateY(22px);
+            transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+        }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* ---------- 네비게이션 아이콘 호버 모션 ---------- */
+        .icon-wiggle i { display:inline-block; transition: transform .2s ease; }
+        .icon-wiggle:hover i { animation: iconWiggle .45s ease; }
+        @keyframes iconWiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-12deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        /* ---------- 랜딩 히어로 배경 일러스트 ---------- */
+        .hero-bg-illustration {
+            position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+        }
+        .hero-bg-illustration svg { position:absolute; opacity: .55; }
+        .hero-content { position: relative; z-index: 1; }
+
+        /* ---------- 숫자 카운트업 ---------- */
+        .count-up { font-variant-numeric: tabular-nums; }
     </style>
 </head>
 <body class="antialiased min-h-screen">
@@ -204,34 +301,71 @@
 
         <main class="flex-1">
             <!-- 히어로 -->
-            <section class="max-w-5xl mx-auto px-4 py-16 md:py-24 text-center">
-                <span class="inline-block bg-slate-50 border border-slate-200 text-sm font-bold px-3 py-1.5 rounded-full mb-4" style="color:var(--ink-soft);">은퇴 전문가 × 사회초년생</span>
-                <h1 class="fluid-title font-extrabold tracking-tight" style="font-size:clamp(1.8rem, 1.5vw + 1.5rem, 3rem); line-height:1.3;">
-                    직장생활의 첫 고비,<br class="hidden sm:block"><span style="color:var(--accent-ink);">먼저 겪은 선배</span>에게 물어보세요
-                </h1>
-                <p class="mt-5 text-base md:text-lg max-w-2xl mx-auto" style="color:var(--ink-soft);">
-                    AgeLess Lab은 은퇴 전문가와 입사 1~3년 차 사회초년생을 1:1 화상 상담으로 연결합니다.<br class="hidden md:block">
-                    업무 적응부터 이직 고민까지, 경력이 검증된 선배의 조언을 받아보세요.
-                </p>
-                <div class="flex flex-wrap justify-center gap-3 mt-8">
-                    <button onclick="showLandingSignup()" class="accent-btn px-8 py-3.5 rounded-full text-base">지금 시작하기</button>
-                    <button onclick="showLandingLogin()" class="ghost-btn px-8 py-3.5 rounded-full text-base">이미 계정이 있어요</button>
+            <section class="max-w-5xl mx-auto px-4 py-16 md:py-24 text-center relative overflow-hidden">
+                <!-- 배경 일러스트: 화상 상담을 추상적으로 표현한 반투명 라인아트. 텍스트 가독성을 위해 옅게(opacity) 깔립니다 -->
+                <div class="hero-bg-illustration" aria-hidden="true">
+                    <svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" style="left:50%; top:50%; transform:translate(-50%,-50%); width:min(1400px, 180vw); height:auto;">
+                        <circle cx="180" cy="320" r="170" fill="var(--accent)" opacity="0.18"></circle>
+                        <circle cx="860" cy="90" r="140" fill="var(--accent)" opacity="0.14"></circle>
+                        <!-- 화면 1 (멘토) -->
+                        <rect x="90" y="70" width="260" height="190" rx="22" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.14"></rect>
+                        <circle cx="220" cy="140" r="34" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.16"></circle>
+                        <path d="M165 215 Q220 170 275 215" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.16"></path>
+                        <!-- 화면 2 (멘티) -->
+                        <rect x="650" y="170" width="260" height="190" rx="22" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.14"></rect>
+                        <circle cx="780" cy="240" r="34" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.16"></circle>
+                        <path d="M725 315 Q780 270 835 315" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.16"></path>
+                        <!-- 두 화면을 잇는 신호 -->
+                        <path d="M350 165 C 450 120, 550 300, 650 265" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="2 14" stroke-linecap="round" opacity="0.22"></path>
+                        <circle cx="500" cy="200" r="6" fill="var(--accent-ink)" opacity="0.3"></circle>
+                        <circle cx="560" cy="245" r="4" fill="var(--accent-ink)" opacity="0.25"></circle>
+                    </svg>
+                </div>
+                <div class="hero-content">
+                    <span class="inline-block bg-slate-50 border border-slate-200 text-sm font-bold px-3 py-1.5 rounded-full mb-4" style="color:var(--ink-soft);">은퇴 전문가 × 사회초년생</span>
+                    <h1 class="fluid-title font-extrabold tracking-tight" style="font-size:clamp(1.8rem, 1.5vw + 1.5rem, 3rem); line-height:1.3;">
+                        직장생활의 첫 고비,<br class="hidden sm:block"><span style="color:var(--accent-ink);">먼저 겪은 선배</span>에게 물어보세요
+                    </h1>
+                    <p class="mt-5 text-base md:text-lg max-w-2xl mx-auto" style="color:var(--ink-soft);">
+                        AgeLess Lab은 은퇴 전문가와 입사 1~3년 차 사회초년생을 1:1 화상 상담으로 연결합니다.<br class="hidden md:block">
+                        업무 적응부터 이직 고민까지, 경력이 검증된 선배의 조언을 받아보세요.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-3 mt-8">
+                        <button onclick="showLandingSignup()" class="accent-btn px-8 py-3.5 rounded-full text-base">지금 시작하기</button>
+                        <button onclick="showLandingLogin()" class="ghost-btn px-8 py-3.5 rounded-full text-base">이미 계정이 있어요</button>
+                    </div>
+
+                    <!-- 실시간 통계 -->
+                    <div class="flex flex-wrap justify-center gap-10 md:gap-16 mt-14">
+                        <div>
+                            <p class="text-3xl md:text-4xl font-extrabold count-up" id="landing-stat-sessions">0</p>
+                            <p class="text-xs md:text-sm font-bold mt-1" style="color:var(--ink-soft);">누적 완료 상담</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl md:text-4xl font-extrabold count-up" id="landing-stat-mentors">0</p>
+                            <p class="text-xs md:text-sm font-bold mt-1" style="color:var(--ink-soft);">활동 중인 멘토</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl md:text-4xl font-extrabold count-up" id="landing-stat-mentees">0</p>
+                            <p class="text-xs md:text-sm font-bold mt-1" style="color:var(--ink-soft);">함께하는 멘티</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- 이용 방법 -->
             <section class="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div class="card p-6">
+                <div class="card p-6 reveal-on-scroll">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-magnifying-glass" style="color:var(--accent-ink);"></i></div>
                     <p class="font-bold mb-1">1. 멘토 둘러보기</p>
                     <p class="text-sm" style="color:var(--ink-soft);">고민 분야별로 검증된 은퇴 전문가 멘토를 찾아보세요.</p>
                 </div>
-                <div class="card p-6">
+                <div class="card p-6 reveal-on-scroll" style="transition-delay:.08s;">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-calendar-check" style="color:var(--accent-ink);"></i></div>
                     <p class="font-bold mb-1">2. 예약 신청</p>
                     <p class="text-sm" style="color:var(--ink-soft);">원하는 시간에 사유를 적어 예약하면, 멘토가 승인 후 상담이 확정돼요.</p>
                 </div>
-                <div class="card p-6">
+                <div class="card p-6 reveal-on-scroll" style="transition-delay:.16s;">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:var(--accent);"><i class="fa-solid fa-video" style="color:var(--accent-ink);"></i></div>
                     <p class="font-bold mb-1">3. 1:1 화상 상담</p>
                     <p class="text-sm" style="color:var(--ink-soft);">화상으로 만나 실질적인 조언을 얻고, 상담 후 Career Report까지 받아보세요.</p>
@@ -240,7 +374,7 @@
 
             <!-- 멘토 지원 CTA -->
             <section class="max-w-5xl mx-auto px-4 py-12">
-                <div class="card p-8 md:p-10 text-center" style="background:#f4faf0;">
+                <div class="card p-8 md:p-10 text-center reveal-on-scroll" style="background:#f4faf0;">
                     <p class="font-extrabold text-xl mb-2">은퇴 전문가이신가요?</p>
                     <p class="text-sm md:text-base mb-6" style="color:var(--ink-soft);">회원가입 후 멘토 신청서를 제출하시면, 심사를 거쳐 멘토로 활동하실 수 있어요.</p>
                     <button onclick="showLandingSignup()" class="accent-btn px-8 py-3 rounded-full text-sm">멘토 신청하러 가기</button>
@@ -317,22 +451,22 @@
                     <span class="font-extrabold tracking-tight">AgeLess Lab</span>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
-                    <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn px-3 py-1.5 rounded-full">공지</button>
-                    <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn px-3 py-1.5 rounded-full hidden">멘토 신청</button>
-                    <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 예약</button>
-                    <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">내 대시보드</button>
-                    <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn px-3 py-1.5 rounded-full hidden">관리자 홈</button>
-                    <button id="nav-messages" onclick="showView('view-messages-hub'); renderMessagesHub();" class="ghost-btn px-3 py-1.5 rounded-full relative">
-                        메시지
-                        <span id="nav-messages-badge" class="hidden absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white" style="background:#f43f5e;">0</span>
+                    <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
+                    <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-user-plus mr-1"></i>멘토 신청</button>
+                    <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-calendar-days mr-1"></i>내 예약</button>
+                    <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-gauge mr-1"></i>내 대시보드</button>
+                    <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-shield-halved mr-1"></i>관리자 홈</button>
+                    <button id="nav-messages" onclick="showView('view-messages-hub'); renderMessagesHub();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full relative">
+                        <i class="fa-solid fa-comment-dots mr-1"></i>메시지
+                        <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white" style="background:#f43f5e;">0</span>
                     </button>
                     <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
-                    <button onclick="handleLogout()" class="ghost-btn px-3 py-1.5 rounded-full">로그아웃</button>
+                    <button onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                 </div>
             </div>
             <!-- 현재 위치 안내 (뒤로가기 구조 보강) -->
             <div id="breadcrumb-bar" class="max-w-5xl mx-auto px-4 pb-2 -mt-1 text-sm flex items-center gap-2" style="color:var(--ink-soft);">
-                <button onclick="goHome()" class="font-bold hover:underline" style="color:var(--ink);"><i class="fa-solid fa-house text-xs mr-1"></i>홈</button>
+                <button onclick="goHome()" class="icon-wiggle font-bold hover:underline" style="color:var(--ink);"><i class="fa-solid fa-house text-xs mr-1"></i>홈</button>
                 <span id="breadcrumb-sep" class="hidden">/</span>
                 <span id="breadcrumb-current" class="font-bold"></span>
                 <button id="breadcrumb-back" onclick="goBack()" class="hidden ml-auto ghost-btn px-3 py-1 rounded-full text-xs"><i class="fa-solid fa-arrow-left mr-1"></i>뒤로</button>
@@ -474,10 +608,10 @@
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘토 수</p><p id="admin-stat-mentors" class="text-2xl font-extrabold">-</p></div>
-                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘티 수</p><p id="admin-stat-mentees" class="text-2xl font-extrabold">-</p></div>
-                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">전체 예약</p><p id="admin-stat-bookings" class="text-2xl font-extrabold">-</p></div>
-                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">완료 세션</p><p id="admin-stat-completed" class="text-2xl font-extrabold">-</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘토 수</p><p id="admin-stat-mentors" class="text-2xl font-extrabold count-up">0</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">멘티 수</p><p id="admin-stat-mentees" class="text-2xl font-extrabold count-up">0</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">전체 예약</p><p id="admin-stat-bookings" class="text-2xl font-extrabold count-up">0</p></div>
+                    <div class="card p-4"><p class="text-xs" style="color:var(--ink-soft);">완료 세션</p><p id="admin-stat-completed" class="text-2xl font-extrabold count-up">0</p></div>
                 </div>
 
                 <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
@@ -701,8 +835,13 @@
                 <span class="text-sm font-bold">화면을 탭하면 재생됩니다</span>
             </button>
             <div id="remote-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/95 text-white p-4 text-center">
-                <div class="w-20 h-20 rounded-full flex items-center justify-center mb-3" style="background:rgba(179,253,139,.15); border:1px solid rgba(179,253,139,.4);">
-                    <i class="fa-solid fa-user-tie text-3xl" style="color:var(--accent);"></i>
+                <div class="radar-ping-wrap w-20 h-20 mb-3">
+                    <span class="radar-ping-ring"></span>
+                    <span class="radar-ping-ring"></span>
+                    <span class="radar-ping-ring"></span>
+                    <div class="w-20 h-20 rounded-full flex items-center justify-center relative z-10" style="background:rgba(179,253,139,.15); border:1px solid rgba(179,253,139,.4);">
+                        <i class="fa-solid fa-user-tie text-3xl" style="color:var(--accent);"></i>
+                    </div>
                 </div>
                 <p class="font-bold text-base text-white" id="remote-name">상대방을 기다리는 중</p>
             </div>
@@ -1162,6 +1301,77 @@
         })();
 
         // =====================================================================
+        // 숫자 카운트업 공용 유틸 — 관리자 통계, 랜딩페이지 실시간 통계에서 사용
+        // =====================================================================
+        function animateCountUp(el, target, duration = 1100) {
+            if (!el) return;
+            target = Number(target) || 0;
+            const startVal = Number(el.dataset.countFrom || 0);
+            if (startVal === target) { el.textContent = target.toLocaleString('ko-KR'); return; }
+            const startTime = performance.now();
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+                const value = Math.round(startVal + (target - startVal) * eased);
+                el.textContent = value.toLocaleString('ko-KR');
+                if (progress < 1) requestAnimationFrame(step);
+                else el.dataset.countFrom = String(target);
+            }
+            requestAnimationFrame(step);
+        }
+
+        // =====================================================================
+        // 랜딩페이지 실시간 통계 — 누적 완료 상담 / 활동 멘토 / 멘티 수
+        // 로그인 여부와 무관하게 페이지 진입 시 바로 집계하고, 실시간 구독으로
+        // 상담이 새로 완료되거나 신규 가입이 생기면 자동으로 갱신한다.
+        // =====================================================================
+        async function loadLandingStats() {
+            try {
+                const [{ count: sessionsCount }, { count: mentorsCount }, { count: menteesCount }] = await Promise.all([
+                    supabaseClient.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+                    supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentor'),
+                    supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentee'),
+                ]);
+                animateCountUp(document.getElementById('landing-stat-sessions'), sessionsCount || 0);
+                animateCountUp(document.getElementById('landing-stat-mentors'), mentorsCount || 0);
+                animateCountUp(document.getElementById('landing-stat-mentees'), menteesCount || 0);
+            } catch (e) {
+                // 통계 집계는 부가 기능이므로 실패해도 랜딩페이지 자체에는 영향이 없도록 조용히 무시
+            }
+        }
+        loadLandingStats();
+        supabaseClient
+            .channel('landing-stats-watch')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+                if (document.getElementById('view-landing') && !document.getElementById('view-landing').classList.contains('hidden')) loadLandingStats();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+                if (document.getElementById('view-landing') && !document.getElementById('view-landing').classList.contains('hidden')) loadLandingStats();
+            })
+            .subscribe();
+
+        // =====================================================================
+        // 랜딩페이지 스크롤 등장 — 뷰포트에 들어오는 순간 .is-visible을 붙여서
+        // CSS 트랜지션(reveal-on-scroll)이 실행되도록 한다.
+        // =====================================================================
+        (function setupScrollReveal() {
+            const targets = document.querySelectorAll('.reveal-on-scroll');
+            if (!targets.length || !('IntersectionObserver' in window)) {
+                targets.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            targets.forEach(el => io.observe(el));
+        })();
+
+        // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
         // =====================================================================
         let allMentorsCache = [];
@@ -1206,7 +1416,7 @@
                 return;
             }
 
-            grid.innerHTML = list.map(m => {
+            grid.innerHTML = list.map((m, idx) => {
                 const live = openAdhocRoomsCache[m.id];
                 const isSelf = currentUser.role === 'mentor' && m.id === currentUser.id;
                 const ratingHtml = m.avg_rating
@@ -1214,16 +1424,16 @@
                     : `<span class="text-sm" style="color:var(--ink-soft);">아직 후기 없음</span>`;
                 const clickAction = isSelf ? `showView('view-mentor-dashboard'); renderMentorDashboard();` : `openMentorDetail('${m.id}')`;
                 return `
-                <div class="card p-5 space-y-3 cursor-pointer hover:shadow-lg transition" onclick="${clickAction}" style="${isSelf ? 'border:2px solid var(--accent);' : ''}">
+                <div class="card p-5 space-y-3 cursor-pointer hover:shadow-lg transition stagger-item" style="--stagger-i:${idx};${isSelf ? 'border:2px solid var(--accent);' : ''}" onclick="${clickAction}">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg" style="background:var(--accent); color:var(--accent-ink);">${(m.name||'멘')[0]}</div>
+                            <div class="w-12 h-12 aspect-square rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 avatar-fx" style="background:var(--accent); color:var(--accent-ink);">${(m.name||'멘')[0]}</div>
                             <div>
                                 <p class="font-bold">${m.name} 멘토</p>
                                 <p class="text-sm" style="color:var(--ink-soft);">${m.title || ''}</p>
                             </div>
                         </div>
-                        ${isSelf ? `<span class="pill px-2.5 py-1 text-xs font-bold ghost-btn">내 프로필</span>` : (live ? `<span class="pill px-2.5 py-1 text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);">지금 가능</span>` : '')}
+                        ${isSelf ? `<span class="pill px-2.5 py-1 text-xs font-bold ghost-btn">내 프로필</span>` : (live ? `<span class="pill px-2.5 py-1 text-xs font-bold badge-pulse-accent" style="background:var(--accent);color:var(--accent-ink);">지금 가능</span>` : '')}
                     </div>
                     <div class="flex items-center justify-between">
                         ${ratingHtml}
@@ -1283,7 +1493,7 @@
 
             document.getElementById('mentor-detail-content').innerHTML = `
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl" style="background:var(--accent); color:var(--accent-ink);">${(mentor.name||'멘')[0]}</div>
+                    <div class="w-16 h-16 aspect-square rounded-full flex items-center justify-center font-bold text-2xl flex-shrink-0 avatar-fx" style="background:var(--accent); color:var(--accent-ink);">${(mentor.name||'멘')[0]}</div>
                     <div>
                         <h2 class="text-xl font-extrabold">${mentor.name} 멘토</h2>
                         <p class="text-sm" style="color:var(--ink-soft);">${mentor.title || ''}</p>
@@ -1705,10 +1915,10 @@
         function renderMessagesHubList(list) {
             const container = document.getElementById('messages-hub-list');
             if (list.length === 0) { container.innerHTML = `<p class="text-sm text-center py-10" style="color:var(--ink-soft);">검색 결과가 없습니다.</p>`; return; }
-            container.innerHTML = list.map(c => `
-                <div class="card p-4 flex items-center justify-between gap-3 cursor-pointer hover:shadow-lg transition" onclick="openChatWith('${c.partnerId}', '${escapeHtml(c.partnerName)}')">
+            container.innerHTML = list.map((c, idx) => `
+                <div class="card p-4 flex items-center justify-between gap-3 cursor-pointer hover:shadow-lg transition stagger-item" style="--stagger-i:${idx};" onclick="openChatWith('${c.partnerId}', '${escapeHtml(c.partnerName)}')">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold flex-shrink-0" style="background:var(--accent); color:var(--accent-ink);">${(c.partnerName || '?')[0]}</div>
+                        <div class="w-11 h-11 aspect-square rounded-full flex items-center justify-center font-bold flex-shrink-0 avatar-fx" style="background:var(--accent); color:var(--accent-ink);">${(c.partnerName || '?')[0]}</div>
                         <div class="min-w-0">
                             <p class="font-bold truncate">${escapeHtml(c.partnerName)} <span class="text-xs font-normal" style="color:var(--ink-soft);">${c.partnerRole}</span></p>
                             <p class="text-sm truncate" style="color:var(--ink-soft); max-width:220px;">${escapeHtml(messagePreviewText(c.lastMessage))}</p>
@@ -1799,10 +2009,10 @@
             const { data: liveRooms } = await supabaseClient.from('live_rooms').select('*').in('status', ['open','in_call']).gte('created_at', threeDaysAgoIso).order('created_at', { ascending: false });
             const { data: applications } = await supabaseClient.from('mentor_applications').select('*').eq('status', 'pending').order('created_at', { ascending: false });
 
-            document.getElementById('admin-stat-mentors').innerText = (mentors || []).length;
-            document.getElementById('admin-stat-mentees').innerText = (mentees || []).length;
-            document.getElementById('admin-stat-bookings').innerText = (bookings || []).length;
-            document.getElementById('admin-stat-completed').innerText = (bookings || []).filter(b => b.status === 'completed').length;
+            animateCountUp(document.getElementById('admin-stat-mentors'), (mentors || []).length);
+            animateCountUp(document.getElementById('admin-stat-mentees'), (mentees || []).length);
+            animateCountUp(document.getElementById('admin-stat-bookings'), (bookings || []).length);
+            animateCountUp(document.getElementById('admin-stat-completed'), (bookings || []).filter(b => b.status === 'completed').length);
 
             // ---- 멘토 신청 심사 ----
             document.getElementById('admin-applications-list').innerHTML = (applications || []).length === 0
@@ -2378,6 +2588,7 @@
                     // who는 'mentor' 또는 'mentee' — 그 사람의 메모장에만 반영한다 (상대방 메모는 항상 읽기 전용)
                     const notepad = document.getElementById(payload.who + '-notepad');
                     if (notepad && document.activeElement !== notepad) { receivingRemoteNote = true; notepad.value = payload.text; receivingRemoteNote = false; }
+                    showRemoteTyping(payload.who);
                 } else if (payload && payload.type === 'camera_state') {
                     document.getElementById('remote-camera-off-overlay').classList.toggle('hidden', payload.on);
                     document.getElementById('remote-camera-off-overlay').classList.toggle('flex', !payload.on);
@@ -2395,6 +2606,21 @@
             if (receivingRemoteNote) return;
             const notepad = document.getElementById(who + '-notepad');
             if (dataConn && dataConn.open) dataConn.send({ type: 'note', who, text: notepad.value });
+        }
+
+        // 상대방이 방금 메모를 입력했다는 신호를 받으면 "작성 중..." 표시를 잠깐 띄웠다가,
+        // 일정 시간 입력이 없으면 원래의 동기화 상태 문구로 되돌린다.
+        const typingRevertTimers = { mentor: null, mentee: null };
+        function showRemoteTyping(who) {
+            const statusEl = document.getElementById(who + '-notepad-sync-status');
+            if (!statusEl) return;
+            statusEl.innerHTML = `작성 중<span class="typing-dots" style="margin-left:4px;"><span></span><span></span><span></span></span>`;
+            clearTimeout(typingRevertTimers[who]);
+            typingRevertTimers[who] = setTimeout(() => {
+                const isMentorOfThisRoom = currentRoom && currentRoom.mentor_id === currentUser.id;
+                const mine = (who === 'mentor') === isMentorOfThisRoom;
+                statusEl.innerText = mine ? '내 메모' : '실시간 동기화 중';
+            }, 1300);
         }
 
         let remotePlayRetryTimer = null;
