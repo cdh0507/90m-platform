@@ -55,21 +55,47 @@
             box-shadow: 0 0 0 3px var(--ring);
         }
 
+        /* ---------- 커서 위치 기반 "채워지는" 호버 이펙트 ----------
+           마우스가 버튼 위에서 머무는 지점(--mx, --my)을 기준으로 원형 클립이
+           확장되며 색이 깔끔하게 채워지는 연출. JS가 mousemove마다 좌표(%)를
+           해당 요소의 --mx/--my 커스텀 프로퍼티로 갱신한다 (아래 스크립트 참고). */
+        .accent-btn, .ghost-btn, .filter-chip {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+        .accent-btn::before, .ghost-btn::before, .filter-chip::before {
+            content: '';
+            position: absolute; inset: -1px;
+            z-index: -1;
+            clip-path: circle(0% at var(--mx, 50%) var(--my, 50%));
+            transition: clip-path .5s cubic-bezier(.22, 1, .36, 1);
+            pointer-events: none;
+        }
+
         .accent-btn {
             background: var(--accent); color: var(--accent-ink); font-weight: 800;
             box-shadow: 0 1px 2px rgba(31,58,18,.08), 0 6px 14px rgba(179,253,139,.35);
         }
+        .accent-btn::before { background: #9ef06a; }
+        .accent-btn:hover::before { clip-path: circle(140% at var(--mx, 50%) var(--my, 50%)); }
         .accent-btn:hover { filter: brightness(1.04); transform: translateY(-1px) scale(1.015); box-shadow: 0 2px 4px rgba(31,58,18,.1), 0 10px 20px rgba(179,253,139,.45); }
         .accent-btn:active { transform: scale(0.97); filter: brightness(0.97); box-shadow: 0 1px 2px rgba(31,58,18,.08); }
         .accent-btn:disabled { transform:none !important; box-shadow:none !important; filter:none !important; }
+        .accent-btn:disabled::before { display:none; }
 
         .ghost-btn {
             background:#fff; color: var(--ink); border:1px solid #e4e4e7; font-weight:700;
         }
-        .ghost-btn:hover { background:#fafafa; border-color:#d4d4d8; transform: translateY(-1px) scale(1.015); box-shadow: 0 4px 10px rgba(20,20,20,.06); }
-        .ghost-btn:active { transform: scale(0.97); background:#f1f1f3; }
+        .ghost-btn::before { background: var(--ink); }
+        .ghost-btn:hover::before { clip-path: circle(140% at var(--mx, 50%) var(--my, 50%)); }
+        .ghost-btn:hover { color:#fff; border-color: var(--ink); transform: translateY(-1px) scale(1.015); box-shadow: 0 6px 16px rgba(20,20,20,.18); }
+        .ghost-btn:active { transform: scale(0.97); }
 
+        .filter-chip::before { background: var(--ink); }
+        .filter-chip:hover::before { clip-path: circle(140% at var(--mx, 50%) var(--my, 50%)); }
         .filter-chip:hover { transform: scale(1.04); }
+        .filter-chip.ghost-btn:hover { color:#fff; }
         .filter-chip:active { transform: scale(0.96); }
 
         /* 좌측 메뉴/링크류의 살짝 확대 반응 */
@@ -1065,6 +1091,12 @@
         }
 
         async function restoreSession() {
+            // 네트워크가 느리거나 응답이 없는 경우에도 로딩 화면이 영원히 떠 있지 않도록
+            // 최대 4초까지만 기다리고, 그 안에 세션 복원이 끝나면 즉시 화면을 넘긴다.
+            let settled = false;
+            const safetyTimer = setTimeout(() => {
+                if (!settled) hideAppLoadingScreen();
+            }, 4000);
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) return; // 로그인 안 된 상태 → 기본값인 랜딩 화면이 그대로 보임
@@ -1072,6 +1104,8 @@
                 if (await blockIfSuspended()) return;
                 enterApp();
             } finally {
+                settled = true;
+                clearTimeout(safetyTimer);
                 hideAppLoadingScreen();
             }
         }
@@ -1086,6 +1120,46 @@
             header.style.boxShadow = scrolled ? '0 1px 2px rgba(20,20,20,.04), 0 8px 20px rgba(20,20,20,.05)' : 'none';
             header.style.borderBottomColor = scrolled ? 'rgba(20,20,20,.06)' : 'transparent';
         }, { passive: true });
+
+        // =====================================================================
+        // 커서 위치 기반 "채워지는" 호버 이펙트 — 버튼/칩 위에서 마우스가 머무는
+        // 지점을 그대로 --mx/--my로 넘겨 CSS clip-path 원이 그 지점에서부터
+        // 깔끔하게 퍼지며 채워지도록 한다. 동적으로 생성되는 버튼(멘토 카드,
+        // 채팅 목록 등)도 이벤트 위임 방식이라 별도 처리 없이 전부 적용된다.
+        // =====================================================================
+        (function setupFillHoverEffect() {
+            const FILL_SELECTOR = '.accent-btn, .ghost-btn, .filter-chip';
+            let rafId = null;
+            let pending = null;
+            function applyPending() {
+                rafId = null;
+                if (!pending) return;
+                const { el, x, y } = pending;
+                el.style.setProperty('--mx', x + '%');
+                el.style.setProperty('--my', y + '%');
+            }
+            document.addEventListener('mousemove', (e) => {
+                const el = e.target.closest ? e.target.closest(FILL_SELECTOR) : null;
+                if (!el) return;
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                pending = { el, x, y };
+                if (rafId === null) rafId = requestAnimationFrame(applyPending);
+            }, { passive: true });
+            // 버튼에 처음 진입하는 순간에도(움직이기 전) 그 지점부터 채워지도록 보정
+            document.addEventListener('mouseover', (e) => {
+                const el = e.target.closest ? e.target.closest(FILL_SELECTOR) : null;
+                if (!el) return;
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                el.style.setProperty('--mx', x + '%');
+                el.style.setProperty('--my', y + '%');
+            }, { passive: true });
+        })();
 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
