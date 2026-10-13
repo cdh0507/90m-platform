@@ -531,10 +531,12 @@
                     <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-calendar-days mr-1"></i>내 예약</button>
                     <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-gauge mr-1"></i>내 대시보드</button>
                     <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-shield-halved mr-1"></i>관리자 홈</button>
-                    <button id="nav-messages" onclick="showView('view-messages-hub'); renderMessagesHub();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full relative">
-                        <i class="fa-solid fa-comment-dots mr-1"></i>메시지
-                        <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white" style="background:#f43f5e;">0</span>
-                    </button>
+                    <span class="relative inline-flex">
+                        <button id="nav-messages" onclick="showView('view-messages-hub'); renderMessagesHub();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full">
+                            <i class="fa-solid fa-comment-dots mr-1"></i>메시지
+                        </button>
+                        <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white z-10" style="background:#f43f5e;">0</span>
+                    </span>
                     <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
                     <button onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                 </div>
@@ -977,12 +979,18 @@
                 <button onclick="closeChatModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+            <!-- 인스타 DM처럼, 상대방이 입력 중일 때만 말풍선 형태의 "..." 애니메이션이 떠있다가 사라짐 -->
+            <div id="chat-typing-indicator" class="hidden px-4 pb-2">
+                <div class="inline-flex items-center px-3 py-2 rounded-2xl" style="background:#f1f1f3;">
+                    <span class="typing-dots" style="color:var(--ink-soft);"><span></span><span></span><span></span></span>
+                </div>
+            </div>
             <div class="p-3 border-t border-slate-100 flex gap-2 items-center">
                 <input type="file" id="chat-file-input" class="hidden" accept="image/*,.pdf,.doc,.docx,.hwp,.zip,.txt" onchange="handleChatFileSelected(event)">
                 <button onclick="document.getElementById('chat-file-input').click()" class="ghost-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" title="사진/파일 첨부">
                     <i class="fa-solid fa-paperclip text-sm"></i>
                 </button>
-                <input type="text" id="chat-input" placeholder="메시지 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();">
+                <input type="text" id="chat-input" placeholder="메시지 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();" oninput="handleChatTyping()">
                 <button onclick="sendChatMessage()" class="accent-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
             </div>
         </div>
@@ -1827,10 +1835,12 @@
             chatPartnerId = partnerId;
             document.getElementById('chat-modal-title').innerText = partnerName + '님과의 대화';
             document.getElementById('chat-modal').classList.remove('hidden');
+            hideTypingIndicator(); // 이전에 열었던 대화의 "입력 중" 표시가 남아있지 않도록 초기화
             loadChatMessages();
             setupChatChannel();
         }
         function closeChatModal() {
+            hideTypingIndicator();
             document.getElementById('chat-modal').classList.add('hidden');
             if (chatChannel) { supabaseClient.removeChannel(chatChannel); chatChannel = null; }
             chatPartnerId = null;
@@ -1901,9 +1911,46 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload) => {
                     const m = payload.new || payload.old;
                     const isThisThread = (m.sender_id === currentUser.id && m.receiver_id === chatPartnerId) || (m.sender_id === chatPartnerId && m.receiver_id === currentUser.id);
-                    if (isThisThread) loadChatMessages(); // 새 메시지든, 읽음 처리 갱신이든 다시 그려서 반영
+                    if (isThisThread) {
+                        hideTypingIndicator(); // 실제 메시지가 도착했으니 "입력 중" 표시는 내려준다
+                        loadChatMessages(); // 새 메시지든, 읽음 처리 갱신이든 다시 그려서 반영
+                    }
+                })
+                // "입력 중" 신호는 DB에 남길 필요 없는 일시적인 정보라서, 저장 없이 바로 주고받는
+                // broadcast 방식을 사용한다 (인스타 DM의 "...입력 중" 표시와 동일한 방식).
+                .on('broadcast', { event: 'typing' }, (msg) => {
+                    if (msg.payload && msg.payload.from === chatPartnerId) showTypingIndicator();
                 })
                 .subscribe();
+        }
+
+        // 상대방이 입력 중일 때 메시지 목록 아래에 "..." 말풍선을 보여주고,
+        // 일정 시간(2.2초) 동안 추가 신호가 없으면 인스타 DM처럼 자동으로 사라지게 한다.
+        let typingIndicatorHideTimer = null;
+        function showTypingIndicator() {
+            const el = document.getElementById('chat-typing-indicator');
+            if (!el) return;
+            el.classList.remove('hidden');
+            const box = document.getElementById('chat-messages');
+            if (box) box.scrollTop = box.scrollHeight;
+            clearTimeout(typingIndicatorHideTimer);
+            typingIndicatorHideTimer = setTimeout(hideTypingIndicator, 2200);
+        }
+        function hideTypingIndicator() {
+            clearTimeout(typingIndicatorHideTimer);
+            const el = document.getElementById('chat-typing-indicator');
+            if (el) el.classList.add('hidden');
+        }
+
+        // 내가 입력할 때마다 상대방에게 "입력 중" 신호를 보낸다. 매 키 입력마다 보내면
+        // 낭비이므로, 1.5초에 한 번 정도만 보내도록 가볍게 간격을 둔다(쓰로틀).
+        let lastTypingBroadcastAt = 0;
+        function handleChatTyping() {
+            if (!chatChannel || !chatPartnerId) return;
+            const now = Date.now();
+            if (now - lastTypingBroadcastAt < 1500) return;
+            lastTypingBroadcastAt = now;
+            chatChannel.send({ type: 'broadcast', event: 'typing', payload: { from: currentUser.id } });
         }
 
         async function sendChatMessage() {
@@ -2369,6 +2416,7 @@
             showView('view-call-room');
             resetCallUI();
             await initVideoCall();
+            await syncMentorPeerId(); // peer가 이전 방에서부터 이미 살아있던 경우에도 이번 방에 반드시 다시 기록
             setupRoomChannel(room.id, true);
         }
 
@@ -2384,6 +2432,7 @@
             showView('view-call-room');
             resetCallUI();
             await initVideoCall();
+            await syncMentorPeerId(); // peer가 이전 방에서부터 이미 살아있던 경우에도 이번 방에 반드시 다시 기록
             setupRoomChannel(room.id, true);
         }
 
@@ -2421,6 +2470,11 @@
                 .subscribe();
         }
 
+        // 멘토가 "입장 허용"을 눌렀을 때 호출됨 — 대시보드/메시지함 등 통화방이 아닌
+        // 다른 화면에서 승인하는 경우가 많기 때문에, 카메라/PeerJS 연결이 이 세션에서
+        // 아직 한 번도 준비되지 않았을 수 있다. 그래서 상담방을 처음 열 때와 똑같이
+        // resetCallUI → initVideoCall → setupRoomChannel을 여기서도 반드시 실행해서,
+        // 어떤 화면에서 승인하든 연결이 절대 빠지지 않도록 한다.
         async function mentorAdmitWaiting() {
             if (!currentRoom) return;
             const { data: room, error } = await supabaseClient.rpc('admit_mentee', { p_room_id: currentRoom.id });
@@ -2428,6 +2482,22 @@
             currentRoom = room;
             document.getElementById('mentor-waiting-banner').classList.add('hidden');
             showView('view-call-room');
+            resetCallUI();
+            await initVideoCall(); // peer/카메라가 이미 준비돼 있으면 내부에서 그대로 재사용되고, 없으면 여기서 새로 만들어진다
+            await syncMentorPeerId(); // peer가 이전부터 이미 살아있던 경우, 이 방(room_peer_id)에도 그 peer id를 확실히 다시 기록
+            setupRoomChannel(currentRoom.id, true);
+        }
+
+        // peer 연결이 이미 열려 있는 상태(peer.id 확보됨)라면, 그 id를 현재 방의
+        // room_peer_id로 즉시 저장한다. peer가 방금 막 새로 생성된 경우엔 아직 id가
+        // 없을 수 있는데, 그 경우는 initVideoCall()의 peer.on('open') 핸들러가
+        // 연결되는 즉시 알아서 저장해주므로 여기서는 기다리지 않고 넘어간다.
+        async function syncMentorPeerId() {
+            if (!currentRoom || !peer || !peer.id) return;
+            if (currentRoom.room_peer_id === peer.id) return; // 이미 최신 상태면 불필요한 쓰기 생략
+            const { data, error } = await supabaseClient.from('live_rooms').update({ room_peer_id: peer.id }).eq('id', currentRoom.id).select().single();
+            if (error) { console.error('room_peer_id 재동기화 실패:', error); return; }
+            if (data) currentRoom = data;
         }
 
         async function mentorRejectWaiting() {
