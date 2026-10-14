@@ -1618,88 +1618,91 @@
                 return new THREE.Color(v || fallback);
             }
 
-            // ---------------- 카멜레온 느낌의 동글동글한 마스코트 캐릭터 ----------------
-            function buildCreature(colors, scale) {
+            // ---------------- 심플한 흰색 마네킹(데생 인형) 피규어 ----------------
+            // 얼굴 없는 매끈한 흰색 구체 머리 + 팔다리는 어깨/엉덩이에서 매달린 관절(pivot)
+            // 구조로 만들어서, 걸을 때 팔다리가 자연스럽게 앞뒤로 흔들리도록 합니다.
+            let mannequinMat = null;
+            function getMannequinMat() {
+                if (!mannequinMat) {
+                    mannequinMat = new THREE.MeshPhysicalMaterial({
+                        color: 0xf2f0ea,
+                        roughness: 0.5,
+                        metalness: 0.02,
+                        clearcoat: 0.28,
+                        clearcoatRoughness: 0.35
+                    });
+                }
+                return mannequinMat;
+            }
+
+            function buildLimb(mat, pivotX, pivotY, len, rad, jointR) {
+                const pivot = new THREE.Group();
+                pivot.position.set(pivotX, pivotY, 0);
+                const joint = new THREE.Mesh(new THREE.SphereGeometry(jointR, 14, 12), mat);
+                pivot.add(joint);
+                const bar = new THREE.Mesh(new THREE.CapsuleGeometry(rad, len, 4, 10), mat);
+                bar.position.y = -(len / 2 + rad);
+                pivot.add(bar);
+                const endJoint = new THREE.Mesh(new THREE.SphereGeometry(jointR * 0.8, 12, 10), mat);
+                endJoint.position.y = -(len + rad * 2);
+                pivot.add(endJoint);
+                return pivot;
+            }
+
+            function buildMannequin(scale) {
                 const g = new THREE.Group();
-                const bodyMat = new THREE.MeshPhysicalMaterial({ color: colors.main, roughness: 0.35, metalness: 0.04, clearcoat: 0.5, clearcoatRoughness: 0.25 });
-                const darkMat = new THREE.MeshPhysicalMaterial({ color: colors.dark, roughness: 0.4, metalness: 0.04, clearcoat: 0.4, clearcoatRoughness: 0.3 });
-                const eyeWhiteMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.2, clearcoat: 0.7 });
-                const pupilMat = new THREE.MeshStandardMaterial({ color: colors.ink, roughness: 0.4 });
+                const mat = getMannequinMat();
 
-                const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.38, 0.5, 6, 16), bodyMat);
-                body.position.y = 0.72;
-                g.add(body);
-
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 20, 16), bodyMat);
-                head.position.set(0, 1.4, 0.05);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 22, 18), mat);
+                head.position.set(0, 1.66, 0);
                 g.add(head);
 
-                const crest = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.24, 10), darkMat);
-                crest.position.set(0, 1.78, -0.05);
-                g.add(crest);
+                const neck = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.04, 4, 8), mat);
+                neck.position.set(0, 1.42, 0);
+                g.add(neck);
 
-                const eyeGeo = new THREE.SphereGeometry(0.15, 14, 12);
-                const pupilGeo = new THREE.SphereGeometry(0.075, 10, 8);
-                const eyeL = new THREE.Mesh(eyeGeo, eyeWhiteMat); eyeL.position.set(-0.22, 1.5, 0.32); g.add(eyeL);
-                const eyeR = new THREE.Mesh(eyeGeo, eyeWhiteMat); eyeR.position.set(0.22, 1.5, 0.32); g.add(eyeR);
-                const pupilL = new THREE.Mesh(pupilGeo, pupilMat); pupilL.position.set(-0.22, 1.5, 0.45); g.add(pupilL);
-                const pupilR = new THREE.Mesh(pupilGeo, pupilMat); pupilR.position.set(0.22, 1.5, 0.45); g.add(pupilR);
+                const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.32, 6, 16), mat);
+                torso.position.set(0, 1.08, 0);
+                g.add(torso);
 
-                const armGeo = new THREE.CapsuleGeometry(0.075, 0.28, 4, 10);
-                const armL = new THREE.Mesh(armGeo, bodyMat); armL.position.set(-0.4, 0.85, 0); armL.rotation.z = 0.5; g.add(armL);
-                const armR = new THREE.Mesh(armGeo, bodyMat); armR.position.set(0.4, 0.85, 0); armR.rotation.z = -0.5; g.add(armR);
-
-                const legGeo = new THREE.CapsuleGeometry(0.09, 0.22, 4, 10);
-                const legL = new THREE.Mesh(legGeo, darkMat); legL.position.set(-0.18, 0.13, 0); g.add(legL);
-                const legR = new THREE.Mesh(legGeo, darkMat); legR.position.set(0.18, 0.13, 0); g.add(legR);
-
-                const tailCurve = new THREE.CatmullRomCurve3([
-                    new THREE.Vector3(0, 0.55, -0.35),
-                    new THREE.Vector3(0, 0.35, -0.65),
-                    new THREE.Vector3(0.18, 0.48, -0.82),
-                    new THREE.Vector3(0.32, 0.72, -0.72),
-                    new THREE.Vector3(0.3, 0.9, -0.55)
-                ]);
-                const tail = new THREE.Mesh(new THREE.TubeGeometry(tailCurve, 24, 0.06, 10, false), darkMat);
-                g.add(tail);
+                const armL = buildLimb(mat, -0.3, 1.32, 0.4, 0.075, 0.095); g.add(armL);
+                const armR = buildLimb(mat, 0.3, 1.32, 0.4, 0.075, 0.095); g.add(armR);
+                const legL = buildLimb(mat, -0.13, 0.8, 0.6, 0.1, 0.12); g.add(legL);
+                const legR = buildLimb(mat, 0.13, 0.8, 0.6, 0.1, 0.12); g.add(legR);
 
                 const shadow = new THREE.Mesh(
-                    new THREE.CircleGeometry(0.5, 24),
-                    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.12 })
+                    new THREE.CircleGeometry(0.42, 24),
+                    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.14 })
                 );
                 shadow.rotation.x = -Math.PI / 2;
                 shadow.position.y = 0.01;
                 g.add(shadow);
 
                 g.scale.setScalar(scale);
-                g.userData.parts = { body, head, eyeL, eyeR, armL, armR, legL, legR, tail, crest };
+                g.userData.parts = { head, torso, armL, armR, legL, legR };
                 return g;
             }
 
-            function addCharacter(sceneIndex, x, z, scale, mode, phase, hue) {
-                const base = cssColor('--accent', '#b3fd8b');
-                const dark = cssColor('--accent-ink', '#1f3a12');
-                const ink = cssColor('--ink', '#16181c');
-                const main = base.clone().offsetHSL(0, 0, hue || 0);
-                const group = buildCreature({ main, dark, ink }, scale);
+            function addCharacter(sceneIndex, x, z, scale, mode, phase) {
+                const group = buildMannequin(scale);
                 group.position.set(x, 0, SCENE_Z[sceneIndex] + z);
                 scene.add(group);
-                characters.push({ group, sceneIndex, baseX: x, baseZ: SCENE_Z[sceneIndex] + z, phase, mode, bodyBaseY: 0 });
+                characters.push({ group, sceneIndex, baseX: x, baseZ: SCENE_Z[sceneIndex] + z, phase, mode });
             }
 
             function buildScenes() {
-                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹
-                addCharacter(0, -1.3, 1.1, 0.95, 'idle', 0, 0);
-                addCharacter(0, 1.5, -0.6, 0.95, 'idle', 1.4, -0.03);
-                addCharacter(0, -0.2, -1.6, 0.85, 'idle', 2.6, 0.03);
+                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹(제자리에서 자연스러운 제스처)
+                addCharacter(0, -1.3, 1.1, 1.0, 'idle', 0);
+                addCharacter(0, 1.5, -0.6, 1.0, 'idle', 1.4);
+                addCharacter(0, -0.2, -1.6, 0.92, 'idle', 2.6);
 
-                // 장면 2: 이용 방법 — 나란히 콩콩 뛰어다니는 세 마리
-                addCharacter(1, -4.0, 0, 0.95, 'hop', 0, 0.04);
-                addCharacter(1, 0, -0.6, 0.95, 'hop', 1.8, 0);
-                addCharacter(1, 4.0, 0, 0.95, 'hop', 3.4, -0.04);
+                // 장면 2: 이용 방법 — 자연스럽게 걸어다니는 세 마리
+                addCharacter(1, -4.0, 0, 1.0, 'walk', 0);
+                addCharacter(1, 0, -0.6, 1.0, 'walk', 1.8);
+                addCharacter(1, 4.0, 0, 1.0, 'walk', 3.4);
 
-                // 장면 3: 멘토 CTA — 혼자 선 솔로 마스코트, 손을 흔듦
-                addCharacter(2, 0, 0, 1.25, 'wave', 0, -0.05);
+                // 장면 3: 멘토 CTA — 혼자 서서 손을 흔듦
+                addCharacter(2, 0, 0, 1.3, 'wave', 0);
             }
 
             // ---------------- 말풍선 (DOM 오버레이) ----------------
@@ -1800,28 +1803,43 @@
                 characters.forEach(c => {
                     const { group, phase, mode } = c;
                     const p = group.userData.parts;
-                    if (mode === 'hop') {
-                        group.position.x = c.baseX + Math.sin(t * 0.45 + phase) * 1.5;
-                        group.rotation.y = Math.sin(t * 0.45 + phase) * 0.5;
-                        const hop = Math.abs(Math.sin(t * 3.2 + phase));
-                        group.position.y = hop * 0.12;
-                        group.scale.y = 1 + hop * 0.08;
-                        group.scale.x = group.scale.z = 1 - hop * 0.04;
-                        p.tail.rotation.y = Math.sin(t * 3.2 + phase) * 0.3;
-                        p.armL.rotation.z = 0.5 + Math.sin(t * 3.2 + phase) * 0.2;
-                        p.armR.rotation.z = -0.5 - Math.sin(t * 3.2 + phase) * 0.2;
+                    if (mode === 'walk') {
+                        // 좌우로 천천히 오가며 자연스럽게 "돌아다니는" 동선. 진행 방향을 실제
+                        // 이동 속도(미분값)로 계산해서, 걷는 방향으로 몸이 자연스럽게 돌도록 합니다.
+                        const wSpeed = 0.5, rangeX = 1.8, rangeZ = 0.5;
+                        const ang = t * wSpeed + phase;
+                        const vx = Math.cos(ang) * rangeX;
+                        const vz = -Math.sin(ang * 0.6) * 0.6 * rangeZ;
+                        group.position.x = c.baseX + Math.sin(ang) * rangeX;
+                        group.position.z = c.baseZ + Math.cos(ang * 0.6) * rangeZ;
+                        group.rotation.y = Math.atan2(vx, vz);
+
+                        // 걷기 사이클: 양쪽 다리를 서로 반대 위상으로 앞뒤로 흔들고,
+                        // 팔은 반대쪽 다리와 같은 위상으로 흔들어 사람이 걷는 것처럼 보이게 합니다.
+                        const stride = 4.6, legSwing = 0.5, armSwing = 0.38;
+                        const walkPhase = t * stride + phase;
+                        p.legL.rotation.x = Math.sin(walkPhase) * legSwing;
+                        p.legR.rotation.x = Math.sin(walkPhase + Math.PI) * legSwing;
+                        p.armL.rotation.x = Math.sin(walkPhase + Math.PI) * armSwing;
+                        p.armR.rotation.x = Math.sin(walkPhase) * armSwing;
+                        group.position.y = Math.abs(Math.sin(walkPhase)) * 0.03;
                     } else if (mode === 'wave') {
-                        p.armR.rotation.z = -1.1 + Math.sin(t * 3) * 0.4;
-                        p.armL.rotation.z = 0.5;
-                        group.rotation.y = Math.sin(t * 0.4) * 0.25;
-                        group.position.y = Math.sin(t * 1.6) * 0.03;
-                        p.tail.rotation.y = Math.sin(t * 1.2) * 0.2;
+                        // 팔을 옆으로 들어올려 흔듦(위에서 내려다보는 카메라 각도에서도
+                        // 팔이 몸에 겹쳐 짧아 보이지 않고 또렷한 실루엣으로 보이도록 함)
+                        p.armR.rotation.z = 2.3 + Math.sin(t * 3.2) * 0.3;
+                        p.armL.rotation.x = 0.05 + Math.sin(t * 1.3) * 0.06;
+                        p.legL.rotation.x = Math.sin(t * 1.1) * 0.05;
+                        p.legR.rotation.x = Math.sin(t * 1.1 + Math.PI) * 0.05;
+                        group.rotation.y = Math.sin(t * 0.35) * 0.18;
+                        group.position.y = Math.sin(t * 1.6) * 0.02;
                     } else {
-                        group.rotation.y = Math.sin(t * 0.3 + phase) * 0.22;
-                        group.position.y = Math.sin(t * 1.8 + phase) * 0.025;
-                        p.armR.rotation.z = -0.5 + Math.sin(t * 1.5 + phase) * 0.15;
-                        p.armL.rotation.z = 0.5 - Math.sin(t * 1.5 + phase + 1) * 0.15;
-                        p.tail.rotation.y = Math.sin(t * 0.8 + phase) * 0.15;
+                        // idle: 제자리에서 대화하듯 자연스러운 체중 이동 + 팔 제스처
+                        group.rotation.y = Math.sin(t * 0.28 + phase) * 0.2;
+                        group.position.y = Math.sin(t * 1.4 + phase) * 0.015;
+                        p.armR.rotation.x = -0.3 + Math.sin(t * 1.2 + phase) * 0.18;
+                        p.armL.rotation.x = -0.25 + Math.sin(t * 1.2 + phase + 1.6) * 0.18;
+                        p.legL.rotation.x = Math.sin(t * 0.9 + phase) * 0.05;
+                        p.legR.rotation.x = Math.sin(t * 0.9 + phase + Math.PI) * 0.05;
                     }
                 });
             }
@@ -1906,13 +1924,18 @@
                     renderer.setSize(window.innerWidth, window.innerHeight);
                     container.appendChild(renderer.domElement);
 
-                    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-                    const dirLight = new THREE.DirectionalLight(0xfff6e8, 0.95);
-                    dirLight.position.set(3, 6, 6);
+                    // 흰색 마네킹이 연한 배경색과 잘 구분되도록, 그림자가 또렷하게 지도록
+                    // 전체적으로는 은은하게, 주 조명은 뚜렷하게 비춥니다.
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+                    const dirLight = new THREE.DirectionalLight(0xfff3e0, 1.15);
+                    dirLight.position.set(3, 7, 6);
                     scene.add(dirLight);
-                    const fillLight = new THREE.DirectionalLight(0xdfffe0, 0.3);
+                    const fillLight = new THREE.DirectionalLight(0xdce6f2, 0.35);
                     fillLight.position.set(-4, 2, -4);
                     scene.add(fillLight);
+                    const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+                    rimLight.position.set(0, 4, -8);
+                    scene.add(rimLight);
 
                     buildScenes();
                     createBubbleEls();
