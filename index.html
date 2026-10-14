@@ -234,6 +234,18 @@
             30% { opacity:1; transform: translateY(-2px); }
         }
 
+        /* ---------- 상담 중 실시간 채팅 ---------- */
+        .chat-bubble {
+            max-width: 78%; padding: 8px 12px; border-radius: 14px;
+            background: #f1f5f9; animation: chatBubbleIn .18s ease-out;
+        }
+        .chat-bubble.mine { background: var(--accent); color: var(--accent-ink); }
+        .chat-bubble-name { display:block; font-size:10px; font-weight:700; opacity:.55; margin-bottom:2px; }
+        .chat-bubble-text { font-size: 13px; line-height:1.45; word-break: break-word; white-space: pre-wrap; }
+        @keyframes chatBubbleIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform: translateY(0); } }
+        #call-chat-messages::-webkit-scrollbar { width:5px; }
+        #call-chat-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius:3px; }
+
         /* ---------- 통화 연결 대기: 레이더 핑 애니메이션 ---------- */
         .radar-ping-wrap { position:relative; display:inline-flex; align-items:center; justify-content:center; }
         .radar-ping-ring {
@@ -1053,6 +1065,19 @@
                         </div>
                         <textarea id="mentee-notepad" oninput="handleNotepadInput('mentee')" placeholder="멘티만 작성할 수 있는 메모입니다." class="w-full text-sm p-4 outline-none resize-none" rows="4"></textarea>
                     </div>
+                </div>
+
+                <!-- 상담 중 실시간 채팅 -->
+                <div class="bg-white rounded-2xl overflow-hidden card flex flex-col" style="height:320px;">
+                    <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 flex-shrink-0">
+                        <span class="text-sm font-bold flex items-center gap-1.5"><i class="fa-solid fa-comment-dots"></i> 채팅</span>
+                        <span id="call-chat-typing-status" class="text-xs" style="color:var(--ink-soft);"></span>
+                    </div>
+                    <div id="call-chat-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2"></div>
+                    <form id="call-chat-form" onsubmit="sendCallChatMessage(event)" class="flex items-center gap-2 px-3 py-2 border-t border-slate-100 flex-shrink-0">
+                        <input id="call-chat-input" type="text" oninput="handleCallChatTyping()" placeholder="메시지를 입력하세요" class="flex-1 text-sm px-3.5 py-2.5 rounded-full outline-none bg-slate-50" autocomplete="off">
+                        <button type="submit" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--accent); color:var(--accent-ink);"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                    </form>
                 </div>
 
                 <!-- 통화 종료 후에만 노출: 다음 단계로 -->
@@ -2823,6 +2848,15 @@
             menteeNotepad.classList.toggle('bg-slate-50', isMentorOfThisRoom);
             document.getElementById('mentor-notepad-sync-status').innerText = isMentorOfThisRoom ? '내 메모' : '동기화 대기 중';
             document.getElementById('mentee-notepad-sync-status').innerText = isMentorOfThisRoom ? '동기화 대기 중' : '내 메모';
+
+            // 통화 중 채팅창도 매 상담마다 초기화 (메시지 목록 페이지의 채팅과는 별개의 기능)
+            const callChatMessagesEl = document.getElementById('call-chat-messages');
+            if (callChatMessagesEl) callChatMessagesEl.innerHTML = '';
+            const callChatInputEl = document.getElementById('call-chat-input');
+            if (callChatInputEl) callChatInputEl.value = '';
+            const callChatTypingEl = document.getElementById('call-chat-typing-status');
+            if (callChatTypingEl) callChatTypingEl.innerText = '';
+            if (callChatTypingRevertTimer) { clearTimeout(callChatTypingRevertTimer); callChatTypingRevertTimer = null; }
         }
 
         async function initVideoCall() {
@@ -2961,6 +2995,14 @@
                 } else if (payload && payload.type === 'camera_state') {
                     document.getElementById('remote-camera-off-overlay').classList.toggle('hidden', payload.on);
                     document.getElementById('remote-camera-off-overlay').classList.toggle('flex', !payload.on);
+                } else if (payload && payload.type === 'chat') {
+                    // who는 메시지를 보낸 사람('mentor' 또는 'mentee') — 상대방이 보낸 메시지이므로 왼쪽(mine=false)에 표시
+                    appendCallChatMessage(payload.who, payload.text, false);
+                    const callChatTypingEl = document.getElementById('call-chat-typing-status');
+                    if (callChatTypingEl) callChatTypingEl.innerText = '';
+                    clearTimeout(callChatTypingRevertTimer);
+                } else if (payload && payload.type === 'chat_typing') {
+                    showCallChatTyping();
                 }
             });
             conn.on('close', () => {
@@ -2990,6 +3032,62 @@
                 const mine = (who === 'mentor') === isMentorOfThisRoom;
                 statusEl.innerText = mine ? '내 메모' : '실시간 동기화 중';
             }, 1300);
+        }
+
+        // =====================================================================
+        // 상담 중 실시간 채팅 (노트와는 별개의 기능 — PeerJS 데이터 연결을 그대로 재사용)
+        // ※ 상담 목록의 "메시지" 기능(chat-modal, Supabase 기반, 통화와 무관하게 상시 사용)과는
+        //    완전히 분리된 별개 기능이므로, id/함수명 모두 call-chat 접두사로 구분한다.
+        // =====================================================================
+        function appendCallChatMessage(who, text, mine) {
+            const container = document.getElementById('call-chat-messages');
+            if (!container) return;
+            const label = who === 'mentor' ? '멘토' : '멘티';
+            const wrap = document.createElement('div');
+            wrap.className = 'flex ' + (mine ? 'justify-end' : 'justify-start');
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble' + (mine ? ' mine' : '');
+            const nameEl = document.createElement('span');
+            nameEl.className = 'chat-bubble-name';
+            nameEl.innerText = label;
+            const textEl = document.createElement('div');
+            textEl.className = 'chat-bubble-text';
+            textEl.innerText = text; // innerText로만 넣어 XSS 방지
+            bubble.appendChild(nameEl);
+            bubble.appendChild(textEl);
+            wrap.appendChild(bubble);
+            container.appendChild(wrap);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendCallChatMessage(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('call-chat-input');
+            const text = (input.value || '').trim();
+            if (!text) return;
+            const isMentorOfThisRoom = currentRoom && currentRoom.mentor_id === currentUser.id;
+            const who = isMentorOfThisRoom ? 'mentor' : 'mentee';
+            appendCallChatMessage(who, text, true);
+            if (dataConn && dataConn.open) dataConn.send({ type: 'chat', who, text });
+            input.value = '';
+        }
+
+        // 입력 중일 때 상대방에게 "입력 중..." 신호를 보낸다 (너무 자주 보내지 않도록 가볍게 쓰로틀)
+        let lastCallChatTypingSentAt = 0;
+        function handleCallChatTyping() {
+            const now = Date.now();
+            if (now - lastCallChatTypingSentAt < 800) return;
+            lastCallChatTypingSentAt = now;
+            if (dataConn && dataConn.open) dataConn.send({ type: 'chat_typing' });
+        }
+
+        let callChatTypingRevertTimer = null;
+        function showCallChatTyping() {
+            const el = document.getElementById('call-chat-typing-status');
+            if (!el) return;
+            el.innerHTML = `입력 중<span class="typing-dots" style="margin-left:4px;"><span></span><span></span><span></span></span>`;
+            clearTimeout(callChatTypingRevertTimer);
+            callChatTypingRevertTimer = setTimeout(() => { el.innerText = ''; }, 1300);
         }
 
         let remotePlayRetryTimer = null;
