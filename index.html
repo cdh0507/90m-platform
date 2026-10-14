@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- 랜딩페이지 3D 캐릭터 배경에 사용 (로드 실패해도 사이트 나머지 기능엔 영향 없음) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
     <!-- Google Identity Services — 녹화 파일을 구글 드라이브에 저장하는 기능에 사용 (설정 전엔 비활성 상태) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
@@ -342,11 +342,13 @@
            일반 DOM 요소로 그려서 3D 캐릭터 머리 위치에 실시간으로 맞춰줍니다. */
         #landing-3d-stage { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         #landing-3d-stage canvas { display: block; width: 100%; height: 100%; }
-        /* 캔버스가 배경(z-index:0)이고 실제 콘텐츠는 그 위(z-index:1)에 떠 있어야 함 */
-        #view-landing > header, #view-landing > main, #view-landing > footer { position: relative; z-index: 1; }
+        /* 쌓임 순서: 3D 캔버스(0) → 말풍선(1) → 실제 페이지 콘텐츠(2).
+           말풍선을 실제 글자/카드보다 "아래"에 둬서, 혹시라도 위치가 겹치더라도
+           말풍선이 글자나 카드를 덮어 가리는 일이 없고 항상 콘텐츠가 우선 보이게 합니다. */
+        #view-landing > header, #view-landing > main, #view-landing > footer { position: relative; z-index: 2; }
 
         .landing-3d-bubble {
-            position: fixed; z-index: 2; left: 0; top: 0; pointer-events: none;
+            position: fixed; z-index: 1; left: 0; top: 0; pointer-events: none;
             transform: translate(-50%, -100%); white-space: nowrap;
             background: #ffffff; border: 1.5px solid var(--ink); border-radius: 14px;
             padding: 7px 12px; opacity: 0; transition: opacity .2s ease, transform .2s ease;
@@ -1560,102 +1562,144 @@
         // =====================================================================
         // 랜딩페이지 3D 캐릭터 배경 (Three.js)
         // 스크롤에 맞춰 카메라가 세 장면을 순서대로 통과합니다:
-        //   장면 1 (히어로)       — 세 사람이 둘러서서 대화
-        //   장면 2 (이용 방법)    — 세 사람이 나란히 걸어다니는 "여정" 느낌
-        //   장면 3 (멘토 CTA)     — 혼자 선 멘토가 손을 흔드는 솔로 장면
+        //   장면 1 (히어로)       — 세 마리가 둘러서서 대화
+        //   장면 2 (이용 방법)    — 세 마리가 나란히 콩콩 뛰어다니는 "여정" 느낌
+        //   장면 3 (멘토 CTA)     — 혼자 선(조금 더 큰) 마스코트가 손을 흔듦
+        // 사람 얼굴을 본뜨지 않고, 동글동글한 카멜레온 느낌의 마스코트 캐릭터로 디자인했습니다.
+        // 카메라는 스크롤 위치를 바로 따라가지 않고 부드럽게 "뒤쫓아 가도록"(댐핑) 만들어서,
+        // 스크롤을 빠르게 내려도 캐릭터들이 휙 지나가 보이지 않고 천천히 흘러가듯 보입니다.
         // Three.js 로드 실패, WebGL 미지원, prefers-reduced-motion 중 하나라도 해당하면
         // 조용히 초기화를 건너뛰고 기존 2D 히어로 일러스트가 그대로 보이도록 둡니다.
         // =====================================================================
         (function () {
             let scene, camera, renderer, clock;
-            let characters = [];   // { group, kind, baseX, baseZ, phase, parts, sceneIndex }
-            let bubbleEls = [];     // 재사용되는 말풍선 DOM 3개
+            let characters = [];
+            let bubbleEls = [];
             let running = false;
             let bubbleTimer = 0;
             let activeBubbleIdx = -1;
+            let camX = 0, camY = 7, camZ = 14; // 댐핑이 적용된 실제 카메라 위치 (목표값을 부드럽게 뒤쫓음)
+            let textRectEls = null;
+            let textRectsCache = [];
+            let textRectsCacheT = -999;
+
+            const SCENE_Z = [0, -30, -60]; // 각 장면의 기준 z 위치
+
+            // 카메라가 각 장면을 "정확히 그 위치까지" 지나가지 않고, 항상 일정 거리를 두고
+            // 지나가도록 하는 경유점들. 이렇게 하면 스크롤을 아무리 빨리 내려도 카메라가
+            // 캐릭터 머리 위로 바짝 붙어 지나가는("플라이오버") 일이 생기지 않습니다.
+            const CAM_WAYPOINTS = [
+                { frac: 0,    x: 0,    y: 7.0, z: 14  },  // 장면1(히어로)에서 14만큼 떨어져서 바라봄
+                { frac: 0.5,  x: -1.0, y: 7.6, z: -19 },  // 장면2(이용 방법)와 최소 11 거리 유지
+                { frac: 1,    x: 0,    y: 6.6, z: -52 }   // 장면3(CTA)과 최소 8 거리 유지
+            ];
+            function sampleCamPath(frac) {
+                for (let i = 0; i < CAM_WAYPOINTS.length - 1; i++) {
+                    const a = CAM_WAYPOINTS[i], b = CAM_WAYPOINTS[i + 1];
+                    if (frac >= a.frac && frac <= b.frac) {
+                        const lf = (frac - a.frac) / ((b.frac - a.frac) || 1);
+                        const e = lf * lf * (3 - 2 * lf); // smoothstep
+                        return {
+                            x: THREE.MathUtils.lerp(a.x, b.x, e),
+                            y: THREE.MathUtils.lerp(a.y, b.y, e),
+                            z: THREE.MathUtils.lerp(a.z, b.z, e)
+                        };
+                    }
+                }
+                return CAM_WAYPOINTS[CAM_WAYPOINTS.length - 1];
+            }
 
             function prefersReducedMotion() {
                 return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             }
 
-            // CSS 커스텀 프로퍼티에서 실제 색상값을 읽어와, 디자인이 바뀌어도 3D 쪽 색이 항상 같이 따라가도록 함
             function cssColor(varName, fallback) {
                 const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
                 return new THREE.Color(v || fallback);
             }
 
-            function buildCharacter(colors, scale) {
+            // ---------------- 카멜레온 느낌의 동글동글한 마스코트 캐릭터 ----------------
+            function buildCreature(colors, scale) {
                 const g = new THREE.Group();
-                const headMat = new THREE.MeshStandardMaterial({ color: colors.head, flatShading: true, roughness: 0.9 });
-                const hairMat = new THREE.MeshStandardMaterial({ color: colors.ink, flatShading: true, roughness: 0.9 });
-                const jacketMat = new THREE.MeshStandardMaterial({ color: colors.accent, flatShading: true, roughness: 0.8 });
-                const pantsMat = new THREE.MeshStandardMaterial({ color: colors.ink, flatShading: true, roughness: 0.9 });
-                const glassesMat = new THREE.MeshStandardMaterial({ color: colors.accentInk, flatShading: true, roughness: 0.6 });
+                const bodyMat = new THREE.MeshPhysicalMaterial({ color: colors.main, roughness: 0.35, metalness: 0.04, clearcoat: 0.5, clearcoatRoughness: 0.25 });
+                const darkMat = new THREE.MeshPhysicalMaterial({ color: colors.dark, roughness: 0.4, metalness: 0.04, clearcoat: 0.4, clearcoatRoughness: 0.3 });
+                const eyeWhiteMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.2, clearcoat: 0.7 });
+                const pupilMat = new THREE.MeshStandardMaterial({ color: colors.ink, roughness: 0.4 });
 
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10), headMat);
-                head.position.y = 1.55;
+                const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.38, 0.5, 6, 16), bodyMat);
+                body.position.y = 0.72;
+                g.add(body);
+
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 20, 16), bodyMat);
+                head.position.set(0, 1.4, 0.05);
                 g.add(head);
 
-                const hair = new THREE.Mesh(new THREE.SphereGeometry(0.478, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.48), hairMat);
-                hair.position.y = 1.56;
-                g.add(hair);
+                const crest = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.24, 10), darkMat);
+                crest.position.set(0, 1.78, -0.05);
+                g.add(crest);
 
-                const lensGeo = new THREE.TorusGeometry(0.12, 0.025, 6, 14);
-                const lensL = new THREE.Mesh(lensGeo, glassesMat); lensL.position.set(-0.16, 1.55, 0.41); g.add(lensL);
-                const lensR = new THREE.Mesh(lensGeo, glassesMat); lensR.position.set(0.16, 1.55, 0.41); g.add(lensR);
-                const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.1, 6), glassesMat);
-                bridge.rotation.z = Math.PI / 2; bridge.position.set(0, 1.55, 0.42); g.add(bridge);
+                const eyeGeo = new THREE.SphereGeometry(0.15, 14, 12);
+                const pupilGeo = new THREE.SphereGeometry(0.075, 10, 8);
+                const eyeL = new THREE.Mesh(eyeGeo, eyeWhiteMat); eyeL.position.set(-0.22, 1.5, 0.32); g.add(eyeL);
+                const eyeR = new THREE.Mesh(eyeGeo, eyeWhiteMat); eyeR.position.set(0.22, 1.5, 0.32); g.add(eyeR);
+                const pupilL = new THREE.Mesh(pupilGeo, pupilMat); pupilL.position.set(-0.22, 1.5, 0.45); g.add(pupilL);
+                const pupilR = new THREE.Mesh(pupilGeo, pupilMat); pupilR.position.set(0.22, 1.5, 0.45); g.add(pupilR);
 
-                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.9, 10), jacketMat);
-                torso.position.y = 0.85; g.add(torso);
+                const armGeo = new THREE.CapsuleGeometry(0.075, 0.28, 4, 10);
+                const armL = new THREE.Mesh(armGeo, bodyMat); armL.position.set(-0.4, 0.85, 0); armL.rotation.z = 0.5; g.add(armL);
+                const armR = new THREE.Mesh(armGeo, bodyMat); armR.position.set(0.4, 0.85, 0); armR.rotation.z = -0.5; g.add(armR);
 
-                const armGeo = new THREE.CylinderGeometry(0.09, 0.09, 0.62, 8);
-                const armL = new THREE.Mesh(armGeo, jacketMat); armL.position.set(-0.47, 0.92, 0); armL.rotation.z = 0.22; g.add(armL);
-                const armR = new THREE.Mesh(armGeo, jacketMat); armR.position.set(0.47, 0.92, 0); armR.rotation.z = -0.22; g.add(armR);
+                const legGeo = new THREE.CapsuleGeometry(0.09, 0.22, 4, 10);
+                const legL = new THREE.Mesh(legGeo, darkMat); legL.position.set(-0.18, 0.13, 0); g.add(legL);
+                const legR = new THREE.Mesh(legGeo, darkMat); legR.position.set(0.18, 0.13, 0); g.add(legR);
 
-                const legGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.7, 8);
-                const legL = new THREE.Mesh(legGeo, pantsMat); legL.position.set(-0.17, 0.05, 0); g.add(legL);
-                const legR = new THREE.Mesh(legGeo, pantsMat); legR.position.set(0.17, 0.05, 0); g.add(legR);
+                const tailCurve = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(0, 0.55, -0.35),
+                    new THREE.Vector3(0, 0.35, -0.65),
+                    new THREE.Vector3(0.18, 0.48, -0.82),
+                    new THREE.Vector3(0.32, 0.72, -0.72),
+                    new THREE.Vector3(0.3, 0.9, -0.55)
+                ]);
+                const tail = new THREE.Mesh(new THREE.TubeGeometry(tailCurve, 24, 0.06, 10, false), darkMat);
+                g.add(tail);
 
                 const shadow = new THREE.Mesh(
-                    new THREE.CircleGeometry(0.52, 20),
+                    new THREE.CircleGeometry(0.5, 24),
                     new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.12 })
                 );
                 shadow.rotation.x = -Math.PI / 2;
-                shadow.position.y = 0.015;
+                shadow.position.y = 0.01;
                 g.add(shadow);
 
                 g.scale.setScalar(scale);
-                g.userData.parts = { head, armL, armR, legL, legR, torso };
+                g.userData.parts = { body, head, eyeL, eyeR, armL, armR, legL, legR, tail, crest };
                 return g;
             }
 
-            function addCharacter(sceneIndex, x, z, scale, mode, phase) {
-                const colors = {
-                    head: cssColor('--bg', '#f5f5f7').lerp(new THREE.Color('#ffffff'), 0.4),
-                    ink: cssColor('--ink', '#16181c'),
-                    accent: cssColor('--accent', '#b3fd8b'),
-                    accentInk: cssColor('--accent-ink', '#1f3a12')
-                };
-                const group = buildCharacter(colors, scale);
-                group.position.set(x, 0, z);
+            function addCharacter(sceneIndex, x, z, scale, mode, phase, hue) {
+                const base = cssColor('--accent', '#b3fd8b');
+                const dark = cssColor('--accent-ink', '#1f3a12');
+                const ink = cssColor('--ink', '#16181c');
+                const main = base.clone().offsetHSL(0, 0, hue || 0);
+                const group = buildCreature({ main, dark, ink }, scale);
+                group.position.set(x, 0, SCENE_Z[sceneIndex] + z);
                 scene.add(group);
-                characters.push({ group, sceneIndex, baseX: x, baseZ: z, phase, mode, headBase: 1.55 * scale });
+                characters.push({ group, sceneIndex, baseX: x, baseZ: SCENE_Z[sceneIndex] + z, phase, mode, bodyBaseY: 0 });
             }
 
             function buildScenes() {
-                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹 (살짝 겹쳐서 입체감)
-                addCharacter(0, -1.3, 1.1, 1.0, 'idle', 0);
-                addCharacter(0, 1.5, -0.6, 1.0, 'idle', 1.4);
-                addCharacter(0, -0.2, -1.6, 0.92, 'idle', 2.6);
+                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹
+                addCharacter(0, -1.3, 1.1, 0.95, 'idle', 0, 0);
+                addCharacter(0, 1.5, -0.6, 0.95, 'idle', 1.4, -0.03);
+                addCharacter(0, -0.2, -1.6, 0.85, 'idle', 2.6, 0.03);
 
-                // 장면 2: 이용 방법 — 나란히 서서(혹은 천천히 거닐며) 걸어다니는 세 사람
-                addCharacter(1, -4.2, -40, 1.0, 'walk', 0);
-                addCharacter(1, 0, -40.6, 1.0, 'walk', 2.1);
-                addCharacter(1, 4.2, -40, 1.0, 'walk', 4.2);
+                // 장면 2: 이용 방법 — 나란히 콩콩 뛰어다니는 세 마리
+                addCharacter(1, -4.0, 0, 0.95, 'hop', 0, 0.04);
+                addCharacter(1, 0, -0.6, 0.95, 'hop', 1.8, 0);
+                addCharacter(1, 4.0, 0, 0.95, 'hop', 3.4, -0.04);
 
-                // 장면 3: 멘토 CTA — 혼자 선 솔로 인물, 손을 흔듦
-                addCharacter(2, 0, -80, 1.3, 'wave', 0);
+                // 장면 3: 멘토 CTA — 혼자 선 솔로 마스코트, 손을 흔듦
+                addCharacter(2, 0, 0, 1.25, 'wave', 0, -0.05);
             }
 
             // ---------------- 말풍선 (DOM 오버레이) ----------------
@@ -1678,24 +1722,57 @@
                 };
             }
 
-            // 현재 카메라와 가장 가까운(=현재 통과 중인) 장면만 골라 말풍선을 순서대로 띄움
+            // 홈페이지의 실제 제목/본문 글자 위치를 주기적으로 읽어와서, 말풍선이 그 글자와
+            // 겹치는 자리에는 뜨지 않도록 합니다(말풍선이 글자를 가리는 문제 방지).
+            function refreshTextRects(t) {
+                if (t - textRectsCacheT < 0.25) return; // 매 프레임 계산하지 않고 0.25초마다만 갱신(성능)
+                textRectsCacheT = t;
+                if (!textRectEls) {
+                    textRectEls = Array.from(document.querySelectorAll(
+                        '#view-landing h1, #view-landing h2, #view-landing h3, #view-landing p, #view-landing .font-extrabold, #view-landing .font-bold'
+                    ));
+                }
+                const vh = window.innerHeight;
+                textRectsCache = [];
+                textRectEls.forEach((el) => {
+                    if (!el.textContent || !el.textContent.trim()) return;
+                    const r = el.getBoundingClientRect();
+                    if (r.bottom < -40 || r.top > vh + 40 || r.width < 4 || r.height < 4) return;
+                    textRectsCache.push(r);
+                });
+            }
+
+            function overlapsText(x, y, w, h) {
+                const left = x - w / 2, right = x + w / 2, top = y - h, bottom = y;
+                const pad = 6; // 글자 주변에 약간의 여유를 둠
+                for (let i = 0; i < textRectsCache.length; i++) {
+                    const r = textRectsCache[i];
+                    if (left < r.right + pad && right > r.left - pad && top < r.bottom + pad && bottom > r.top - pad) return true;
+                }
+                return false;
+            }
+
+            // 현재 카메라와 가장 가까운(=현재 통과 중인) 장면만 골라 말풍선을 순서대로 띄움.
+            // 말풍선은 화면 상단 끝부분을 피하고, 실제 글자와 겹치지 않는 자리에서만 뜨도록 합니다.
             function updateSpeechBubbles(t, dt) {
-                const camZ = camera.position.z;
+                const camZv = camera.position.z;
                 let nearestScene = 0, nearestDist = Infinity;
-                [0, -40, -80].forEach((z, idx) => {
-                    const d = Math.abs(camZ - z);
+                SCENE_Z.forEach((z, idx) => {
+                    const d = Math.abs(camZv - z);
                     if (d < nearestDist) { nearestDist = d; nearestScene = idx; }
                 });
                 const inScene = characters.filter(c => c.sceneIndex === nearestScene);
-                // 그 장면과 충분히 가까울 때만(=실제로 화면에 보일 때만) 말풍선 동작
-                const active = nearestDist < 22 && inScene.length > 0;
+                const active = nearestDist < 20 && inScene.length > 0;
 
                 bubbleTimer += dt;
-                if (active && bubbleTimer > 2.6) {
+                if (active && bubbleTimer > 2.8) {
                     bubbleTimer = 0;
                     activeBubbleIdx = (activeBubbleIdx + 1) % inScene.length;
                 }
                 if (!active) activeBubbleIdx = -1;
+
+                const safeTop = window.innerHeight * 0.08;  // 헤더 바로 아래쪽은 피함
+                refreshTextRects(t);
 
                 bubbleEls.forEach((el, i) => {
                     if (!active || i >= inScene.length) { el.classList.remove('show'); return; }
@@ -1705,8 +1782,15 @@
                     const headWorld = new THREE.Vector3();
                     c.group.userData.parts.head.getWorldPosition(headWorld);
                     const pos = worldToScreen(headWorld);
-                    if (pos.behind) { el.classList.remove('show'); return; }
-                    el.style.transform = `translate(${pos.x}px, ${pos.y - 26}px) translate(-50%, -100%)`;
+                    const bubbleY = pos.y - 30;
+                    const bubbleW = 110, bubbleH = 36; // 대략적인 말풍선 크기(실측 대신 넉넉하게 추정)
+                    // 실제 홈페이지 글자(제목/본문)의 현재 화면상 위치와 겹치면 그 프레임엔 띄우지 않음
+                    if (pos.behind || bubbleY < safeTop || bubbleY > window.innerHeight * 0.96 ||
+                        overlapsText(pos.x, bubbleY, bubbleW, bubbleH)) {
+                        el.classList.remove('show'); return;
+                    }
+                    const clampedX = Math.min(window.innerWidth - 70, Math.max(70, pos.x));
+                    el.style.transform = `translate(${clampedX}px, ${bubbleY}px) translate(-50%, -100%)`;
                     el.classList.add('show');
                 });
             }
@@ -1716,37 +1800,63 @@
                 characters.forEach(c => {
                     const { group, phase, mode } = c;
                     const p = group.userData.parts;
-                    if (mode === 'walk') {
-                        group.position.x = c.baseX + Math.sin(t * 0.5 + phase) * 1.6;
-                        group.rotation.y = Math.sin(t * 0.5 + phase) * 0.5;
-                        p.legL.rotation.x = Math.sin(t * 4 + phase) * 0.55;
-                        p.legR.rotation.x = -Math.sin(t * 4 + phase) * 0.55;
-                        p.armL.rotation.x = -Math.sin(t * 4 + phase) * 0.45;
-                        p.armR.rotation.x = Math.sin(t * 4 + phase) * 0.45;
-                        p.head.position.y = c.headBase + Math.abs(Math.sin(t * 4 + phase)) * 0.025;
+                    if (mode === 'hop') {
+                        group.position.x = c.baseX + Math.sin(t * 0.45 + phase) * 1.5;
+                        group.rotation.y = Math.sin(t * 0.45 + phase) * 0.5;
+                        const hop = Math.abs(Math.sin(t * 3.2 + phase));
+                        group.position.y = hop * 0.12;
+                        group.scale.y = 1 + hop * 0.08;
+                        group.scale.x = group.scale.z = 1 - hop * 0.04;
+                        p.tail.rotation.y = Math.sin(t * 3.2 + phase) * 0.3;
+                        p.armL.rotation.z = 0.5 + Math.sin(t * 3.2 + phase) * 0.2;
+                        p.armR.rotation.z = -0.5 - Math.sin(t * 3.2 + phase) * 0.2;
                     } else if (mode === 'wave') {
-                        p.armR.rotation.z = -0.9 + Math.sin(t * 3) * 0.35;
-                        p.armL.rotation.z = 0.22;
-                        group.rotation.y = Math.sin(t * 0.4) * 0.2;
-                        p.head.position.y = c.headBase + Math.sin(t * 1.6) * 0.02;
+                        p.armR.rotation.z = -1.1 + Math.sin(t * 3) * 0.4;
+                        p.armL.rotation.z = 0.5;
+                        group.rotation.y = Math.sin(t * 0.4) * 0.25;
+                        group.position.y = Math.sin(t * 1.6) * 0.03;
+                        p.tail.rotation.y = Math.sin(t * 1.2) * 0.2;
                     } else {
-                        group.rotation.y = Math.sin(t * 0.3 + phase) * 0.18;
-                        p.head.position.y = c.headBase + Math.sin(t * 1.8 + phase) * 0.02;
-                        p.armR.rotation.z = -0.22 + Math.sin(t * 1.5 + phase) * 0.12;
-                        p.armL.rotation.z = 0.22 - Math.sin(t * 1.5 + phase + 1) * 0.12;
+                        group.rotation.y = Math.sin(t * 0.3 + phase) * 0.22;
+                        group.position.y = Math.sin(t * 1.8 + phase) * 0.025;
+                        p.armR.rotation.z = -0.5 + Math.sin(t * 1.5 + phase) * 0.15;
+                        p.armL.rotation.z = 0.5 - Math.sin(t * 1.5 + phase + 1) * 0.15;
+                        p.tail.rotation.y = Math.sin(t * 0.8 + phase) * 0.15;
                     }
                 });
             }
 
-            // ---------------- 카메라: 스크롤 진행도에 맞춰 세 장면을 통과 ----------------
-            function updateCameraFromScroll() {
+            // ---------------- 카메라: 스크롤에 맞춰 세 장면을 통과(영화 카메라처럼 느리고 부드럽게) ----------------
+            function updateCameraFromScroll(dt) {
                 const scrollable = document.documentElement.scrollHeight - window.innerHeight;
                 const frac = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
-                const z = THREE.MathUtils.lerp(14, -72, frac);
-                camera.position.z = z;
-                camera.position.x = Math.sin(frac * Math.PI * 2.2) * 0.8;
-                camera.position.y = 1.5 + Math.sin(frac * Math.PI) * 0.2;
-                camera.lookAt(camera.position.x * 0.4, 1.15, z - 12);
+                const target = sampleCamPath(frac);
+                const targetX = target.x;
+                const targetY = target.y;
+                const targetZ = target.z;
+
+                // 댐핑: 목표 지점으로 즉시 점프하지 않고, 스크롤을 아무리 빨리(맨 아래로 순간 이동하듯)
+                // 내려도 카메라가 전체 장면을 지나가는 데 몇 초가 걸리도록 천천히 뒤쫓아가게 함.
+                // x/y/z 모두 같은 비율로 댐핑해야 카메라가 순간적으로 꺾이지 않고 매끄럽게 움직입니다.
+                const travelDist = Math.hypot(targetX - camX, targetY - camY, targetZ - camZ);
+                const damp = 1 - Math.pow(0.45, Math.min(dt, 0.1));
+                camZ += (targetZ - camZ) * damp;
+                camX += (targetX - camX) * damp;
+                camY += (targetY - camY) * damp;
+
+                // 스크롤을 아주 빠르게(휙 내려버리듯) 내리면, 목표 지점이 멀리 떨어져 있어서
+                // 댐핑 중인 카메라가 한동안 "이동 중" 상태가 됩니다. 이렇게 멀리 쫓아가는 동안에는
+                // 카메라를 일시적으로 더 높이 띄워서, 지나가는 길목에 서 있는 캐릭터 머리 위를
+                // 바짝 스쳐 지나가는("플라이오버") 일이 없도록 합니다. 도착해서 멈추면(거리가
+                // 가까워지면) 다시 원래 의도한 높이로 자연스럽게 내려옵니다.
+                const transitFactor = Math.min(1, travelDist / 30);
+                camera.position.set(camX, camY + transitFactor * 6, camZ);
+
+                // lookAt은 "현재 가장 가까운 장면"의 실제 위치를 바로 겨냥하되, 캐릭터 키(약 0~1.8)보다
+                // 한참 위쪽(머리 위 허공)을 바라보게 해서 캐릭터가 화면 아래쪽 2/3 지점에 오도록 만듭니다.
+                let nearestZ = SCENE_Z[0], nearestD = Infinity;
+                SCENE_Z.forEach((z) => { const d = Math.abs(camZ - z); if (d < nearestD) { nearestD = d; nearestZ = z; } });
+                camera.lookAt(camX * 0.3, 1.3, nearestZ);
             }
 
             function resizeRenderer() {
@@ -1761,12 +1871,9 @@
                 requestAnimationFrame(renderLoop);
                 const landingEl = document.getElementById('view-landing');
                 if (!running || !landingEl || landingEl.classList.contains('hidden') || document.hidden) return;
-                // 주의: getElapsedTime()은 내부적으로 getDelta()를 다시 호출하므로, 같은 프레임에서
-                // 두 번 호출하면 dt가 거의 0이 되어버립니다. getDelta()를 한 번만 부르고
-                // 누적된 elapsedTime 값을 그대로 사용합니다.
                 const dt = clock.getDelta();
                 const t = clock.elapsedTime;
-                updateCameraFromScroll();
+                updateCameraFromScroll(dt);
                 animateCharacters(t);
                 updateSpeechBubbles(t, dt);
                 renderer.render(scene, camera);
@@ -1781,20 +1888,26 @@
                     const testCanvas = document.createElement('canvas');
                     testCtx = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
                 } catch (e) { testCtx = null; }
-                if (!testCtx) return; // WebGL을 쓸 수 없으면 조용히 포기하고 기존 2D 일러스트를 그대로 둠
+                if (!testCtx) return;
 
                 try {
                     scene = new THREE.Scene();
-                    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
-                    camera.position.set(0, 1.5, 14);
+                    // 안개: 아직 카메라가 도착하지 않은 다음 장면의 캐릭터들이 배경에
+                    // 작게 비쳐서 글자 위에 "유령"처럼 겹쳐 보이지 않도록, 멀리 있는 캐릭터는
+                    // 페이지 배경색으로 서서히 사라지게 만듭니다.
+                    scene.fog = new THREE.Fog(cssColor('--bg', '#f5f5f7').getHex(), 19, 37);
+                    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+                    const startWp = CAM_WAYPOINTS[0];
+                    camera.position.set(startWp.x, startWp.y, startWp.z);
+                    camX = startWp.x; camY = startWp.y; camZ = startWp.z;
 
                     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
                     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
                     renderer.setSize(window.innerWidth, window.innerHeight);
                     container.appendChild(renderer.domElement);
 
-                    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-                    const dirLight = new THREE.DirectionalLight(0xfff6e8, 0.85);
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+                    const dirLight = new THREE.DirectionalLight(0xfff6e8, 0.95);
                     dirLight.position.set(3, 6, 6);
                     scene.add(dirLight);
                     const fillLight = new THREE.DirectionalLight(0xdfffe0, 0.3);
@@ -1809,11 +1922,9 @@
                     window.addEventListener('resize', resizeRenderer);
                     requestAnimationFrame(renderLoop);
 
-                    // 3D 배경이 정상적으로 켜졌으니, 기존 2D 히어로 일러스트는 숨겨서 겹치지 않게 함
                     const old2d = document.querySelector('.hero-bg-illustration');
                     if (old2d) old2d.style.display = 'none';
                 } catch (e) {
-                    // 어떤 이유로든 3D 초기화에 실패하면 캔버스를 정리하고 기존 2D 일러스트가 보이도록 둠
                     running = false;
                     if (container) container.innerHTML = '';
                 }
@@ -1821,6 +1932,7 @@
 
             initLanding3D();
         })();
+
 
 
         // =====================================================================
