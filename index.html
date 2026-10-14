@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- 랜딩페이지 3D 캐릭터 배경에 사용 (로드 실패해도 사이트 나머지 기능엔 영향 없음) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
     <!-- Google Identity Services — 녹화 파일을 구글 드라이브에 저장하는 기능에 사용 (설정 전엔 비활성 상태) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
-            --bg: #f5f5f7;
+            /* 차가운 회색 대신 아주 은은하게 따뜻한 아이보리 톤 — 스튜디오 사진 배경처럼
+               깔끔하면서도 눈이 편안하게 느껴지도록 전체 팔레트를 따뜻한 중성색으로 통일했습니다. */
+            --bg: #f7f4ee;
             --accent: #b3fd8b;
             --accent-ink: #1f3a12;
-            --ink: #16181c;
-            --ink-soft: #6b7076;
+            --ink: #1a1917;
+            --ink-soft: #726d66;
             --ring: rgba(31,58,18,0.14);
         }
         html { font-size: 16px; }
@@ -139,7 +139,7 @@
         .media-btn-off { background: rgba(244,63,94,.22) !important; border-color: rgba(244,63,94,.5) !important; color:#fda4af !important; }
         .fluid-title { font-size: clamp(1.4rem, 1.1vw + 1.2rem, 2.2rem); line-height:1.35; text-wrap:balance; }
         ::-webkit-scrollbar { width: 8px; height:8px; }
-        ::-webkit-scrollbar-thumb { background:#d4d4d8; border-radius:99px; }
+        ::-webkit-scrollbar-thumb { background:#d9d3c8; border-radius:99px; }
 
         /* ---------- 초기 로딩 화면 ---------- */
         #app-loading-screen {
@@ -276,7 +276,7 @@
         /* 텍스트 영역은 은은하게 밝혀 가독성을 지키면서, 일러스트는 화면 끝까지 꽉 차게 */
         .hero-scrim {
             position: absolute; inset: 0; z-index: 0; pointer-events: none;
-            background: radial-gradient(58% 60% at 50% 42%, var(--bg) 0%, rgba(245,245,247,.88) 38%, rgba(245,245,247,0) 72%);
+            background: radial-gradient(58% 60% at 50% 42%, var(--bg) 0%, rgba(247,244,238,.88) 38%, rgba(247,244,238,0) 72%);
         }
         .hero-content { position: relative; z-index: 1; }
 
@@ -331,42 +331,84 @@
             50% { opacity: .95; transform: scale(1.15) rotate(18deg); }
         }
 
+        /* 통화 중임을 또렷하게 알려주는 아이콘: 빨간 "라이브" 점 + 초록 마이크 배지 */
+        .ill-live-dot { animation: illLivePulse 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+        @keyframes illLivePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .55; transform: scale(.85); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
-            .ill-head-group, .ill-signal-line, .ill-screen, .ill-bubble, .ill-bubble-dot, .ill-sparkle { animation: none !important; }
+            .ill-head-group, .ill-signal-line, .ill-screen, .ill-bubble, .ill-bubble-dot, .ill-sparkle, .ill-live-dot { animation: none !important; }
             .ill-bubble { opacity: .9; }
         }
 
-        /* ---------- 랜딩페이지 전체를 가로지르는 3D 캐릭터 배경(Three.js) ----------
-           스크롤하면 카메라가 세 장면(히어로의 대화 그룹 → 이용방법의 걸어다니는 세 사람 →
-           멘토 CTA의 솔로 인물)을 순서대로 지나가며, 각 인물의 말풍선은 화면에 떠 있는
-           일반 DOM 요소로 그려서 3D 캐릭터 머리 위치에 실시간으로 맞춰줍니다. */
-        #landing-3d-stage { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-        #landing-3d-stage canvas { display: block; width: 100%; height: 100%; }
-        /* 쌓임 순서: 3D 캔버스(0) → 말풍선(1) → 실제 페이지 콘텐츠(2).
-           말풍선을 실제 글자/카드보다 "아래"에 둬서, 혹시라도 위치가 겹치더라도
-           말풍선이 글자나 카드를 덮어 가리는 일이 없고 항상 콘텐츠가 우선 보이게 합니다. */
-        #view-landing > header, #view-landing > main, #view-landing > footer { position: relative; z-index: 2; }
+        /* ---------- 실제 화상 상담 화면 미리보기 (히어로 아래, 이용방법 위) ----------
+           추상적인 캐릭터 대신, 실제 서비스에서 쓰는 것과 같은 화상 통화 UI를 그대로
+           보여줘서 "이렇게 상담이 진행되는구나"를 한눈에 알 수 있게 합니다. */
+        .call-mockup {
+            background: #15171b;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 1px 2px rgba(20,20,20,.06), 0 24px 48px rgba(20,20,20,.18);
+        }
+        .call-mockup-bar {
+            display: flex; align-items: center; gap: 8px; padding: 6px 10px 12px;
+            color: rgba(255,255,255,.75); font-size: 12px; font-weight: 700;
+        }
+        .call-mockup-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+        .call-mockup-dot.r { background: #ff5f57; } .call-mockup-dot.y { background: #febc2e; } .call-mockup-dot.g { background: #28c840; }
+        .call-mockup-title { margin-left: 8px; }
+        .call-mockup-timer { margin-left: auto; display: flex; align-items: center; gap: 5px; color: rgba(255,255,255,.55); font-weight: 600; }
 
-        .landing-3d-bubble {
-            position: fixed; z-index: 1; left: 0; top: 0; pointer-events: none;
-            transform: translate(-50%, -100%); white-space: nowrap;
-            background: #ffffff; border: 1.5px solid var(--ink); border-radius: 14px;
-            padding: 7px 12px; opacity: 0; transition: opacity .2s ease, transform .2s ease;
-            box-shadow: 0 6px 16px rgba(20,20,20,.12); will-change: transform, opacity;
+        .call-mockup-stage {
+            position: relative; border-radius: 14px; overflow: hidden;
+            background: linear-gradient(145deg, #2a2f38, #1b1e24);
+            min-height: 260px; display: flex;
         }
-        .landing-3d-bubble.show { opacity: 1; }
-        .landing-3d-bubble::before {
-            content: ''; position: absolute; left: 50%; bottom: -7px; margin-left: -7px;
-            width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
-            border-top: 8px solid var(--ink);
+        .call-mockup-tile.main {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative;
         }
-        .landing-3d-bubble::after {
-            content: ''; position: absolute; left: 50%; bottom: -5px; margin-left: -6px;
-            width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
-            border-top: 7px solid #ffffff;
+        .call-mockup-avatar {
+            width: 76px; height: 76px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--accent); color: var(--accent-ink); font-size: 28px; font-weight: 800;
         }
-        @media (prefers-reduced-motion: reduce) {
-            #landing-3d-stage, .landing-3d-bubble { display: none !important; }
+        .call-mockup-avatar.small { width: 40px; height: 40px; font-size: 16px; }
+        .call-mockup-name {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(0,0,0,.4); color: #fff; font-size: 12px; font-weight: 700;
+            padding: 4px 10px; border-radius: 999px;
+        }
+        .call-mockup-name.small { font-size: 10px; padding: 3px 8px; }
+        .call-mockup-tile.pip {
+            position: absolute; right: 14px; bottom: 14px; width: 96px; height: 72px; border-radius: 10px;
+            background: linear-gradient(145deg,#3a4049,#20242b); border: 2px solid rgba(255,255,255,.15);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+        }
+        .call-mockup-chat {
+            width: 200px; flex-shrink: 0; border-left: 1px solid rgba(255,255,255,.08);
+            padding: 14px 12px; display: flex; flex-direction: column; gap: 8px; justify-content: flex-end;
+        }
+        .call-mockup-msg {
+            background: rgba(255,255,255,.08); color: #fff; font-size: 12px; line-height: 1.4;
+            padding: 8px 10px; border-radius: 12px 12px 12px 2px; max-width: 90%;
+        }
+        .call-mockup-msg.me {
+            align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-radius: 12px 12px 2px 12px;
+        }
+        .call-mockup-typing { align-self: flex-start; background: rgba(255,255,255,.08); padding: 8px 10px; border-radius: 12px 12px 12px 2px; color: #fff; }
+
+        .call-mockup-toolbar { display: flex; justify-content: center; gap: 10px; padding: 14px 0 6px; }
+        .call-mockup-btn {
+            width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,.12); color: #fff; font-size: 15px;
+        }
+        .call-mockup-btn.end { background: #ef4444; }
+
+        @media (max-width: 640px) {
+            .call-mockup-stage { flex-direction: column; min-height: auto; }
+            .call-mockup-chat { width: auto; border-left: none; border-top: 1px solid rgba(255,255,255,.08); }
+            .call-mockup-tile.main { min-height: 200px; }
         }
 
         /* ---------- 숫자 카운트업 ---------- */
@@ -387,10 +429,6 @@
          홈페이지(랜딩) — 로그인 전 가장 먼저 보이는 화면
     ===================================================================== -->
     <div id="view-landing" class="min-h-screen flex flex-col">
-        <!-- 랜딩페이지 전체를 스크롤에 맞춰 가로지르는 3D 캐릭터 배경. JS가 Three.js 로드에
-             실패하거나(네트워크 문제 등) prefers-reduced-motion이면 자동으로 숨겨지고,
-             기존 2D 히어로 일러스트가 대신 보입니다. -->
-        <div id="landing-3d-stage" aria-hidden="true"></div>
         <header class="border-b border-slate-100">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -421,6 +459,18 @@
                         <!-- 카드 C: 뒤쪽 왼편, 살짝 기울어져 겹쳐진 그룹의 뒷사람 -->
                         <g transform="rotate(-7 240 320)" opacity="0.8">
                             <rect class="ill-screen c" x="110" y="180" width="260" height="280" rx="26" fill="#ffffff" fill-opacity="0.4" stroke-width="2.5"></rect>
+                            <!-- 통화 중 표시: 빨간 라이브 점 + 초록 마이크 배지 -->
+                            <g transform="translate(344,206)">
+                                <circle r="10" fill="#ffffff"></circle>
+                                <circle class="ill-live-dot" r="5" fill="#ef4444"></circle>
+                            </g>
+                            <g transform="translate(140,432)">
+                                <circle r="15" fill="var(--accent)"></circle>
+                                <rect x="-3.5" y="-9" width="7" height="11" rx="3.5" fill="var(--accent-ink)"></rect>
+                                <path d="M-6,-1 a6,6 0 0 0 12,0" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></path>
+                                <line x1="0" y1="5" x2="0" y2="8" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></line>
+                                <line x1="-4" y1="8" x2="4" y2="8" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></line>
+                            </g>
                             <g class="ill-head-group c">
                                 <path d="M177 301 Q177 263 210 263 Q243 263 243 301 Q210 287 177 301 Z" fill="var(--ink)" opacity="0.16"></path>
                                 <circle cx="210" cy="305" r="34" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.28"></circle>
@@ -446,6 +496,18 @@
                         <!-- 카드 A: 가장 앞쪽, 가장 크게 겹쳐진 메인 인물 -->
                         <g transform="rotate(-2 310 390)">
                             <rect class="ill-screen a" x="170" y="240" width="280" height="300" rx="26" fill="#ffffff" fill-opacity="0.55" stroke-width="2.5"></rect>
+                            <text x="198" y="272" font-size="16" font-weight="800" fill="var(--ink)" opacity="0.55" font-family="Pretendard, sans-serif">멘토</text>
+                            <g transform="translate(424,266)">
+                                <circle r="10" fill="#ffffff"></circle>
+                                <circle class="ill-live-dot" r="5" fill="#ef4444"></circle>
+                            </g>
+                            <g transform="translate(200,512)">
+                                <circle r="16" fill="var(--accent)"></circle>
+                                <rect x="-3.7" y="-9.5" width="7.4" height="12" rx="3.7" fill="var(--accent-ink)"></rect>
+                                <path d="M-6.4,-1 a6.4,6.4 0 0 0 12.8,0" fill="none" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linecap="round"></path>
+                                <line x1="0" y1="5.4" x2="0" y2="8.6" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linecap="round"></line>
+                                <line x1="-4.3" y1="8.6" x2="4.3" y2="8.6" stroke="var(--accent-ink)" stroke-width="2.2" stroke-linecap="round"></line>
+                            </g>
                             <g class="ill-head-group a">
                                 <path d="M237 366 Q237 328 270 328 Q303 328 303 366 Q270 352 237 366 Z" fill="var(--ink)" opacity="0.16"></path>
                                 <circle cx="270" cy="370" r="34" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.28"></circle>
@@ -471,6 +533,18 @@
                         <!-- 카드 B: 오른쪽, 멘티 화면 -->
                         <g transform="rotate(7 1460 365)">
                             <rect class="ill-screen b" x="1330" y="215" width="260" height="300" rx="26" fill="#ffffff" fill-opacity="0.55" stroke-width="2.5"></rect>
+                            <text x="1358" y="247" font-size="16" font-weight="800" fill="var(--ink)" opacity="0.55" font-family="Pretendard, sans-serif">멘티</text>
+                            <g transform="translate(1564,241)">
+                                <circle r="10" fill="#ffffff"></circle>
+                                <circle class="ill-live-dot" r="5" fill="#ef4444"></circle>
+                            </g>
+                            <g transform="translate(1360,487)">
+                                <circle r="15" fill="var(--accent)"></circle>
+                                <rect x="-3.5" y="-9" width="7" height="11" rx="3.5" fill="var(--accent-ink)"></rect>
+                                <path d="M-6,-1 a6,6 0 0 0 12,0" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></path>
+                                <line x1="0" y1="5" x2="0" y2="8" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></line>
+                                <line x1="-4" y1="8" x2="4" y2="8" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"></line>
+                            </g>
                             <g class="ill-head-group b">
                                 <path d="M1387 341 Q1387 303 1420 303 Q1453 303 1453 341 Q1420 327 1387 341 Z" fill="var(--ink)" opacity="0.16"></path>
                                 <circle cx="1420" cy="345" r="34" fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.28"></circle>
@@ -530,6 +604,40 @@
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- 실제 상담 화면 미리보기: 추상적인 일러스트 대신, 서비스에서 실제로 쓰는 것과
+                 같은 화상 통화 UI를 그대로 보여줘서 상담이 어떻게 진행되는지 한눈에 전달합니다. -->
+            <section class="max-w-3xl mx-auto px-4 py-6 md:py-10">
+                <div class="call-mockup reveal-on-scroll" aria-hidden="true">
+                    <div class="call-mockup-bar">
+                        <span class="call-mockup-dot r"></span><span class="call-mockup-dot y"></span><span class="call-mockup-dot g"></span>
+                        <span class="call-mockup-title">1:1 화상 상담실</span>
+                        <span class="call-mockup-timer"><i class="fa-regular fa-clock"></i> 18:24</span>
+                    </div>
+                    <div class="call-mockup-stage">
+                        <div class="call-mockup-tile main">
+                            <div class="call-mockup-avatar">김</div>
+                            <span class="call-mockup-name">김은퇴 멘토 <i class="fa-solid fa-microphone"></i></span>
+                            <div class="call-mockup-tile pip">
+                                <div class="call-mockup-avatar small">나</div>
+                                <span class="call-mockup-name small">나 <i class="fa-solid fa-microphone-slash"></i></span>
+                            </div>
+                        </div>
+                        <div class="call-mockup-chat">
+                            <div class="call-mockup-msg">이직 타이밍이 고민이시라고 했죠?</div>
+                            <div class="call-mockup-msg me">네, 지금 2년 차인데 고민이 많아요</div>
+                            <div class="call-mockup-typing"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+                        </div>
+                    </div>
+                    <div class="call-mockup-toolbar">
+                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-microphone"></i></button>
+                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-video"></i></button>
+                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-comment"></i></button>
+                        <button class="call-mockup-btn end" tabindex="-1"><i class="fa-solid fa-phone-slash"></i></button>
+                    </div>
+                </div>
+                <p class="text-center text-xs mt-3 font-semibold" style="color:var(--ink-soft);">실제 상담은 이런 화면으로 진행돼요</p>
             </section>
 
             <!-- 이용 방법 -->
@@ -623,7 +731,7 @@
     ===================================================================== -->
     <div id="app-shell" class="hidden min-h-screen flex flex-col">
 
-        <header id="app-header" class="sticky top-0 z-40 bg-[#f5f5f7]/90 backdrop-blur-md" style="transition: box-shadow .25s ease, border-color .25s ease; border-bottom: 1px solid transparent;">
+        <header id="app-header" class="sticky top-0 z-40 bg-[#f7f4ee]/90 backdrop-blur-md" style="transition: box-shadow .25s ease, border-color .25s ease; border-bottom: 1px solid transparent;">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
                     <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-seedling text-sm" style="color:var(--accent-ink);"></i></span>
@@ -1559,402 +1667,6 @@
             targets.forEach(el => io.observe(el));
         })();
 
-        // =====================================================================
-        // 랜딩페이지 3D 캐릭터 배경 (Three.js)
-        // 스크롤에 맞춰 카메라가 세 장면을 순서대로 통과합니다:
-        //   장면 1 (히어로)       — 세 마리가 둘러서서 대화
-        //   장면 2 (이용 방법)    — 세 마리가 나란히 콩콩 뛰어다니는 "여정" 느낌
-        //   장면 3 (멘토 CTA)     — 혼자 선(조금 더 큰) 마스코트가 손을 흔듦
-        // 사람 얼굴을 본뜨지 않고, 동글동글한 카멜레온 느낌의 마스코트 캐릭터로 디자인했습니다.
-        // 카메라는 스크롤 위치를 바로 따라가지 않고 부드럽게 "뒤쫓아 가도록"(댐핑) 만들어서,
-        // 스크롤을 빠르게 내려도 캐릭터들이 휙 지나가 보이지 않고 천천히 흘러가듯 보입니다.
-        // Three.js 로드 실패, WebGL 미지원, prefers-reduced-motion 중 하나라도 해당하면
-        // 조용히 초기화를 건너뛰고 기존 2D 히어로 일러스트가 그대로 보이도록 둡니다.
-        // =====================================================================
-        (function () {
-            let scene, camera, renderer, clock;
-            let characters = [];
-            let bubbleEls = [];
-            let running = false;
-            let bubbleTimer = 0;
-            let activeBubbleIdx = -1;
-            let camX = 0, camY = 7, camZ = 14; // 댐핑이 적용된 실제 카메라 위치 (목표값을 부드럽게 뒤쫓음)
-            let textRectEls = null;
-            let textRectsCache = [];
-            let textRectsCacheT = -999;
-
-            const SCENE_Z = [0, -30, -60]; // 각 장면의 기준 z 위치
-
-            // 카메라가 각 장면을 "정확히 그 위치까지" 지나가지 않고, 항상 일정 거리를 두고
-            // 지나가도록 하는 경유점들. 이렇게 하면 스크롤을 아무리 빨리 내려도 카메라가
-            // 캐릭터 머리 위로 바짝 붙어 지나가는("플라이오버") 일이 생기지 않습니다.
-            const CAM_WAYPOINTS = [
-                { frac: 0,    x: 0,    y: 7.0, z: 14  },  // 장면1(히어로)에서 14만큼 떨어져서 바라봄
-                { frac: 0.5,  x: -1.0, y: 7.6, z: -19 },  // 장면2(이용 방법)와 최소 11 거리 유지
-                { frac: 1,    x: 0,    y: 6.6, z: -52 }   // 장면3(CTA)과 최소 8 거리 유지
-            ];
-            function sampleCamPath(frac) {
-                for (let i = 0; i < CAM_WAYPOINTS.length - 1; i++) {
-                    const a = CAM_WAYPOINTS[i], b = CAM_WAYPOINTS[i + 1];
-                    if (frac >= a.frac && frac <= b.frac) {
-                        const lf = (frac - a.frac) / ((b.frac - a.frac) || 1);
-                        const e = lf * lf * (3 - 2 * lf); // smoothstep
-                        return {
-                            x: THREE.MathUtils.lerp(a.x, b.x, e),
-                            y: THREE.MathUtils.lerp(a.y, b.y, e),
-                            z: THREE.MathUtils.lerp(a.z, b.z, e)
-                        };
-                    }
-                }
-                return CAM_WAYPOINTS[CAM_WAYPOINTS.length - 1];
-            }
-
-            function prefersReducedMotion() {
-                return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            }
-
-            function cssColor(varName, fallback) {
-                const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-                return new THREE.Color(v || fallback);
-            }
-
-            // ---------------- 심플한 흰색 마네킹(데생 인형) 피규어 ----------------
-            // 얼굴 없는 매끈한 흰색 구체 머리 + 팔다리는 어깨/엉덩이에서 매달린 관절(pivot)
-            // 구조로 만들어서, 걸을 때 팔다리가 자연스럽게 앞뒤로 흔들리도록 합니다.
-            let mannequinMat = null;
-            function getMannequinMat() {
-                if (!mannequinMat) {
-                    mannequinMat = new THREE.MeshPhysicalMaterial({
-                        color: 0xf2f0ea,
-                        roughness: 0.5,
-                        metalness: 0.02,
-                        clearcoat: 0.28,
-                        clearcoatRoughness: 0.35
-                    });
-                }
-                return mannequinMat;
-            }
-
-            function buildLimb(mat, pivotX, pivotY, len, rad, jointR) {
-                const pivot = new THREE.Group();
-                pivot.position.set(pivotX, pivotY, 0);
-                const joint = new THREE.Mesh(new THREE.SphereGeometry(jointR, 14, 12), mat);
-                pivot.add(joint);
-                const bar = new THREE.Mesh(new THREE.CapsuleGeometry(rad, len, 4, 10), mat);
-                bar.position.y = -(len / 2 + rad);
-                pivot.add(bar);
-                const endJoint = new THREE.Mesh(new THREE.SphereGeometry(jointR * 0.8, 12, 10), mat);
-                endJoint.position.y = -(len + rad * 2);
-                pivot.add(endJoint);
-                return pivot;
-            }
-
-            function buildMannequin(scale) {
-                const g = new THREE.Group();
-                const mat = getMannequinMat();
-
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 22, 18), mat);
-                head.position.set(0, 1.66, 0);
-                g.add(head);
-
-                const neck = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.04, 4, 8), mat);
-                neck.position.set(0, 1.42, 0);
-                g.add(neck);
-
-                const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.32, 6, 16), mat);
-                torso.position.set(0, 1.08, 0);
-                g.add(torso);
-
-                const armL = buildLimb(mat, -0.3, 1.32, 0.4, 0.075, 0.095); g.add(armL);
-                const armR = buildLimb(mat, 0.3, 1.32, 0.4, 0.075, 0.095); g.add(armR);
-                const legL = buildLimb(mat, -0.13, 0.8, 0.6, 0.1, 0.12); g.add(legL);
-                const legR = buildLimb(mat, 0.13, 0.8, 0.6, 0.1, 0.12); g.add(legR);
-
-                const shadow = new THREE.Mesh(
-                    new THREE.CircleGeometry(0.42, 24),
-                    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.14 })
-                );
-                shadow.rotation.x = -Math.PI / 2;
-                shadow.position.y = 0.01;
-                g.add(shadow);
-
-                g.scale.setScalar(scale);
-                g.userData.parts = { head, torso, armL, armR, legL, legR };
-                return g;
-            }
-
-            function addCharacter(sceneIndex, x, z, scale, mode, phase) {
-                const group = buildMannequin(scale);
-                group.position.set(x, 0, SCENE_Z[sceneIndex] + z);
-                scene.add(group);
-                characters.push({ group, sceneIndex, baseX: x, baseZ: SCENE_Z[sceneIndex] + z, phase, mode });
-            }
-
-            function buildScenes() {
-                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹(제자리에서 자연스러운 제스처)
-                addCharacter(0, -1.3, 1.1, 1.0, 'idle', 0);
-                addCharacter(0, 1.5, -0.6, 1.0, 'idle', 1.4);
-                addCharacter(0, -0.2, -1.6, 0.92, 'idle', 2.6);
-
-                // 장면 2: 이용 방법 — 자연스럽게 걸어다니는 세 마리
-                addCharacter(1, -4.0, 0, 1.0, 'walk', 0);
-                addCharacter(1, 0, -0.6, 1.0, 'walk', 1.8);
-                addCharacter(1, 4.0, 0, 1.0, 'walk', 3.4);
-
-                // 장면 3: 멘토 CTA — 혼자 서서 손을 흔듦
-                addCharacter(2, 0, 0, 1.3, 'wave', 0);
-            }
-
-            // ---------------- 말풍선 (DOM 오버레이) ----------------
-            function createBubbleEls() {
-                for (let i = 0; i < 3; i++) {
-                    const el = document.createElement('div');
-                    el.className = 'landing-3d-bubble';
-                    el.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
-                    document.body.appendChild(el);
-                    bubbleEls.push(el);
-                }
-            }
-
-            function worldToScreen(vec3) {
-                const v = vec3.clone().project(camera);
-                return {
-                    x: (v.x * 0.5 + 0.5) * window.innerWidth,
-                    y: (-v.y * 0.5 + 0.5) * window.innerHeight,
-                    behind: v.z > 1
-                };
-            }
-
-            // 홈페이지의 실제 제목/본문 글자 위치를 주기적으로 읽어와서, 말풍선이 그 글자와
-            // 겹치는 자리에는 뜨지 않도록 합니다(말풍선이 글자를 가리는 문제 방지).
-            function refreshTextRects(t) {
-                if (t - textRectsCacheT < 0.25) return; // 매 프레임 계산하지 않고 0.25초마다만 갱신(성능)
-                textRectsCacheT = t;
-                if (!textRectEls) {
-                    textRectEls = Array.from(document.querySelectorAll(
-                        '#view-landing h1, #view-landing h2, #view-landing h3, #view-landing p, #view-landing .font-extrabold, #view-landing .font-bold'
-                    ));
-                }
-                const vh = window.innerHeight;
-                textRectsCache = [];
-                textRectEls.forEach((el) => {
-                    if (!el.textContent || !el.textContent.trim()) return;
-                    const r = el.getBoundingClientRect();
-                    if (r.bottom < -40 || r.top > vh + 40 || r.width < 4 || r.height < 4) return;
-                    textRectsCache.push(r);
-                });
-            }
-
-            function overlapsText(x, y, w, h) {
-                const left = x - w / 2, right = x + w / 2, top = y - h, bottom = y;
-                const pad = 6; // 글자 주변에 약간의 여유를 둠
-                for (let i = 0; i < textRectsCache.length; i++) {
-                    const r = textRectsCache[i];
-                    if (left < r.right + pad && right > r.left - pad && top < r.bottom + pad && bottom > r.top - pad) return true;
-                }
-                return false;
-            }
-
-            // 현재 카메라와 가장 가까운(=현재 통과 중인) 장면만 골라 말풍선을 순서대로 띄움.
-            // 말풍선은 화면 상단 끝부분을 피하고, 실제 글자와 겹치지 않는 자리에서만 뜨도록 합니다.
-            function updateSpeechBubbles(t, dt) {
-                const camZv = camera.position.z;
-                let nearestScene = 0, nearestDist = Infinity;
-                SCENE_Z.forEach((z, idx) => {
-                    const d = Math.abs(camZv - z);
-                    if (d < nearestDist) { nearestDist = d; nearestScene = idx; }
-                });
-                const inScene = characters.filter(c => c.sceneIndex === nearestScene);
-                const active = nearestDist < 20 && inScene.length > 0;
-
-                bubbleTimer += dt;
-                if (active && bubbleTimer > 2.8) {
-                    bubbleTimer = 0;
-                    activeBubbleIdx = (activeBubbleIdx + 1) % inScene.length;
-                }
-                if (!active) activeBubbleIdx = -1;
-
-                const safeTop = window.innerHeight * 0.08;  // 헤더 바로 아래쪽은 피함
-                refreshTextRects(t);
-
-                bubbleEls.forEach((el, i) => {
-                    if (!active || i >= inScene.length) { el.classList.remove('show'); return; }
-                    const c = inScene[i];
-                    const isTalking = inScene.indexOf(c) === activeBubbleIdx;
-                    if (!isTalking) { el.classList.remove('show'); return; }
-                    const headWorld = new THREE.Vector3();
-                    c.group.userData.parts.head.getWorldPosition(headWorld);
-                    const pos = worldToScreen(headWorld);
-                    const bubbleY = pos.y - 30;
-                    const bubbleW = 110, bubbleH = 36; // 대략적인 말풍선 크기(실측 대신 넉넉하게 추정)
-                    // 실제 홈페이지 글자(제목/본문)의 현재 화면상 위치와 겹치면 그 프레임엔 띄우지 않음
-                    if (pos.behind || bubbleY < safeTop || bubbleY > window.innerHeight * 0.96 ||
-                        overlapsText(pos.x, bubbleY, bubbleW, bubbleH)) {
-                        el.classList.remove('show'); return;
-                    }
-                    const clampedX = Math.min(window.innerWidth - 70, Math.max(70, pos.x));
-                    el.style.transform = `translate(${clampedX}px, ${bubbleY}px) translate(-50%, -100%)`;
-                    el.classList.add('show');
-                });
-            }
-
-            // ---------------- 애니메이션 ----------------
-            function animateCharacters(t) {
-                characters.forEach(c => {
-                    const { group, phase, mode } = c;
-                    const p = group.userData.parts;
-                    if (mode === 'walk') {
-                        // 좌우로 천천히 오가며 자연스럽게 "돌아다니는" 동선. 진행 방향을 실제
-                        // 이동 속도(미분값)로 계산해서, 걷는 방향으로 몸이 자연스럽게 돌도록 합니다.
-                        const wSpeed = 0.5, rangeX = 1.8, rangeZ = 0.5;
-                        const ang = t * wSpeed + phase;
-                        const vx = Math.cos(ang) * rangeX;
-                        const vz = -Math.sin(ang * 0.6) * 0.6 * rangeZ;
-                        group.position.x = c.baseX + Math.sin(ang) * rangeX;
-                        group.position.z = c.baseZ + Math.cos(ang * 0.6) * rangeZ;
-                        group.rotation.y = Math.atan2(vx, vz);
-
-                        // 걷기 사이클: 양쪽 다리를 서로 반대 위상으로 앞뒤로 흔들고,
-                        // 팔은 반대쪽 다리와 같은 위상으로 흔들어 사람이 걷는 것처럼 보이게 합니다.
-                        const stride = 4.6, legSwing = 0.5, armSwing = 0.38;
-                        const walkPhase = t * stride + phase;
-                        p.legL.rotation.x = Math.sin(walkPhase) * legSwing;
-                        p.legR.rotation.x = Math.sin(walkPhase + Math.PI) * legSwing;
-                        p.armL.rotation.x = Math.sin(walkPhase + Math.PI) * armSwing;
-                        p.armR.rotation.x = Math.sin(walkPhase) * armSwing;
-                        group.position.y = Math.abs(Math.sin(walkPhase)) * 0.03;
-                    } else if (mode === 'wave') {
-                        // 팔을 옆으로 들어올려 흔듦(위에서 내려다보는 카메라 각도에서도
-                        // 팔이 몸에 겹쳐 짧아 보이지 않고 또렷한 실루엣으로 보이도록 함)
-                        p.armR.rotation.z = 2.3 + Math.sin(t * 3.2) * 0.3;
-                        p.armL.rotation.x = 0.05 + Math.sin(t * 1.3) * 0.06;
-                        p.legL.rotation.x = Math.sin(t * 1.1) * 0.05;
-                        p.legR.rotation.x = Math.sin(t * 1.1 + Math.PI) * 0.05;
-                        group.rotation.y = Math.sin(t * 0.35) * 0.18;
-                        group.position.y = Math.sin(t * 1.6) * 0.02;
-                    } else {
-                        // idle: 제자리에서 대화하듯 자연스러운 체중 이동 + 팔 제스처
-                        group.rotation.y = Math.sin(t * 0.28 + phase) * 0.2;
-                        group.position.y = Math.sin(t * 1.4 + phase) * 0.015;
-                        p.armR.rotation.x = -0.3 + Math.sin(t * 1.2 + phase) * 0.18;
-                        p.armL.rotation.x = -0.25 + Math.sin(t * 1.2 + phase + 1.6) * 0.18;
-                        p.legL.rotation.x = Math.sin(t * 0.9 + phase) * 0.05;
-                        p.legR.rotation.x = Math.sin(t * 0.9 + phase + Math.PI) * 0.05;
-                    }
-                });
-            }
-
-            // ---------------- 카메라: 스크롤에 맞춰 세 장면을 통과(영화 카메라처럼 느리고 부드럽게) ----------------
-            function updateCameraFromScroll(dt) {
-                const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-                const frac = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
-                const target = sampleCamPath(frac);
-                const targetX = target.x;
-                const targetY = target.y;
-                const targetZ = target.z;
-
-                // 댐핑: 목표 지점으로 즉시 점프하지 않고, 스크롤을 아무리 빨리(맨 아래로 순간 이동하듯)
-                // 내려도 카메라가 전체 장면을 지나가는 데 몇 초가 걸리도록 천천히 뒤쫓아가게 함.
-                // x/y/z 모두 같은 비율로 댐핑해야 카메라가 순간적으로 꺾이지 않고 매끄럽게 움직입니다.
-                const travelDist = Math.hypot(targetX - camX, targetY - camY, targetZ - camZ);
-                const damp = 1 - Math.pow(0.45, Math.min(dt, 0.1));
-                camZ += (targetZ - camZ) * damp;
-                camX += (targetX - camX) * damp;
-                camY += (targetY - camY) * damp;
-
-                // 스크롤을 아주 빠르게(휙 내려버리듯) 내리면, 목표 지점이 멀리 떨어져 있어서
-                // 댐핑 중인 카메라가 한동안 "이동 중" 상태가 됩니다. 이렇게 멀리 쫓아가는 동안에는
-                // 카메라를 일시적으로 더 높이 띄워서, 지나가는 길목에 서 있는 캐릭터 머리 위를
-                // 바짝 스쳐 지나가는("플라이오버") 일이 없도록 합니다. 도착해서 멈추면(거리가
-                // 가까워지면) 다시 원래 의도한 높이로 자연스럽게 내려옵니다.
-                const transitFactor = Math.min(1, travelDist / 30);
-                camera.position.set(camX, camY + transitFactor * 6, camZ);
-
-                // lookAt은 "현재 가장 가까운 장면"의 실제 위치를 바로 겨냥하되, 캐릭터 키(약 0~1.8)보다
-                // 한참 위쪽(머리 위 허공)을 바라보게 해서 캐릭터가 화면 아래쪽 2/3 지점에 오도록 만듭니다.
-                let nearestZ = SCENE_Z[0], nearestD = Infinity;
-                SCENE_Z.forEach((z) => { const d = Math.abs(camZ - z); if (d < nearestD) { nearestD = d; nearestZ = z; } });
-                camera.lookAt(camX * 0.3, 1.3, nearestZ);
-            }
-
-            function resizeRenderer() {
-                if (!renderer) return;
-                const w = window.innerWidth, h = window.innerHeight;
-                renderer.setSize(w, h);
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-            }
-
-            function renderLoop() {
-                requestAnimationFrame(renderLoop);
-                const landingEl = document.getElementById('view-landing');
-                if (!running || !landingEl || landingEl.classList.contains('hidden') || document.hidden) return;
-                const dt = clock.getDelta();
-                const t = clock.elapsedTime;
-                updateCameraFromScroll(dt);
-                animateCharacters(t);
-                updateSpeechBubbles(t, dt);
-                renderer.render(scene, camera);
-            }
-
-            function initLanding3D() {
-                const container = document.getElementById('landing-3d-stage');
-                if (!container || typeof THREE === 'undefined' || prefersReducedMotion()) return;
-
-                let testCtx = null;
-                try {
-                    const testCanvas = document.createElement('canvas');
-                    testCtx = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
-                } catch (e) { testCtx = null; }
-                if (!testCtx) return;
-
-                try {
-                    scene = new THREE.Scene();
-                    // 안개: 아직 카메라가 도착하지 않은 다음 장면의 캐릭터들이 배경에
-                    // 작게 비쳐서 글자 위에 "유령"처럼 겹쳐 보이지 않도록, 멀리 있는 캐릭터는
-                    // 페이지 배경색으로 서서히 사라지게 만듭니다.
-                    scene.fog = new THREE.Fog(cssColor('--bg', '#f5f5f7').getHex(), 19, 37);
-                    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
-                    const startWp = CAM_WAYPOINTS[0];
-                    camera.position.set(startWp.x, startWp.y, startWp.z);
-                    camX = startWp.x; camY = startWp.y; camZ = startWp.z;
-
-                    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
-                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    container.appendChild(renderer.domElement);
-
-                    // 흰색 마네킹이 연한 배경색과 잘 구분되도록, 그림자가 또렷하게 지도록
-                    // 전체적으로는 은은하게, 주 조명은 뚜렷하게 비춥니다.
-                    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-                    const dirLight = new THREE.DirectionalLight(0xfff3e0, 1.15);
-                    dirLight.position.set(3, 7, 6);
-                    scene.add(dirLight);
-                    const fillLight = new THREE.DirectionalLight(0xdce6f2, 0.35);
-                    fillLight.position.set(-4, 2, -4);
-                    scene.add(fillLight);
-                    const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
-                    rimLight.position.set(0, 4, -8);
-                    scene.add(rimLight);
-
-                    buildScenes();
-                    createBubbleEls();
-
-                    clock = new THREE.Clock();
-                    running = true;
-                    window.addEventListener('resize', resizeRenderer);
-                    requestAnimationFrame(renderLoop);
-
-                    const old2d = document.querySelector('.hero-bg-illustration');
-                    if (old2d) old2d.style.display = 'none';
-                } catch (e) {
-                    running = false;
-                    if (container) container.innerHTML = '';
-                }
-            }
-
-            initLanding3D();
-        })();
 
 
 
