@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 랜딩페이지 3D 캐릭터 배경에 사용 (로드 실패해도 사이트 나머지 기능엔 영향 없음) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Google Identity Services — 녹화 파일을 구글 드라이브에 저장하는 기능에 사용 (설정 전엔 비활성 상태) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
@@ -334,6 +336,37 @@
             .ill-bubble { opacity: .9; }
         }
 
+        /* ---------- 랜딩페이지 전체를 가로지르는 3D 캐릭터 배경(Three.js) ----------
+           스크롤하면 카메라가 세 장면(히어로의 대화 그룹 → 이용방법의 걸어다니는 세 사람 →
+           멘토 CTA의 솔로 인물)을 순서대로 지나가며, 각 인물의 말풍선은 화면에 떠 있는
+           일반 DOM 요소로 그려서 3D 캐릭터 머리 위치에 실시간으로 맞춰줍니다. */
+        #landing-3d-stage { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        #landing-3d-stage canvas { display: block; width: 100%; height: 100%; }
+        /* 캔버스가 배경(z-index:0)이고 실제 콘텐츠는 그 위(z-index:1)에 떠 있어야 함 */
+        #view-landing > header, #view-landing > main, #view-landing > footer { position: relative; z-index: 1; }
+
+        .landing-3d-bubble {
+            position: fixed; z-index: 2; left: 0; top: 0; pointer-events: none;
+            transform: translate(-50%, -100%); white-space: nowrap;
+            background: #ffffff; border: 1.5px solid var(--ink); border-radius: 14px;
+            padding: 7px 12px; opacity: 0; transition: opacity .2s ease, transform .2s ease;
+            box-shadow: 0 6px 16px rgba(20,20,20,.12); will-change: transform, opacity;
+        }
+        .landing-3d-bubble.show { opacity: 1; }
+        .landing-3d-bubble::before {
+            content: ''; position: absolute; left: 50%; bottom: -7px; margin-left: -7px;
+            width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
+            border-top: 8px solid var(--ink);
+        }
+        .landing-3d-bubble::after {
+            content: ''; position: absolute; left: 50%; bottom: -5px; margin-left: -6px;
+            width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
+            border-top: 7px solid #ffffff;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #landing-3d-stage, .landing-3d-bubble { display: none !important; }
+        }
+
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
     </style>
@@ -352,6 +385,10 @@
          홈페이지(랜딩) — 로그인 전 가장 먼저 보이는 화면
     ===================================================================== -->
     <div id="view-landing" class="min-h-screen flex flex-col">
+        <!-- 랜딩페이지 전체를 스크롤에 맞춰 가로지르는 3D 캐릭터 배경. JS가 Three.js 로드에
+             실패하거나(네트워크 문제 등) prefers-reduced-motion이면 자동으로 숨겨지고,
+             기존 2D 히어로 일러스트가 대신 보입니다. -->
+        <div id="landing-3d-stage" aria-hidden="true"></div>
         <header class="border-b border-slate-100">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -1519,6 +1556,272 @@
             }, { threshold: 0.15 });
             targets.forEach(el => io.observe(el));
         })();
+
+        // =====================================================================
+        // 랜딩페이지 3D 캐릭터 배경 (Three.js)
+        // 스크롤에 맞춰 카메라가 세 장면을 순서대로 통과합니다:
+        //   장면 1 (히어로)       — 세 사람이 둘러서서 대화
+        //   장면 2 (이용 방법)    — 세 사람이 나란히 걸어다니는 "여정" 느낌
+        //   장면 3 (멘토 CTA)     — 혼자 선 멘토가 손을 흔드는 솔로 장면
+        // Three.js 로드 실패, WebGL 미지원, prefers-reduced-motion 중 하나라도 해당하면
+        // 조용히 초기화를 건너뛰고 기존 2D 히어로 일러스트가 그대로 보이도록 둡니다.
+        // =====================================================================
+        (function () {
+            let scene, camera, renderer, clock;
+            let characters = [];   // { group, kind, baseX, baseZ, phase, parts, sceneIndex }
+            let bubbleEls = [];     // 재사용되는 말풍선 DOM 3개
+            let running = false;
+            let bubbleTimer = 0;
+            let activeBubbleIdx = -1;
+
+            function prefersReducedMotion() {
+                return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            }
+
+            // CSS 커스텀 프로퍼티에서 실제 색상값을 읽어와, 디자인이 바뀌어도 3D 쪽 색이 항상 같이 따라가도록 함
+            function cssColor(varName, fallback) {
+                const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+                return new THREE.Color(v || fallback);
+            }
+
+            function buildCharacter(colors, scale) {
+                const g = new THREE.Group();
+                const headMat = new THREE.MeshStandardMaterial({ color: colors.head, flatShading: true, roughness: 0.9 });
+                const hairMat = new THREE.MeshStandardMaterial({ color: colors.ink, flatShading: true, roughness: 0.9 });
+                const jacketMat = new THREE.MeshStandardMaterial({ color: colors.accent, flatShading: true, roughness: 0.8 });
+                const pantsMat = new THREE.MeshStandardMaterial({ color: colors.ink, flatShading: true, roughness: 0.9 });
+                const glassesMat = new THREE.MeshStandardMaterial({ color: colors.accentInk, flatShading: true, roughness: 0.6 });
+
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10), headMat);
+                head.position.y = 1.55;
+                g.add(head);
+
+                const hair = new THREE.Mesh(new THREE.SphereGeometry(0.478, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.48), hairMat);
+                hair.position.y = 1.56;
+                g.add(hair);
+
+                const lensGeo = new THREE.TorusGeometry(0.12, 0.025, 6, 14);
+                const lensL = new THREE.Mesh(lensGeo, glassesMat); lensL.position.set(-0.16, 1.55, 0.41); g.add(lensL);
+                const lensR = new THREE.Mesh(lensGeo, glassesMat); lensR.position.set(0.16, 1.55, 0.41); g.add(lensR);
+                const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.1, 6), glassesMat);
+                bridge.rotation.z = Math.PI / 2; bridge.position.set(0, 1.55, 0.42); g.add(bridge);
+
+                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.9, 10), jacketMat);
+                torso.position.y = 0.85; g.add(torso);
+
+                const armGeo = new THREE.CylinderGeometry(0.09, 0.09, 0.62, 8);
+                const armL = new THREE.Mesh(armGeo, jacketMat); armL.position.set(-0.47, 0.92, 0); armL.rotation.z = 0.22; g.add(armL);
+                const armR = new THREE.Mesh(armGeo, jacketMat); armR.position.set(0.47, 0.92, 0); armR.rotation.z = -0.22; g.add(armR);
+
+                const legGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.7, 8);
+                const legL = new THREE.Mesh(legGeo, pantsMat); legL.position.set(-0.17, 0.05, 0); g.add(legL);
+                const legR = new THREE.Mesh(legGeo, pantsMat); legR.position.set(0.17, 0.05, 0); g.add(legR);
+
+                const shadow = new THREE.Mesh(
+                    new THREE.CircleGeometry(0.52, 20),
+                    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.12 })
+                );
+                shadow.rotation.x = -Math.PI / 2;
+                shadow.position.y = 0.015;
+                g.add(shadow);
+
+                g.scale.setScalar(scale);
+                g.userData.parts = { head, armL, armR, legL, legR, torso };
+                return g;
+            }
+
+            function addCharacter(sceneIndex, x, z, scale, mode, phase) {
+                const colors = {
+                    head: cssColor('--bg', '#f5f5f7').lerp(new THREE.Color('#ffffff'), 0.4),
+                    ink: cssColor('--ink', '#16181c'),
+                    accent: cssColor('--accent', '#b3fd8b'),
+                    accentInk: cssColor('--accent-ink', '#1f3a12')
+                };
+                const group = buildCharacter(colors, scale);
+                group.position.set(x, 0, z);
+                scene.add(group);
+                characters.push({ group, sceneIndex, baseX: x, baseZ: z, phase, mode, headBase: 1.55 * scale });
+            }
+
+            function buildScenes() {
+                // 장면 1: 히어로 — 느슨하게 둘러선 대화 그룹 (살짝 겹쳐서 입체감)
+                addCharacter(0, -1.3, 1.1, 1.0, 'idle', 0);
+                addCharacter(0, 1.5, -0.6, 1.0, 'idle', 1.4);
+                addCharacter(0, -0.2, -1.6, 0.92, 'idle', 2.6);
+
+                // 장면 2: 이용 방법 — 나란히 서서(혹은 천천히 거닐며) 걸어다니는 세 사람
+                addCharacter(1, -4.2, -40, 1.0, 'walk', 0);
+                addCharacter(1, 0, -40.6, 1.0, 'walk', 2.1);
+                addCharacter(1, 4.2, -40, 1.0, 'walk', 4.2);
+
+                // 장면 3: 멘토 CTA — 혼자 선 솔로 인물, 손을 흔듦
+                addCharacter(2, 0, -80, 1.3, 'wave', 0);
+            }
+
+            // ---------------- 말풍선 (DOM 오버레이) ----------------
+            function createBubbleEls() {
+                for (let i = 0; i < 3; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'landing-3d-bubble';
+                    el.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+                    document.body.appendChild(el);
+                    bubbleEls.push(el);
+                }
+            }
+
+            function worldToScreen(vec3) {
+                const v = vec3.clone().project(camera);
+                return {
+                    x: (v.x * 0.5 + 0.5) * window.innerWidth,
+                    y: (-v.y * 0.5 + 0.5) * window.innerHeight,
+                    behind: v.z > 1
+                };
+            }
+
+            // 현재 카메라와 가장 가까운(=현재 통과 중인) 장면만 골라 말풍선을 순서대로 띄움
+            function updateSpeechBubbles(t, dt) {
+                const camZ = camera.position.z;
+                let nearestScene = 0, nearestDist = Infinity;
+                [0, -40, -80].forEach((z, idx) => {
+                    const d = Math.abs(camZ - z);
+                    if (d < nearestDist) { nearestDist = d; nearestScene = idx; }
+                });
+                const inScene = characters.filter(c => c.sceneIndex === nearestScene);
+                // 그 장면과 충분히 가까울 때만(=실제로 화면에 보일 때만) 말풍선 동작
+                const active = nearestDist < 22 && inScene.length > 0;
+
+                bubbleTimer += dt;
+                if (active && bubbleTimer > 2.6) {
+                    bubbleTimer = 0;
+                    activeBubbleIdx = (activeBubbleIdx + 1) % inScene.length;
+                }
+                if (!active) activeBubbleIdx = -1;
+
+                bubbleEls.forEach((el, i) => {
+                    if (!active || i >= inScene.length) { el.classList.remove('show'); return; }
+                    const c = inScene[i];
+                    const isTalking = inScene.indexOf(c) === activeBubbleIdx;
+                    if (!isTalking) { el.classList.remove('show'); return; }
+                    const headWorld = new THREE.Vector3();
+                    c.group.userData.parts.head.getWorldPosition(headWorld);
+                    const pos = worldToScreen(headWorld);
+                    if (pos.behind) { el.classList.remove('show'); return; }
+                    el.style.transform = `translate(${pos.x}px, ${pos.y - 26}px) translate(-50%, -100%)`;
+                    el.classList.add('show');
+                });
+            }
+
+            // ---------------- 애니메이션 ----------------
+            function animateCharacters(t) {
+                characters.forEach(c => {
+                    const { group, phase, mode } = c;
+                    const p = group.userData.parts;
+                    if (mode === 'walk') {
+                        group.position.x = c.baseX + Math.sin(t * 0.5 + phase) * 1.6;
+                        group.rotation.y = Math.sin(t * 0.5 + phase) * 0.5;
+                        p.legL.rotation.x = Math.sin(t * 4 + phase) * 0.55;
+                        p.legR.rotation.x = -Math.sin(t * 4 + phase) * 0.55;
+                        p.armL.rotation.x = -Math.sin(t * 4 + phase) * 0.45;
+                        p.armR.rotation.x = Math.sin(t * 4 + phase) * 0.45;
+                        p.head.position.y = c.headBase + Math.abs(Math.sin(t * 4 + phase)) * 0.025;
+                    } else if (mode === 'wave') {
+                        p.armR.rotation.z = -0.9 + Math.sin(t * 3) * 0.35;
+                        p.armL.rotation.z = 0.22;
+                        group.rotation.y = Math.sin(t * 0.4) * 0.2;
+                        p.head.position.y = c.headBase + Math.sin(t * 1.6) * 0.02;
+                    } else {
+                        group.rotation.y = Math.sin(t * 0.3 + phase) * 0.18;
+                        p.head.position.y = c.headBase + Math.sin(t * 1.8 + phase) * 0.02;
+                        p.armR.rotation.z = -0.22 + Math.sin(t * 1.5 + phase) * 0.12;
+                        p.armL.rotation.z = 0.22 - Math.sin(t * 1.5 + phase + 1) * 0.12;
+                    }
+                });
+            }
+
+            // ---------------- 카메라: 스크롤 진행도에 맞춰 세 장면을 통과 ----------------
+            function updateCameraFromScroll() {
+                const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+                const frac = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+                const z = THREE.MathUtils.lerp(14, -72, frac);
+                camera.position.z = z;
+                camera.position.x = Math.sin(frac * Math.PI * 2.2) * 0.8;
+                camera.position.y = 1.5 + Math.sin(frac * Math.PI) * 0.2;
+                camera.lookAt(camera.position.x * 0.4, 1.15, z - 12);
+            }
+
+            function resizeRenderer() {
+                if (!renderer) return;
+                const w = window.innerWidth, h = window.innerHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+
+            function renderLoop() {
+                requestAnimationFrame(renderLoop);
+                const landingEl = document.getElementById('view-landing');
+                if (!running || !landingEl || landingEl.classList.contains('hidden') || document.hidden) return;
+                // 주의: getElapsedTime()은 내부적으로 getDelta()를 다시 호출하므로, 같은 프레임에서
+                // 두 번 호출하면 dt가 거의 0이 되어버립니다. getDelta()를 한 번만 부르고
+                // 누적된 elapsedTime 값을 그대로 사용합니다.
+                const dt = clock.getDelta();
+                const t = clock.elapsedTime;
+                updateCameraFromScroll();
+                animateCharacters(t);
+                updateSpeechBubbles(t, dt);
+                renderer.render(scene, camera);
+            }
+
+            function initLanding3D() {
+                const container = document.getElementById('landing-3d-stage');
+                if (!container || typeof THREE === 'undefined' || prefersReducedMotion()) return;
+
+                let testCtx = null;
+                try {
+                    const testCanvas = document.createElement('canvas');
+                    testCtx = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+                } catch (e) { testCtx = null; }
+                if (!testCtx) return; // WebGL을 쓸 수 없으면 조용히 포기하고 기존 2D 일러스트를 그대로 둠
+
+                try {
+                    scene = new THREE.Scene();
+                    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+                    camera.position.set(0, 1.5, 14);
+
+                    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    container.appendChild(renderer.domElement);
+
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+                    const dirLight = new THREE.DirectionalLight(0xfff6e8, 0.85);
+                    dirLight.position.set(3, 6, 6);
+                    scene.add(dirLight);
+                    const fillLight = new THREE.DirectionalLight(0xdfffe0, 0.3);
+                    fillLight.position.set(-4, 2, -4);
+                    scene.add(fillLight);
+
+                    buildScenes();
+                    createBubbleEls();
+
+                    clock = new THREE.Clock();
+                    running = true;
+                    window.addEventListener('resize', resizeRenderer);
+                    requestAnimationFrame(renderLoop);
+
+                    // 3D 배경이 정상적으로 켜졌으니, 기존 2D 히어로 일러스트는 숨겨서 겹치지 않게 함
+                    const old2d = document.querySelector('.hero-bg-illustration');
+                    if (old2d) old2d.style.display = 'none';
+                } catch (e) {
+                    // 어떤 이유로든 3D 초기화에 실패하면 캔버스를 정리하고 기존 2D 일러스트가 보이도록 둠
+                    running = false;
+                    if (container) container.innerHTML = '';
+                }
+            }
+
+            initLanding3D();
+        })();
+
 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
