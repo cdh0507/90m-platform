@@ -10,6 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Google Identity Services — 녹화 파일을 구글 드라이브에 저장하는 기능에 사용 (설정 전엔 비활성 상태) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- "쉼터" 코너의 3D 왁스볼 토이에 사용 (로드 실패 시 코드에서 안전하게 대체 화면으로 전환) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root {
@@ -475,6 +477,51 @@
         }
         @keyframes pressFeelRipple { to { transform: translate(-50%,-50%) scale(7); opacity: 0; } }
 
+        /* ---------- 쉼터: 상담 전후 잠깐 눌러보는 3D 왁스볼 토이 ---------- */
+        .rest-zone {
+            background: #fff; border-radius: 24px; padding: 32px 24px 26px; text-align: center;
+            box-shadow: 0 1px 2px rgba(20,20,20,.05), 0 20px 40px rgba(20,20,20,.08);
+            border: 1px solid rgba(20,20,20,.05);
+        }
+        .rest-zone-eyebrow {
+            display: inline-block; font-size: 12px; font-weight: 800; color: var(--accent-ink);
+            background: var(--accent); padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .rest-zone-title { font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+        .rest-zone-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; }
+        .rest-zone-stage {
+            width: 220px; height: 220px; margin: 0 auto 16px; position: relative; cursor: pointer;
+            touch-action: none; -webkit-tap-highlight-color: transparent;
+        }
+        .rest-zone-stage canvas { width: 100%; height: 100%; display: block; }
+        /* Three.js 로드 실패 시에만 보이는 CSS 대체 볼 (순수 그라데이션으로 흉내 낸 글로시 구체) */
+        .rest-zone-fallback-ball {
+            position: absolute; inset: 14px; border-radius: 50%; display: none;
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 32%),
+                radial-gradient(circle at 60% 70%, rgba(0,0,0,.12) 0%, rgba(0,0,0,0) 55%),
+                radial-gradient(circle at 42% 42%, #d4f7ab 0%, var(--accent) 55%, #86c75f 100%);
+            box-shadow: 0 18px 30px rgba(31,58,18,.22), inset 0 -10px 18px rgba(0,0,0,.08);
+            transition: transform .08s cubic-bezier(.34,1.56,.64,1);
+        }
+        .rest-zone-stage.fallback .rest-zone-fallback-ball { display: block; }
+        .rest-zone-stage.fallback canvas { display: none; }
+        .rest-zone-fallback-ball.squish { transform: scaleY(.74) scaleX(1.14); }
+        .rest-zone-hint {
+            font-size: 11px; color: var(--ink-soft); margin-top: -4px; margin-bottom: 16px; opacity: .8;
+        }
+        .rest-zone-controls { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+        .rest-zone-count {
+            font-size: 13px; font-weight: 700; color: var(--ink); background: #f7f7f5;
+            padding: 8px 14px; border-radius: 999px;
+        }
+        .rest-zone-count b { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+        .rest-zone-reset {
+            font-size: 13px; font-weight: 700; color: var(--ink); background: #f1f1ef; border: none;
+            padding: 8px 16px; border-radius: 999px; cursor: pointer;
+        }
+        .rest-zone-reset:hover { background: #e9e9e6; }
+
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
     </style>
@@ -710,6 +757,24 @@
                     </div>
                 </div>
                 <p class="text-center text-xs mt-3 font-semibold" style="color:var(--ink-soft);">실제 상담은 이런 화면으로 진행돼요</p>
+            </section>
+
+            <!-- ============================== 쉼터: 상담 화면과는 별개의, 잠깐 눌러보는 3D 왁스볼 코너 ============================== -->
+            <section class="max-w-sm mx-auto px-4 py-4 md:py-6">
+                <div class="rest-zone reveal-on-scroll">
+                    <span class="rest-zone-eyebrow">쉼터</span>
+                    <p class="rest-zone-title">잠깐 쉬어가세요</p>
+                    <p class="rest-zone-sub">상담 전후, 눌러서 콕콕 스트레스를 풀어보세요</p>
+                    <div id="wax-ball-stage" class="rest-zone-stage" aria-label="눌러서 소리와 함께 통통 튀는 3D 왁스볼">
+                        <canvas id="wax-ball-canvas"></canvas>
+                        <div id="wax-ball-fallback" class="rest-zone-fallback-ball"></div>
+                    </div>
+                    <p class="rest-zone-hint">볼을 눌러보세요 🖐️</p>
+                    <div class="rest-zone-controls">
+                        <span class="rest-zone-count"><i class="fa-solid fa-hand-pointer mr-1.5"></i><b id="wax-ball-count">0</b>번 눌렀어요</span>
+                        <button onclick="resetWaxBall()" class="rest-zone-reset press-feel"><i class="fa-solid fa-rotate-left mr-1.5"></i>처음으로</button>
+                    </div>
+                </div>
             </section>
 
             <!-- 이용 방법 -->
@@ -1813,6 +1878,219 @@
             }, 1600);
         }
 
+        // =====================================================================
+        // 쉼터: 눌렀을 때 "뽁" 소리와 함께 통통 튀는 3D 왁스볼 토이
+        // 예시 화면(call-mockup)과는 완전히 별개의 기능 — 그냥 잠깐 쉬어가는 코너입니다.
+        // =====================================================================
+
+        // ---- 사운드: 외부 음원 파일 없이, Web Audio API로 그 자리에서 "뽁" 소리를 합성한다.
+        // (저음 "퉁" 울림 + 짧은 마찰 노이즈를 겹쳐서 왁스볼 특유의 손맛 나는 타격음을 흉내낸다) ----
+        let waxPopAudioCtx = null;
+        function ensureWaxPopAudioCtx() {
+            if (!waxPopAudioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return null;
+                waxPopAudioCtx = new Ctx();
+            }
+            if (waxPopAudioCtx.state === 'suspended') waxPopAudioCtx.resume();
+            return waxPopAudioCtx;
+        }
+        function playWaxPopSound(strength) {
+            try {
+                const ctx = ensureWaxPopAudioCtx();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const amp = 0.55 + Math.min(strength || 0, 1) * 0.25;
+
+                // 1) 저음 "퉁" — 사인파 피치가 순간적으로 뚝 떨어지며 왁스볼의 말랑한 몸통 울림을 만든다
+                const osc = ctx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(210, now);
+                osc.frequency.exponentialRampToValueAtTime(68, now + 0.1);
+                const oscGain = ctx.createGain();
+                oscGain.gain.setValueAtTime(0.0001, now);
+                oscGain.gain.exponentialRampToValueAtTime(amp, now + 0.01);
+                oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.17);
+                osc.connect(oscGain).connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.2);
+
+                // 2) 짧은 마찰 노이즈 — 왁스 표면이 "뽁" 하고 눌릴 때의 질감을 더해준다
+                const bufferSize = Math.floor(ctx.sampleRate * 0.045);
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                const noise = ctx.createBufferSource();
+                noise.buffer = noiseBuffer;
+                const noiseFilter = ctx.createBiquadFilter();
+                noiseFilter.type = 'bandpass';
+                noiseFilter.frequency.value = 1500;
+                noiseFilter.Q.value = 0.7;
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(amp * 0.5, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+                noise.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
+                noise.start(now);
+            } catch (e) { /* 오디오를 지원하지 않는 환경이면 조용히 무시 */ }
+        }
+
+        // ---- 3D 볼 (Three.js) ----
+        let waxBall = null, waxBallScene = null, waxBallCamera = null, waxBallRenderer = null, waxBallRaycaster = null;
+        let waxBallAnimHandle = null, waxBallLastT = null;
+        let waxScaleY = 1, waxScaleYVel = 0; // 간단한 스프링 모델로 "말랑하게 눌렸다 돌아오는" 스퀴시感을 낸다
+        let waxBallPopCount = 0;
+        let waxBallUsesFallback = false;
+
+        function initWaxBall() {
+            const stage = document.getElementById('wax-ball-stage');
+            const canvas = document.getElementById('wax-ball-canvas');
+            if (!stage || !canvas) return;
+
+            if (typeof THREE === 'undefined') {
+                // Three.js 로드에 실패한 경우에도 쉼터 자체는 동작하도록, CSS로 흉내낸 글로시 구체로 대체한다
+                waxBallUsesFallback = true;
+                stage.classList.add('fallback');
+                stage.addEventListener('pointerdown', handleWaxBallFallbackPress);
+                return;
+            }
+
+            const size = stage.clientWidth || 220;
+            waxBallScene = new THREE.Scene();
+            waxBallCamera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+            waxBallCamera.position.set(0, 0.15, 4.4);
+
+            waxBallRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            waxBallRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            waxBallRenderer.setSize(size, size);
+            if (waxBallRenderer.outputColorSpace !== undefined) waxBallRenderer.outputColorSpace = THREE.SRGBColorSpace;
+            waxBallRenderer.shadowMap.enabled = true;
+
+            // 조명 — 스튜디오 3점 조명으로, 왁스 특유의 매끈하고 말랑한 하이라이트를 살린다
+            waxBallScene.add(new THREE.AmbientLight(0xffffff, 0.55));
+            const key = new THREE.PointLight(0xffffff, 1.3);
+            key.position.set(2.2, 2.6, 3);
+            key.castShadow = true;
+            waxBallScene.add(key);
+            const fill = new THREE.PointLight(0x9be37a, 0.5);
+            fill.position.set(-2.4, -1.2, 2);
+            waxBallScene.add(fill);
+            const rim = new THREE.PointLight(0xffffff, 0.35);
+            rim.position.set(0, -2, -3);
+            waxBallScene.add(rim);
+
+            // 왁스볼 본체 — 매끈한 구체 + 글로시 클리어코트 재질로 "말랑한 왁스" 질감을 표현
+            const geometry = new THREE.SphereGeometry(1.15, 64, 64);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0xb9f08e, roughness: 0.3, metalness: 0.02,
+                clearcoat: 1, clearcoatRoughness: 0.14, reflectivity: 0.5,
+            });
+            waxBall = new THREE.Mesh(geometry, material);
+            waxBall.castShadow = true;
+            waxBallScene.add(waxBall);
+
+            // 바닥에 은은한 접촉 그림자를 깔아 입체감을 더한다
+            const shadowGeo = new THREE.CircleGeometry(1.5, 48);
+            const shadowMat = new THREE.ShadowMaterial({ opacity: 0.22 });
+            const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
+            shadowPlane.rotation.x = -Math.PI / 2;
+            shadowPlane.position.y = -1.3;
+            shadowPlane.receiveShadow = true;
+            waxBallScene.add(shadowPlane);
+
+            waxBallRaycaster = new THREE.Raycaster();
+
+            canvas.addEventListener('pointerdown', handleWaxBallPointerDown);
+            window.addEventListener('resize', resizeWaxBall);
+
+            waxBallLastT = null;
+            waxBallAnimHandle = requestAnimationFrame(animateWaxBall);
+        }
+
+        function resizeWaxBall() {
+            const stage = document.getElementById('wax-ball-stage');
+            if (!stage || !waxBallRenderer || !waxBallCamera) return;
+            const size = stage.clientWidth || 220;
+            waxBallRenderer.setSize(size, size);
+            waxBallCamera.aspect = 1;
+            waxBallCamera.updateProjectionMatrix();
+        }
+
+        function animateWaxBall(t) {
+            waxBallAnimHandle = requestAnimationFrame(animateWaxBall);
+            if (!waxBallLastT) waxBallLastT = t;
+            const dt = Math.min((t - waxBallLastT) / 1000, 0.05);
+            waxBallLastT = t;
+
+            // 천천히 저절로 도는 아이들 모션 — 가만히 있어도 "살아있는" 느낌을 준다
+            waxBall.rotation.y += dt * 0.35;
+            waxBall.rotation.x += dt * 0.08;
+
+            // 스프링 모델: 눌렸을 때(scaleY를 확 줄임) 자연스럽게 통통 튀며 원래 모양으로 돌아온다
+            const SPRING_K = 170, SPRING_D = 9;
+            const force = -SPRING_K * (waxScaleY - 1) - SPRING_D * waxScaleYVel;
+            waxScaleYVel += force * dt;
+            waxScaleY += waxScaleYVel * dt;
+            waxBall.scale.y = waxScaleY;
+            // 부피가 보존되는 것처럼 보이도록, 눌린 만큼 가로/세로는 살짝 부풀린다
+            const spread = 1 + Math.max(0, (1 - waxScaleY)) * 0.42;
+            waxBall.scale.x = waxBall.scale.z = spread;
+
+            waxBallRenderer.render(waxBallScene, waxBallCamera);
+        }
+
+        function handleWaxBallPointerDown(e) {
+            const canvas = e.currentTarget;
+            const rect = canvas.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+            waxBallRaycaster.setFromCamera({ x, y }, waxBallCamera);
+            const hits = waxBallRaycaster.intersectObject(waxBall);
+            if (hits.length > 0) {
+                squishWaxBall();
+            }
+        }
+
+        function squishWaxBall() {
+            waxScaleY = 0.68;
+            waxScaleYVel = 0;
+            waxBallPopCount++;
+            const countEl = document.getElementById('wax-ball-count');
+            if (countEl) countEl.innerText = waxBallPopCount;
+            playWaxPopSound(1);
+        }
+
+        // Three.js를 못 불러왔을 때의 CSS 대체 볼 — 같은 소리/카운트 경험은 그대로 유지한다
+        function handleWaxBallFallbackPress() {
+            const ball = document.getElementById('wax-ball-fallback');
+            if (ball) {
+                ball.classList.remove('squish');
+                void ball.offsetWidth;
+                ball.classList.add('squish');
+                setTimeout(() => ball.classList.remove('squish'), 260);
+            }
+            waxBallPopCount++;
+            const countEl = document.getElementById('wax-ball-count');
+            if (countEl) countEl.innerText = waxBallPopCount;
+            playWaxPopSound(1);
+        }
+
+        // "처음으로" 버튼 — 누른 횟수와 볼의 모양을 전부 처음 상태로 되돌려서 다시 쉬어갈 수 있게 한다
+        function resetWaxBall() {
+            waxBallPopCount = 0;
+            const countEl = document.getElementById('wax-ball-count');
+            if (countEl) countEl.innerText = '0';
+            waxScaleY = 1; waxScaleYVel = 0;
+            if (waxBall) { waxBall.scale.set(1, 1, 1); waxBall.rotation.set(0, 0, 0); }
+            const fallbackBall = document.getElementById('wax-ball-fallback');
+            if (fallbackBall) fallbackBall.classList.remove('squish');
+        }
+
+        if (document.getElementById('wax-ball-stage')) {
+            // 레이아웃이 자리잡은 뒤(캔버스 실제 크기를 알 수 있을 때) 초기화한다
+            window.addEventListener('DOMContentLoaded', initWaxBall);
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(initWaxBall, 0);
+            }
+        }
 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
