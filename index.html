@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>AgeLess Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -259,6 +259,11 @@
             100% { transform: scale(2.2); opacity:0; }
         }
 
+        /* ---------- 모달이 열려있는 동안 배경 페이지 스크롤 잠금 ----------
+           (모바일에서 채팅 입력창에 포커스가 가면서 키보드가 올라올 때, 배경 페이지까지
+           같이 끌려 올라가 보이는 "화면이 위로 밀리는" 현상을 막기 위함) */
+        body.modal-scroll-lock { overflow: hidden; position: fixed; inset: 0; width: 100%; }
+
         /* ---------- 랜딩페이지 스크롤 등장 ---------- */
         .reveal-on-scroll {
             opacity: 0; transform: translateY(22px);
@@ -291,6 +296,13 @@
             background: radial-gradient(58% 60% at 50% 42%, var(--bg) 0%, rgba(247,244,238,.88) 38%, rgba(247,244,238,0) 72%);
         }
         .hero-content { position: relative; z-index: 1; }
+        /* 섹션 경계(overflow:hidden)에서 배경 원(blob)들이 뚝 잘려 보이지 않도록,
+           하단 가장자리를 페이지 배경색으로 부드럽게 녹여서 자연스럽게 마무리한다 */
+        .hero-bottom-fade {
+            position: absolute; left: 0; right: 0; bottom: 0; height: 140px;
+            background: linear-gradient(to bottom, rgba(247,244,238,0) 0%, var(--bg) 92%);
+            z-index: 0; pointer-events: none;
+        }
 
         /* 머리가 은은하게 까딱이며 "대화하는" 느낌을 줌 */
         .ill-head-group { animation: illHeadBob 3.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
@@ -356,8 +368,8 @@
         }
 
         /* ---------- 실제 화상 상담 화면 미리보기 (히어로 아래, 이용방법 위) ----------
-           추상적인 캐릭터 대신, 실제 서비스에서 쓰는 것과 같은 화상 통화 UI를 그대로
-           보여줘서 "이렇게 상담이 진행되는구나"를 한눈에 알 수 있게 합니다. */
+           추상적인 캐릭터 대신, 실제 서비스(#call-widget)에서 쓰는 것과 똑같은 레이아웃·버튼
+           모양을 그대로 재현해서 "이렇게 상담이 진행되는구나"를 정확하게 보여줍니다. */
         .call-mockup {
             background: #15171b;
             border-radius: 20px;
@@ -373,55 +385,95 @@
         .call-mockup-title { margin-left: 8px; }
         .call-mockup-timer { margin-left: auto; display: flex; align-items: center; gap: 5px; color: rgba(255,255,255,.55); font-weight: 600; }
 
+        /* 영상 영역 — 실제 #call-widget의 대기 화면(아바타+레이더 핑)과 동일한 구성 */
         .call-mockup-stage {
             position: relative; border-radius: 14px; overflow: hidden;
-            background: linear-gradient(145deg, #2a2f38, #1b1e24);
-            min-height: 260px; display: flex;
+            background: #0f1115;
+            min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .call-mockup-tile.main {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative;
+        .call-mockup-avatar-ring {
+            width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: rgba(179,253,139,.15); border: 1px solid rgba(179,253,139,.4); margin-bottom: 12px;
         }
-        .call-mockup-avatar {
-            width: 76px; height: 76px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            background: var(--accent); color: var(--accent-ink); font-size: 28px; font-weight: 800;
+        .call-mockup-stage-name { font-weight: 800; font-size: 15px; color: #fff; }
+        .call-mockup-live-badge {
+            position: absolute; top: 12px; left: 12px; background: rgba(30,32,38,.85); color: #6ee7b7;
+            font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 999px; display: flex; align-items: center; gap: 7px;
         }
-        .call-mockup-avatar.small { width: 40px; height: 40px; font-size: 16px; }
-        .call-mockup-name {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(0,0,0,.4); color: #fff; font-size: 12px; font-weight: 700;
-            padding: 4px 10px; border-radius: 999px;
+        .call-mockup-live-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; animation: callMockupPulse 1.6s ease-in-out infinite; }
+        @keyframes callMockupPulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
+        /* 하단 컨트롤 바 — 실제 #call-widget-controlbar와 동일하게 "왼쪽 내 영상 썸네일 + 오른쪽 버튼들" 구조 */
+        .call-mockup-controlbar {
+            position: absolute; bottom: 0; left: 0; right: 0; background: rgba(15,17,21,.92);
+            padding: 10px 12px; display: flex; align-items: center; justify-content: space-between;
+            border-top: 1px solid rgba(255,255,255,.08);
         }
-        .call-mockup-name.small { font-size: 10px; padding: 3px 8px; }
-        .call-mockup-tile.pip {
-            position: absolute; right: 14px; bottom: 14px; width: 96px; height: 72px; border-radius: 10px;
-            background: linear-gradient(145deg,#3a4049,#20242b); border: 2px solid rgba(255,255,255,.15);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+        .call-mockup-local-thumb {
+            width: 68px; height: 50px; border-radius: 8px; background: linear-gradient(145deg,#3a4049,#20242b);
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,.3);
         }
-        .call-mockup-chat {
-            width: 200px; flex-shrink: 0; border-left: 1px solid rgba(255,255,255,.08);
-            padding: 14px 12px; display: flex; flex-direction: column; gap: 8px; justify-content: flex-end;
+        .call-mockup-ctrl-group { display: flex; align-items: center; gap: 8px; }
+        .call-mockup-btn {
+            width: 38px; height: 38px; border-radius: 11px; border: 1px solid rgba(255,255,255,.2);
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,.1); color: #fff; font-size: 14px; cursor: pointer;
         }
+        .call-mockup-btn.muted { background: rgba(239,68,68,.22); border-color: rgba(239,68,68,.4); color: #fca5a5; }
+        .call-mockup-btn.end {
+            width: auto; padding: 0 14px; border-radius: 11px; background: #e11d48; border-color: #e11d48;
+            color: #fff; font-weight: 700; font-size: 13px; gap: 7px;
+        }
+
+        /* 하단 채팅 패널 — 실제 상담 화면에 추가된 call-chat 카드와 동일한 라이트 테마 */
+        .call-mockup-chatpanel {
+            background: #fff; border-radius: 16px; margin-top: 10px; overflow: hidden;
+            border: 1px solid rgba(20,20,20,.06);
+        }
+        .call-mockup-chat-head {
+            display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
+            border-bottom: 1px solid #f1f1f3; font-weight: 800; font-size: 13px; color: var(--ink);
+        }
+        .call-mockup-chat-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-height: 108px; justify-content: flex-end; }
         .call-mockup-msg {
-            background: rgba(255,255,255,.08); color: #fff; font-size: 12px; line-height: 1.4;
-            padding: 8px 10px; border-radius: 12px 12px 12px 2px; max-width: 90%;
+            background: #f1f1f3; color: var(--ink); font-size: 13px; line-height: 1.4;
+            padding: 8px 11px; border-radius: 13px 13px 13px 3px; max-width: 78%; align-self: flex-start;
         }
         .call-mockup-msg.me {
-            align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-radius: 12px 12px 2px 12px;
+            align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-radius: 13px 13px 3px 13px;
         }
-        .call-mockup-typing { align-self: flex-start; background: rgba(255,255,255,.08); padding: 8px 10px; border-radius: 12px 12px 12px 2px; color: #fff; }
-
-        .call-mockup-toolbar { display: flex; justify-content: center; gap: 10px; padding: 14px 0 6px; }
-        .call-mockup-btn {
-            width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,.12); color: #fff; font-size: 15px;
+        .call-mockup-typing { align-self: flex-start; background: #f1f1f3; padding: 8px 11px; border-radius: 13px 13px 13px 3px; }
+        .call-mockup-chat-inputrow { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-top: 1px solid #f1f1f3; }
+        .call-mockup-chat-fakeinput {
+            flex: 1; background: #f8f8f6; border-radius: 999px; padding: 9px 14px; font-size: 13px; color: var(--ink-soft);
         }
-        .call-mockup-btn.end { background: #ef4444; }
+        .call-mockup-chat-send {
+            width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+            display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; border: none;
+        }
 
         @media (max-width: 640px) {
-            .call-mockup-stage { flex-direction: column; min-height: auto; }
-            .call-mockup-chat { width: auto; border-left: none; border-top: 1px solid rgba(255,255,255,.08); }
-            .call-mockup-tile.main { min-height: 200px; }
+            .call-mockup-stage { min-height: 240px; }
+            .call-mockup-local-thumb { width: 52px; height: 40px; }
         }
+
+        /* ---------- 버튼을 눌렀을 때의 "기분 좋은" 피드백 — 숫자가 올라가는 게임화가 아니라,
+           실제로 뭔가 눌렸다는 촉각적 확신을 주기 위한 짧은 스케일 바운스 + 리플 ---------- */
+        .press-feel { position: relative; overflow: hidden; transition: transform .14s cubic-bezier(.34,1.56,.64,1); }
+        .press-feel:active { transform: scale(.9); }
+        .press-feel.pressed-pop { animation: pressFeelPop .32s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes pressFeelPop {
+            0% { transform: scale(.88); }
+            60% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .press-feel .press-ripple {
+            position: absolute; border-radius: 50%; background: rgba(255,255,255,.55);
+            width: 10px; height: 10px; left: 50%; top: 50%; pointer-events: none;
+            transform: translate(-50%,-50%) scale(0); opacity: .9;
+            animation: pressFeelRipple .5s ease-out forwards;
+        }
+        @keyframes pressFeelRipple { to { transform: translate(-50%,-50%) scale(7); opacity: 0; } }
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
@@ -586,6 +638,7 @@
                     </svg>
                 </div>
                 <div class="hero-scrim" aria-hidden="true"></div>
+                <div class="hero-bottom-fade" aria-hidden="true"></div>
                 <div class="hero-content max-w-5xl mx-auto px-4">
                     <span class="inline-block bg-slate-50 border border-slate-200 text-sm font-bold px-3 py-1.5 rounded-full mb-4" style="color:var(--ink-soft);">은퇴 전문가 × 사회초년생</span>
                     <h1 class="fluid-title font-extrabold tracking-tight" style="font-size:clamp(1.8rem, 1.5vw + 1.5rem, 3rem); line-height:1.3;">
@@ -627,26 +680,33 @@
                         <span class="call-mockup-title">1:1 화상 상담실</span>
                         <span class="call-mockup-timer"><i class="fa-regular fa-clock"></i> 18:24</span>
                     </div>
+                    <!-- 영상 영역: 실제 상담 화면(#call-widget)과 동일하게 아바타 + 실시간 배지 + 하단 컨트롤 바 구조 -->
                     <div class="call-mockup-stage">
-                        <div class="call-mockup-tile main">
-                            <div class="call-mockup-avatar">김</div>
-                            <span class="call-mockup-name">김은퇴 멘토 <i class="fa-solid fa-microphone"></i></span>
-                            <div class="call-mockup-tile pip">
-                                <div class="call-mockup-avatar small">나</div>
-                                <span class="call-mockup-name small">나 <i class="fa-solid fa-microphone-slash"></i></span>
+                        <div class="call-mockup-live-badge"><span class="dot"></span> 실시간 연결 중</div>
+                        <div class="call-mockup-avatar-ring"><i class="fa-solid fa-user-tie text-2xl" style="color:var(--accent);"></i></div>
+                        <p class="call-mockup-stage-name">김은퇴 멘토</p>
+                        <div id="mockup-end-toast" class="hidden" style="position:absolute; top:46px; left:50%; transform:translateX(-50%); background:rgba(15,17,21,.9); color:#fff; font-size:11px; font-weight:700; padding:6px 12px; border-radius:999px; transition:opacity .3s ease; z-index:5;">상담이 종료되었습니다 (예시 화면입니다)</div>
+                        <div class="call-mockup-controlbar">
+                            <div class="call-mockup-local-thumb"><i class="fa-solid fa-user text-slate-400"></i></div>
+                            <div class="call-mockup-ctrl-group">
+                                <button id="mockup-btn-mic" class="call-mockup-btn press-feel" tabindex="-1" onclick="mockupToggle(this,'mic',event)"><i class="fa-solid fa-microphone"></i></button>
+                                <button id="mockup-btn-cam" class="call-mockup-btn press-feel" tabindex="-1" onclick="mockupToggle(this,'cam',event)"><i class="fa-solid fa-video"></i></button>
+                                <button class="call-mockup-btn end press-feel" tabindex="-1" onclick="mockupEndCall(this,event)"><i class="fa-solid fa-phone-slash"></i> 종료</button>
                             </div>
                         </div>
-                        <div class="call-mockup-chat">
+                    </div>
+                    <!-- 채팅 패널: 상담 화면에 있는 call-chat 카드와 동일한 구성(라이트 테마, 말풍선, 입력창) -->
+                    <div class="call-mockup-chatpanel">
+                        <div class="call-mockup-chat-head"><span><i class="fa-solid fa-comment-dots mr-1.5"></i>채팅</span></div>
+                        <div class="call-mockup-chat-body">
                             <div class="call-mockup-msg">이직 타이밍이 고민이시라고 했죠?</div>
                             <div class="call-mockup-msg me">네, 지금 2년 차인데 고민이 많아요</div>
                             <div class="call-mockup-typing"><span class="typing-dots"><span></span><span></span><span></span></span></div>
                         </div>
-                    </div>
-                    <div class="call-mockup-toolbar">
-                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-microphone"></i></button>
-                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-video"></i></button>
-                        <button class="call-mockup-btn" tabindex="-1"><i class="fa-solid fa-comment"></i></button>
-                        <button class="call-mockup-btn end" tabindex="-1"><i class="fa-solid fa-phone-slash"></i></button>
+                        <div class="call-mockup-chat-inputrow">
+                            <span class="call-mockup-chat-fakeinput">메시지를 입력하세요</span>
+                            <button class="call-mockup-chat-send press-feel" tabindex="-1" onclick="mockupPress(this,event)"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
                     </div>
                 </div>
                 <p class="text-center text-xs mt-3 font-semibold" style="color:var(--ink-soft);">실제 상담은 이런 화면으로 진행돼요</p>
@@ -1076,7 +1136,7 @@
                     <div id="call-chat-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2"></div>
                     <form id="call-chat-form" onsubmit="sendCallChatMessage(event)" class="flex items-center gap-2 px-3 py-2 border-t border-slate-100 flex-shrink-0">
                         <input id="call-chat-input" type="text" oninput="handleCallChatTyping()" placeholder="메시지를 입력하세요" class="flex-1 text-sm px-3.5 py-2.5 rounded-full outline-none bg-slate-50" autocomplete="off">
-                        <button type="submit" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--accent); color:var(--accent-ink);"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                        <button type="submit" class="press-feel w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--accent); color:var(--accent-ink);"><i class="fa-solid fa-paper-plane text-sm"></i></button>
                     </form>
                 </div>
 
@@ -1182,10 +1242,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="toggleAudio()" id="btn-audio" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-microphone text-sm"></i></button>
-                <button onclick="toggleCamera()" id="btn-camera" class="bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-video text-sm"></i></button>
-                <button onclick="toggleRecording()" id="btn-record" class="hidden bg-amber-500 text-slate-900 px-3 h-10 rounded-xl font-bold text-sm items-center gap-1.5"><i class="fa-solid fa-circle text-[10px]"></i> <span id="record-text">녹화</span></button>
-                <button onclick="endCall()" id="btn-end-call" class="bg-rose-600 hover:bg-rose-500 text-white px-3 h-10 rounded-xl font-bold text-sm flex items-center gap-1.5"><i class="fa-solid fa-phone-slash"></i> 종료</button>
+                <button onclick="toggleAudio()" id="btn-audio" class="press-feel bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-microphone text-sm"></i></button>
+                <button onclick="toggleCamera()" id="btn-camera" class="press-feel bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-xl flex items-center justify-center border border-white/20"><i class="fa-solid fa-video text-sm"></i></button>
+                <button onclick="toggleRecording()" id="btn-record" class="press-feel hidden bg-amber-500 text-slate-900 px-3 h-10 rounded-xl font-bold text-sm items-center gap-1.5"><i class="fa-solid fa-circle text-[10px]"></i> <span id="record-text">녹화</span></button>
+                <button onclick="endCall()" id="btn-end-call" class="press-feel bg-rose-600 hover:bg-rose-500 text-white px-3 h-10 rounded-xl font-bold text-sm flex items-center gap-1.5"><i class="fa-solid fa-phone-slash"></i> 종료</button>
             </div>
         </div>
     </div>
@@ -1211,7 +1271,7 @@
 
     <!-- ============================== DM 채팅 모달 ============================== -->
     <div id="chat-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="card max-w-sm w-full flex flex-col" style="height:70vh;">
+        <div class="card max-w-sm w-full flex flex-col" style="height:70vh; height:70dvh;">
             <div class="flex items-center justify-between p-4 border-b border-slate-100">
                 <h3 class="font-extrabold" id="chat-modal-title">메시지</h3>
                 <button onclick="closeChatModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
@@ -1228,9 +1288,13 @@
                 <button onclick="document.getElementById('chat-file-input').click()" class="ghost-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" title="사진/파일 첨부">
                     <i class="fa-solid fa-paperclip text-sm"></i>
                 </button>
-                <input type="text" id="chat-input" placeholder="메시지 입력..." class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();" oninput="handleChatTyping()">
-                <button onclick="sendChatMessage()" class="accent-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                <input type="text" id="chat-input" placeholder="메시지 입력... (사진 붙여넣기 가능)" class="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') sendChatMessage();" oninput="handleChatTyping()" onpaste="handleChatPaste(event)">
+                <button onclick="sendChatMessage()" class="press-feel accent-btn w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
             </div>
+        </div>
+        <!-- 채팅 메시지 우클릭(길게 누르기) 삭제 메뉴 -->
+        <div id="chat-msg-menu" class="hidden fixed z-[60] bg-white rounded-xl shadow-xl py-1 border border-slate-100" style="min-width:110px;">
+            <button onclick="deleteChatMessageFromMenu()" class="w-full text-left px-4 py-2 text-sm font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2"><i class="fa-solid fa-trash-can text-xs"></i> 삭제</button>
         </div>
     </div>
 
@@ -1692,7 +1756,62 @@
             targets.forEach(el => io.observe(el));
         })();
 
+        // =====================================================================
+        // 랜딩페이지 화상통화 목업 — 버튼을 눌렀을 때 "기분 좋은" 피드백
+        // (점수가 쌓이는 게임화가 아니라, 눌렀다는 확신을 주는 짧은 리플 + 바운스 + 상태 토글)
+        // =====================================================================
+        function spawnPressRipple(btn, evt) {
+            const ripple = document.createElement('span');
+            ripple.className = 'press-ripple';
+            // 버튼 안 어디(아이콘 포함)를 눌렀든 버튼 기준 좌표로 리플 위치를 정확히 계산한다
+            if (evt && typeof evt.clientX === 'number') {
+                const rect = btn.getBoundingClientRect();
+                ripple.style.left = (evt.clientX - rect.left) + 'px';
+                ripple.style.top = (evt.clientY - rect.top) + 'px';
+            }
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 520);
+            btn.classList.remove('pressed-pop');
+            void btn.offsetWidth; // 애니메이션 재시작을 위한 강제 리플로우
+            btn.classList.add('pressed-pop');
+        }
+        // 실제 상담 화면의 통화 제어 버튼(마이크/카메라/녹화/종료)에도 같은 손맛을 입힌다 —
+        // 각 버튼의 실제 동작(onclick)은 그대로 두고, 이 리스너는 시각적 피드백만 덧붙인다.
+        document.addEventListener('pointerdown', (e) => {
+            const btn = e.target.closest('.press-feel');
+            if (btn) spawnPressRipple(btn, e);
+        });
+        // 단순히 눌렀을 때의 손맛만 필요한 버튼(채팅 전송 버튼 등) — 리플 자체는 위 pointerdown
+        // 리스너가 이미 그려주므로, 여기서는 아무 추가 동작도 필요 없다(실제 전송 기능이 없는 예시 버튼).
+        function mockupPress(btn, evt) { /* 리플은 전역 리스너가 처리 */ }
 
+        // 마이크/카메라 버튼: 누를 때마다 on/off 상태가 자연스럽게 토글되며 아이콘이 바뀜
+        function mockupToggle(btn, kind, evt) {
+            const icon = btn.querySelector('i');
+            const isOff = btn.classList.toggle('muted');
+            if (kind === 'mic') {
+                icon.className = isOff ? 'fa-solid fa-microphone-slash' : 'fa-solid fa-microphone';
+            } else if (kind === 'cam') {
+                icon.className = isOff ? 'fa-solid fa-video-slash' : 'fa-solid fa-video';
+                const thumb = document.querySelector('.call-mockup-local-thumb i');
+                if (thumb) thumb.className = isOff ? 'fa-solid fa-video-slash text-slate-500' : 'fa-solid fa-user text-slate-400';
+            }
+        }
+
+        // 종료 버튼: 실제로 상담을 끝내진 않지만(예시 화면이므로), 눌렀다는 걸 확실히 느끼도록
+        // 살짝 흔들리는 피드백과 함께 "상담이 종료되었습니다" 안내가 잠깐 떴다가 사라진다.
+        let mockupEndToastTimer = null;
+        function mockupEndCall(btn, evt) {
+            const toast = document.getElementById('mockup-end-toast');
+            if (!toast) return;
+            toast.classList.remove('hidden');
+            toast.style.opacity = '1';
+            clearTimeout(mockupEndToastTimer);
+            mockupEndToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 1600);
+        }
 
 
         // =====================================================================
@@ -2072,16 +2191,33 @@
         let chatChannel = null;
         let allConversationsCache = [];
 
+        // 모달이 열려있는 동안 배경(body) 스크롤을 잠근다 — 모바일에서 입력창에 포커스가 가서
+        // 키보드가 올라올 때 배경 페이지까지 같이 위로 끌려 올라가 보이는 현상을 막기 위함.
+        // position:fixed로 잠그면 기존 스크롤 위치가 0으로 보이므로, 풀 때 원래 위치로 되돌려준다.
+        let savedScrollY = 0;
+        function lockBodyScroll() {
+            savedScrollY = window.scrollY || window.pageYOffset || 0;
+            document.body.style.top = -savedScrollY + 'px';
+            document.body.classList.add('modal-scroll-lock');
+        }
+        function unlockBodyScroll() {
+            document.body.classList.remove('modal-scroll-lock');
+            document.body.style.top = '';
+            window.scrollTo(0, savedScrollY);
+        }
+
         function openChatWith(partnerId, partnerName) {
             chatPartnerId = partnerId;
             document.getElementById('chat-modal-title').innerText = partnerName + '님과의 대화';
             document.getElementById('chat-modal').classList.remove('hidden');
+            lockBodyScroll();
             hideTypingIndicator(); // 이전에 열었던 대화의 "입력 중" 표시가 남아있지 않도록 초기화
             loadChatMessages();
             setupChatChannel();
         }
         function closeChatModal() {
             hideTypingIndicator();
+            unlockBodyScroll();
             document.getElementById('chat-modal').classList.add('hidden');
             if (chatChannel) { supabaseClient.removeChannel(chatChannel); chatChannel = null; }
             chatPartnerId = null;
@@ -2113,15 +2249,46 @@
             updateMessagesBadge();
         }
 
+        // 메시지 전송 시각을 "오후 7:02" 형태로 표시
+        function formatMsgTime(iso) {
+            if (!iso) return '';
+            try {
+                return new Date(iso).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch (e) { return ''; }
+        }
+        // 날짜가 바뀌는 지점에 "2026년 10월 15일" 같은 구분선을 넣기 위한 포맷
+        function formatMsgDate(iso) {
+            if (!iso) return '';
+            try {
+                return new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+            } catch (e) { return ''; }
+        }
+
         function renderChatMessages(msgs) {
             const box = document.getElementById('chat-messages');
+            // 다시 그리기 전에 사용자가 이미 맨 아래 근처(스크롤을 거의 안 올린 상태)였는지 확인해둔다.
+            // 읽음 처리 등 대화 내용과 무관한 갱신에도 매번 "box.innerHTML"을 다시 그리기 때문에,
+            // 과거 대화를 읽으려고 위로 스크롤해둔 상태였다면 강제로 끌려 내려가지 않게 해야 한다.
+            const wasNearBottom = box.scrollHeight === 0 || (box.scrollHeight - box.scrollTop - box.clientHeight) < 80;
+            const lastMsg = msgs[msgs.length - 1];
+            const lastIsMine = !!lastMsg && lastMsg.sender_id === currentUser.id;
+
             // 내가 보낸 메시지 중 상대방이 읽은 "가장 마지막" 메시지 밑에만 인스타그램 DM처럼 '읽음' 표시
             let lastReadMineIndex = -1;
             msgs.forEach((m, i) => { if (m.sender_id === currentUser.id && m.read_at) lastReadMineIndex = i; });
 
+            let prevDateKey = null;
             box.innerHTML = msgs.map((m, i) => {
                 const mine = m.sender_id === currentUser.id;
                 const showRead = mine && i === lastReadMineIndex;
+
+                // 날짜가 바뀌면 중앙에 날짜 구분선을 한 번 끼워넣는다 (카카오톡 방식)
+                let dateDividerHtml = '';
+                const dateKey = m.created_at ? m.created_at.slice(0, 10) : null;
+                if (dateKey && dateKey !== prevDateKey) {
+                    dateDividerHtml = `<div class="flex justify-center my-2"><span class="text-[11px] font-bold px-3 py-1 rounded-full" style="background:#f1f1f3;color:var(--ink-soft);">${formatMsgDate(m.created_at)}</span></div>`;
+                    prevDateKey = dateKey;
+                }
 
                 let attachmentHtml = '';
                 if (m.attachment_url) {
@@ -2136,14 +2303,70 @@
                     }
                 }
                 const textHtml = m.content ? `<div class="${attachmentHtml ? 'mt-1.5' : ''}">${escapeHtml(m.content)}</div>` : '';
+                const timeHtml = `<span class="text-[10px]" style="color:var(--ink-soft);">${formatMsgTime(m.created_at)}</span>`;
 
-                return `<div class="flex flex-col ${mine ? 'items-end' : 'items-start'}">
+                // 우클릭(또는 모바일 길게 누르기)으로 삭제 메뉴를 띄울 수 있게 메시지 id를 함께 넘긴다 (내 메시지만 삭제 가능)
+                return `${dateDividerHtml}<div class="flex flex-col ${mine ? 'items-end' : 'items-start'}" oncontextmenu="showChatMsgMenu(event,'${m.id}',${mine})">
                     <div class="max-w-[75%] px-3 py-2 rounded-2xl text-sm" style="${mine ? 'background:var(--accent);color:var(--accent-ink);' : 'background:#f1f1f3;color:var(--ink);'} overflow-wrap:anywhere; word-break:break-word; white-space:pre-wrap;">${attachmentHtml}${textHtml}</div>
-                    ${showRead ? `<span class="text-[10px] mt-0.5 mr-1" style="color:var(--ink-soft);">읽음</span>` : ''}
+                    <div class="flex items-center gap-1.5 mt-0.5 ${mine ? 'mr-1' : 'ml-1'}">
+                        ${showRead ? `<span class="text-[10px]" style="color:var(--ink-soft);">읽음</span>` : ''}
+                        ${timeHtml}
+                    </div>
                 </div>`;
             }).join('') || `<p class="text-sm text-center py-8" style="color:var(--ink-soft);">아직 대화가 없습니다.</p>`;
-            box.scrollTop = box.scrollHeight;
+
+            // 이미 맨 아래쪽을 보고 있었거나, 방금 내가 보낸 메시지라면 아래로 붙여준다.
+            // (과거 대화를 읽고 있던 중이라면 건드리지 않는다.)
+            if (wasNearBottom || lastIsMine) {
+                scrollChatToBottom();
+                // 이미지 첨부는 로딩이 끝나야 실제 높이가 확정되므로, 로딩 완료 시점에 한 번 더 맞춰준다
+                // (안 그러면 이미지가 늦게 뜨면서 화면이 위로 밀려 보이는 현상이 생긴다).
+                box.querySelectorAll('img').forEach(img => {
+                    if (!img.complete) img.addEventListener('load', scrollChatToBottom, { once: true });
+                });
+            }
         }
+
+        function scrollChatToBottom() {
+            const box = document.getElementById('chat-messages');
+            if (box) box.scrollTop = box.scrollHeight;
+        }
+
+        // 채팅 메시지 우클릭 삭제 메뉴
+        let chatMsgMenuTargetId = null;
+        function showChatMsgMenu(e, id, mine) {
+            if (!mine) return; // 상대방 메시지는 삭제 메뉴를 띄우지 않는다
+            e.preventDefault();
+            chatMsgMenuTargetId = id;
+            const menu = document.getElementById('chat-msg-menu');
+            const modalCard = document.getElementById('chat-modal').querySelector('.card');
+            const cardRect = modalCard.getBoundingClientRect();
+            // 메뉴가 모달 영역(및 화면) 밖으로 나가지 않도록 위치를 보정한다
+            const menuWidth = 120, menuHeight = 44;
+            let x = Math.min(e.clientX, cardRect.right - menuWidth - 4);
+            let y = Math.min(e.clientY, cardRect.bottom - menuHeight - 4);
+            x = Math.max(x, cardRect.left + 4);
+            y = Math.max(y, cardRect.top + 4);
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.classList.remove('hidden');
+        }
+        function hideChatMsgMenu() {
+            chatMsgMenuTargetId = null;
+            const menu = document.getElementById('chat-msg-menu');
+            if (menu) menu.classList.add('hidden');
+        }
+        async function deleteChatMessageFromMenu() {
+            const id = chatMsgMenuTargetId;
+            hideChatMsgMenu();
+            if (!id) return;
+            const { error } = await supabaseClient.from('messages').delete().eq('id', id);
+            if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+            loadChatMessages();
+        }
+        // 메뉴 바깥을 클릭/스크롤하면 닫히게 한다
+        document.addEventListener('click', hideChatMsgMenu);
+        document.addEventListener('scroll', hideChatMsgMenu, true);
 
         function setupChatChannel() {
             if (chatChannel) supabaseClient.removeChannel(chatChannel);
@@ -2203,30 +2426,101 @@
             if (error) showToast('메시지 전송 실패', 'error');
         }
 
-        // 사진/파일 첨부 전송
-        async function handleChatFileSelected(e) {
-            const file = e.target.files[0];
-            e.target.value = ''; // 같은 파일을 다시 선택해도 change 이벤트가 다시 뜨도록 초기화
+        // 업로드 중인 이미지를 즉시 화면에 미리 보여주는 "낙관적(optimistic)" 말풍선.
+        // 실제 메시지가 DB에 저장되고 실시간 구독으로 목록이 다시 그려지면 자동으로 사라진다.
+        function appendOptimisticImage(previewUrl, tempId) {
+            const box = document.getElementById('chat-messages');
+            if (!box) return;
+            const wasNearBottom = box.scrollHeight === 0 || (box.scrollHeight - box.scrollTop - box.clientHeight) < 80;
+            // "아직 대화가 없습니다" 안내문이 떠있었다면 치워준다
+            if (box.children.length === 1 && box.firstElementChild.tagName === 'P') box.innerHTML = '';
+            const wrap = document.createElement('div');
+            wrap.className = 'flex flex-col items-end';
+            wrap.id = tempId;
+            wrap.innerHTML = `<div class="max-w-[75%] px-3 py-2 rounded-2xl text-sm" style="background:var(--accent);color:var(--accent-ink);">
+                <div class="relative inline-block">
+                    <img src="${previewUrl}" class="rounded-xl max-w-[200px] max-h-[200px] object-cover block" style="opacity:.55;" />
+                    <div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-circle-notch fa-spin text-white text-xl" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));"></i></div>
+                </div>
+            </div>`;
+            box.appendChild(wrap);
+            if (wasNearBottom) scrollChatToBottom();
+        }
+        function removeOptimisticImage(tempId) {
+            const el = document.getElementById(tempId);
+            if (el) el.remove();
+        }
+
+        // 사진/파일 첨부 전송 — 파일 선택(첨부 버튼)과 클립보드 붙여넣기가 이 함수를 공유한다
+        async function uploadAndSendChatFile(file, fallbackName) {
             if (!file || !chatPartnerId) return;
             if (file.size > 15 * 1024 * 1024) return showToast('파일은 15MB 이하만 보낼 수 있습니다.', 'error');
 
-            showToast('파일 업로드 중...', 'info');
+            const attachmentType = file.type.startsWith('image/') ? 'image' : 'file';
+
+            // 이미지는 업로드가 끝나길 기다리지 않고, 로컬 미리보기를 "바로" 채팅창에 띄운다.
+            let tempId = null, localPreviewUrl = null;
+            if (attachmentType === 'image') {
+                tempId = 'optimistic-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+                localPreviewUrl = URL.createObjectURL(file);
+                appendOptimisticImage(localPreviewUrl, tempId);
+            } else {
+                showToast('파일 업로드 중...', 'info');
+            }
+
             // Supabase Storage 경로는 띄어쓰기/한글이 들어가면 "Invalid key" 에러가 나므로,
             // 저장 경로는 영문/숫자로만 안전하게 만들고, 실제 파일명은 attachment_name에 그대로 저장해서 화면엔 원래 이름으로 보여준다.
-            const extMatch = file.name.match(/\.([a-zA-Z0-9]+)$/);
-            const safeExt = extMatch ? '.' + extMatch[1].toLowerCase() : '';
+            const name = file.name || fallbackName || '파일';
+            const extMatch = name.match(/\.([a-zA-Z0-9]+)$/);
+            // 클립보드에서 바로 붙여넣은 이미지는 파일명/확장자가 없는 경우가 많으므로, MIME 타입으로 확장자를 보정한다.
+            const mimeExt = file.type && file.type.startsWith('image/') ? '.' + (file.type.split('/')[1] || 'png').toLowerCase() : '';
+            const safeExt = extMatch ? '.' + extMatch[1].toLowerCase() : mimeExt;
             const randomPart = Math.random().toString(36).slice(2, 10);
             const path = `${currentUser.id}/${Date.now()}_${randomPart}${safeExt}`;
 
             const { error: upErr } = await supabaseClient.storage.from('chat-files').upload(path, file);
-            if (upErr) return showToast('업로드 실패: ' + upErr.message, 'error');
+            if (upErr) {
+                if (tempId) removeOptimisticImage(tempId);
+                if (localPreviewUrl) URL.revokeObjectURL(localPreviewUrl);
+                return showToast('업로드 실패: ' + upErr.message, 'error');
+            }
 
-            const attachmentType = file.type.startsWith('image/') ? 'image' : 'file';
             const { error } = await supabaseClient.from('messages').insert({
                 sender_id: currentUser.id, receiver_id: chatPartnerId, content: null,
-                attachment_url: path, attachment_type: attachmentType, attachment_name: file.name
+                attachment_url: path, attachment_type: attachmentType, attachment_name: (extMatch ? name : ('붙여넣은 이미지' + safeExt))
             });
-            if (error) showToast('전송 실패: ' + error.message, 'error');
+            if (error) {
+                if (tempId) removeOptimisticImage(tempId);
+                showToast('전송 실패: ' + error.message, 'error');
+            } else if (tempId) {
+                // 실제 메시지는 realtime 구독(loadChatMessages)이 다시 그려주면서 자동 교체되지만,
+                // 혹시 모를 지연에 대비해 로컬 미리보기도 잠깐 뒤에 안전하게 정리해준다.
+                setTimeout(() => { removeOptimisticImage(tempId); if (localPreviewUrl) URL.revokeObjectURL(localPreviewUrl); }, 4000);
+            }
+        }
+
+        async function handleChatFileSelected(e) {
+            const file = e.target.files[0];
+            e.target.value = ''; // 같은 파일을 다시 선택해도 change 이벤트가 다시 뜨도록 초기화
+            if (!file) return;
+            await uploadAndSendChatFile(file);
+        }
+
+        // 사진을 복사해서 채팅 입력창에 붙여넣으면(Ctrl+V), 텍스트로 붙여넣는 대신
+        // 바로 업로드해서 이미지 메시지로 전송한다 (첨부파일 버튼으로 올렸을 때와 동일하게 표시됨).
+        function handleChatPaste(e) {
+            if (!chatPartnerId) return;
+            const items = e.clipboardData && e.clipboardData.items;
+            if (!items) return;
+            for (const item of items) {
+                if (item.kind === 'file' && item.type && item.type.startsWith('image/')) {
+                    e.preventDefault();
+                    const file = item.getAsFile();
+                    if (file) uploadAndSendChatFile(file, 'image.png');
+                    return;
+                }
+            }
+            // 이미지가 아닌 일반 텍스트 붙여넣기는 기본 동작 그대로 둔다
         }
 
         // ---- 메시지 허브(채팅 목록) — 카톡처럼 전체 대화 목록 + 이름 검색 + 안읽음 배지 ----
