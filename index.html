@@ -645,11 +645,6 @@
             background: rgba(20,20,20,.75); color: #fff; font-size: 13px; font-weight: 800;
             padding: 7px 16px; border-radius: 999px; transition: opacity .25s ease; white-space: nowrap;
         }
-        .cnr-pointerlock-hint {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            background: rgba(20,20,20,.38); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
-            text-align: center; padding: 20px;
-        }
         .cnr-role-reveal {
             position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center;
@@ -1665,14 +1660,13 @@
                         <div class="cnr-canvas-wrap">
                             <canvas id="cnr-canvas"></canvas>
                             <p id="cnr-banner" class="cnr-banner hidden"></p>
-                            <div id="cnr-pointerlock-hint" class="cnr-pointerlock-hint">화면을 클릭하면 마우스로 좌우를 둘러볼 수 있어요</div>
                             <div id="cnr-role-reveal" class="cnr-role-reveal hidden">
                                 <span id="cnr-role-reveal-icon" class="cnr-role-reveal-icon"></span>
                                 <p id="cnr-role-reveal-title" class="cnr-role-reveal-title"></p>
                                 <p id="cnr-role-reveal-sub" class="cnr-role-reveal-sub"></p>
                             </div>
                         </div>
-                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 마우스로 좌우 시선 회전</p>
+                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 탑뷰 2D</p>
                         <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                     </div>
 
@@ -2864,13 +2858,12 @@
         }
 
         // =====================================================================
-        // 쉼터 — 경찰과 도둑 (3D 온라인 1:1 추격전, 가벼운 P2P 신뢰 기반 동기화)
+        // 쉼터 — 경찰과 도둑 (2D 탑뷰 온라인 1:1 추격전, 가벼운 P2P 신뢰 기반 동기화)
         // =====================================================================
-        const CNR_ARENA_HALF_LENGTH = 14.0;
-        const CNR_ARENA_HALF_WIDTH = 7.0;
+        const CNR_ARENA_HALF_LENGTH = 14.0; // 세로(Z) — 위: 깃발존(-Z), 아래: 도둑 홈존(+Z)
+        const CNR_ARENA_HALF_WIDTH = 7.0;   // 가로(X)
         const CNR_ZONE_DEPTH = 3.5;
         const CNR_PLAYER_RADIUS = 0.42;
-        const CNR_PLAYER_REST_Y = 0.0;
         const CNR_MAX_SPEED = 6.2;
         const CNR_ACCEL = 60;
         const CNR_DECEL = 70;
@@ -2881,12 +2874,9 @@
         const CNR_FLAG_PICKUP_RADIUS = 1.15;
         const CNR_TAG_INVULN = 1.3;
         const CNR_ROUND_SECONDS = 60;
-        const CNR_MOUSE_SENS = 0.0024;
-        const CNR_PITCH_MIN = -0.9, CNR_PITCH_MAX = 0.5;
-        const CNR_CAM_DIST = 5.4, CNR_CAM_HEIGHT = 2.7;
         // 도둑의 시작/귀환 홈존 = +Z 쪽, 깃발이 놓인 존 = -Z 쪽
         const CNR_HOME_Z = CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2;
-        const CNR_FLAG_SPAWN = { x: 0, y: 0.9, z: -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2) };
+        const CNR_FLAG_SPAWN = { x: 0, z: -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2) };
 
         let cnr = null; // 현재 추격전 세션의 모든 런타임 상태 (매치 시작 시 생성, 나갈 때 폐기)
 
@@ -3002,213 +2992,48 @@
             if (!cnr) return;
             if (cnr.channel) { try { supabaseClient.removeChannel(cnr.channel); } catch (e) {} }
             if (cnr.rafId) cancelAnimationFrame(cnr.rafId);
+            clearTimeout(cnr.roleRevealTimer);
             cnrDetachInputListeners();
-            if (document.pointerLockElement && document.exitPointerLock) {
-                try { document.exitPointerLock(); } catch (e) {}
-            }
-            if (cnr.renderer) { try { cnr.renderer.dispose(); } catch (e) {} }
             if (cnr.resizeObserver) { try { cnr.resizeObserver.disconnect(); } catch (e) {} }
             cnr = null;
         }
 
-        // ---- 캐릭터 모델링 (경찰 / 도둑 — 완전한 오리지널 디자인) ----
+        // ---- 2D 캔버스 렌더링 준비 ----
 
-        function cnrBuildHumanoid(role) {
-            const isCop = role === 'cop';
-            const group = new THREE.Group();
-            const skinMat = new THREE.MeshStandardMaterial({ color: 0xe8b98a, roughness: 0.7 });
-            const suitColor = isCop ? 0x24355c : 0x2c2b33;
-            const suitMat = new THREE.MeshStandardMaterial({ color: suitColor, roughness: 0.65 });
-            const accentMat = new THREE.MeshStandardMaterial({ color: isCop ? 0xf4c53a : 0x8a1f2b, roughness: 0.5 });
-
-            const hips = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.16, 0.22), suitMat);
-            hips.position.y = 0.46;
-            group.add(hips);
-
-            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.46, 0.26), suitMat);
-            torso.position.y = 0.76;
-            torso.castShadow = true;
-            group.add(torso);
-
-            // 벨트/스카프 포인트 컬러 (경찰: 노란 형광 벨트, 도둑: 짙은 빨간 스카프)
-            const belt = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.07, 0.28), accentMat);
-            belt.position.y = isCop ? 0.56 : 0.9;
-            group.add(belt);
-
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 14), skinMat);
-            head.position.y = 1.16;
-            head.castShadow = true;
-            group.add(head);
-
-            if (isCop) {
-                const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.12, 16), suitMat);
-                cap.position.y = 1.32;
-                group.add(cap);
-                const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.03, 16), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.4 }));
-                brim.position.set(0, 1.27, 0.06);
-                group.add(brim);
-                const badge = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.02), accentMat);
-                badge.position.set(0.12, 0.84, 0.14);
-                group.add(badge);
-            } else {
-                const hood = new THREE.Mesh(new THREE.SphereGeometry(0.24, 14, 12, 0, Math.PI * 2, 0, Math.PI * 0.65), suitMat);
-                hood.position.y = 1.2;
-                hood.rotation.x = Math.PI;
-                group.add(hood);
-                const mask = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.09, 0.2), new THREE.MeshStandardMaterial({ color: 0x14141a, roughness: 0.6 }));
-                mask.position.set(0, 1.1, 0.1);
-                group.add(mask);
-            }
-
-            // 팔/다리는 어깨•엉덩이 피벗 그룹으로 만들어 달리기 애니메이션 때 자연스럽게 회전시킨다
-            function limb(lenY, radius, color) {
-                const pivot = new THREE.Group();
-                const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.88, lenY, 10), new THREE.MeshStandardMaterial({ color, roughness: 0.65 }));
-                mesh.position.y = -lenY / 2;
-                mesh.castShadow = true;
-                pivot.add(mesh);
-                return pivot;
-            }
-            const armL = limb(0.42, 0.07, isCop ? 0x24355c : 0x2c2b33);
-            armL.position.set(0.23, 0.94, 0);
-            const armR = limb(0.42, 0.07, isCop ? 0x24355c : 0x2c2b33);
-            armR.position.set(-0.23, 0.94, 0);
-            const legL = limb(0.5, 0.09, isCop ? 0x1b2a46 : 0x202024);
-            legL.position.set(0.11, 0.46, 0);
-            const legR = limb(0.5, 0.09, isCop ? 0x1b2a46 : 0x202024);
-            legR.position.set(-0.11, 0.46, 0);
-            group.add(armL, armR, legL, legR);
-
-            group.userData.armL = armL; group.userData.armR = armR;
-            group.userData.legL = legL; group.userData.legR = legR;
-            group.userData.torso = torso;
-            return group;
-        }
-
-        // ---- 3D 장면 구성 ----
-
-        function cnrBuildScene(canvas) {
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xaee2f0);
-            scene.fog = new THREE.Fog(0xaee2f0, 16, 34);
-
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-
-            const groundGeo = new THREE.PlaneGeometry(60, 60);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x7fcf86, roughness: 1 });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.rotation.x = -Math.PI / 2;
-            ground.receiveShadow = true;
-            scene.add(ground);
-
-            const fieldGeo = new THREE.PlaneGeometry(CNR_ARENA_HALF_WIDTH * 2, CNR_ARENA_HALF_LENGTH * 2);
-            const fieldMat = new THREE.MeshStandardMaterial({ color: 0xdcd3ae, roughness: 0.95 });
-            const field = new THREE.Mesh(fieldGeo, fieldMat);
-            field.rotation.x = -Math.PI / 2;
-            field.position.y = 0.005;
-            field.receiveShadow = true;
-            scene.add(field);
-
-            // 양쪽 끝 존 (도둑의 홈존 = 따뜻한 색, 깃발존 = 차가운 색)
-            const zoneGeo = new THREE.PlaneGeometry(CNR_ARENA_HALF_WIDTH * 2, CNR_ZONE_DEPTH);
-            const homeZoneMat = new THREE.MeshStandardMaterial({ color: 0xf4c86a, roughness: 0.9 });
-            const homeZone = new THREE.Mesh(zoneGeo, homeZoneMat);
-            homeZone.rotation.x = -Math.PI / 2;
-            homeZone.position.set(0, 0.01, CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2);
-            scene.add(homeZone);
-            const flagZoneMat = new THREE.MeshStandardMaterial({ color: 0x79b7e8, roughness: 0.9 });
-            const flagZone = new THREE.Mesh(zoneGeo, flagZoneMat);
-            flagZone.rotation.x = -Math.PI / 2;
-            flagZone.position.set(0, 0.01, -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2));
-            scene.add(flagZone);
-
-            // 테두리 울타리 (낮은 펜스)
-            const fenceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 });
-            function fence(w, d, x, z) {
-                const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.4, d), fenceMat);
-                m.position.set(x, 0.2, z);
-                m.castShadow = true;
-                scene.add(m);
-            }
-            fence(CNR_ARENA_HALF_WIDTH * 2 + 0.3, 0.12, 0, CNR_ARENA_HALF_LENGTH);
-            fence(CNR_ARENA_HALF_WIDTH * 2 + 0.3, 0.12, 0, -CNR_ARENA_HALF_LENGTH);
-            fence(0.12, CNR_ARENA_HALF_LENGTH * 2 + 0.3, CNR_ARENA_HALF_WIDTH, 0);
-            fence(0.12, CNR_ARENA_HALF_LENGTH * 2 + 0.3, -CNR_ARENA_HALF_WIDTH, 0);
-            // 중앙선
-            const centerLine = new THREE.Mesh(new THREE.BoxGeometry(CNR_ARENA_HALF_WIDTH * 2, 0.02, 0.08), fenceMat);
-            centerLine.position.y = 0.011;
-            scene.add(centerLine);
-
-            // 조명
-            scene.add(new THREE.AmbientLight(0xffffff, 0.68));
-            const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-            sun.position.set(8, 14, 6);
-            sun.castShadow = true;
-            sun.shadow.mapSize.set(1024, 1024);
-            sun.shadow.camera.left = -20; sun.shadow.camera.right = 20;
-            sun.shadow.camera.top = 20; sun.shadow.camera.bottom = -20;
-            scene.add(sun);
-
-            // 깃발 (기둥 + 천, 살짝 흔들리는 애니메이션)
-            const poleMat = new THREE.MeshStandardMaterial({ color: 0x8a8a8a, roughness: 0.5, metalness: 0.4 });
-            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 8), poleMat);
-            pole.position.set(CNR_FLAG_SPAWN.x, 0.9, CNR_FLAG_SPAWN.z);
-            pole.castShadow = true;
-            scene.add(pole);
-            const flagCanvas = document.createElement('canvas');
-            flagCanvas.width = 32; flagCanvas.height = 32;
-            const fctx = flagCanvas.getContext('2d');
-            fctx.fillStyle = '#e4344a'; fctx.fillRect(0, 0, 32, 32);
-            fctx.fillStyle = '#ffffff'; fctx.fillRect(0, 0, 16, 16); fctx.fillRect(16, 16, 16, 16);
-            const flagTex = new THREE.CanvasTexture(flagCanvas);
-            const flagClothGeo = new THREE.PlaneGeometry(0.5, 0.34, 6, 4);
-            const flagClothMat = new THREE.MeshStandardMaterial({ map: flagTex, side: THREE.DoubleSide, roughness: 0.8 });
-            const flagCloth = new THREE.Mesh(flagClothGeo, flagClothMat);
-            flagCloth.position.set(CNR_FLAG_SPAWN.x + 0.26, 1.58, CNR_FLAG_SPAWN.z);
-            const flagClothOrig = Float32Array.from(flagClothGeo.attributes.position.array);
-            scene.add(flagCloth);
-
-            const shadowGeo = new THREE.CircleGeometry(0.45, 16);
-            const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25 });
-
-            // 캐릭터
-            const myMesh = cnrBuildHumanoid(cnr.myRole);
-            const oppMesh = cnrBuildHumanoid(cnr.oppRole);
-            scene.add(myMesh); scene.add(oppMesh);
-            const myShadow = new THREE.Mesh(shadowGeo.clone(), shadowMat.clone());
-            myShadow.rotation.x = -Math.PI / 2; myShadow.position.y = 0.012;
-            const oppShadow = myShadow.clone();
-            scene.add(myShadow); scene.add(oppShadow);
-
-            cnr.scene = scene; cnr.renderer = renderer; cnr.camera = camera;
-            cnr.myMesh = myMesh; cnr.oppMesh = oppMesh;
-            cnr.myShadow = myShadow; cnr.oppShadow = oppShadow;
-            cnr.flagCloth = flagCloth; cnr.flagClothOrig = flagClothOrig; cnr.flagPole = pole;
-        }
-
-        function cnrResizeRenderer() {
-            if (!cnr || !cnr.renderer) return;
-            const canvas = cnr.renderer.domElement;
-            const w = canvas.clientWidth || 640, h = canvas.clientHeight || 400;
-            cnr.renderer.setSize(w, h, false);
-            cnr.camera.aspect = w / h;
-            cnr.camera.updateProjectionMatrix();
-        }
-
-        function cnrEnsureSceneBuilt() {
-            if (cnr.renderer) return;
+        function cnrEnsureCanvasReady() {
             const canvas = document.getElementById('cnr-canvas');
-            cnrBuildScene(canvas);
-            cnrResizeRenderer();
+            if (!canvas) return;
+            cnr.canvas = canvas;
+            cnr.ctx = canvas.getContext('2d');
+            cnrResizeCanvas2D();
             if (window.ResizeObserver) {
-                cnr.resizeObserver = new ResizeObserver(() => cnrResizeRenderer());
+                cnr.resizeObserver = new ResizeObserver(() => cnrResizeCanvas2D());
                 cnr.resizeObserver.observe(canvas.parentElement);
             }
+        }
+
+        function cnrResizeCanvas2D() {
+            if (!cnr || !cnr.canvas) return;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const w = cnr.canvas.clientWidth || 640, h = cnr.canvas.clientHeight || 400;
+            cnr.canvas.width = Math.round(w * dpr);
+            cnr.canvas.height = Math.round(h * dpr);
+            cnr.dpr = dpr;
+        }
+
+        // 월드 좌표(x,z) → 캔버스 픽셀 좌표. 맵의 긴 축(Z, 도둑홈↔깃발존)을 화면 가로로 눕혀서
+        // 가로로 넓은 캔버스 비율에 맞춘다 (도둑 홈존이 왼쪽, 깃발존이 오른쪽). 항상 레터박스로 전체가 보인다.
+        function cnrWorldToScreen(x, z) {
+            const cw = cnr.canvas.width, ch = cnr.canvas.height;
+            const worldW = CNR_ARENA_HALF_LENGTH * 2, worldH = CNR_ARENA_HALF_WIDTH * 2;
+            const pad = 24 * cnr.dpr;
+            const scale = Math.min((cw - pad * 2) / worldW, (ch - pad * 2) / worldH);
+            const originX = cw / 2, originY = ch / 2;
+            return { x: originX - z * scale, y: originY + x * scale, scale };
+        }
+        // 방향 벡터(월드)를 화면 방향으로 변환 — 위치 변환과 같은 회전을 쓰되 원점 이동은 없다.
+        function cnrWorldDirToScreen(fx, fz) {
+            return { x: -fz, y: fx };
         }
 
         // ---- 매치 시작 ----
@@ -3220,30 +3045,25 @@
             cnr.oppRole = myRole === 'cop' ? 'thief' : 'cop';
             cnr.isHostAuthority = (cnr.role === 'host');
             cnr.startAt = startAt;
-            cnr.myPos = cnr.myRole === 'thief'
-                ? { x: 0, y: CNR_PLAYER_REST_Y, z: CNR_HOME_Z }
-                : { x: 0, y: CNR_PLAYER_REST_Y, z: 0 };
-            cnr.oppPos = cnr.oppRole === 'thief'
-                ? { x: 0, y: CNR_PLAYER_REST_Y, z: CNR_HOME_Z }
-                : { x: 0, y: CNR_PLAYER_REST_Y, z: 0 };
-            cnr.oppVisual = { x: cnr.oppPos.x, y: cnr.oppPos.y, z: cnr.oppPos.z };
+            cnr.myPos = cnr.myRole === 'thief' ? { x: 0, z: CNR_HOME_Z } : { x: 0, z: 0 };
+            cnr.oppPos = cnr.oppRole === 'thief' ? { x: 0, z: CNR_HOME_Z } : { x: 0, z: 0 };
+            cnr.oppVisual = { x: cnr.oppPos.x, z: cnr.oppPos.z };
             cnr.myVel = { x: 0, z: 0 };
-            cnr.cameraYaw = myRole === 'thief' ? Math.PI : 0;
-            cnr.cameraPitch = 0.12;
+            cnr.facing = { x: 0, z: myRole === 'thief' ? -1 : 1 }; // 도둑은 깃발존(위)을, 경찰은 아래를 기본으로 바라본다
+            cnr.oppFacing = { x: 0, z: 1 };
             cnr.dashCooldown = 0; cnr.dashing = false; cnr.dashTimer = 0; cnr.dashDir = { x: 0, z: 0 };
+            cnr.dashFlash = 0; cnr.oppDashing = false;
             cnr.invulnTimer = 0; cnr.frozenTimer = 0;
             cnr.flagCarried = false; cnr.flagCarrierRole = null;
             cnr.keys = {}; cnr.spaceHeld = false;
             cnr.lastPosSendAt = 0;
-            cnr.pointerLocked = false;
             cnr.resultDecided = false;
+            cnr.walkPhase = 0;
 
             document.getElementById('cnr-role-badge').innerText = myRole === 'cop' ? '경찰' : '도둑';
             document.getElementById('cnr-role-badge').className = 'cnr-hud-role ' + myRole;
             document.getElementById('cnr-hud-timer').innerText = '1:00';
             document.getElementById('cnr-dash-bar').style.width = '100%';
-            const hint = document.getElementById('cnr-pointerlock-hint');
-            if (hint) hint.classList.remove('hidden');
 
             // 시작하기 전에 내 역할을 큼지막하게 먼저 보여준다 (경찰/도둑 구분이 헷갈리지 않도록)
             const isCopRole = myRole === 'cop';
@@ -3266,7 +3086,7 @@
             }
 
             cnrShowState('game');
-            cnrEnsureSceneBuilt();
+            cnrEnsureCanvasReady();
             cnrAttachInputListeners();
             cnr.rafId = requestAnimationFrame(cnrAnimate);
         }
@@ -3276,44 +3096,14 @@
         function cnrAttachInputListeners() {
             cnr.onKeyDown = (e) => cnrOnKeyDown(e);
             cnr.onKeyUp = (e) => cnrOnKeyUp(e);
-            cnr.onMouseMove = (e) => cnrOnMouseMove(e);
-            cnr.onCanvasClick = () => cnrOnCanvasClick();
-            cnr.onPointerLockChange = () => cnrOnPointerLockChange();
             window.addEventListener('keydown', cnr.onKeyDown);
             window.addEventListener('keyup', cnr.onKeyUp);
-            document.addEventListener('mousemove', cnr.onMouseMove);
-            document.addEventListener('pointerlockchange', cnr.onPointerLockChange);
-            const canvas = document.getElementById('cnr-canvas');
-            const hint = document.getElementById('cnr-pointerlock-hint');
-            if (hint) hint.addEventListener('click', cnr.onCanvasClick);
-            if (canvas) canvas.addEventListener('click', cnr.onCanvasClick);
         }
 
         function cnrDetachInputListeners() {
             if (!cnr) return;
             if (cnr.onKeyDown) window.removeEventListener('keydown', cnr.onKeyDown);
             if (cnr.onKeyUp) window.removeEventListener('keyup', cnr.onKeyUp);
-            if (cnr.onMouseMove) document.removeEventListener('mousemove', cnr.onMouseMove);
-            if (cnr.onPointerLockChange) document.removeEventListener('pointerlockchange', cnr.onPointerLockChange);
-        }
-
-        function cnrOnCanvasClick() {
-            const canvas = document.getElementById('cnr-canvas');
-            if (canvas && canvas.requestPointerLock) canvas.requestPointerLock();
-        }
-
-        function cnrOnPointerLockChange() {
-            if (!cnr) return;
-            const canvas = document.getElementById('cnr-canvas');
-            cnr.pointerLocked = (document.pointerLockElement === canvas);
-            const hint = document.getElementById('cnr-pointerlock-hint');
-            if (hint) hint.classList.toggle('hidden', cnr.pointerLocked);
-        }
-
-        function cnrOnMouseMove(e) {
-            if (!cnr || !cnr.pointerLocked || cnr.phase !== 'game') return;
-            // 좌우(요)만 마우스로 돌리고, 위아래는 고정된 각도를 그대로 쓴다 (단순하고 어지럽지 않게)
-            cnr.cameraYaw -= (e.movementX || 0) * CNR_MOUSE_SENS;
         }
 
         function cnrOnKeyDown(e) {
@@ -3330,17 +3120,11 @@
             if (k === ' ') cnr.spaceHeld = false;
         }
 
-        // ---- 이동/대쉬 ----
-
-        function cnrForwardVec(yaw) { return { x: -Math.sin(yaw), z: -Math.cos(yaw) }; }
-        function cnrRightVec(yaw) { return { x: Math.cos(yaw), z: -Math.sin(yaw) }; }
+        // ---- 이동/대쉬 (탑뷰라 카메라 회전 없이, 화면 방향 = 월드 방향 그대로) ----
 
         function cnrInputDir() {
-            const f = cnrForwardVec(cnr.cameraYaw), r = cnrRightVec(cnr.cameraYaw);
-            let fwdIn = (cnr.keys['w'] ? 1 : 0) - (cnr.keys['s'] ? 1 : 0);
-            let rightIn = (cnr.keys['d'] ? 1 : 0) - (cnr.keys['a'] ? 1 : 0);
-            let dx = f.x * fwdIn + r.x * rightIn;
-            let dz = f.z * fwdIn + r.z * rightIn;
+            let dx = (cnr.keys['d'] ? 1 : 0) - (cnr.keys['a'] ? 1 : 0);
+            let dz = (cnr.keys['s'] ? 1 : 0) - (cnr.keys['w'] ? 1 : 0);
             const len = Math.hypot(dx, dz);
             if (len < 0.001) return null;
             return { x: dx / len, z: dz / len };
@@ -3348,14 +3132,13 @@
 
         function cnrTryDash() {
             if (!cnr || cnr.phase !== 'game' || cnr.dashCooldown > 0 || cnr.dashing || cnr.frozenTimer > 0) return;
-            let dir = cnrInputDir();
-            if (!dir) dir = cnrForwardVec(cnr.cameraYaw);
+            const dir = cnrInputDir() || cnr.facing;
             cnr.dashing = true; cnr.dashTimer = CNR_DASH_DURATION;
             cnr.dashDir = dir;
             cnr.myVel.x = dir.x * CNR_DASH_SPEED;
             cnr.myVel.z = dir.z * CNR_DASH_SPEED;
             cnr.dashCooldown = CNR_DASH_COOLDOWN;
-            cnr.dashFovKick = 1;
+            cnr.dashFlash = 1;
             playCnrDashSound();
         }
 
@@ -3369,6 +3152,7 @@
             } else {
                 const dir = cnrInputDir();
                 if (dir) {
+                    cnr.facing = dir;
                     cnr.myVel.x += dir.x * CNR_ACCEL * dt;
                     cnr.myVel.z += dir.z * CNR_ACCEL * dt;
                     const spd = Math.hypot(cnr.myVel.x, cnr.myVel.z);
@@ -3394,6 +3178,7 @@
             }
 
             if (cnr.invulnTimer > 0) cnr.invulnTimer -= dt;
+            if (cnr.dashFlash > 0) cnr.dashFlash = Math.max(0, cnr.dashFlash - dt * 3.2);
             if (cnr.dashCooldown > 0) {
                 cnr.dashCooldown = Math.max(0, cnr.dashCooldown - dt);
                 document.getElementById('cnr-dash-bar').style.width = (100 - (cnr.dashCooldown / CNR_DASH_COOLDOWN) * 100) + '%';
@@ -3466,7 +3251,7 @@
             if (!cnr.channel) return;
             if (nowMs - cnr.lastPosSendAt > 66) {
                 cnr.lastPosSendAt = nowMs;
-                cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: cnr.myPos.x, y: cnr.myPos.y, z: cnr.myPos.z, yaw: cnr.cameraYaw, dashing: cnr.dashing } });
+                cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: cnr.myPos.x, z: cnr.myPos.z, fx: cnr.facing.x, fz: cnr.facing.z, dashing: cnr.dashing } });
             }
         }
 
@@ -3474,8 +3259,9 @@
             if (!cnr || !payload) return;
             switch (payload.type) {
                 case 'player':
-                    cnr.oppPos.x = payload.x; cnr.oppPos.y = payload.y; cnr.oppPos.z = payload.z;
-                    cnr.oppYaw = payload.yaw;
+                    cnr.oppPos.x = payload.x; cnr.oppPos.z = payload.z;
+                    if (payload.fx !== undefined) cnr.oppFacing = { x: payload.fx, z: payload.fz };
+                    cnr.oppDashing = !!payload.dashing;
                     break;
                 case 'tagged':
                     if (!cnr.isHostAuthority) cnrApplyTagEffects();
@@ -3492,7 +3278,7 @@
             }
         }
 
-        // ---- 게임 루프 ----
+        // ---- 2D 그리기 ----
 
         function cnrFlashBanner(text) {
             const el = document.getElementById('cnr-banner');
@@ -3510,18 +3296,148 @@
             return CNR_FLAG_SPAWN;
         }
 
-        function cnrAnimateLimbs(mesh, speedRatio, t, dashing) {
-            const u = mesh.userData;
-            if (!u.armL) return;
-            const amp = dashing ? 0.9 : 0.6 * Math.min(1, speedRatio + 0.15);
-            const freq = dashing ? 11 : 7;
-            const phase = t * freq;
-            u.armL.rotation.x = Math.sin(phase) * amp;
-            u.armR.rotation.x = -Math.sin(phase) * amp;
-            u.legL.rotation.x = -Math.sin(phase) * amp;
-            u.legR.rotation.x = Math.sin(phase) * amp;
-            u.torso.rotation.x = dashing ? 0.3 : 0;
+        function cnrDrawField(ctx) {
+            const cw = cnr.canvas.width, ch = cnr.canvas.height;
+            ctx.fillStyle = '#7fcf86';
+            ctx.fillRect(0, 0, cw, ch);
+
+            const tl = cnrWorldToScreen(-CNR_ARENA_HALF_WIDTH, -CNR_ARENA_HALF_LENGTH);
+            const br = cnrWorldToScreen(CNR_ARENA_HALF_WIDTH, CNR_ARENA_HALF_LENGTH);
+            ctx.fillStyle = '#dcd3ae';
+            ctx.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+
+            // 깃발존 (오른쪽, -Z) / 도둑 홈존 (왼쪽, +Z)
+            const flagZoneTop = cnrWorldToScreen(-CNR_ARENA_HALF_WIDTH, -CNR_ARENA_HALF_LENGTH);
+            const flagZoneBot = cnrWorldToScreen(CNR_ARENA_HALF_WIDTH, -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH));
+            ctx.fillStyle = 'rgba(121,183,232,0.85)';
+            ctx.fillRect(flagZoneTop.x, flagZoneTop.y, flagZoneBot.x - flagZoneTop.x, flagZoneBot.y - flagZoneTop.y);
+
+            const homeZoneTop = cnrWorldToScreen(-CNR_ARENA_HALF_WIDTH, CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH);
+            const homeZoneBot = cnrWorldToScreen(CNR_ARENA_HALF_WIDTH, CNR_ARENA_HALF_LENGTH);
+            ctx.fillStyle = 'rgba(244,200,106,0.85)';
+            ctx.fillRect(homeZoneTop.x, homeZoneTop.y, homeZoneBot.x - homeZoneTop.x, homeZoneBot.y - homeZoneTop.y);
+
+            // 안전구역 라벨
+            ctx.font = (12 * cnr.dpr) + 'px sans-serif';
+            ctx.fillStyle = 'rgba(20,20,20,0.5)';
+            ctx.textAlign = 'center';
+            ctx.fillText('🚩 깃발존', (flagZoneTop.x + flagZoneBot.x) / 2, flagZoneTop.y + 20 * cnr.dpr);
+            ctx.fillText('🛡 도둑 세이프존', (homeZoneTop.x + homeZoneBot.x) / 2, homeZoneBot.y - 10 * cnr.dpr);
+
+            // 테두리
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3 * cnr.dpr;
+            ctx.strokeRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+            // 세이프존 경계선 (경찰이 못 넘는 선 — 눈에 띄게 점선으로). 홈존 안쪽 경계는 항상 homeZoneTop.x에
+            // 위치하므로(화면 회전과 무관), 그 x좌표를 고정한 채 코트 전체 높이(y)로 수직선을 긋는다.
+            ctx.setLineDash([8 * cnr.dpr, 6 * cnr.dpr]);
+            ctx.strokeStyle = 'rgba(220,40,40,0.75)'; ctx.lineWidth = 2.5 * cnr.dpr;
+            ctx.beginPath(); ctx.moveTo(homeZoneTop.x, homeZoneTop.y); ctx.lineTo(homeZoneTop.x, homeZoneBot.y); ctx.stroke();
+            ctx.setLineDash([]);
         }
+
+        function cnrDrawFlag(ctx) {
+            const carried = cnr.flagCarried;
+            const pos = carried ? cnrThiefRenderPos() : CNR_FLAG_SPAWN;
+            const offsetX = carried ? 0.55 : 0;
+            const s = cnrWorldToScreen(pos.x + offsetX, pos.z);
+            const scale = s.scale;
+            ctx.save();
+            ctx.translate(s.x, s.y);
+            ctx.strokeStyle = '#8a8a8a'; ctx.lineWidth = 2.5 * cnr.dpr;
+            ctx.beginPath(); ctx.moveTo(0, 0.05 * scale); ctx.lineTo(0, -0.55 * scale); ctx.stroke();
+            ctx.fillStyle = '#e4344a';
+            ctx.beginPath();
+            ctx.moveTo(0, -0.55 * scale);
+            ctx.lineTo(0.32 * scale, -0.46 * scale);
+            ctx.lineTo(0, -0.37 * scale);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function cnrDrawCharacter(ctx, pos, role, facing, isDashing, speed, isMe, flashAmt) {
+            const s = cnrWorldToScreen(pos.x, pos.z);
+            const sf = cnrWorldDirToScreen(facing.x, facing.z); // 화면에 그릴 때는 바라보는 방향도 같은 회전을 거쳐야 한다
+            const r = CNR_PLAYER_RADIUS * s.scale;
+            const isCop = role === 'cop';
+            const color = isCop ? '#2d4ed8' : '#e07a1f';
+            const darkColor = isCop ? '#1b2a46' : '#8a4a0f';
+
+            ctx.save();
+            // 그림자
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
+            ctx.beginPath(); ctx.ellipse(s.x, s.y + r * 0.75, r * 0.9, r * 0.38, 0, 0, Math.PI * 2); ctx.fill();
+
+            // 걷기 애니메이션용 다리 (작은 두 개의 점이 좌우로 흔들림)
+            cnr.walkPhase += speed * 0.18;
+            const legSwing = Math.sin(cnr.walkPhase) * r * 0.5 * Math.min(1, speed + 0.1);
+            ctx.strokeStyle = darkColor; ctx.lineWidth = r * 0.28;
+            ctx.beginPath(); ctx.moveTo(s.x - r * 0.25, s.y + r * 0.5); ctx.lineTo(s.x - r * 0.25 + legSwing * 0.4, s.y + r * 1.1); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(s.x + r * 0.25, s.y + r * 0.5); ctx.lineTo(s.x + r * 0.25 - legSwing * 0.4, s.y + r * 1.1); ctx.stroke();
+
+            // 대쉬 중이면 뒤로 잔상(모션 블러 느낌)을 살짝
+            if (isDashing) {
+                ctx.globalAlpha = 0.35;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.ellipse(s.x - sf.x * r * 1.4, s.y - sf.y * r * 1.4, r * 0.8, r * 0.8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+
+            // 본체
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(s.x, s.y, r, 0, Math.PI * 2); ctx.fill();
+            ctx.lineWidth = r * 0.12; ctx.strokeStyle = darkColor; ctx.stroke();
+
+            // 모자(경찰) / 후드(도둑)
+            if (isCop) {
+                ctx.fillStyle = '#f4c53a';
+                ctx.beginPath(); ctx.arc(s.x, s.y, r * 0.22, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.fillStyle = '#14141a';
+                ctx.beginPath(); ctx.ellipse(s.x, s.y + r * 0.1, r * 0.5, r * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+            }
+
+            // 바라보는 방향 표시 (작은 삼각형)
+            const nx = s.x + sf.x * r * 1.3, ny = s.y + sf.y * r * 1.3;
+            ctx.fillStyle = darkColor;
+            ctx.beginPath();
+            ctx.moveTo(nx, ny);
+            ctx.lineTo(s.x + sf.x * r * 0.6 - sf.y * r * 0.3, s.y + sf.y * r * 0.6 + sf.x * r * 0.3);
+            ctx.lineTo(s.x + sf.x * r * 0.6 + sf.y * r * 0.3, s.y + sf.y * r * 0.6 - sf.x * r * 0.3);
+            ctx.closePath();
+            ctx.fill();
+
+            // 무적/대쉬 쿨다운 등 내 캐릭터 강조 링
+            if (isMe) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = r * 0.1;
+                ctx.beginPath(); ctx.arc(s.x, s.y, r * 1.22, 0, Math.PI * 2); ctx.stroke();
+            }
+            if (flashAmt > 0) {
+                ctx.strokeStyle = 'rgba(255,255,255,' + flashAmt + ')'; ctx.lineWidth = r * 0.5;
+                ctx.beginPath(); ctx.arc(s.x, s.y, r * 1.5, 0, Math.PI * 2); ctx.stroke();
+            }
+            if (role === 'thief' && (isMe ? cnr.invulnTimer > 0 : false)) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = r * 0.14;
+                ctx.setLineDash([r * 0.3, r * 0.2]);
+                ctx.beginPath(); ctx.arc(s.x, s.y, r * 1.35, 0, Math.PI * 2); ctx.stroke();
+                ctx.setLineDash([]);
+            }
+            ctx.restore();
+        }
+
+        function cnrDraw() {
+            const ctx = cnr.ctx;
+            cnrDrawField(ctx);
+            cnrDrawFlag(ctx);
+
+            const mySpeed = Math.hypot(cnr.myVel.x, cnr.myVel.z) / CNR_MAX_SPEED;
+            cnrDrawCharacter(ctx, cnr.oppVisual, cnr.oppRole, cnr.oppFacing, cnr.oppDashing, 0.5, false, 0);
+            cnrDrawCharacter(ctx, cnr.myPos, cnr.myRole, cnr.facing, cnr.dashing, mySpeed, true, cnr.dashFlash);
+        }
+
+        // ---- 게임 루프 ----
 
         function cnrAnimate(t) {
             if (!cnr) return;
@@ -3536,56 +3452,9 @@
 
                 const lerp = 1 - Math.pow(0.001, dt);
                 cnr.oppVisual.x += (cnr.oppPos.x - cnr.oppVisual.x) * lerp;
-                cnr.oppVisual.y += (cnr.oppPos.y - cnr.oppVisual.y) * lerp;
                 cnr.oppVisual.z += (cnr.oppPos.z - cnr.oppVisual.z) * lerp;
 
-                cnr.myMesh.position.set(cnr.myPos.x, cnr.myPos.y, cnr.myPos.z);
-                cnr.myMesh.rotation.y = cnr.cameraYaw;
-                const mySpeed = Math.hypot(cnr.myVel.x, cnr.myVel.z) / CNR_MAX_SPEED;
-                cnrAnimateLimbs(cnr.myMesh, mySpeed, t / 1000, cnr.dashing);
-                cnr.myShadow.position.x = cnr.myPos.x; cnr.myShadow.position.z = cnr.myPos.z;
-
-                cnr.oppMesh.position.set(cnr.oppVisual.x, cnr.oppVisual.y, cnr.oppVisual.z);
-                cnr.oppMesh.rotation.y = cnr.oppYaw || 0;
-                cnrAnimateLimbs(cnr.oppMesh, 0.5, t / 1000, false);
-                cnr.oppShadow.position.x = cnr.oppVisual.x; cnr.oppShadow.position.z = cnr.oppVisual.z;
-
-                // 깃발: 들고 있으면 도둑 위치 위에, 아니면 원래 자리에
-                if (cnr.flagCarried) {
-                    const carrierPos = cnrThiefRenderPos();
-                    cnr.flagPole.position.set(carrierPos.x, 0.9, carrierPos.z);
-                    cnr.flagCloth.position.set(carrierPos.x + 0.26, 1.58, carrierPos.z);
-                } else {
-                    cnr.flagPole.position.set(CNR_FLAG_SPAWN.x, 0.9, CNR_FLAG_SPAWN.z);
-                    cnr.flagCloth.position.set(CNR_FLAG_SPAWN.x + 0.26, 1.58, CNR_FLAG_SPAWN.z);
-                }
-                // 깃발천 흔들림
-                const fp = cnr.flagCloth.geometry.attributes.position;
-                const orig = cnr.flagClothOrig;
-                for (let i = 0; i < fp.array.length; i += 3) {
-                    const ox = orig[i];
-                    fp.array[i + 2] = orig[i + 2] + Math.sin(t * 0.006 + ox * 6) * 0.05 * (ox + 0.25);
-                }
-                fp.needsUpdate = true;
-
-                // 카메라 (3인칭, 포인터락 마우스로 요/피치 회전)
-                const dist = CNR_CAM_DIST, pitch = cnr.cameraPitch;
-                const camX = cnr.myPos.x + Math.sin(cnr.cameraYaw) * dist * Math.cos(pitch);
-                const camZ = cnr.myPos.z + Math.cos(cnr.cameraYaw) * dist * Math.cos(pitch);
-                const camY = CNR_CAM_HEIGHT + dist * Math.sin(pitch);
-                cnr.camera.position.set(camX, camY, camZ);
-                cnr.camera.rotation.order = 'YXZ';
-                cnr.camera.rotation.y = cnr.cameraYaw;
-                cnr.camera.rotation.x = pitch;
-
-                // 대쉬 FOV 펀치 (화면이 살짝 넓어지며 가속감을 준다)
-                if (cnr.dashFovKick) {
-                    cnr.dashFovKick = Math.max(0, cnr.dashFovKick - dt * 3.2);
-                    cnr.camera.fov = 60 + cnr.dashFovKick * 14;
-                    cnr.camera.updateProjectionMatrix();
-                } else if (cnr.camera.fov !== 60) {
-                    cnr.camera.fov = 60; cnr.camera.updateProjectionMatrix();
-                }
+                cnrDraw();
 
                 // 타이머 UI
                 const remaining = Math.min(CNR_ROUND_SECONDS, Math.max(0, CNR_ROUND_SECONDS - (Date.now() - cnr.startAt) / 1000));
@@ -3597,7 +3466,6 @@
                 }
 
                 cnrMaybeBroadcast(t);
-                cnr.renderer.render(cnr.scene, cnr.camera);
             }
             cnr.rafId = requestAnimationFrame(cnrAnimate);
         }
@@ -3609,9 +3477,6 @@
             cnr.phase = 'ended';
             if (cnr.rafId) cancelAnimationFrame(cnr.rafId);
             cnrDetachInputListeners();
-            if (document.pointerLockElement && document.exitPointerLock) {
-                try { document.exitPointerLock(); } catch (e) {}
-            }
             const iWon = (winnerRole === cnr.myRole);
             document.getElementById('cnr-result-title').innerText = iWon ? '승리했어요! 🏆' : '패배했어요';
             document.getElementById('cnr-result-detail').innerText =
@@ -3700,6 +3565,7 @@
                 });
             } catch (e) {}
         }
+
 
 
         // =====================================================================
