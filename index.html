@@ -521,6 +521,85 @@
             padding: 8px 16px; border-radius: 999px; cursor: pointer;
         }
         .rest-zone-reset:hover { background: #e9e9e6; }
+        .rest-zone-inner { max-width: 320px; margin: 0 auto; text-align: center; }
+
+        /* 랜딩 페이지의 쉼터 입구 카드 (클릭하면 쉼터 모달이 열림) */
+        .rest-zone-teaser {
+            display: block; width: 100%; text-align: center; background: #fff; border-radius: 24px;
+            padding: 28px 24px; box-shadow: 0 1px 2px rgba(20,20,20,.05), 0 20px 40px rgba(20,20,20,.08);
+            border: 1px solid rgba(20,20,20,.05); cursor: pointer;
+        }
+        .rest-zone-teaser-cta { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--accent-ink); }
+
+        /* 쉼터 허브의 게임 선택 카드 */
+        .restzone-game-card {
+            display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+            background: #faf9f6; border: 1px solid rgba(20,20,20,.06); border-radius: 18px;
+            padding: 16px; cursor: pointer;
+        }
+        .restzone-game-card:hover { background: #f3f2ee; }
+        .restzone-game-icon {
+            width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; margin-bottom: 10px;
+        }
+        .restzone-game-name { font-size: 14px; font-weight: 800; color: var(--ink); }
+        .restzone-game-desc { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+        /* ---------- 게임 2: 절대색감 ---------- */
+        .colorgame-wrap { max-width: 420px; margin: 0 auto; text-align: center; }
+        .colorgame-top { margin-bottom: 14px; }
+        .colorgame-round {
+            display: inline-block; font-size: 12px; font-weight: 800; color: var(--accent-ink);
+            background: var(--accent); padding: 4px 11px; border-radius: 999px; margin-bottom: 8px;
+        }
+        .colorgame-round b { font-variant-numeric: tabular-nums; }
+        .colorgame-target-label { display: block; font-size: 13px; color: var(--ink-soft); }
+        .colorgame-target-swatch {
+            width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 16px;
+            box-shadow: 0 1px 2px rgba(20,20,20,.08), 0 10px 20px rgba(20,20,20,.12); border: 3px solid #fff;
+        }
+        .colorgame-field-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; margin-bottom: 14px; }
+        .colorgame-canvas {
+            width: 100%; height: 100%; display: block; border-radius: 14px; cursor: crosshair;
+            box-shadow: 0 1px 2px rgba(20,20,20,.06), 0 10px 24px rgba(20,20,20,.1);
+        }
+        .colorgame-marker {
+            position: absolute; width: 20px; height: 20px; border-radius: 50%;
+            border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.3);
+            transform: translate(-50%, -50%); pointer-events: none;
+        }
+        .colorgame-result, .colorgame-final { text-align: center; }
+        .colorgame-result p { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+        .colorgame-final-title { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 2px; }
+        .colorgame-final-score { font-size: 40px; font-weight: 800; color: var(--accent-ink); margin-bottom: 14px; font-variant-numeric: tabular-nums; }
+
+        /* ---------- 게임 3: 절대음감 ---------- */
+        .pitchgame-wrap { max-width: 380px; margin: 0 auto; text-align: center; }
+        .pitchgame-stats { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+        .pitchgame-stat {
+            font-size: 12px; font-weight: 700; color: var(--ink-soft); background: #f7f7f5;
+            padding: 6px 12px; border-radius: 999px;
+        }
+        .pitchgame-stat b { color: var(--accent-ink); font-variant-numeric: tabular-nums; margin-left: 2px; }
+        .pitchgame-speaker {
+            width: 84px; height: 84px; border-radius: 50%; border: none; margin: 0 auto 14px; display: flex;
+            align-items: center; justify-content: center; font-size: 30px; color: var(--accent-ink);
+            background: var(--accent); box-shadow: 0 10px 24px rgba(31,58,18,.18); cursor: pointer;
+        }
+        .pitchgame-speaker.playing { animation: pitchSpeakerPulse .5s ease; }
+        @keyframes pitchSpeakerPulse { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+        .pitchgame-hint { font-size: 12px; color: var(--ink-soft); margin-bottom: 10px; }
+        .pitchgame-feedback { font-size: 14px; font-weight: 800; min-height: 20px; margin-bottom: 14px; }
+        .pitchgame-feedback b { color: var(--accent-ink); }
+        .pitchgame-keys { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .pitchgame-key {
+            aspect-ratio: 1; border-radius: 12px; border: 1px solid rgba(20,20,20,.08); background: #faf9f6;
+            font-weight: 800; font-size: 13px; color: var(--ink); cursor: pointer;
+        }
+        .pitchgame-key:hover { background: #f1f1ee; }
+        .pitchgame-key.correct { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+        .pitchgame-key.wrong { background: #fecdd3; color: #9f1239; border-color: #fecdd3; }
+        @media (max-width: 420px) { .pitchgame-keys { grid-template-columns: repeat(4, 1fr); } }
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
@@ -759,22 +838,14 @@
                 <p class="text-center text-xs mt-3 font-semibold" style="color:var(--ink-soft);">실제 상담은 이런 화면으로 진행돼요</p>
             </section>
 
-            <!-- ============================== 쉼터: 상담 화면과는 별개의, 잠깐 눌러보는 3D 왁스볼 코너 ============================== -->
+            <!-- ============================== 쉼터 입구: 상담 화면과는 별개의, 잠깐 쉬어가는 미니게임 코너 ============================== -->
             <section class="max-w-sm mx-auto px-4 py-4 md:py-6">
-                <div class="rest-zone reveal-on-scroll">
+                <button onclick="openRestZoneModal()" class="rest-zone-teaser reveal-on-scroll press-feel">
                     <span class="rest-zone-eyebrow">쉼터</span>
                     <p class="rest-zone-title">잠깐 쉬어가세요</p>
-                    <p class="rest-zone-sub">상담 전후, 눌러서 콕콕 스트레스를 풀어보세요</p>
-                    <div id="wax-ball-stage" class="rest-zone-stage" aria-label="눌러서 소리와 함께 통통 튀는 3D 왁스볼">
-                        <canvas id="wax-ball-canvas"></canvas>
-                        <div id="wax-ball-fallback" class="rest-zone-fallback-ball"></div>
-                    </div>
-                    <p class="rest-zone-hint">볼을 눌러보세요 🖐️</p>
-                    <div class="rest-zone-controls">
-                        <span class="rest-zone-count"><i class="fa-solid fa-hand-pointer mr-1.5"></i><b id="wax-ball-count">0</b>번 눌렀어요</span>
-                        <button onclick="resetWaxBall()" class="rest-zone-reset press-feel"><i class="fa-solid fa-rotate-left mr-1.5"></i>처음으로</button>
-                    </div>
-                </div>
+                    <p class="rest-zone-sub">왁스볼부터 절대음감, 온라인 배구까지 — 눌러서 둘러보기</p>
+                    <span class="rest-zone-teaser-cta">쉼터 들어가기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                </button>
             </section>
 
             <!-- 이용 방법 -->
@@ -875,6 +946,7 @@
                     <span class="font-extrabold tracking-tight">AgeLess Lab</span>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
+                    <button onclick="openRestZoneModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-mug-hot mr-1"></i>쉼터</button>
                     <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
                     <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-user-plus mr-1"></i>멘토 신청</button>
                     <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-calendar-days mr-1"></i>내 예약</button>
@@ -1360,6 +1432,119 @@
         <!-- 채팅 메시지 우클릭(길게 누르기) 삭제 메뉴 -->
         <div id="chat-msg-menu" class="hidden fixed z-[60] bg-white rounded-xl shadow-xl py-1 border border-slate-100" style="min-width:110px;">
             <button onclick="deleteChatMessageFromMenu()" class="w-full text-left px-4 py-2 text-sm font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2"><i class="fa-solid fa-trash-can text-xs"></i> 삭제</button>
+        </div>
+    </div>
+
+    <!-- ============================== 쉼터 모달 — 로그인 여부와 상관없이(랜딩 화면·로그인 후 홈 화면 어디서든) 열 수 있음 ============================== -->
+    <div id="restzone-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="card max-w-4xl w-full flex flex-col" style="height:88vh; height:88dvh;">
+            <div class="flex items-center justify-between p-4 border-b border-slate-100 flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <button id="restzone-back-btn" onclick="restzoneShowHub()" class="hidden press-feel w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <h3 class="font-extrabold" id="restzone-modal-title"><i class="fa-solid fa-mug-hot mr-1.5" style="color:var(--accent-ink);"></i>쉼터</h3>
+                </div>
+                <button onclick="closeRestZoneModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="restzone-body" class="flex-1 overflow-y-auto p-5">
+
+                <!-- 허브: 게임 선택 메뉴 -->
+                <div id="restzone-panel-hub">
+                    <p class="text-sm font-bold mb-4" style="color:var(--ink-soft);">무슨 게임을 하실 건가요?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="restzoneOpenGame('ball')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#eafbd8;"><i class="fa-solid fa-circle-dot" style="color:var(--accent-ink);"></i></span>
+                            <span class="restzone-game-name">왁스볼</span>
+                            <span class="restzone-game-desc">말랑말랑, 눌러서 스트레스 풀기</span>
+                        </button>
+                        <button onclick="restzoneOpenGame('color')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#fde7f3;"><i class="fa-solid fa-palette" style="color:#c0268a;"></i></span>
+                            <span class="restzone-game-name">절대색감</span>
+                            <span class="restzone-game-desc">제시된 색과 똑같이 맞춰보세요 (3라운드)</span>
+                        </button>
+                        <button onclick="restzoneOpenGame('pitch')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#e4ecff;"><i class="fa-solid fa-music" style="color:#3351c9;"></i></span>
+                            <span class="restzone-game-name">절대음감</span>
+                            <span class="restzone-game-desc">들려오는 음을 맞혀보세요 (무한)</span>
+                        </button>
+                        <button onclick="restzoneOpenGame('volleyball')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#fff2d6;"><i class="fa-solid fa-volleyball" style="color:#b57700;"></i></span>
+                            <span class="restzone-game-name">피카츄 배구</span>
+                            <span class="restzone-game-desc">3D 온라인 1:1 대전 · 로그인 필요</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 게임 1: 왁스볼 -->
+                <div id="restzone-panel-ball" class="hidden">
+                    <div class="rest-zone-inner">
+                        <p class="rest-zone-sub text-center">상담 전후, 눌러서 콕콕 스트레스를 풀어보세요</p>
+                        <div id="wax-ball-stage" class="rest-zone-stage" aria-label="눌러서 소리와 함께 말랑하게 눌리는 3D 왁스볼">
+                            <canvas id="wax-ball-canvas"></canvas>
+                            <div id="wax-ball-fallback" class="rest-zone-fallback-ball"></div>
+                        </div>
+                        <p class="rest-zone-hint">볼을 눌러보세요 🖐️</p>
+                        <div class="rest-zone-controls">
+                            <span class="rest-zone-count"><i class="fa-solid fa-hand-pointer mr-1.5"></i><b id="wax-ball-count">0</b>번 눌렀어요</span>
+                            <button onclick="resetWaxBall()" class="rest-zone-reset press-feel"><i class="fa-solid fa-rotate-left mr-1.5"></i>처음으로</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게임 2: 절대색감 -->
+                <div id="restzone-panel-color" class="hidden">
+                    <div class="colorgame-wrap">
+                        <div class="colorgame-top">
+                            <span class="colorgame-round">라운드 <b id="colorgame-round-num">1</b> / 3</span>
+                            <span class="colorgame-target-label">아래 색상판에서 이 색과 가장 가까운 곳을 클릭하세요</span>
+                        </div>
+                        <div class="colorgame-target-swatch" id="colorgame-target-swatch"></div>
+                        <div class="colorgame-field-wrap">
+                            <canvas id="colorgame-canvas" class="colorgame-canvas"></canvas>
+                            <div id="colorgame-marker" class="colorgame-marker hidden"></div>
+                        </div>
+                        <div id="colorgame-result" class="colorgame-result hidden">
+                            <p id="colorgame-result-text"></p>
+                            <button onclick="colorGameNext()" id="colorgame-next-btn" class="press-feel accent-btn px-5 py-2 rounded-full text-sm">다음 라운드</button>
+                        </div>
+                        <div id="colorgame-final" class="colorgame-final hidden">
+                            <p class="colorgame-final-title">3라운드 평균 점수</p>
+                            <p id="colorgame-final-score" class="colorgame-final-score">0</p>
+                            <button onclick="startColorGame()" class="press-feel accent-btn px-5 py-2 rounded-full text-sm"><i class="fa-solid fa-rotate-left mr-1.5"></i>다시하기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게임 3: 절대음감 -->
+                <div id="restzone-panel-pitch" class="hidden">
+                    <div class="pitchgame-wrap">
+                        <div class="pitchgame-stats">
+                            <span class="pitchgame-stat">연속 정답 <b id="pitchgame-streak">0</b></span>
+                            <span class="pitchgame-stat">최고 기록 <b id="pitchgame-best">0</b></span>
+                        </div>
+                        <button id="pitchgame-speaker-btn" onclick="replayPitchNote()" class="pitchgame-speaker press-feel" title="다시 듣기"><i class="fa-solid fa-volume-high"></i></button>
+                        <p class="pitchgame-hint">들려오는 음을 맞혀보세요 (스피커를 누르면 다시 들려요)</p>
+                        <p id="pitchgame-feedback" class="pitchgame-feedback">&nbsp;</p>
+                        <div class="pitchgame-keys">
+                            <button id="pitchgame-key-0" class="pitchgame-key press-feel" onclick="answerPitch(0)">C</button>
+                            <button id="pitchgame-key-1" class="pitchgame-key press-feel" onclick="answerPitch(1)">C#</button>
+                            <button id="pitchgame-key-2" class="pitchgame-key press-feel" onclick="answerPitch(2)">D</button>
+                            <button id="pitchgame-key-3" class="pitchgame-key press-feel" onclick="answerPitch(3)">D#</button>
+                            <button id="pitchgame-key-4" class="pitchgame-key press-feel" onclick="answerPitch(4)">E</button>
+                            <button id="pitchgame-key-5" class="pitchgame-key press-feel" onclick="answerPitch(5)">F</button>
+                            <button id="pitchgame-key-6" class="pitchgame-key press-feel" onclick="answerPitch(6)">F#</button>
+                            <button id="pitchgame-key-7" class="pitchgame-key press-feel" onclick="answerPitch(7)">G</button>
+                            <button id="pitchgame-key-8" class="pitchgame-key press-feel" onclick="answerPitch(8)">G#</button>
+                            <button id="pitchgame-key-9" class="pitchgame-key press-feel" onclick="answerPitch(9)">A</button>
+                            <button id="pitchgame-key-10" class="pitchgame-key press-feel" onclick="answerPitch(10)">A#</button>
+                            <button id="pitchgame-key-11" class="pitchgame-key press-feel" onclick="answerPitch(11)">B</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게임 4: 피카츄 배구 -->
+                <div id="restzone-panel-volleyball" class="hidden"></div>
+
+            </div>
         </div>
     </div>
 
@@ -1934,11 +2119,19 @@
         }
 
         // ---- 3D 볼 (Three.js) ----
+        // 단순히 전체를 짜부라뜨리는 대신, "누른 바로 그 지점"의 정점들만 안쪽으로 움푹 들어갔다가
+        // 스프링 물리로 살짝 튕기며 되돌아오는 방식(로컬 들여쓰기)으로 진짜 젤리에 가깝게 구현했다.
+        // 전체 부피가 커지지 않으므로(최대 돌출이 반지름의 15% 수준) 카메라 프레임을 벗어날 일도 없다.
         let waxBall = null, waxBallScene = null, waxBallCamera = null, waxBallRenderer = null, waxBallRaycaster = null;
         let waxBallAnimHandle = null, waxBallLastT = null;
-        let waxScaleY = 1, waxScaleYVel = 0; // 간단한 스프링 모델로 "말랑하게 눌렸다 돌아오는" 스퀴시感을 낸다
         let waxBallPopCount = 0;
         let waxBallUsesFallback = false;
+        let waxBallOrigPositions = null; // 변형 전 정점 좌표 원본 (매 프레임 이 값을 기준으로 다시 계산)
+        const waxPress = { active: false, worldDir: null, strength: 0, vel: 0 };
+        const WAX_PRESS_RADIUS = 1.0;      // 들여쓰기 영향 반경(라디안, 약 57도)
+        const WAX_PRESS_DEPTH = 0.46;      // 완전히 눌렸을 때 들어가는 최대 깊이(반지름 대비 비율)
+        const WAX_SPRING_K = 150, WAX_SPRING_D = 8.5;
+        const WAX_BASE_RADIUS = 1.0;
 
         function initWaxBall() {
             const stage = document.getElementById('wax-ball-stage');
@@ -1955,8 +2148,9 @@
 
             const size = stage.clientWidth || 220;
             waxBallScene = new THREE.Scene();
-            waxBallCamera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-            waxBallCamera.position.set(0, 0.15, 4.4);
+            // 거리를 넉넉히 두고 FOV를 좁혀, 볼이 눌리거나 살짝 튕겨 부풀어도 항상 프레임 안에 여유 있게 들어오도록 함
+            waxBallCamera = new THREE.PerspectiveCamera(26, 1, 0.1, 100);
+            waxBallCamera.position.set(0, 0.22, 5.6);
 
             waxBallRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
             waxBallRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -1977,8 +2171,9 @@
             rim.position.set(0, -2, -3);
             waxBallScene.add(rim);
 
-            // 왁스볼 본체 — 매끈한 구체 + 글로시 클리어코트 재질로 "말랑한 왁스" 질감을 표현
-            const geometry = new THREE.SphereGeometry(1.15, 64, 64);
+            // 왁스볼 본체 — 매끈한 구체 + 글로시 클리어코트 재질로 "말랑한 왁스" 질감을 표현.
+            // 정점을 매 프레임 직접 움직여야 하므로 non-indexed geometry로 만들어 다루기 쉽게 한다.
+            const geometry = new THREE.SphereGeometry(WAX_BASE_RADIUS, 48, 48);
             const material = new THREE.MeshPhysicalMaterial({
                 color: 0xb9f08e, roughness: 0.3, metalness: 0.02,
                 clearcoat: 1, clearcoatRoughness: 0.14, reflectivity: 0.5,
@@ -1987,16 +2182,25 @@
             waxBall.castShadow = true;
             waxBallScene.add(waxBall);
 
+            // 변형 전 정점 좌표를 따로 저장해둔다 — 매 프레임 이 원본을 기준으로 들여쓰기를 계산해야
+            // 반복적으로 눌러도 모양이 누적되어 망가지지 않는다.
+            waxBallOrigPositions = Float32Array.from(geometry.attributes.position.array);
+            // 레이캐스트 broad-phase가 들여쓰기/튕김으로 인한 미세한 반지름 변화 때문에 빗나가지 않도록
+            // 바운딩 스피어를 넉넉하게 고정해둔다.
+            geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), WAX_BASE_RADIUS * 1.3);
+
             // 바닥에 은은한 접촉 그림자를 깔아 입체감을 더한다
-            const shadowGeo = new THREE.CircleGeometry(1.5, 48);
+            const shadowGeo = new THREE.CircleGeometry(1.4, 48);
             const shadowMat = new THREE.ShadowMaterial({ opacity: 0.22 });
             const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
             shadowPlane.rotation.x = -Math.PI / 2;
-            shadowPlane.position.y = -1.3;
+            shadowPlane.position.y = -1.05;
             shadowPlane.receiveShadow = true;
             waxBallScene.add(shadowPlane);
 
             waxBallRaycaster = new THREE.Raycaster();
+            _waxInvQuat = new THREE.Quaternion();
+            _waxLocalDir = new THREE.Vector3();
 
             canvas.addEventListener('pointerdown', handleWaxBallPointerDown);
             window.addEventListener('resize', resizeWaxBall);
@@ -2014,6 +2218,48 @@
             waxBallCamera.updateProjectionMatrix();
         }
 
+        // 매 프레임 재사용할 스크래치 변수 (가비지 발생을 줄이기 위해 루프 밖에 둔다) — THREE가
+        // 실제로 로드된 뒤(initWaxBall 안)에만 생성하므로 여기서는 null로만 선언해둔다.
+        let _waxInvQuat = null;
+        let _waxLocalDir = null;
+
+        function updateWaxJellyDeform() {
+            const posAttr = waxBall.geometry.attributes.position;
+            const arr = posAttr.array;
+            const orig = waxBallOrigPositions;
+
+            if (!waxPress.active) return false; // 변형 중이 아니면 아무 것도 할 필요 없음(호출부에서 1회 리셋 처리)
+
+            // 월드 좌표계에 고정된 "누른 방향"을, 볼이 회전한 만큼 역회전시켜 현재 로컬 좌표계로 가져온다
+            // → 볼이 계속 자전하더라도 들여쓰기가 화면상 눌렀던 바로 그 자리에 그대로 남아있는 것처럼 보인다.
+            _waxInvQuat.copy(waxBall.quaternion).invert();
+            _waxLocalDir.copy(waxPress.worldDir).applyQuaternion(_waxInvQuat);
+
+            const cosRadius = Math.cos(WAX_PRESS_RADIUS);
+            const ldx = _waxLocalDir.x, ldy = _waxLocalDir.y, ldz = _waxLocalDir.z;
+
+            for (let i = 0; i < arr.length; i += 3) {
+                const ox = orig[i], oy = orig[i + 1], oz = orig[i + 2];
+                const len = Math.sqrt(ox * ox + oy * oy + oz * oz) || 1;
+                const nx = ox / len, ny = oy / len, nz = oz / len;
+                const cosAngle = nx * ldx + ny * ldy + nz * ldz;
+                if (cosAngle > cosRadius) {
+                    const t = (cosAngle - cosRadius) / (1 - cosRadius);
+                    const weight = t * t * (3 - 2 * t); // smoothstep — 경계가 각지지 않고 부드럽게 퍼짐
+                    const disp = waxPress.strength * weight * WAX_PRESS_DEPTH;
+                    const scale = 1 + disp;
+                    arr[i] = ox * scale; arr[i + 1] = oy * scale; arr[i + 2] = oz * scale;
+                } else {
+                    arr[i] = ox; arr[i + 1] = oy; arr[i + 2] = oz;
+                }
+            }
+            posAttr.needsUpdate = true;
+            waxBall.geometry.computeVertexNormals();
+            return true;
+        }
+
+        let waxBallNeedsRestore = false;
+
         function animateWaxBall(t) {
             waxBallAnimHandle = requestAnimationFrame(animateWaxBall);
             if (!waxBallLastT) waxBallLastT = t;
@@ -2024,15 +2270,27 @@
             waxBall.rotation.y += dt * 0.35;
             waxBall.rotation.x += dt * 0.08;
 
-            // 스프링 모델: 눌렸을 때(scaleY를 확 줄임) 자연스럽게 통통 튀며 원래 모양으로 돌아온다
-            const SPRING_K = 170, SPRING_D = 9;
-            const force = -SPRING_K * (waxScaleY - 1) - SPRING_D * waxScaleYVel;
-            waxScaleYVel += force * dt;
-            waxScaleY += waxScaleYVel * dt;
-            waxBall.scale.y = waxScaleY;
-            // 부피가 보존되는 것처럼 보이도록, 눌린 만큼 가로/세로는 살짝 부풀린다
-            const spread = 1 + Math.max(0, (1 - waxScaleY)) * 0.42;
-            waxBall.scale.x = waxBall.scale.z = spread;
+            if (waxPress.active) {
+                // 스프링 모델: 눌린 깊이(strength, 음수=들어감)가 0을 향해 되돌아오며, 살짝 되튕겨 나왔다가
+                // (underdamped) 다시 가라앉는다 — 진짜 말랑한 젤리를 누른 듯한 느낌을 만든다.
+                const force = -WAX_SPRING_K * waxPress.strength - WAX_SPRING_D * waxPress.vel;
+                waxPress.vel += force * dt;
+                waxPress.strength += waxPress.vel * dt;
+                // 되튕김이 과해서 화면 밖으로 부풀지 않도록 안전하게 제한
+                if (waxPress.strength > 0.3) { waxPress.strength = 0.3; waxPress.vel = Math.min(waxPress.vel, 0); }
+                if (Math.abs(waxPress.strength) < 0.004 && Math.abs(waxPress.vel) < 0.01) {
+                    waxPress.active = false; waxPress.strength = 0; waxPress.vel = 0;
+                }
+                updateWaxJellyDeform();
+                waxBallNeedsRestore = true;
+            } else if (waxBallNeedsRestore) {
+                // 변형이 막 끝난 프레임에 한해 원래 매끈한 구체 모양으로 깨끗하게 복원
+                const posAttr = waxBall.geometry.attributes.position;
+                posAttr.array.set(waxBallOrigPositions);
+                posAttr.needsUpdate = true;
+                waxBall.geometry.computeVertexNormals();
+                waxBallNeedsRestore = false;
+            }
 
             waxBallRenderer.render(waxBallScene, waxBallCamera);
         }
@@ -2045,13 +2303,19 @@
             waxBallRaycaster.setFromCamera({ x, y }, waxBallCamera);
             const hits = waxBallRaycaster.intersectObject(waxBall);
             if (hits.length > 0) {
-                squishWaxBall();
+                squishWaxBallAt(hits[0].point);
             }
         }
 
-        function squishWaxBall() {
-            waxScaleY = 0.68;
-            waxScaleYVel = 0;
+        function squishWaxBallAt(worldPoint) {
+            // 볼 중심(원점) → 누른 지점 방향을 "월드 좌표계에 고정"해서 저장한다.
+            // (볼이 회전해도 들여쓰기가 실제로 눌렀던 화면상의 그 자리에 남아있도록)
+            const dir = worldPoint.clone().sub(waxBall.position).normalize();
+            waxPress.worldDir = dir;
+            waxPress.strength = -0.82; // 음수 = 안쪽으로 들어감
+            waxPress.vel = 0;
+            waxPress.active = true;
+
             waxBallPopCount++;
             const countEl = document.getElementById('wax-ball-count');
             if (countEl) countEl.innerText = waxBallPopCount;
@@ -2078,18 +2342,283 @@
             waxBallPopCount = 0;
             const countEl = document.getElementById('wax-ball-count');
             if (countEl) countEl.innerText = '0';
-            waxScaleY = 1; waxScaleYVel = 0;
-            if (waxBall) { waxBall.scale.set(1, 1, 1); waxBall.rotation.set(0, 0, 0); }
+            waxPress.active = false; waxPress.strength = 0; waxPress.vel = 0;
+            if (waxBall) {
+                waxBall.rotation.set(0, 0, 0);
+                if (waxBallOrigPositions) {
+                    const posAttr = waxBall.geometry.attributes.position;
+                    posAttr.array.set(waxBallOrigPositions);
+                    posAttr.needsUpdate = true;
+                    waxBall.geometry.computeVertexNormals();
+                }
+            }
             const fallbackBall = document.getElementById('wax-ball-fallback');
             if (fallbackBall) fallbackBall.classList.remove('squish');
         }
 
-        if (document.getElementById('wax-ball-stage')) {
-            // 레이아웃이 자리잡은 뒤(캔버스 실제 크기를 알 수 있을 때) 초기화한다
-            window.addEventListener('DOMContentLoaded', initWaxBall);
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                setTimeout(initWaxBall, 0);
+        // 왁스볼은 쉼터 모달 안(처음엔 숨겨진 상태)에 있으므로, 페이지 로드 시 바로 초기화하면
+        // clientWidth가 0이라 캔버스 크기가 깨진다. 실제로 "왁스볼" 게임을 열 때 처음 한 번만 초기화한다.
+        let waxBallInitialized = false;
+        function ensureWaxBallInit() {
+            if (!document.getElementById('wax-ball-stage')) return;
+            if (waxBallInitialized) { resizeWaxBall(); return; }
+            waxBallInitialized = true;
+            initWaxBall();
+        }
+
+        // =====================================================================
+        // 쉼터 허브 — 모달 열기/닫기, 게임 전환
+        // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
+        // =====================================================================
+        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', volleyball: '피카츄 배구' };
+
+        function openRestZoneModal() {
+            document.getElementById('restzone-modal').classList.remove('hidden');
+            lockBodyScroll();
+            restzoneShowHub();
+        }
+        function closeRestZoneModal() {
+            document.getElementById('restzone-modal').classList.add('hidden');
+            unlockBodyScroll();
+            if (typeof teardownVolleyball === 'function') teardownVolleyball();
+        }
+        function restzoneShowHub() {
+            document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
+            document.getElementById('restzone-panel-hub').classList.remove('hidden');
+            document.getElementById('restzone-back-btn').classList.add('hidden');
+            document.getElementById('restzone-modal-title').innerHTML = '<i class="fa-solid fa-mug-hot mr-1.5" style="color:var(--accent-ink);"></i>쉼터';
+            if (typeof teardownVolleyball === 'function') teardownVolleyball();
+        }
+        function restzoneOpenGame(name) {
+            document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
+            const panel = document.getElementById('restzone-panel-' + name);
+            if (panel) panel.classList.remove('hidden');
+            document.getElementById('restzone-back-btn').classList.remove('hidden');
+            document.getElementById('restzone-modal-title').innerText = RESTZONE_TITLES[name] || '쉼터';
+
+            if (name === 'ball') ensureWaxBallInit();
+            else if (name === 'color') ensureColorGameInit();
+            else if (name === 'pitch') ensurePitchGameInit();
+            else if (name === 'volleyball') ensureVolleyballInit();
+        }
+
+        // =====================================================================
+        // 게임 2: 절대색감 — 카카오톡 "절대색감" 게임처럼, 제시된 색과 똑같은 지점을
+        // 색상판(가로=색상, 세로=명도)에서 클릭해 맞히는 게임. 3라운드 진행 후 평균 점수.
+        // =====================================================================
+        function hslToRgb(h, s, l) {
+            h = ((h % 360) + 360) % 360; s = s / 100; l = l / 100;
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = l - c / 2;
+            let r = 0, g = 0, b = 0;
+            if (h < 60) { r = c; g = x; b = 0; }
+            else if (h < 120) { r = x; g = c; b = 0; }
+            else if (h < 180) { r = 0; g = c; b = x; }
+            else if (h < 240) { r = 0; g = x; b = c; }
+            else if (h < 300) { r = x; g = 0; b = c; }
+            else { r = c; g = 0; b = x; }
+            return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+        }
+
+        const COLORGAME_SAT = 65; // 캔버스와 목표색 모두 이 채도로 고정 — 정확히 "맞힐 수 있는" 퍼즐이 되도록
+        let colorGameInitialized = false, colorGameRound = 1, colorGameScores = [], colorGameTarget = null, colorGameLocked = false;
+
+        function ensureColorGameInit() {
+            if (!colorGameInitialized) {
+                colorGameInitialized = true;
+                const canvas = document.getElementById('colorgame-canvas');
+                canvas.addEventListener('pointerdown', handleColorGameClick);
+                window.addEventListener('resize', () => drawColorGameField());
             }
+            startColorGame();
+        }
+
+        function startColorGame() {
+            colorGameRound = 1;
+            colorGameScores = [];
+            document.getElementById('colorgame-final').classList.add('hidden');
+            startColorRound();
+        }
+
+        function startColorRound() {
+            colorGameLocked = false;
+            document.getElementById('colorgame-round-num').innerText = colorGameRound;
+            document.getElementById('colorgame-result').classList.add('hidden');
+            document.getElementById('colorgame-marker').classList.add('hidden');
+            const h = Math.floor(Math.random() * 360);
+            const l = 25 + Math.random() * 55; // 25~80 — 너무 어둡거나 하얗게 날아가 구분 안 되는 범위는 피함
+            colorGameTarget = { h, s: COLORGAME_SAT, l };
+            const [r, g, b] = hslToRgb(h, COLORGAME_SAT, l);
+            document.getElementById('colorgame-target-swatch').style.background = `rgb(${r},${g},${b})`;
+            // 패널이 화면에 보인 직후(크기가 확정된 뒤) 그려야 캔버스가 찌그러지지 않는다
+            requestAnimationFrame(() => drawColorGameField());
+        }
+
+        function drawColorGameField() {
+            const canvas = document.getElementById('colorgame-canvas');
+            if (!canvas || canvas.offsetParent === null) return; // 숨겨진 상태(크기 0)면 그리지 않음
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width)), h = Math.max(1, Math.round(rect.height));
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            const img = ctx.createImageData(w, h);
+            for (let y = 0; y < h; y++) {
+                const lightness = 100 - (y / Math.max(1, h - 1)) * 100;
+                for (let x = 0; x < w; x++) {
+                    const hue = (x / Math.max(1, w - 1)) * 360;
+                    const [r, g, b] = hslToRgb(hue, COLORGAME_SAT, lightness);
+                    const idx = (y * w + x) * 4;
+                    img.data[idx] = r; img.data[idx + 1] = g; img.data[idx + 2] = b; img.data[idx + 3] = 255;
+                }
+            }
+            ctx.putImageData(img, 0, 0);
+        }
+
+        function handleColorGameClick(e) {
+            if (colorGameLocked || !colorGameTarget) return;
+            const canvas = document.getElementById('colorgame-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            if (x < 0 || y < 0 || x > rect.width || y > rect.height) return;
+            colorGameLocked = true;
+
+            const hue = (x / rect.width) * 360;
+            const lightness = 100 - (y / rect.height) * 100;
+            const guessRgb = hslToRgb(hue, COLORGAME_SAT, lightness);
+            const targetRgb = hslToRgb(colorGameTarget.h, colorGameTarget.s, colorGameTarget.l);
+            const dist = Math.sqrt(
+                Math.pow(guessRgb[0] - targetRgb[0], 2) +
+                Math.pow(guessRgb[1] - targetRgb[1], 2) +
+                Math.pow(guessRgb[2] - targetRgb[2], 2)
+            );
+            const score = Math.max(0, Math.min(100, Math.round(100 - dist / 4.4)));
+            colorGameScores.push(score);
+
+            const marker = document.getElementById('colorgame-marker');
+            marker.style.left = x + 'px'; marker.style.top = y + 'px';
+            marker.classList.remove('hidden');
+
+            document.getElementById('colorgame-result-text').innerHTML = `이번 라운드 점수: <b style="color:var(--accent-ink);">${score}점</b>`;
+            document.getElementById('colorgame-result').classList.remove('hidden');
+            document.getElementById('colorgame-next-btn').innerText = colorGameRound < 3 ? '다음 라운드' : '결과 보기';
+        }
+
+        function colorGameNext() {
+            if (colorGameRound < 3) {
+                colorGameRound++;
+                startColorRound();
+            } else {
+                const avg = Math.round(colorGameScores.reduce((a, b) => a + b, 0) / colorGameScores.length);
+                document.getElementById('colorgame-final-score').innerText = avg;
+                document.getElementById('colorgame-final').classList.remove('hidden');
+                document.getElementById('colorgame-result').classList.add('hidden');
+            }
+        }
+
+        // =====================================================================
+        // 게임 3: 절대음감 — 랜덤한 음을 들려주고 음이름을 맞히는 게임. 끝없이 계속된다.
+        // =====================================================================
+        const PITCH_NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        let pitchGameInitialized = false;
+        let pitchGameTargetNote = 0, pitchGameTargetOctave = 4;
+        let pitchGameStreak = 0, pitchGameBest = 0, pitchGameAnswering = false;
+        let pitchAudioCtx = null;
+
+        function ensurePitchGameInit() {
+            if (!pitchGameInitialized) {
+                pitchGameInitialized = true;
+                try { pitchGameBest = parseInt(localStorage.getItem('agelesslab_pitch_best') || '0', 10) || 0; } catch (e) { pitchGameBest = 0; }
+                document.getElementById('pitchgame-best').innerText = pitchGameBest;
+            }
+            pitchGameStreak = 0;
+            document.getElementById('pitchgame-streak').innerText = '0';
+            nextPitchRound();
+        }
+
+        // 평균율 기준 음이름+옥타브 → 주파수(Hz). A4(라, 4옥타브) = 440Hz를 기준으로 계산한다.
+        function noteToFreq(noteIndex, octave) {
+            const midi = (octave + 1) * 12 + noteIndex;
+            return 440 * Math.pow(2, (midi - 69) / 12);
+        }
+
+        function ensurePitchAudioCtx() {
+            if (!pitchAudioCtx) {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return null;
+                pitchAudioCtx = new Ctx();
+            }
+            if (pitchAudioCtx.state === 'suspended') pitchAudioCtx.resume();
+            return pitchAudioCtx;
+        }
+
+        // 피아노와 비슷한 느낌을 내려고, 기본음 위에 옥타브 위 배음을 살짝 섞어서 재생한다
+        function playPitchTone(freq) {
+            try {
+                const ctx = ensurePitchAudioCtx();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const master = ctx.createGain();
+                master.gain.setValueAtTime(0.0001, now);
+                master.gain.exponentialRampToValueAtTime(0.4, now + 0.03);
+                master.gain.exponentialRampToValueAtTime(0.22, now + 0.5);
+                master.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+                master.connect(ctx.destination);
+
+                const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = freq;
+                const osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = freq * 2;
+                const g2 = ctx.createGain(); g2.gain.value = 0.16;
+                osc1.connect(master);
+                osc2.connect(g2).connect(master);
+                osc1.start(now); osc1.stop(now + 1.15);
+                osc2.start(now); osc2.stop(now + 1.15);
+            } catch (e) { /* 오디오 미지원 환경이면 조용히 무시 */ }
+        }
+
+        function nextPitchRound() {
+            pitchGameAnswering = false;
+            // 음이름은 매번 완전히 새로 무작위로 뽑는다 (직전 음과 같아도 상관없이 진짜 랜덤)
+            pitchGameTargetNote = Math.floor(Math.random() * 12);
+            pitchGameTargetOctave = 3 + Math.floor(Math.random() * 3); // 3~5옥타브를 오가며 난이도를 준다
+            document.querySelectorAll('.pitchgame-key').forEach(b => b.classList.remove('correct', 'wrong'));
+            document.getElementById('pitchgame-feedback').innerHTML = '&nbsp;';
+            replayPitchNote();
+        }
+
+        function replayPitchNote() {
+            if (!pitchGameInitialized) return;
+            playPitchTone(noteToFreq(pitchGameTargetNote, pitchGameTargetOctave));
+            const speaker = document.getElementById('pitchgame-speaker-btn');
+            speaker.classList.remove('playing');
+            void speaker.offsetWidth;
+            speaker.classList.add('playing');
+        }
+
+        function answerPitch(noteIndex) {
+            if (pitchGameAnswering) return;
+            pitchGameAnswering = true;
+            const btn = document.getElementById('pitchgame-key-' + noteIndex);
+            const correctBtn = document.getElementById('pitchgame-key-' + pitchGameTargetNote);
+            const feedback = document.getElementById('pitchgame-feedback');
+
+            if (noteIndex === pitchGameTargetNote) {
+                btn.classList.add('correct');
+                pitchGameStreak++;
+                if (pitchGameStreak > pitchGameBest) {
+                    pitchGameBest = pitchGameStreak;
+                    try { localStorage.setItem('agelesslab_pitch_best', String(pitchGameBest)); } catch (e) { /* 저장 공간이 없으면 조용히 무시 */ }
+                }
+                feedback.innerHTML = '정답입니다! 👏';
+            } else {
+                btn.classList.add('wrong');
+                correctBtn.classList.add('correct');
+                pitchGameStreak = 0;
+                feedback.innerHTML = `아쉬워요, 정답은 <b>${PITCH_NOTE_NAMES[pitchGameTargetNote]}</b>였어요`;
+            }
+            document.getElementById('pitchgame-streak').innerText = pitchGameStreak;
+            document.getElementById('pitchgame-best').innerText = pitchGameBest;
+
+            setTimeout(nextPitchRound, 1100);
         }
 
         // =====================================================================
