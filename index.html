@@ -601,6 +601,62 @@
         .pitchgame-key.wrong { background: #fecdd3; color: #9f1239; border-color: #fecdd3; }
         @media (max-width: 420px) { .pitchgame-keys { grid-template-columns: repeat(4, 1fr); } }
 
+        /* ---------- 게임 4: 피카츄 배구 ---------- */
+        .vb-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 10px; }
+        .vb-msg { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+        .vb-join-row { display: flex; gap: 8px; margin-bottom: 18px; }
+        .vb-join-input {
+            width: 140px; text-align: center; letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 800; font-size: 14px; padding: 10px 12px; border-radius: 999px;
+            border: 1px solid rgba(20,20,20,.12); outline: none; background: #faf9f6;
+        }
+        .vb-lobby-error { font-size: 12px; font-weight: 700; color: #e11d48; margin-top: -8px; margin-bottom: 14px; }
+        .vb-leaderboard-link { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+        .vb-leaderboard-link:hover { color: var(--ink); }
+        .vb-spinner {
+            width: 38px; height: 38px; border-radius: 50%; border: 4px solid #eee; border-top-color: var(--accent);
+            margin-bottom: 14px; animation: vbSpin 0.8s linear infinite;
+        }
+        @keyframes vbSpin { to { transform: rotate(360deg); } }
+        .vb-room-code-box {
+            display: flex; align-items: center; gap: 10px; background: #faf9f6; border-radius: 14px;
+            padding: 10px 18px; margin-bottom: 18px; font-size: 13px; color: var(--ink-soft); font-weight: 700;
+        }
+        .vb-room-code-box b { font-size: 22px; letter-spacing: 4px; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .vb-copy-btn { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; }
+        .vb-copy-btn:hover { color: var(--ink); }
+        .vb-cancel-btn { font-size: 13px; font-weight: 700; color: var(--ink-soft); background: #f1f1ef; border: none; padding: 8px 18px; border-radius: 999px; cursor: pointer; }
+
+        .vb-hud { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px; }
+        .vb-hud-score { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .vb-hud-score span { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+        .vb-hud-score b { font-size: 26px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .vb-hud-vs { font-size: 11px; font-weight: 800; color: var(--ink-soft); background: #f1f1ef; padding: 3px 9px; border-radius: 999px; margin-top: 10px; }
+        .vb-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: #cfeeff; box-shadow: 0 1px 2px rgba(20,20,20,.06), 0 10px 24px rgba(20,20,20,.12); }
+        .vb-canvas-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; outline: none; }
+        .vb-point-banner {
+            position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+            background: rgba(20,20,20,.75); color: #fff; font-size: 13px; font-weight: 800;
+            padding: 7px 16px; border-radius: 999px; transition: opacity .25s ease;
+        }
+        .vb-controls-hint { font-size: 11px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
+        .vb-leave-btn {
+            display: block; margin: 12px auto 0; font-size: 12px; font-weight: 700; color: var(--ink-soft);
+            background: #f1f1ef; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer;
+        }
+        .vb-result-title { font-size: 15px; font-weight: 800; color: var(--ink-soft); margin-bottom: 6px; }
+        .vb-result-score { font-size: 42px; font-weight: 800; color: var(--accent-ink); margin-bottom: 18px; font-variant-numeric: tabular-nums; }
+        .vb-result-actions { display: flex; gap: 10px; }
+        .vb-leaderboard-title { text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+        .vb-leaderboard-list { max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+        .vb-leaderboard-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #faf9f6; border-radius: 12px; font-size: 13px; }
+        .vb-leaderboard-rank { width: 22px; font-weight: 800; color: var(--ink-soft); flex-shrink: 0; }
+        .vb-leaderboard-row:nth-child(1) .vb-leaderboard-rank { color: #d4a017; }
+        .vb-leaderboard-row:nth-child(2) .vb-leaderboard-rank { color: #9099a3; }
+        .vb-leaderboard-row:nth-child(3) .vb-leaderboard-rank { color: #b8702f; }
+        .vb-leaderboard-name { flex: 1; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .vb-leaderboard-points { font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
     </style>
@@ -1542,7 +1598,75 @@
                 </div>
 
                 <!-- 게임 4: 피카츄 배구 -->
-                <div id="restzone-panel-volleyball" class="hidden"></div>
+                <div id="restzone-panel-volleyball" class="hidden">
+
+                    <!-- 로그인 전 -->
+                    <div id="vb-state-loggedout" class="hidden vb-center">
+                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#b57700;"></i>
+                        <p class="vb-msg">온라인 1:1 대전은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+
+                    <!-- 로비: 방 만들기 / 참가하기 -->
+                    <div id="vb-state-lobby" class="hidden vb-center">
+                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#b57700;"></i>
+                        <p class="vb-msg">친구와 3D 온라인 1:1 배구 대전을 해보세요</p>
+                        <button onclick="vbCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="vb-join-row">
+                            <input id="vb-join-code-input" maxlength="5" placeholder="방 코드 입력" class="vb-join-input">
+                            <button onclick="vbJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="vb-lobby-error" class="vb-lobby-error hidden"></p>
+                        <button onclick="vbShowLeaderboard()" class="vb-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>순위 보기</button>
+                    </div>
+
+                    <!-- 상대방을 기다리는 중 -->
+                    <div id="vb-state-waiting" class="hidden vb-center">
+                        <div class="vb-spinner"></div>
+                        <p class="vb-msg">상대방을 기다리는 중...</p>
+                        <div class="vb-room-code-box">
+                            <span>방 코드</span>
+                            <b id="vb-room-code-display">-----</b>
+                            <button onclick="vbCopyRoomCode()" class="press-feel vb-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <button onclick="vbLeaveRoom()" class="press-feel vb-cancel-btn">취소</button>
+                    </div>
+
+                    <!-- 실제 경기 화면 -->
+                    <div id="vb-state-game" class="hidden">
+                        <div class="vb-hud">
+                            <div class="vb-hud-score"><span id="vb-my-name">나</span><b id="vb-my-score">0</b></div>
+                            <div class="vb-hud-vs">VS</div>
+                            <div class="vb-hud-score vb-hud-score-opp"><b id="vb-opp-score">0</b><span id="vb-opp-name">상대</span></div>
+                        </div>
+                        <div class="vb-canvas-wrap">
+                            <canvas id="vb-canvas"></canvas>
+                            <p id="vb-point-banner" class="vb-point-banner hidden"></p>
+                        </div>
+                        <p class="vb-controls-hint">WASD 이동 · Space 점프 · Shift 다이브 · 클릭 타격 (점프 중 클릭 = 스파이크, 마우스 방향으로 꽂힙니다)</p>
+                        <button onclick="vbLeaveRoom()" class="press-feel vb-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                    </div>
+
+                    <!-- 경기 결과 -->
+                    <div id="vb-state-result" class="hidden vb-center">
+                        <p class="vb-result-title" id="vb-result-title">경기 종료</p>
+                        <p class="vb-result-score" id="vb-result-score">0 : 0</p>
+                        <div class="vb-result-actions">
+                            <button onclick="vbBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                            <button onclick="vbShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                        </div>
+                    </div>
+
+                    <!-- 순위표 -->
+                    <div id="vb-state-leaderboard" class="hidden">
+                        <p class="vb-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>배구 순위 (득점 기준)</p>
+                        <div id="vb-leaderboard-list" class="vb-leaderboard-list"></div>
+                        <div class="text-center">
+                            <button onclick="vbBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
         </div>
@@ -2619,6 +2743,814 @@
             document.getElementById('pitchgame-best').innerText = pitchGameBest;
 
             setTimeout(nextPitchRound, 1100);
+        }
+
+        // =====================================================================
+        // 쉼터 — 피카츄 배구 (3D 온라인 1:1, 호스트-권위 물리 시뮬레이션)
+        // =====================================================================
+        const VB_COURT_HALF_WIDTH = 4.0;
+        const VB_COURT_HALF_DEPTH = 5.0;
+        const VB_NET_HEIGHT = 1.9;
+        const VB_NET_HALF_WIDTH = VB_COURT_HALF_WIDTH + 0.35;
+        const VB_GRAVITY = 13.5;
+        const VB_BALL_RADIUS = 0.22;
+        const VB_PLAYER_RADIUS = 0.42;
+        const VB_PLAYER_REST_Y = 0.46;
+        const VB_MOVE_SPEED = 4.3;
+        const VB_JUMP_VELOCITY = 5.1;
+        const VB_DIVE_SPEED = 8.4;
+        const VB_DIVE_DURATION = 0.32;
+        const VB_DIVE_RECOVERY = 0.46;
+        const VB_HIT_REACH = 1.05;
+        const VB_HIT_REACH_DIVE = 1.65;
+        const VB_HIT_T_NORMAL = 1.05;
+        const VB_HIT_T_SPIKE = 0.52;
+        const VB_WIN_SCORE = 15;
+        const VB_PLAYER_SAFE_MARGIN = 0.32;
+
+        let vb = null; // 현재 배구 세션의 모든 런타임 상태를 담는 단일 객체 (매치 시작 시 생성, 나갈 때 폐기)
+
+        function vbShowState(name) {
+            document.querySelectorAll('#restzone-panel-volleyball > [id^="vb-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('vb-state-' + name);
+            if (el) el.classList.remove('hidden');
+        }
+
+        function ensureVolleyballInit() {
+            if (!currentUser) { vbShowState('loggedout'); return; }
+            if (vb && vb.phase === 'game') { vbShowState('game'); return; }
+            if (vb && vb.phase === 'waiting') { vbShowState('waiting'); return; }
+            vbShowState('lobby');
+            const err = document.getElementById('vb-lobby-error');
+            if (err) err.classList.add('hidden');
+        }
+
+        function vbGenerateRoomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+            return code;
+        }
+
+        function vbLobbyError(msg) {
+            const err = document.getElementById('vb-lobby-error');
+            if (!err) return;
+            err.innerText = msg;
+            err.classList.remove('hidden');
+        }
+
+        function vbCreateRoom() {
+            if (!currentUser) return;
+            const code = vbGenerateRoomCode();
+            vb = {
+                phase: 'waiting', role: 'host', roomCode: code, channel: null,
+                myName: currentUser.name || '나', oppName: null, oppId: null,
+                myScore: 0, oppScore: 0,
+            };
+            document.getElementById('vb-room-code-display').innerText = code;
+            vbShowState('waiting');
+            vbSubscribeRoomChannel(code);
+        }
+
+        function vbJoinRoom() {
+            if (!currentUser) return;
+            const input = document.getElementById('vb-join-code-input');
+            const code = (input.value || '').trim().toUpperCase();
+            if (code.length < 4) { vbLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            vb = {
+                phase: 'waiting', role: 'guest', roomCode: code, channel: null,
+                myName: currentUser.name || '나', oppName: null, oppId: null,
+                myScore: 0, oppScore: 0,
+            };
+            vbShowState('waiting');
+            document.getElementById('vb-room-code-display').innerText = code;
+            vbSubscribeRoomChannel(code);
+        }
+
+        function vbSubscribeRoomChannel(code) {
+            if (!vb) return;
+            const channel = supabaseClient
+                .channel('vb-room-' + code)
+                .on('broadcast', { event: 'hello' }, (msg) => vbHandleHello(msg.payload))
+                .on('broadcast', { event: 'welcome' }, (msg) => vbHandleWelcome(msg.payload))
+                .on('broadcast', { event: 'msg' }, (msg) => vbHandleMessage(msg.payload))
+                .subscribe((status) => {
+                    if (status !== 'SUBSCRIBED' || !vb) return;
+                    if (vb.role === 'guest') {
+                        vb.channel.send({ type: 'broadcast', event: 'hello', payload: { name: vb.myName, id: currentUser.id } });
+                    }
+                });
+            vb.channel = channel;
+        }
+
+        function vbHandleHello(payload) {
+            if (!vb || vb.role !== 'host' || vb.phase !== 'waiting') return;
+            vb.oppName = payload.name || '상대'; vb.oppId = payload.id || null;
+            vb.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: vb.myName, id: currentUser.id } });
+            vbBeginMatch();
+        }
+
+        function vbHandleWelcome(payload) {
+            if (!vb || vb.role !== 'guest' || vb.phase !== 'waiting') return;
+            vb.oppName = payload.name || '상대'; vb.oppId = payload.id || null;
+            vbBeginMatch();
+        }
+
+        function vbCopyRoomCode() {
+            if (!vb) return;
+            const code = vb.roomCode;
+            try {
+                navigator.clipboard.writeText(code);
+                showToast('방 코드를 복사했어요: ' + code, 'success');
+            } catch (e) {
+                showToast('방 코드: ' + code, 'info');
+            }
+        }
+
+        function vbLeaveRoom() {
+            teardownVolleyball();
+            vbShowState('lobby');
+        }
+
+        function vbBackToLobby() {
+            teardownVolleyball();
+            ensureVolleyballInit();
+        }
+
+        function teardownVolleyball() {
+            if (!vb) return;
+            if (vb.channel) { try { supabaseClient.removeChannel(vb.channel); } catch (e) {} }
+            if (vb.rafId) cancelAnimationFrame(vb.rafId);
+            vbDetachInputListeners();
+            if (vb.renderer) {
+                try { vb.renderer.dispose(); } catch (e) {}
+            }
+            if (vb.resizeObserver) { try { vb.resizeObserver.disconnect(); } catch (e) {} }
+            vb = null;
+        }
+
+        // ---- 3D 장면 구성 ----
+
+        function vbBuildCreatureMesh(bodyColor, cheekColor) {
+            const group = new THREE.Group();
+            const bodyGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS, 20, 16);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.55, metalness: 0.05 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.castShadow = true; body.receiveShadow = false;
+            body.position.y = 0;
+            group.add(body);
+
+            // 배 쪽 밝은 패치 (원형, 살짝 앞으로 돌출)
+            const bellyGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.68, 16, 12);
+            const bellyMat = new THREE.MeshStandardMaterial({ color: 0xfff7e8, roughness: 0.7 });
+            const belly = new THREE.Mesh(bellyGeo, bellyMat);
+            belly.scale.set(0.9, 0.95, 0.55);
+            belly.position.set(0, -VB_PLAYER_RADIUS * 0.08, VB_PLAYER_RADIUS * 0.62);
+            group.add(belly);
+
+            // 둥근 귀 (끝이 뾰족하지 않은 럭비볼 모양, 살짝 바깥쪽으로)
+            const earGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.3, 10, 8);
+            [-1, 1].forEach(side => {
+                const ear = new THREE.Mesh(earGeo, bodyMat);
+                ear.scale.set(0.7, 1.35, 0.7);
+                ear.position.set(side * VB_PLAYER_RADIUS * 0.55, VB_PLAYER_RADIUS * 0.92, -VB_PLAYER_RADIUS * 0.05);
+                ear.rotation.z = side * 0.18;
+                group.add(ear);
+            });
+
+            // 볼 패치 (동글동글, 캐릭터마다 다른 포인트 컬러)
+            const cheekGeo = new THREE.CircleGeometry(VB_PLAYER_RADIUS * 0.22, 14);
+            const cheekMat = new THREE.MeshStandardMaterial({ color: cheekColor, roughness: 0.8, side: THREE.DoubleSide });
+            [-1, 1].forEach(side => {
+                const cheek = new THREE.Mesh(cheekGeo, cheekMat);
+                cheek.position.set(side * VB_PLAYER_RADIUS * 0.72, -VB_PLAYER_RADIUS * 0.02, VB_PLAYER_RADIUS * 0.6);
+                cheek.lookAt(cheek.position.x * 2, cheek.position.y, cheek.position.z * 2 + 1);
+                group.add(cheek);
+            });
+
+            // 눈 (단순한 검은 반구)
+            const eyeGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.1, 10, 8);
+            const eyeMat = new THREE.MeshStandardMaterial({ color: 0x241b12, roughness: 0.3 });
+            [-1, 1].forEach(side => {
+                const eye = new THREE.Mesh(eyeGeo, eyeMat);
+                eye.position.set(side * VB_PLAYER_RADIUS * 0.34, VB_PLAYER_RADIUS * 0.22, VB_PLAYER_RADIUS * 0.82);
+                group.add(eye);
+            });
+
+            group.userData.body = body;
+            return group;
+        }
+
+        function vbBuildScene(canvas) {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xbfe8ff);
+            scene.fog = new THREE.Fog(0xbfe8ff, 14, 26);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+
+            // 바닥 (코트 + 주변 잔디 느낌)
+            const groundGeo = new THREE.PlaneGeometry(40, 40);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x8fd98a, roughness: 1 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.01;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            const courtGeo = new THREE.PlaneGeometry(VB_COURT_HALF_WIDTH * 2 + 0.6, VB_COURT_HALF_DEPTH * 2 + 0.6);
+            const courtMat = new THREE.MeshStandardMaterial({ color: 0xe3c88a, roughness: 0.95 });
+            const court = new THREE.Mesh(courtGeo, courtMat);
+            court.rotation.x = -Math.PI / 2;
+            court.receiveShadow = true;
+            scene.add(court);
+
+            // 코트 경계선 (얇은 흰 박스 라인)
+            const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            function addLine(w, d, x, z) {
+                const geo = new THREE.BoxGeometry(w, 0.02, d);
+                const m = new THREE.Mesh(geo, lineMat);
+                m.position.set(x, 0.011, z);
+                scene.add(m);
+            }
+            addLine(VB_COURT_HALF_WIDTH * 2 + 0.1, 0.08, 0, VB_COURT_HALF_DEPTH);
+            addLine(VB_COURT_HALF_WIDTH * 2 + 0.1, 0.08, 0, -VB_COURT_HALF_DEPTH);
+            addLine(0.08, VB_COURT_HALF_DEPTH * 2 + 0.1, VB_COURT_HALF_WIDTH, 0);
+            addLine(0.08, VB_COURT_HALF_DEPTH * 2 + 0.1, -VB_COURT_HALF_WIDTH, 0);
+            addLine(0.06, VB_COURT_HALF_DEPTH * 2 + 0.1, 0, 0);
+
+            // 네트 기둥 + 네트
+            const postMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.6 });
+            [-VB_NET_HALF_WIDTH, VB_NET_HALF_WIDTH].forEach(x => {
+                const postGeo = new THREE.CylinderGeometry(0.06, 0.06, VB_NET_HEIGHT + 0.5, 10);
+                const post = new THREE.Mesh(postGeo, postMat);
+                post.position.set(x, (VB_NET_HEIGHT + 0.5) / 2, 0);
+                post.castShadow = true;
+                scene.add(post);
+            });
+            const netCanvas = document.createElement('canvas');
+            netCanvas.width = 64; netCanvas.height = 64;
+            const nctx = netCanvas.getContext('2d');
+            nctx.clearRect(0, 0, 64, 64);
+            nctx.strokeStyle = 'rgba(255,255,255,0.9)';
+            nctx.lineWidth = 2;
+            for (let i = 0; i <= 64; i += 10) {
+                nctx.beginPath(); nctx.moveTo(i, 0); nctx.lineTo(i, 64); nctx.stroke();
+                nctx.beginPath(); nctx.moveTo(0, i); nctx.lineTo(64, i); nctx.stroke();
+            }
+            const netTex = new THREE.CanvasTexture(netCanvas);
+            netTex.wrapS = THREE.RepeatWrapping; netTex.wrapT = THREE.RepeatWrapping;
+            netTex.repeat.set(VB_NET_HALF_WIDTH * 2 / 0.5, VB_NET_HEIGHT / 0.5);
+            const netGeo = new THREE.PlaneGeometry(VB_NET_HALF_WIDTH * 2, VB_NET_HEIGHT);
+            const netMat = new THREE.MeshBasicMaterial({ map: netTex, transparent: true, side: THREE.DoubleSide });
+            const net = new THREE.Mesh(netGeo, netMat);
+            net.position.set(0, VB_NET_HEIGHT / 2, 0);
+            scene.add(net);
+            const netTapeGeo = new THREE.BoxGeometry(VB_NET_HALF_WIDTH * 2, 0.1, 0.04);
+            const netTapeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const netTape = new THREE.Mesh(netTapeGeo, netTapeMat);
+            netTape.position.set(0, VB_NET_HEIGHT, 0);
+            scene.add(netTape);
+
+            // 조명
+            const ambient = new THREE.AmbientLight(0xffffff, 0.65);
+            scene.add(ambient);
+            const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+            sun.position.set(6, 10, 4);
+            sun.castShadow = true;
+            sun.shadow.mapSize.set(1024, 1024);
+            sun.shadow.camera.left = -10; sun.shadow.camera.right = 10;
+            sun.shadow.camera.top = 10; sun.shadow.camera.bottom = -10;
+            scene.add(sun);
+
+            // 공
+            const ballGroup = new THREE.Group();
+            const ballGeo = new THREE.SphereGeometry(VB_BALL_RADIUS, 20, 16);
+            const ballMat = new THREE.MeshStandardMaterial({ color: 0xfff8ee, roughness: 0.5 });
+            const ballMesh = new THREE.Mesh(ballGeo, ballMat);
+            ballMesh.castShadow = true;
+            ballGroup.add(ballMesh);
+            const stripeMat = new THREE.MeshStandardMaterial({ color: 0xff8a3d, roughness: 0.6 });
+            [0, Math.PI / 2].forEach(rot => {
+                const torus = new THREE.Mesh(new THREE.TorusGeometry(VB_BALL_RADIUS * 0.98, VB_BALL_RADIUS * 0.05, 6, 20), stripeMat);
+                torus.rotation.y = rot;
+                ballGroup.add(torus);
+            });
+
+            // 공 그림자(가짜 blob shadow — 바닥에 밀착된 투명 원)
+            const shadowGeo = new THREE.CircleGeometry(VB_BALL_RADIUS, 16);
+            const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 });
+            const ballShadow = new THREE.Mesh(shadowGeo, shadowMat);
+            ballShadow.rotation.x = -Math.PI / 2;
+            ballShadow.position.y = 0.012;
+            scene.add(ballShadow);
+            scene.add(ballGroup);
+
+            // 캐릭터 (나 / 상대) — 원작 색상과 무관한 완전 오리지널 디자인
+            const myColor = vb.role === 'host' ? 0x5fd3c4 : 0xffb257;
+            const oppColor = vb.role === 'host' ? 0xffb257 : 0x5fd3c4;
+            const myCheek = vb.role === 'host' ? 0x2fa392 : 0xff7a3d;
+            const oppCheek = vb.role === 'host' ? 0xff7a3d : 0x2fa392;
+            const myMesh = vbBuildCreatureMesh(myColor, myCheek);
+            const oppMesh = vbBuildCreatureMesh(oppColor, oppCheek);
+            scene.add(myMesh); scene.add(oppMesh);
+            const myShadow = new THREE.Mesh(shadowGeo.clone(), shadowMat.clone());
+            myShadow.rotation.x = -Math.PI / 2; myShadow.position.y = 0.012; myShadow.scale.setScalar(1.6);
+            const oppShadow = myShadow.clone();
+            scene.add(myShadow); scene.add(oppShadow);
+
+            vb.scene = scene; vb.renderer = renderer; vb.camera = camera;
+            vb.ballGroup = ballGroup; vb.ballShadow = ballShadow;
+            vb.myMesh = myMesh; vb.oppMesh = oppMesh;
+            vb.myShadow = myShadow; vb.oppShadow = oppShadow;
+        }
+
+        function vbResizeRenderer() {
+            if (!vb || !vb.renderer) return;
+            const canvas = vb.renderer.domElement;
+            const w = canvas.clientWidth || 640, h = canvas.clientHeight || 400;
+            vb.renderer.setSize(w, h, false);
+            vb.camera.aspect = w / h;
+            vb.camera.updateProjectionMatrix();
+        }
+
+        function vbEnsureSceneBuilt() {
+            if (vb.renderer) return;
+            const canvas = document.getElementById('vb-canvas');
+            vbBuildScene(canvas);
+            vbResizeRenderer();
+            if (window.ResizeObserver) {
+                vb.resizeObserver = new ResizeObserver(() => vbResizeRenderer());
+                vb.resizeObserver.observe(canvas.parentElement);
+            }
+        }
+
+        // ---- 매치 시작 ----
+
+        function vbBeginMatch() {
+            if (!vb) return;
+            vb.phase = 'game';
+            vb.mySide = vb.role === 'host' ? 1 : -1;
+            vb.myScore = 0; vb.oppScore = 0;
+            vb.myPos = { x: 0, y: VB_PLAYER_REST_Y, z: vb.mySide * VB_COURT_HALF_DEPTH * 0.55 };
+            vb.myVelY = 0; vb.onGround = true;
+            vb.diving = false; vb.diveTimer = 0; vb.diveRecoverTimer = 0; vb.diveDir = { x: 0, z: 0 };
+            vb.facing = { x: 0, z: -vb.mySide };
+            vb.oppPos = { x: 0, y: VB_PLAYER_REST_Y, z: -vb.mySide * VB_COURT_HALF_DEPTH * 0.55 };
+            vb.oppVisual = { x: vb.oppPos.x, z: vb.oppPos.z, y: vb.oppPos.y };
+            vb.keys = {};
+            vb.mouseNdc = { x: 0, y: 0 };
+            vb.lastPlayerSendAt = 0; vb.lastBallSendAt = 0;
+            vb.isHostAuthority = (vb.role === 'host');
+            // 공 상태 (호스트가 권위, 게스트는 수신해서 보간)
+            const serverSide = 1; // 첫 서브는 호스트 쪽에서
+            vb.ball = { x: 0, y: VB_BALL_RADIUS, z: 0, vx: 0, vy: 0, vz: 0, held: true, serverSide };
+            vb.lastHitSide = null;
+            vb.ballVisual = { x: 0, y: VB_BALL_RADIUS, z: 0 };
+
+            document.getElementById('vb-my-name').innerText = vb.myName;
+            document.getElementById('vb-opp-name').innerText = vb.oppName || '상대';
+            document.getElementById('vb-my-score').innerText = '0';
+            document.getElementById('vb-opp-score').innerText = '0';
+
+            vbShowState('game');
+            vbEnsureSceneBuilt();
+            vbResetBallForServe(vb.ball.serverSide);
+            vbAttachInputListeners();
+            vb.rafId = requestAnimationFrame(vbAnimate);
+            showToast(vb.oppName + '님과 매치 시작!', 'success');
+        }
+
+        // ---- 입력 ----
+
+        function vbAttachInputListeners() {
+            vb.onKeyDown = (e) => vbOnKeyDown(e);
+            vb.onKeyUp = (e) => vbOnKeyUp(e);
+            vb.onMouseMove = (e) => vbOnMouseMove(e);
+            vb.onMouseDown = (e) => vbOnMouseDown(e);
+            window.addEventListener('keydown', vb.onKeyDown);
+            window.addEventListener('keyup', vb.onKeyUp);
+            const canvas = document.getElementById('vb-canvas');
+            canvas.addEventListener('mousemove', vb.onMouseMove);
+            canvas.addEventListener('mousedown', vb.onMouseDown);
+        }
+
+        function vbDetachInputListeners() {
+            if (!vb) return;
+            if (vb.onKeyDown) window.removeEventListener('keydown', vb.onKeyDown);
+            if (vb.onKeyUp) window.removeEventListener('keyup', vb.onKeyUp);
+            const canvas = document.getElementById('vb-canvas');
+            if (canvas && vb.onMouseMove) canvas.removeEventListener('mousemove', vb.onMouseMove);
+            if (canvas && vb.onMouseDown) canvas.removeEventListener('mousedown', vb.onMouseDown);
+        }
+
+        function vbOnKeyDown(e) {
+            if (!vb || vb.phase !== 'game') return;
+            const k = e.key.toLowerCase();
+            if (['w', 'a', 's', 'd', ' ', 'shift'].includes(k)) e.preventDefault();
+            vb.keys[k] = true;
+            if (k === ' ') vbTryJump();
+            if (k === 'shift') vbTryDive();
+        }
+        function vbOnKeyUp(e) {
+            if (!vb) return;
+            vb.keys[e.key.toLowerCase()] = false;
+        }
+        function vbOnMouseMove(e) {
+            if (!vb) return;
+            const rect = e.target.getBoundingClientRect();
+            vb.mouseNdc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            vb.mouseNdc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        }
+        function vbOnMouseDown(e) {
+            if (!vb || vb.phase !== 'game') return;
+            vbTryHit();
+        }
+
+        function vbMouseToGroundPoint(groundY) {
+            if (!vb || !vb.camera) return { x: 0, z: 0 };
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(vb.mouseNdc.x, vb.mouseNdc.y), vb.camera);
+            const dir = raycaster.ray.direction, origin = raycaster.ray.origin;
+            if (Math.abs(dir.y) < 1e-5) return { x: 0, z: 0 };
+            const t = (groundY - origin.y) / dir.y;
+            return { x: origin.x + dir.x * t, z: origin.z + dir.z * t };
+        }
+
+        function vbClampTarget(pt) {
+            // 상대 코트 안쪽으로만 떨어지도록 (너무 네트 바로 앞/뒤도 아니게 약간 여유)
+            const oppSide = -vb.mySide;
+            const minZ = oppSide === 1 ? 0.5 : -(VB_COURT_HALF_DEPTH - 0.3);
+            const maxZ = oppSide === 1 ? (VB_COURT_HALF_DEPTH - 0.3) : -0.5;
+            return {
+                x: Math.max(-(VB_COURT_HALF_WIDTH - 0.3), Math.min(VB_COURT_HALF_WIDTH - 0.3, pt.x)),
+                z: Math.max(minZ, Math.min(maxZ, pt.z)),
+            };
+        }
+
+        // ---- 플레이어 행동 ----
+
+        function vbTryJump() {
+            if (!vb || vb.phase !== 'game' || !vb.onGround || vb.diving) return;
+            vb.myVelY = VB_JUMP_VELOCITY;
+            vb.onGround = false;
+        }
+
+        function vbTryDive() {
+            if (!vb || vb.phase !== 'game' || vb.diving || !vb.onGround) return;
+            let dx = 0, dz = 0;
+            if (vb.keys['w']) dz -= 1;
+            if (vb.keys['s']) dz += 1;
+            if (vb.keys['a']) dx -= 1;
+            if (vb.keys['d']) dx += 1;
+            if (dx === 0 && dz === 0) { dx = vb.facing.x; dz = vb.facing.z; }
+            const len = Math.hypot(dx, dz) || 1;
+            vb.diving = true; vb.diveTimer = VB_DIVE_DURATION;
+            vb.diveDir = { x: dx / len, z: dz / len };
+            playVbHitSound(false, true);
+        }
+
+        function vbTryHit() {
+            if (!vb || vb.phase !== 'game') return;
+            const ballPos = vb.isHostAuthority ? vb.ball : vb.ballVisual;
+            const dx = ballPos.x - vb.myPos.x, dz = ballPos.z - vb.myPos.z;
+            const dist = Math.hypot(dx, dz);
+            const reach = vb.diving ? VB_HIT_REACH_DIVE : VB_HIT_REACH;
+            if (dist > reach) return;
+            if (Math.abs(ballPos.y - vb.myPos.y) > 2.6) return;
+            // 서브는 서브권을 가진 쪽만
+            if (vb.ball.held && vb.ball.serverSide !== vb.mySide) return;
+            const isSpike = !vb.onGround && !vb.ball.held;
+            const target = vbClampTarget(vbMouseToGroundPoint(0));
+            if (vb.isHostAuthority) {
+                vbApplyHit(target, isSpike, vb.mySide);
+            } else {
+                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'hit_request', x: target.x, z: target.z, spike: isSpike, side: vb.mySide } });
+            }
+            vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'hit_fx', spike: isSpike } });
+            playVbHitSound(isSpike, false);
+        }
+
+        function vbApplyHit(target, isSpike, hitterSide) {
+            const b = vb.ball;
+            const startX = b.x, startY = b.y, startZ = b.z;
+            const T = isSpike ? VB_HIT_T_SPIKE : VB_HIT_T_NORMAL;
+            b.vx = (target.x - startX) / T;
+            b.vz = (target.z - startZ) / T;
+            b.vy = (0 - startY) / T + 0.5 * VB_GRAVITY * T;
+            b.held = false;
+            vb.lastHitSide = hitterSide;
+        }
+
+        // ---- 물리/게임 루프 ----
+
+        function vbUpdateMyPlayer(dt) {
+            let moveX = 0, moveZ = 0;
+            if (!vb.diving) {
+                let inX = 0, inZ = 0;
+                if (vb.keys['w']) inZ -= 1;
+                if (vb.keys['s']) inZ += 1;
+                if (vb.keys['a']) inX -= 1;
+                if (vb.keys['d']) inX += 1;
+                if (inX !== 0 || inZ !== 0) {
+                    const len = Math.hypot(inX, inZ);
+                    inX /= len; inZ /= len;
+                    vb.facing.x = inX; vb.facing.z = inZ;
+                }
+                // 화면상 전진(W)=네트쪽, 오른쪽(D)=내쪽 기준 오른쪽이 되도록 mySide로 반전시킨다
+                const worldForwardZ = -vb.mySide; // W가 네트(z=0) 방향이 되도록
+                const worldRightX = vb.mySide;
+                let speedMul = vb.diveRecoverTimer > 0 ? 0.45 : 1;
+                moveX = (inX * worldRightX) * VB_MOVE_SPEED * speedMul;
+                moveZ = (inZ * worldForwardZ) * VB_MOVE_SPEED * speedMul;
+            } else {
+                moveX = vb.diveDir.x * VB_DIVE_SPEED;
+                moveZ = vb.diveDir.z * VB_DIVE_SPEED;
+            }
+            vb.myPos.x += moveX * dt;
+            vb.myPos.z += moveZ * dt;
+
+            // 자기 코트 반쪽 + 좌우 경계 내로 제한 (선수끼리 충돌 처리가 필요 없어짐)
+            const minZ = vb.mySide === 1 ? VB_PLAYER_SAFE_MARGIN : -(VB_COURT_HALF_DEPTH - VB_PLAYER_SAFE_MARGIN);
+            const maxZ = vb.mySide === 1 ? (VB_COURT_HALF_DEPTH - VB_PLAYER_SAFE_MARGIN) : -VB_PLAYER_SAFE_MARGIN;
+            vb.myPos.z = Math.max(minZ, Math.min(maxZ, vb.myPos.z));
+            vb.myPos.x = Math.max(-(VB_COURT_HALF_WIDTH - VB_PLAYER_SAFE_MARGIN), Math.min(VB_COURT_HALF_WIDTH - VB_PLAYER_SAFE_MARGIN, vb.myPos.x));
+
+            // 점프/중력
+            if (!vb.onGround) {
+                vb.myVelY -= VB_GRAVITY * dt;
+                vb.myPos.y += vb.myVelY * dt;
+                if (vb.myPos.y <= VB_PLAYER_REST_Y) {
+                    vb.myPos.y = VB_PLAYER_REST_Y; vb.myVelY = 0; vb.onGround = true;
+                }
+            }
+
+            if (vb.diving) {
+                vb.diveTimer -= dt;
+                if (vb.diveTimer <= 0) { vb.diving = false; vb.diveRecoverTimer = VB_DIVE_RECOVERY; }
+            } else if (vb.diveRecoverTimer > 0) {
+                vb.diveRecoverTimer -= dt;
+            }
+        }
+
+        function vbUpdateBallPhysics(dt) {
+            const b = vb.ball;
+            if (b.held) {
+                const servePos = vbServeSpot(b.serverSide);
+                b.x = servePos.x; b.y = servePos.y; b.z = servePos.z;
+                b.vx = 0; b.vy = 0; b.vz = 0;
+                return;
+            }
+            b.vy -= VB_GRAVITY * dt;
+            b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
+
+            // 네트와의 충돌 (대략적인 박스 체크)
+            if (Math.abs(b.x) < VB_NET_HALF_WIDTH && b.y < VB_NET_HEIGHT + VB_BALL_RADIUS) {
+                const crossing = (b.z > 0 && b.z - b.vz * dt <= 0) || (b.z < 0 && b.z - b.vz * dt >= 0);
+                if (crossing && Math.abs(b.z) < 0.35) {
+                    b.vz *= -0.35; b.vx *= 0.6; b.vy = Math.max(b.vy, 0.5);
+                }
+            }
+
+            // 좌우 벽은 없음 (옆으로 너무 나가면 아웃 처리), 바닥 체크
+            if (b.y - VB_BALL_RADIUS <= 0) {
+                b.y = VB_BALL_RADIUS;
+                const inBounds = Math.abs(b.x) <= VB_COURT_HALF_WIDTH && Math.abs(b.z) <= VB_COURT_HALF_DEPTH;
+                let winner;
+                if (inBounds) {
+                    const landedHalf = b.z > 0 ? 1 : -1; // 어느 쪽 코트에 떨어졌는지
+                    winner = -landedHalf;
+                } else {
+                    winner = vb.lastHitSide === 1 ? -1 : 1;
+                }
+                vbScorePoint(winner);
+            }
+        }
+
+        function vbServeSpot(serverSide) {
+            return { x: 0, y: VB_PLAYER_REST_Y + 0.75, z: serverSide * VB_COURT_HALF_DEPTH * 0.55 };
+        }
+
+        function vbResetBallForServe(serverSide) {
+            vb.ball.held = true; vb.ball.serverSide = serverSide;
+            vb.lastHitSide = null;
+            const sp = vbServeSpot(serverSide);
+            vb.ball.x = sp.x; vb.ball.y = sp.y; vb.ball.z = sp.z;
+            vb.ball.vx = 0; vb.ball.vy = 0; vb.ball.vz = 0;
+        }
+
+        function vbScorePoint(winnerSide) {
+            if (winnerSide === vb.mySide) vb.myScore++; else vb.oppScore++;
+            vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'score', host: vb.mySide === 1 ? vb.myScore : vb.oppScore, guest: vb.mySide === 1 ? vb.oppScore : vb.myScore } });
+            vbApplyScoreToUI();
+            playVbScoreSound();
+            vbFlashPointBanner(winnerSide === vb.mySide ? '득점! 🎉' : '상대 득점');
+            if (vb.myScore >= VB_WIN_SCORE || vb.oppScore >= VB_WIN_SCORE) {
+                const iWon = vb.myScore >= VB_WIN_SCORE;
+                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'game_over', winnerSide } });
+                vbEndMatch(iWon);
+                return;
+            }
+            vbResetBallForServe(winnerSide);
+        }
+
+        function vbApplyScoreToUI() {
+            document.getElementById('vb-my-score').innerText = vb.myScore;
+            document.getElementById('vb-opp-score').innerText = vb.oppScore;
+        }
+
+        function vbFlashPointBanner(text) {
+            const el = document.getElementById('vb-point-banner');
+            if (!el) return;
+            el.innerText = text;
+            el.classList.remove('hidden');
+            el.style.opacity = '1';
+            clearTimeout(vb.bannerTimer);
+            vb.bannerTimer = setTimeout(() => { el.style.opacity = '0'; }, 1000);
+        }
+
+        // ---- 네트워킹 ----
+
+        function vbMaybeBroadcast(nowMs) {
+            if (!vb.channel) return;
+            if (nowMs - vb.lastPlayerSendAt > 66) {
+                vb.lastPlayerSendAt = nowMs;
+                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: vb.myPos.x, y: vb.myPos.y, z: vb.myPos.z, diving: vb.diving } });
+            }
+            if (vb.isHostAuthority && nowMs - vb.lastBallSendAt > 50) {
+                vb.lastBallSendAt = nowMs;
+                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'ball', x: vb.ball.x, y: vb.ball.y, z: vb.ball.z, held: vb.ball.held } });
+            }
+        }
+
+        function vbHandleMessage(payload) {
+            if (!vb || !payload) return;
+            switch (payload.type) {
+                case 'player':
+                    vb.oppPos.x = payload.x; vb.oppPos.y = payload.y; vb.oppPos.z = payload.z;
+                    break;
+                case 'ball':
+                    if (!vb.isHostAuthority) {
+                        vb.ball.x = payload.x; vb.ball.y = payload.y; vb.ball.z = payload.z; vb.ball.held = payload.held;
+                    }
+                    break;
+                case 'hit_request':
+                    if (vb.isHostAuthority) vbApplyHit({ x: payload.x, z: payload.z }, payload.spike, payload.side);
+                    break;
+                case 'hit_fx':
+                    playVbHitSound(payload.spike, false);
+                    break;
+                case 'score':
+                    if (!vb.isHostAuthority) {
+                        vb.myScore = vb.mySide === 1 ? payload.host : payload.guest;
+                        vb.oppScore = vb.mySide === 1 ? payload.guest : payload.host;
+                        vbApplyScoreToUI();
+                    }
+                    break;
+                case 'game_over':
+                    if (!vb.isHostAuthority) {
+                        const iWon = (payload.winnerSide === vb.mySide);
+                        vbEndMatch(iWon);
+                    }
+                    break;
+            }
+        }
+
+        function vbAnimate(t) {
+            if (!vb) return;
+            if (!vb.lastFrameT) vb.lastFrameT = t;
+            let dt = (t - vb.lastFrameT) / 1000;
+            vb.lastFrameT = t;
+            dt = Math.min(dt, 0.05);
+
+            vbUpdateMyPlayer(dt);
+            if (vb.isHostAuthority) vbUpdateBallPhysics(dt);
+
+            // 상대 캐릭터 시각 보간 (네트워크 지연을 매끄럽게)
+            const lerp = 1 - Math.pow(0.001, dt);
+            vb.oppVisual.x += (vb.oppPos.x - vb.oppVisual.x) * lerp;
+            vb.oppVisual.y += (vb.oppPos.y - vb.oppVisual.y) * lerp;
+            vb.oppVisual.z += (vb.oppPos.z - vb.oppVisual.z) * lerp;
+
+            if (vb.isHostAuthority) {
+                vb.ballVisual.x = vb.ball.x; vb.ballVisual.y = vb.ball.y; vb.ballVisual.z = vb.ball.z;
+            } else {
+                vb.ballVisual.x += (vb.ball.x - vb.ballVisual.x) * lerp;
+                vb.ballVisual.y += (vb.ball.y - vb.ballVisual.y) * lerp;
+                vb.ballVisual.z += (vb.ball.z - vb.ballVisual.z) * lerp;
+            }
+
+            vb.myMesh.position.set(vb.myPos.x, vb.myPos.y, vb.myPos.z);
+            vb.myMesh.rotation.x = vb.diving ? 1.1 : 0;
+            vb.myMesh.rotation.y = Math.atan2(vb.facing.x, -vb.facing.z);
+            vb.myShadow.position.x = vb.myPos.x; vb.myShadow.position.z = vb.myPos.z;
+
+            vb.oppMesh.position.set(vb.oppVisual.x, vb.oppVisual.y, vb.oppVisual.z);
+            vb.oppShadow.position.x = vb.oppVisual.x; vb.oppShadow.position.z = vb.oppVisual.z;
+
+            vb.ballGroup.position.set(vb.ballVisual.x, vb.ballVisual.y, vb.ballVisual.z);
+            vb.ballGroup.rotation.x += dt * 4; vb.ballGroup.rotation.z += dt * 2.3;
+            vb.ballShadow.position.x = vb.ballVisual.x; vb.ballShadow.position.z = vb.ballVisual.z;
+            const shadowScale = Math.max(0.4, 1 - vb.ballVisual.y * 0.18);
+            vb.ballShadow.scale.setScalar(shadowScale);
+
+            // 카메라: 네트 축과 평행한 쪽에서, 본인 코트 뒤쪽 3인칭으로 네트 너머를 바라본다
+            const camBackZ = vb.myPos.z + vb.mySide * 3.6;
+            const camX = vb.myPos.x * 0.5;
+            vb.camera.position.set(camX, 2.6, camBackZ);
+            const lookAtZ = vb.myPos.z - vb.mySide * 4.5;
+            vb.camera.lookAt(vb.myPos.x * 0.3, 1.1, lookAtZ);
+
+            vbMaybeBroadcast(t);
+            vb.renderer.render(vb.scene, vb.camera);
+            vb.rafId = requestAnimationFrame(vbAnimate);
+        }
+
+        // ---- 매치 종료 & 순위 ----
+
+        async function vbEndMatch(iWon) {
+            if (!vb || vb.phase === 'ended') return;
+            vb.phase = 'ended';
+            if (vb.rafId) cancelAnimationFrame(vb.rafId);
+            vbDetachInputListeners();
+            document.getElementById('vb-result-title').innerText = iWon ? '승리했어요! 🏆' : '패배했어요';
+            document.getElementById('vb-result-score').innerText = vb.myScore + ' : ' + vb.oppScore;
+            vbShowState('result');
+            try {
+                await supabaseClient.from('volleyball_scores').insert({
+                    user_id: currentUser.id, name: currentUser.name || '익명',
+                    score: vb.myScore, opponent_score: vb.oppScore, won: iWon,
+                });
+            } catch (e) { /* volleyball_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+        }
+
+        async function vbShowLeaderboard() {
+            vbShowState('leaderboard');
+            const list = document.getElementById('vb-leaderboard-list');
+            list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('volleyball_scores')
+                    .select('name, score')
+                    .order('score', { ascending: false })
+                    .limit(20);
+                if (error) throw error;
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">아직 기록이 없어요. 첫 경기를 플레이해보세요!</p>';
+                    return;
+                }
+                list.innerHTML = data.map((row, i) => `
+                    <div class="vb-leaderboard-row">
+                        <span class="vb-leaderboard-rank">${i + 1}</span>
+                        <span class="vb-leaderboard-name">${escapeHtml(row.name || '익명')}</span>
+                        <span class="vb-leaderboard-points">${row.score}점</span>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (volleyball_scores 테이블이 준비되지 않았을 수 있어요)</p>';
+            }
+        }
+
+        // ---- 사운드 ----
+
+        let vbAudioCtx = null;
+        function ensureVbAudioCtx() {
+            if (!vbAudioCtx) vbAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return vbAudioCtx;
+        }
+        function playVbHitSound(isSpike, isDive) {
+            try {
+                const ctx = ensureVbAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = isDive ? 'triangle' : 'sine';
+                osc.frequency.value = isDive ? 180 : (isSpike ? 320 : 240);
+                gain.gain.setValueAtTime(0.001, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(isSpike ? 0.3 : 0.18, ctx.currentTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (isSpike ? 0.18 : 0.12));
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.2);
+            } catch (e) {}
+        }
+        function playVbScoreSound() {
+            try {
+                const ctx = ensureVbAudioCtx();
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.value = freq;
+                    const startAt = ctx.currentTime + i * 0.09;
+                    gain.gain.setValueAtTime(0.001, startAt);
+                    gain.gain.exponentialRampToValueAtTime(0.22, startAt + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startAt + 0.25);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(startAt); osc.stop(startAt + 0.3);
+                });
+            } catch (e) {}
         }
 
         // =====================================================================
