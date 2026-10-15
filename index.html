@@ -601,61 +601,72 @@
         .pitchgame-key.wrong { background: #fecdd3; color: #9f1239; border-color: #fecdd3; }
         @media (max-width: 420px) { .pitchgame-keys { grid-template-columns: repeat(4, 1fr); } }
 
-        /* ---------- 게임 4: 피카츄 배구 ---------- */
-        .vb-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 10px; }
-        .vb-msg { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
-        .vb-join-row { display: flex; gap: 8px; margin-bottom: 18px; }
-        .vb-join-input {
+        /* ---------- 게임 4: 경찰과 도둑 ---------- */
+        .cnr-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 10px; }
+        .cnr-msg { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+        .cnr-join-row { display: flex; gap: 8px; margin-bottom: 18px; }
+        .cnr-join-input {
             width: 140px; text-align: center; letter-spacing: 2px; text-transform: uppercase;
             font-weight: 800; font-size: 14px; padding: 10px 12px; border-radius: 999px;
             border: 1px solid rgba(20,20,20,.12); outline: none; background: #faf9f6;
         }
-        .vb-lobby-error { font-size: 12px; font-weight: 700; color: #e11d48; margin-top: -8px; margin-bottom: 14px; }
-        .vb-leaderboard-link { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
-        .vb-leaderboard-link:hover { color: var(--ink); }
-        .vb-spinner {
+        .cnr-lobby-error { font-size: 12px; font-weight: 700; color: #e11d48; margin-top: -8px; margin-bottom: 14px; }
+        .cnr-leaderboard-link { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+        .cnr-leaderboard-link:hover { color: var(--ink); }
+        .cnr-spinner {
             width: 38px; height: 38px; border-radius: 50%; border: 4px solid #eee; border-top-color: var(--accent);
-            margin-bottom: 14px; animation: vbSpin 0.8s linear infinite;
+            margin-bottom: 14px; animation: cnrSpin 0.8s linear infinite;
         }
-        @keyframes vbSpin { to { transform: rotate(360deg); } }
-        .vb-room-code-box {
+        @keyframes cnrSpin { to { transform: rotate(360deg); } }
+        .cnr-room-code-box {
             display: flex; align-items: center; gap: 10px; background: #faf9f6; border-radius: 14px;
             padding: 10px 18px; margin-bottom: 18px; font-size: 13px; color: var(--ink-soft); font-weight: 700;
         }
-        .vb-room-code-box b { font-size: 22px; letter-spacing: 4px; color: var(--ink); font-variant-numeric: tabular-nums; }
-        .vb-copy-btn { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; }
-        .vb-copy-btn:hover { color: var(--ink); }
-        .vb-cancel-btn { font-size: 13px; font-weight: 700; color: var(--ink-soft); background: #f1f1ef; border: none; padding: 8px 18px; border-radius: 999px; cursor: pointer; }
+        .cnr-room-code-box b { font-size: 22px; letter-spacing: 4px; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .cnr-copy-btn { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; }
+        .cnr-copy-btn:hover { color: var(--ink); }
+        .cnr-cancel-btn { font-size: 13px; font-weight: 700; color: var(--ink-soft); background: #f1f1ef; border: none; padding: 8px 18px; border-radius: 999px; cursor: pointer; }
 
-        .vb-hud { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px; }
-        .vb-hud-score { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .vb-hud-score span { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
-        .vb-hud-score b { font-size: 26px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
-        .vb-hud-vs { font-size: 11px; font-weight: 800; color: var(--ink-soft); background: #f1f1ef; padding: 3px 9px; border-radius: 999px; margin-top: 10px; }
-        .vb-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: #cfeeff; box-shadow: 0 1px 2px rgba(20,20,20,.06), 0 10px 24px rgba(20,20,20,.12); }
-        .vb-canvas-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; outline: none; }
-        .vb-point-banner {
+        .cnr-hud { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 10px; }
+        .cnr-hud-role {
+            font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 999px;
+        }
+        .cnr-hud-role.cop { background: #e4ecff; color: #2d4ed8; }
+        .cnr-hud-role.thief { background: #ffe9d6; color: #b5560a; }
+        .cnr-hud-timer { font-size: 26px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .cnr-hud-timer.urgent { color: #e11d48; }
+        .cnr-dash-bar-wrap { width: 72px; height: 7px; border-radius: 999px; background: #eee; overflow: hidden; }
+        .cnr-dash-bar { height: 100%; background: var(--accent); border-radius: 999px; transition: width .08s linear; }
+        .cnr-dash-label { font-size: 10px; font-weight: 700; color: var(--ink-soft); text-align: center; margin-top: 3px; }
+        .cnr-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: #cfe8d8; box-shadow: 0 1px 2px rgba(20,20,20,.06), 0 10px 24px rgba(20,20,20,.12); }
+        .cnr-canvas-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; outline: none; }
+        .cnr-banner {
             position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
             background: rgba(20,20,20,.75); color: #fff; font-size: 13px; font-weight: 800;
-            padding: 7px 16px; border-radius: 999px; transition: opacity .25s ease;
+            padding: 7px 16px; border-radius: 999px; transition: opacity .25s ease; white-space: nowrap;
         }
-        .vb-controls-hint { font-size: 11px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
-        .vb-leave-btn {
+        .cnr-pointerlock-hint {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(20,20,20,.38); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+            text-align: center; padding: 20px;
+        }
+        .cnr-controls-hint { font-size: 11px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
+        .cnr-leave-btn {
             display: block; margin: 12px auto 0; font-size: 12px; font-weight: 700; color: var(--ink-soft);
             background: #f1f1ef; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer;
         }
-        .vb-result-title { font-size: 15px; font-weight: 800; color: var(--ink-soft); margin-bottom: 6px; }
-        .vb-result-score { font-size: 42px; font-weight: 800; color: var(--accent-ink); margin-bottom: 18px; font-variant-numeric: tabular-nums; }
-        .vb-result-actions { display: flex; gap: 10px; }
-        .vb-leaderboard-title { text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
-        .vb-leaderboard-list { max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
-        .vb-leaderboard-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #faf9f6; border-radius: 12px; font-size: 13px; }
-        .vb-leaderboard-rank { width: 22px; font-weight: 800; color: var(--ink-soft); flex-shrink: 0; }
-        .vb-leaderboard-row:nth-child(1) .vb-leaderboard-rank { color: #d4a017; }
-        .vb-leaderboard-row:nth-child(2) .vb-leaderboard-rank { color: #9099a3; }
-        .vb-leaderboard-row:nth-child(3) .vb-leaderboard-rank { color: #b8702f; }
-        .vb-leaderboard-name { flex: 1; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .vb-leaderboard-points { font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+        .cnr-result-title { font-size: 22px; font-weight: 800; color: var(--accent-ink); margin-bottom: 6px; }
+        .cnr-result-detail { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 18px; }
+        .cnr-result-actions { display: flex; gap: 10px; }
+        .cnr-leaderboard-title { text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+        .cnr-leaderboard-list { max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+        .cnr-leaderboard-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: #faf9f6; border-radius: 12px; font-size: 13px; }
+        .cnr-leaderboard-rank { width: 22px; font-weight: 800; color: var(--ink-soft); flex-shrink: 0; }
+        .cnr-leaderboard-row:nth-child(1) .cnr-leaderboard-rank { color: #d4a017; }
+        .cnr-leaderboard-row:nth-child(2) .cnr-leaderboard-rank { color: #9099a3; }
+        .cnr-leaderboard-row:nth-child(3) .cnr-leaderboard-rank { color: #b8702f; }
+        .cnr-leaderboard-name { flex: 1; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cnr-leaderboard-points { font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
@@ -899,7 +910,7 @@
                 <button onclick="openRestZoneModal()" class="rest-zone-teaser reveal-on-scroll press-feel">
                     <span class="rest-zone-eyebrow">쉼터</span>
                     <p class="rest-zone-title">잠깐 쉬어가세요</p>
-                    <p class="rest-zone-sub">왁스볼부터 절대음감, 온라인 배구까지 — 눌러서 둘러보기</p>
+                    <p class="rest-zone-sub">왁스볼부터 절대음감, 경찰과 도둑까지 — 눌러서 둘러보기</p>
                     <span class="rest-zone-teaser-cta">쉼터 들어가기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </button>
             </section>
@@ -1522,10 +1533,10 @@
                             <span class="restzone-game-name">절대음감</span>
                             <span class="restzone-game-desc">들려오는 음을 맞혀보세요 (무한)</span>
                         </button>
-                        <button onclick="restzoneOpenGame('volleyball')" class="restzone-game-card press-feel">
-                            <span class="restzone-game-icon" style="background:#fff2d6;"><i class="fa-solid fa-volleyball" style="color:#b57700;"></i></span>
-                            <span class="restzone-game-name">피카츄 배구</span>
-                            <span class="restzone-game-desc">3D 온라인 1:1 대전 · 로그인 필요</span>
+                        <button onclick="restzoneOpenGame('chase')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#e4ecff;"><i class="fa-solid fa-user-secret" style="color:#2d4ed8;"></i></span>
+                            <span class="restzone-game-name">경찰과 도둑</span>
+                            <span class="restzone-game-desc">3D 온라인 1:1 추격전 · 로그인 필요</span>
                         </button>
                     </div>
                 </div>
@@ -1581,88 +1592,92 @@
                         <p class="pitchgame-hint">들려오는 음을 맞혀보세요 (스피커를 누르면 다시 들려요)</p>
                         <p id="pitchgame-feedback" class="pitchgame-feedback">&nbsp;</p>
                         <div class="pitchgame-keys">
-                            <button id="pitchgame-key-0" class="pitchgame-key press-feel" onclick="answerPitch(0)">C</button>
-                            <button id="pitchgame-key-1" class="pitchgame-key press-feel" onclick="answerPitch(1)">C#</button>
-                            <button id="pitchgame-key-2" class="pitchgame-key press-feel" onclick="answerPitch(2)">D</button>
-                            <button id="pitchgame-key-3" class="pitchgame-key press-feel" onclick="answerPitch(3)">D#</button>
-                            <button id="pitchgame-key-4" class="pitchgame-key press-feel" onclick="answerPitch(4)">E</button>
-                            <button id="pitchgame-key-5" class="pitchgame-key press-feel" onclick="answerPitch(5)">F</button>
-                            <button id="pitchgame-key-6" class="pitchgame-key press-feel" onclick="answerPitch(6)">F#</button>
-                            <button id="pitchgame-key-7" class="pitchgame-key press-feel" onclick="answerPitch(7)">G</button>
-                            <button id="pitchgame-key-8" class="pitchgame-key press-feel" onclick="answerPitch(8)">G#</button>
-                            <button id="pitchgame-key-9" class="pitchgame-key press-feel" onclick="answerPitch(9)">A</button>
-                            <button id="pitchgame-key-10" class="pitchgame-key press-feel" onclick="answerPitch(10)">A#</button>
-                            <button id="pitchgame-key-11" class="pitchgame-key press-feel" onclick="answerPitch(11)">B</button>
+                            <button id="pitchgame-key-0" class="pitchgame-key press-feel" onclick="answerPitch(0)">도</button>
+                            <button id="pitchgame-key-1" class="pitchgame-key press-feel" onclick="answerPitch(1)">도#</button>
+                            <button id="pitchgame-key-2" class="pitchgame-key press-feel" onclick="answerPitch(2)">레</button>
+                            <button id="pitchgame-key-3" class="pitchgame-key press-feel" onclick="answerPitch(3)">레#</button>
+                            <button id="pitchgame-key-4" class="pitchgame-key press-feel" onclick="answerPitch(4)">미</button>
+                            <button id="pitchgame-key-5" class="pitchgame-key press-feel" onclick="answerPitch(5)">파</button>
+                            <button id="pitchgame-key-6" class="pitchgame-key press-feel" onclick="answerPitch(6)">파#</button>
+                            <button id="pitchgame-key-7" class="pitchgame-key press-feel" onclick="answerPitch(7)">솔</button>
+                            <button id="pitchgame-key-8" class="pitchgame-key press-feel" onclick="answerPitch(8)">솔#</button>
+                            <button id="pitchgame-key-9" class="pitchgame-key press-feel" onclick="answerPitch(9)">라</button>
+                            <button id="pitchgame-key-10" class="pitchgame-key press-feel" onclick="answerPitch(10)">라#</button>
+                            <button id="pitchgame-key-11" class="pitchgame-key press-feel" onclick="answerPitch(11)">시</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 게임 4: 피카츄 배구 -->
-                <div id="restzone-panel-volleyball" class="hidden">
+                <!-- 게임 4: 경찰과 도둑 -->
+                <div id="restzone-panel-chase" class="hidden">
 
                     <!-- 로그인 전 -->
-                    <div id="vb-state-loggedout" class="hidden vb-center">
-                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#b57700;"></i>
-                        <p class="vb-msg">온라인 1:1 대전은 로그인 후 이용할 수 있어요</p>
+                    <div id="cnr-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-user-secret text-3xl mb-3" style="color:#2d4ed8;"></i>
+                        <p class="cnr-msg">온라인 1:1 추격전은 로그인 후 이용할 수 있어요</p>
                         <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
                     </div>
 
                     <!-- 로비: 방 만들기 / 참가하기 -->
-                    <div id="vb-state-lobby" class="hidden vb-center">
-                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#b57700;"></i>
-                        <p class="vb-msg">친구와 3D 온라인 1:1 배구 대전을 해보세요</p>
-                        <button onclick="vbCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
-                        <div class="vb-join-row">
-                            <input id="vb-join-code-input" maxlength="5" placeholder="방 코드 입력" class="vb-join-input">
-                            <button onclick="vbJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                    <div id="cnr-state-lobby" class="hidden cnr-center">
+                        <i class="fa-solid fa-user-secret text-3xl mb-3" style="color:#2d4ed8;"></i>
+                        <p class="cnr-msg">친구와 3D 경찰과 도둑 추격전을 해보세요<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">1분 안에 도둑이 반대쪽 깃발을 가져오면 도둑 승리, 경찰이 막아내면 경찰 승리!</span></p>
+                        <button onclick="cnrCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="cnr-join-row">
+                            <input id="cnr-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="cnrJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
                         </div>
-                        <p id="vb-lobby-error" class="vb-lobby-error hidden"></p>
-                        <button onclick="vbShowLeaderboard()" class="vb-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>순위 보기</button>
+                        <p id="cnr-lobby-error" class="cnr-lobby-error hidden"></p>
+                        <button onclick="cnrShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>순위 보기</button>
                     </div>
 
                     <!-- 상대방을 기다리는 중 -->
-                    <div id="vb-state-waiting" class="hidden vb-center">
-                        <div class="vb-spinner"></div>
-                        <p class="vb-msg">상대방을 기다리는 중...</p>
-                        <div class="vb-room-code-box">
+                    <div id="cnr-state-waiting" class="hidden cnr-center">
+                        <div class="cnr-spinner"></div>
+                        <p class="cnr-msg">상대방을 기다리는 중...</p>
+                        <div class="cnr-room-code-box">
                             <span>방 코드</span>
-                            <b id="vb-room-code-display">-----</b>
-                            <button onclick="vbCopyRoomCode()" class="press-feel vb-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                            <b id="cnr-room-code-display">-----</b>
+                            <button onclick="cnrCopyRoomCode()" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
                         </div>
-                        <button onclick="vbLeaveRoom()" class="press-feel vb-cancel-btn">취소</button>
+                        <button onclick="cnrLeaveRoom()" class="press-feel cnr-cancel-btn">취소</button>
                     </div>
 
                     <!-- 실제 경기 화면 -->
-                    <div id="vb-state-game" class="hidden">
-                        <div class="vb-hud">
-                            <div class="vb-hud-score"><span id="vb-my-name">나</span><b id="vb-my-score">0</b></div>
-                            <div class="vb-hud-vs">VS</div>
-                            <div class="vb-hud-score vb-hud-score-opp"><b id="vb-opp-score">0</b><span id="vb-opp-name">상대</span></div>
+                    <div id="cnr-state-game" class="hidden">
+                        <div class="cnr-hud">
+                            <span id="cnr-role-badge" class="cnr-hud-role cop">경찰</span>
+                            <span id="cnr-hud-timer" class="cnr-hud-timer">1:00</span>
+                            <div>
+                                <div class="cnr-dash-bar-wrap"><div id="cnr-dash-bar" class="cnr-dash-bar" style="width:100%;"></div></div>
+                                <p class="cnr-dash-label">대쉬</p>
+                            </div>
                         </div>
-                        <div class="vb-canvas-wrap">
-                            <canvas id="vb-canvas"></canvas>
-                            <p id="vb-point-banner" class="vb-point-banner hidden"></p>
+                        <div class="cnr-canvas-wrap">
+                            <canvas id="cnr-canvas"></canvas>
+                            <p id="cnr-banner" class="cnr-banner hidden"></p>
+                            <div id="cnr-pointerlock-hint" class="cnr-pointerlock-hint">화면을 클릭하면 마우스로 시선을 둘러볼 수 있어요</div>
                         </div>
-                        <p class="vb-controls-hint">WASD 이동 · Space 점프 · Shift 다이브 · 클릭 타격 (점프 중 클릭 = 스파이크, 마우스 방향으로 꽂힙니다)</p>
-                        <button onclick="vbLeaveRoom()" class="press-feel vb-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 마우스로 시선 회전</p>
+                        <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                     </div>
 
                     <!-- 경기 결과 -->
-                    <div id="vb-state-result" class="hidden vb-center">
-                        <p class="vb-result-title" id="vb-result-title">경기 종료</p>
-                        <p class="vb-result-score" id="vb-result-score">0 : 0</p>
-                        <div class="vb-result-actions">
-                            <button onclick="vbBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
-                            <button onclick="vbShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                    <div id="cnr-state-result" class="hidden cnr-center">
+                        <p class="cnr-result-title" id="cnr-result-title">경기 종료</p>
+                        <p class="cnr-result-detail" id="cnr-result-detail"></p>
+                        <div class="cnr-result-actions">
+                            <button onclick="cnrBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                            <button onclick="cnrShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
                         </div>
                     </div>
 
                     <!-- 순위표 -->
-                    <div id="vb-state-leaderboard" class="hidden">
-                        <p class="vb-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>배구 순위 (득점 기준)</p>
-                        <div id="vb-leaderboard-list" class="vb-leaderboard-list"></div>
+                    <div id="cnr-state-leaderboard" class="hidden">
+                        <p class="cnr-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>경찰과 도둑 순위 (승수 기준)</p>
+                        <div id="cnr-leaderboard-list" class="cnr-leaderboard-list"></div>
                         <div class="text-center">
-                            <button onclick="vbBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                            <button onclick="cnrBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
                         </div>
                     </div>
 
@@ -2256,6 +2271,13 @@
         const WAX_PRESS_DEPTH = 0.46;      // 완전히 눌렸을 때 들어가는 최대 깊이(반지름 대비 비율)
         const WAX_SPRING_K = 150, WAX_SPRING_D = 8.5;
         const WAX_BASE_RADIUS = 1.0;
+        // 클릭한 채 드래그하면 그 방향으로 쭉 늘어나는 "탄력 스트레칭" — 놓으면 출렁이며 되돌아온다
+        const waxStretch = { active: false, dragging: false, amount: 0, vel: 0, target: 0, worldAxis: null };
+        const WAX_STRETCH_MAX = 0.62;       // 최대 늘어나는 비율 (k = 1+amount, 최대 약 1.62배)
+        const WAX_STRETCH_K = 46, WAX_STRETCH_D = 5.2; // 드래그 중엔 느슨하게 따라오고, 놓으면 출렁이다 가라앉는 스프링
+        const WAX_STRETCH_SENSITIVITY_PX = 150; // 이 픽셀만큼 드래그하면 최대로 늘어남
+        const WAX_CAM_BASE_Z = 5.6;
+        const WAX_CAM_FOV_HALF_TAN = Math.tan((26 / 2) * Math.PI / 180);
 
         function initWaxBall() {
             const stage = document.getElementById('wax-ball-stage');
@@ -2325,6 +2347,8 @@
             waxBallRaycaster = new THREE.Raycaster();
             _waxInvQuat = new THREE.Quaternion();
             _waxLocalDir = new THREE.Vector3();
+            waxStretch.worldAxis = new THREE.Vector3(1, 0, 0);
+            _waxStretchLocalDir = new THREE.Vector3();
 
             canvas.addEventListener('pointerdown', handleWaxBallPointerDown);
             window.addEventListener('resize', resizeWaxBall);
@@ -2346,39 +2370,70 @@
         // 실제로 로드된 뒤(initWaxBall 안)에만 생성하므로 여기서는 null로만 선언해둔다.
         let _waxInvQuat = null;
         let _waxLocalDir = null;
+        let _waxStretchLocalDir = null;
 
         function updateWaxJellyDeform() {
             const posAttr = waxBall.geometry.attributes.position;
             const arr = posAttr.array;
             const orig = waxBallOrigPositions;
 
-            if (!waxPress.active) return false; // 변형 중이 아니면 아무 것도 할 필요 없음(호출부에서 1회 리셋 처리)
+            const pressOn = waxPress.active;
+            const stretchOn = Math.abs(waxStretch.amount) > 0.0005;
+            if (!pressOn && !stretchOn) return false; // 둘 다 변형 중이 아니면 아무 것도 할 필요 없음(호출부에서 1회 리셋 처리)
 
-            // 월드 좌표계에 고정된 "누른 방향"을, 볼이 회전한 만큼 역회전시켜 현재 로컬 좌표계로 가져온다
-            // → 볼이 계속 자전하더라도 들여쓰기가 화면상 눌렀던 바로 그 자리에 그대로 남아있는 것처럼 보인다.
+            // 월드 좌표계에 고정된 방향들을, 볼이 회전한 만큼 역회전시켜 현재 로컬 좌표계로 가져온다
+            // → 볼이 계속 자전하더라도 눌림/늘어남이 화면상 그 자리에 그대로 남아있는 것처럼 보인다.
             _waxInvQuat.copy(waxBall.quaternion).invert();
-            _waxLocalDir.copy(waxPress.worldDir).applyQuaternion(_waxInvQuat);
-
+            let ldx = 0, ldy = 0, ldz = 0;
+            if (pressOn) {
+                _waxLocalDir.copy(waxPress.worldDir).applyQuaternion(_waxInvQuat);
+                ldx = _waxLocalDir.x; ldy = _waxLocalDir.y; ldz = _waxLocalDir.z;
+            }
             const cosRadius = Math.cos(WAX_PRESS_RADIUS);
-            const ldx = _waxLocalDir.x, ldy = _waxLocalDir.y, ldz = _waxLocalDir.z;
 
+            let sx = 0, sy = 0, sz = 0, k = 1, scalePerp = 1;
+            if (stretchOn) {
+                _waxStretchLocalDir.copy(waxStretch.worldAxis).applyQuaternion(_waxInvQuat);
+                sx = _waxStretchLocalDir.x; sy = _waxStretchLocalDir.y; sz = _waxStretchLocalDir.z;
+                k = Math.max(0.72, 1 + waxStretch.amount); // 음수 오버슈트가 너무 심해 안쪽으로 뒤집히지 않도록 안전하게 제한
+                scalePerp = 1 / Math.sqrt(k);
+            }
+
+            let maxLenSq = 0;
             for (let i = 0; i < arr.length; i += 3) {
                 const ox = orig[i], oy = orig[i + 1], oz = orig[i + 2];
-                const len = Math.sqrt(ox * ox + oy * oy + oz * oz) || 1;
-                const nx = ox / len, ny = oy / len, nz = oz / len;
-                const cosAngle = nx * ldx + ny * ldy + nz * ldz;
-                if (cosAngle > cosRadius) {
-                    const t = (cosAngle - cosRadius) / (1 - cosRadius);
-                    const weight = t * t * (3 - 2 * t); // smoothstep — 경계가 각지지 않고 부드럽게 퍼짐
-                    const disp = waxPress.strength * weight * WAX_PRESS_DEPTH;
-                    const scale = 1 + disp;
-                    arr[i] = ox * scale; arr[i + 1] = oy * scale; arr[i + 2] = oz * scale;
-                } else {
-                    arr[i] = ox; arr[i + 1] = oy; arr[i + 2] = oz;
+                let px = ox, py = oy, pz = oz;
+
+                if (pressOn) {
+                    const len = Math.sqrt(ox * ox + oy * oy + oz * oz) || 1;
+                    const nx = ox / len, ny = oy / len, nz = oz / len;
+                    const cosAngle = nx * ldx + ny * ldy + nz * ldz;
+                    if (cosAngle > cosRadius) {
+                        const t = (cosAngle - cosRadius) / (1 - cosRadius);
+                        const weight = t * t * (3 - 2 * t); // smoothstep — 경계가 각지지 않고 부드럽게 퍼짐
+                        const disp = waxPress.strength * weight * WAX_PRESS_DEPTH;
+                        const scale = 1 + disp;
+                        px = ox * scale; py = oy * scale; pz = oz * scale;
+                    }
                 }
+
+                if (stretchOn) {
+                    // 임의의 축 방향으로만 늘리고(k) 그 수직 방향은 부피 보존 느낌으로 살짝 줄이는(scalePerp) 변환
+                    const dot = px * sx + py * sy + pz * sz;
+                    const diff = k - scalePerp;
+                    const fx = px * scalePerp + sx * dot * diff;
+                    const fy = py * scalePerp + sy * dot * diff;
+                    const fz = pz * scalePerp + sz * dot * diff;
+                    px = fx; py = fy; pz = fz;
+                }
+
+                arr[i] = px; arr[i + 1] = py; arr[i + 2] = pz;
+                const lenSq = px * px + py * py + pz * pz;
+                if (lenSq > maxLenSq) maxLenSq = lenSq;
             }
             posAttr.needsUpdate = true;
             waxBall.geometry.computeVertexNormals();
+            waxBall.userData.maxExtent = Math.sqrt(maxLenSq);
             return true;
         }
 
@@ -2405,7 +2460,20 @@
                 if (Math.abs(waxPress.strength) < 0.004 && Math.abs(waxPress.vel) < 0.01) {
                     waxPress.active = false; waxPress.strength = 0; waxPress.vel = 0;
                 }
-                updateWaxJellyDeform();
+            }
+
+            // 드래그 스트레칭 스프링: 드래그 중엔 목표치(target)를 느슨하게 따라가고, 놓으면 target=0을 향해
+            // 출렁거리며(underdamped) 가라앉는다 — "탄력 있는 말랑한 덩어리"를 늘렸다 놓은 느낌을 만든다.
+            if (waxStretch.dragging || Math.abs(waxStretch.amount) > 0.0005 || Math.abs(waxStretch.vel) > 0.001) {
+                const force = -WAX_STRETCH_K * (waxStretch.amount - waxStretch.target) - WAX_STRETCH_D * waxStretch.vel;
+                waxStretch.vel += force * dt;
+                waxStretch.amount += waxStretch.vel * dt;
+                if (!waxStretch.dragging && Math.abs(waxStretch.amount) < 0.004 && Math.abs(waxStretch.vel) < 0.01) {
+                    waxStretch.amount = 0; waxStretch.vel = 0;
+                }
+            }
+
+            if (updateWaxJellyDeform()) {
                 waxBallNeedsRestore = true;
             } else if (waxBallNeedsRestore) {
                 // 변형이 막 끝난 프레임에 한해 원래 매끈한 구체 모양으로 깨끗하게 복원
@@ -2413,8 +2481,15 @@
                 posAttr.array.set(waxBallOrigPositions);
                 posAttr.needsUpdate = true;
                 waxBall.geometry.computeVertexNormals();
+                waxBall.userData.maxExtent = WAX_BASE_RADIUS;
                 waxBallNeedsRestore = false;
             }
+
+            // 화면 비율 안전장치: 눌리거나 늘어나서 볼이 커 보이는 만큼, 카메라가 살짝 뒤로 물러나
+            // 어떤 경우에도 프레임 밖으로 잘려나가지 않도록 한다 (늘어나는 방향과 무관하게 항상 안전).
+            const maxExtent = waxBall.userData.maxExtent || WAX_BASE_RADIUS;
+            const neededZ = Math.max(WAX_CAM_BASE_Z, (maxExtent * 1.12) / WAX_CAM_FOV_HALF_TAN);
+            waxBallCamera.position.z += (neededZ - waxBallCamera.position.z) * Math.min(1, dt * 8);
 
             waxBallRenderer.render(waxBallScene, waxBallCamera);
         }
@@ -2428,7 +2503,32 @@
             const hits = waxBallRaycaster.intersectObject(waxBall);
             if (hits.length > 0) {
                 squishWaxBallAt(hits[0].point);
+                // 볼을 직접 눌렀을 때만 드래그 스트레칭 시작 — 손에서 쭉 당겨지는 느낌
+                waxStretch.dragging = true;
+                waxStretch.dragStartX = e.clientX; waxStretch.dragStartY = e.clientY;
+                window.addEventListener('pointermove', handleWaxBallDragMove);
+                window.addEventListener('pointerup', handleWaxBallDragEnd);
+                window.addEventListener('pointercancel', handleWaxBallDragEnd);
             }
+        }
+
+        function handleWaxBallDragMove(e) {
+            if (!waxStretch.dragging) return;
+            const dx = e.clientX - waxStretch.dragStartX;
+            const dy = e.clientY - waxStretch.dragStartY;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 1) { waxStretch.target = 0; return; }
+            // 화면(카메라)은 거의 고정이라, 스크린 dx/dy를 그대로 월드 X/Y 축으로 써도 충분히 그럴듯하다
+            waxStretch.worldAxis.set(dx / dist, -dy / dist, 0);
+            waxStretch.target = Math.min(WAX_STRETCH_MAX, dist / WAX_STRETCH_SENSITIVITY_PX);
+        }
+
+        function handleWaxBallDragEnd() {
+            waxStretch.dragging = false;
+            waxStretch.target = 0;
+            window.removeEventListener('pointermove', handleWaxBallDragMove);
+            window.removeEventListener('pointerup', handleWaxBallDragEnd);
+            window.removeEventListener('pointercancel', handleWaxBallDragEnd);
         }
 
         function squishWaxBallAt(worldPoint) {
@@ -2467,8 +2567,11 @@
             const countEl = document.getElementById('wax-ball-count');
             if (countEl) countEl.innerText = '0';
             waxPress.active = false; waxPress.strength = 0; waxPress.vel = 0;
+            waxStretch.dragging = false; waxStretch.active = false;
+            waxStretch.amount = 0; waxStretch.vel = 0; waxStretch.target = 0;
             if (waxBall) {
                 waxBall.rotation.set(0, 0, 0);
+                waxBall.userData.maxExtent = WAX_BASE_RADIUS;
                 if (waxBallOrigPositions) {
                     const posAttr = waxBall.geometry.attributes.position;
                     posAttr.array.set(waxBallOrigPositions);
@@ -2476,6 +2579,7 @@
                     waxBall.geometry.computeVertexNormals();
                 }
             }
+            if (waxBallCamera) waxBallCamera.position.z = WAX_CAM_BASE_Z;
             const fallbackBall = document.getElementById('wax-ball-fallback');
             if (fallbackBall) fallbackBall.classList.remove('squish');
         }
@@ -2494,7 +2598,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', volleyball: '피카츄 배구' };
+        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑' };
 
         function openRestZoneModal() {
             document.getElementById('restzone-modal').classList.remove('hidden');
@@ -2504,14 +2608,14 @@
         function closeRestZoneModal() {
             document.getElementById('restzone-modal').classList.add('hidden');
             unlockBodyScroll();
-            if (typeof teardownVolleyball === 'function') teardownVolleyball();
+            if (typeof teardownCnr === 'function') teardownCnr();
         }
         function restzoneShowHub() {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
             document.getElementById('restzone-panel-hub').classList.remove('hidden');
             document.getElementById('restzone-back-btn').classList.add('hidden');
             document.getElementById('restzone-modal-title').innerHTML = '<i class="fa-solid fa-mug-hot mr-1.5" style="color:var(--accent-ink);"></i>쉼터';
-            if (typeof teardownVolleyball === 'function') teardownVolleyball();
+            if (typeof teardownCnr === 'function') teardownCnr();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -2523,7 +2627,7 @@
             if (name === 'ball') ensureWaxBallInit();
             else if (name === 'color') ensureColorGameInit();
             else if (name === 'pitch') ensurePitchGameInit();
-            else if (name === 'volleyball') ensureVolleyballInit();
+            else if (name === 'chase') ensureCnrInit();
         }
 
         // =====================================================================
@@ -2643,7 +2747,7 @@
         // =====================================================================
         // 게임 3: 절대음감 — 랜덤한 음을 들려주고 음이름을 맞히는 게임. 끝없이 계속된다.
         // =====================================================================
-        const PITCH_NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const PITCH_NOTE_NAMES = ['도', '도#', '레', '레#', '미', '파', '파#', '솔', '솔#', '라', '라#', '시'];
         let pitchGameInitialized = false;
         let pitchGameTargetNote = 0, pitchGameTargetOctave = 4;
         let pitchGameStreak = 0, pitchGameBest = 0, pitchGameAnswering = false;
@@ -2746,119 +2850,122 @@
         }
 
         // =====================================================================
-        // 쉼터 — 피카츄 배구 (3D 온라인 1:1, 호스트-권위 물리 시뮬레이션)
+        // 쉼터 — 경찰과 도둑 (3D 온라인 1:1 추격전, 가벼운 P2P 신뢰 기반 동기화)
         // =====================================================================
-        const VB_COURT_HALF_WIDTH = 4.0;
-        const VB_COURT_HALF_DEPTH = 5.0;
-        const VB_NET_HEIGHT = 1.9;
-        const VB_NET_HALF_WIDTH = VB_COURT_HALF_WIDTH + 0.35;
-        const VB_GRAVITY = 13.5;
-        const VB_BALL_RADIUS = 0.22;
-        const VB_PLAYER_RADIUS = 0.42;
-        const VB_PLAYER_REST_Y = 0.46;
-        const VB_MOVE_SPEED = 4.3;
-        const VB_JUMP_VELOCITY = 5.1;
-        const VB_DIVE_SPEED = 8.4;
-        const VB_DIVE_DURATION = 0.32;
-        const VB_DIVE_RECOVERY = 0.46;
-        const VB_HIT_REACH = 1.05;
-        const VB_HIT_REACH_DIVE = 1.65;
-        const VB_HIT_T_NORMAL = 1.05;
-        const VB_HIT_T_SPIKE = 0.52;
-        const VB_WIN_SCORE = 15;
-        const VB_PLAYER_SAFE_MARGIN = 0.32;
+        const CNR_ARENA_HALF_LENGTH = 14.0;
+        const CNR_ARENA_HALF_WIDTH = 7.0;
+        const CNR_ZONE_DEPTH = 3.5;
+        const CNR_PLAYER_RADIUS = 0.42;
+        const CNR_PLAYER_REST_Y = 0.0;
+        const CNR_MAX_SPEED = 6.2;
+        const CNR_ACCEL = 20;
+        const CNR_DECEL = 24;
+        const CNR_DASH_SPEED = 15.5;
+        const CNR_DASH_DURATION = 0.22;
+        const CNR_DASH_COOLDOWN = 3.0;
+        const CNR_TAG_RADIUS = 1.05;
+        const CNR_FLAG_PICKUP_RADIUS = 1.15;
+        const CNR_TAG_INVULN = 1.3;
+        const CNR_ROUND_SECONDS = 60;
+        const CNR_MOUSE_SENS = 0.0024;
+        const CNR_PITCH_MIN = -0.9, CNR_PITCH_MAX = 0.5;
+        const CNR_CAM_DIST = 5.4, CNR_CAM_HEIGHT = 2.7;
+        // 도둑의 시작/귀환 홈존 = +Z 쪽, 깃발이 놓인 존 = -Z 쪽
+        const CNR_HOME_Z = CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2;
+        const CNR_FLAG_SPAWN = { x: 0, y: 0.9, z: -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2) };
 
-        let vb = null; // 현재 배구 세션의 모든 런타임 상태를 담는 단일 객체 (매치 시작 시 생성, 나갈 때 폐기)
+        let cnr = null; // 현재 추격전 세션의 모든 런타임 상태 (매치 시작 시 생성, 나갈 때 폐기)
 
-        function vbShowState(name) {
-            document.querySelectorAll('#restzone-panel-volleyball > [id^="vb-state-"]').forEach(el => el.classList.add('hidden'));
-            const el = document.getElementById('vb-state-' + name);
+        function cnrShowState(name) {
+            document.querySelectorAll('#restzone-panel-chase > [id^="cnr-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('cnr-state-' + name);
             if (el) el.classList.remove('hidden');
         }
 
-        function ensureVolleyballInit() {
-            if (!currentUser) { vbShowState('loggedout'); return; }
-            if (vb && vb.phase === 'game') { vbShowState('game'); return; }
-            if (vb && vb.phase === 'waiting') { vbShowState('waiting'); return; }
-            vbShowState('lobby');
-            const err = document.getElementById('vb-lobby-error');
+        function ensureCnrInit() {
+            if (!currentUser) { cnrShowState('loggedout'); return; }
+            if (cnr && cnr.phase === 'game') { cnrShowState('game'); return; }
+            if (cnr && cnr.phase === 'waiting') { cnrShowState('waiting'); return; }
+            cnrShowState('lobby');
+            const err = document.getElementById('cnr-lobby-error');
             if (err) err.classList.add('hidden');
         }
 
-        function vbGenerateRoomCode() {
+        function cnrGenerateRoomCode() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             let code = '';
             for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
             return code;
         }
 
-        function vbLobbyError(msg) {
-            const err = document.getElementById('vb-lobby-error');
+        function cnrLobbyError(msg) {
+            const err = document.getElementById('cnr-lobby-error');
             if (!err) return;
             err.innerText = msg;
             err.classList.remove('hidden');
         }
 
-        function vbCreateRoom() {
+        function cnrCreateRoom() {
             if (!currentUser) return;
-            const code = vbGenerateRoomCode();
-            vb = {
+            const code = cnrGenerateRoomCode();
+            cnr = {
                 phase: 'waiting', role: 'host', roomCode: code, channel: null,
                 myName: currentUser.name || '나', oppName: null, oppId: null,
-                myScore: 0, oppScore: 0,
             };
-            document.getElementById('vb-room-code-display').innerText = code;
-            vbShowState('waiting');
-            vbSubscribeRoomChannel(code);
+            document.getElementById('cnr-room-code-display').innerText = code;
+            cnrShowState('waiting');
+            cnrSubscribeRoomChannel(code);
         }
 
-        function vbJoinRoom() {
+        function cnrJoinRoom() {
             if (!currentUser) return;
-            const input = document.getElementById('vb-join-code-input');
+            const input = document.getElementById('cnr-join-code-input');
             const code = (input.value || '').trim().toUpperCase();
-            if (code.length < 4) { vbLobbyError('방 코드를 정확히 입력해주세요.'); return; }
-            vb = {
+            if (code.length < 4) { cnrLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            cnr = {
                 phase: 'waiting', role: 'guest', roomCode: code, channel: null,
                 myName: currentUser.name || '나', oppName: null, oppId: null,
-                myScore: 0, oppScore: 0,
             };
-            vbShowState('waiting');
-            document.getElementById('vb-room-code-display').innerText = code;
-            vbSubscribeRoomChannel(code);
+            cnrShowState('waiting');
+            document.getElementById('cnr-room-code-display').innerText = code;
+            cnrSubscribeRoomChannel(code);
         }
 
-        function vbSubscribeRoomChannel(code) {
-            if (!vb) return;
+        function cnrSubscribeRoomChannel(code) {
+            if (!cnr) return;
             const channel = supabaseClient
-                .channel('vb-room-' + code)
-                .on('broadcast', { event: 'hello' }, (msg) => vbHandleHello(msg.payload))
-                .on('broadcast', { event: 'welcome' }, (msg) => vbHandleWelcome(msg.payload))
-                .on('broadcast', { event: 'msg' }, (msg) => vbHandleMessage(msg.payload))
+                .channel('cnr-room-' + code)
+                .on('broadcast', { event: 'hello' }, (msg) => cnrHandleHello(msg.payload))
+                .on('broadcast', { event: 'welcome' }, (msg) => cnrHandleWelcome(msg.payload))
+                .on('broadcast', { event: 'msg' }, (msg) => cnrHandleMessage(msg.payload))
                 .subscribe((status) => {
-                    if (status !== 'SUBSCRIBED' || !vb) return;
-                    if (vb.role === 'guest') {
-                        vb.channel.send({ type: 'broadcast', event: 'hello', payload: { name: vb.myName, id: currentUser.id } });
+                    if (status !== 'SUBSCRIBED' || !cnr) return;
+                    if (cnr.role === 'guest') {
+                        cnr.channel.send({ type: 'broadcast', event: 'hello', payload: { name: cnr.myName, id: currentUser.id } });
                     }
                 });
-            vb.channel = channel;
+            cnr.channel = channel;
         }
 
-        function vbHandleHello(payload) {
-            if (!vb || vb.role !== 'host' || vb.phase !== 'waiting') return;
-            vb.oppName = payload.name || '상대'; vb.oppId = payload.id || null;
-            vb.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: vb.myName, id: currentUser.id } });
-            vbBeginMatch();
+        function cnrHandleHello(payload) {
+            if (!cnr || cnr.role !== 'host' || cnr.phase !== 'waiting') return;
+            cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
+            const hostRole = Math.random() < 0.5 ? 'cop' : 'thief';
+            const startAt = Date.now() + 900;
+            cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startAt } });
+            cnrBeginMatch(hostRole, startAt);
         }
 
-        function vbHandleWelcome(payload) {
-            if (!vb || vb.role !== 'guest' || vb.phase !== 'waiting') return;
-            vb.oppName = payload.name || '상대'; vb.oppId = payload.id || null;
-            vbBeginMatch();
+        function cnrHandleWelcome(payload) {
+            if (!cnr || cnr.role !== 'guest' || cnr.phase !== 'waiting') return;
+            cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
+            const myRole = payload.hostRole === 'cop' ? 'thief' : 'cop';
+            cnrBeginMatch(myRole, payload.startAt);
         }
 
-        function vbCopyRoomCode() {
-            if (!vb) return;
-            const code = vb.roomCode;
+        function cnrCopyRoomCode() {
+            if (!cnr) return;
+            const code = cnr.roomCode;
             try {
                 navigator.clipboard.writeText(code);
                 showToast('방 코드를 복사했어요: ' + code, 'success');
@@ -2867,636 +2974,630 @@
             }
         }
 
-        function vbLeaveRoom() {
-            teardownVolleyball();
-            vbShowState('lobby');
+        function cnrLeaveRoom() {
+            teardownCnr();
+            cnrShowState('lobby');
         }
 
-        function vbBackToLobby() {
-            teardownVolleyball();
-            ensureVolleyballInit();
+        function cnrBackToLobby() {
+            teardownCnr();
+            ensureCnrInit();
         }
 
-        function teardownVolleyball() {
-            if (!vb) return;
-            if (vb.channel) { try { supabaseClient.removeChannel(vb.channel); } catch (e) {} }
-            if (vb.rafId) cancelAnimationFrame(vb.rafId);
-            vbDetachInputListeners();
-            if (vb.renderer) {
-                try { vb.renderer.dispose(); } catch (e) {}
+        function teardownCnr() {
+            if (!cnr) return;
+            if (cnr.channel) { try { supabaseClient.removeChannel(cnr.channel); } catch (e) {} }
+            if (cnr.rafId) cancelAnimationFrame(cnr.rafId);
+            cnrDetachInputListeners();
+            if (document.pointerLockElement && document.exitPointerLock) {
+                try { document.exitPointerLock(); } catch (e) {}
             }
-            if (vb.resizeObserver) { try { vb.resizeObserver.disconnect(); } catch (e) {} }
-            vb = null;
+            if (cnr.renderer) { try { cnr.renderer.dispose(); } catch (e) {} }
+            if (cnr.resizeObserver) { try { cnr.resizeObserver.disconnect(); } catch (e) {} }
+            cnr = null;
+        }
+
+        // ---- 캐릭터 모델링 (경찰 / 도둑 — 완전한 오리지널 디자인) ----
+
+        function cnrBuildHumanoid(role) {
+            const isCop = role === 'cop';
+            const group = new THREE.Group();
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xe8b98a, roughness: 0.7 });
+            const suitColor = isCop ? 0x24355c : 0x2c2b33;
+            const suitMat = new THREE.MeshStandardMaterial({ color: suitColor, roughness: 0.65 });
+            const accentMat = new THREE.MeshStandardMaterial({ color: isCop ? 0xf4c53a : 0x8a1f2b, roughness: 0.5 });
+
+            const hips = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.16, 0.22), suitMat);
+            hips.position.y = 0.46;
+            group.add(hips);
+
+            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.46, 0.26), suitMat);
+            torso.position.y = 0.76;
+            torso.castShadow = true;
+            group.add(torso);
+
+            // 벨트/스카프 포인트 컬러 (경찰: 노란 형광 벨트, 도둑: 짙은 빨간 스카프)
+            const belt = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.07, 0.28), accentMat);
+            belt.position.y = isCop ? 0.56 : 0.9;
+            group.add(belt);
+
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 14), skinMat);
+            head.position.y = 1.16;
+            head.castShadow = true;
+            group.add(head);
+
+            if (isCop) {
+                const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.12, 16), suitMat);
+                cap.position.y = 1.32;
+                group.add(cap);
+                const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.03, 16), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.4 }));
+                brim.position.set(0, 1.27, 0.06);
+                group.add(brim);
+                const badge = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.02), accentMat);
+                badge.position.set(0.12, 0.84, 0.14);
+                group.add(badge);
+            } else {
+                const hood = new THREE.Mesh(new THREE.SphereGeometry(0.24, 14, 12, 0, Math.PI * 2, 0, Math.PI * 0.65), suitMat);
+                hood.position.y = 1.2;
+                hood.rotation.x = Math.PI;
+                group.add(hood);
+                const mask = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.09, 0.2), new THREE.MeshStandardMaterial({ color: 0x14141a, roughness: 0.6 }));
+                mask.position.set(0, 1.1, 0.1);
+                group.add(mask);
+            }
+
+            // 팔/다리는 어깨•엉덩이 피벗 그룹으로 만들어 달리기 애니메이션 때 자연스럽게 회전시킨다
+            function limb(lenY, radius, color) {
+                const pivot = new THREE.Group();
+                const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.88, lenY, 10), new THREE.MeshStandardMaterial({ color, roughness: 0.65 }));
+                mesh.position.y = -lenY / 2;
+                mesh.castShadow = true;
+                pivot.add(mesh);
+                return pivot;
+            }
+            const armL = limb(0.42, 0.07, isCop ? 0x24355c : 0x2c2b33);
+            armL.position.set(0.23, 0.94, 0);
+            const armR = limb(0.42, 0.07, isCop ? 0x24355c : 0x2c2b33);
+            armR.position.set(-0.23, 0.94, 0);
+            const legL = limb(0.5, 0.09, isCop ? 0x1b2a46 : 0x202024);
+            legL.position.set(0.11, 0.46, 0);
+            const legR = limb(0.5, 0.09, isCop ? 0x1b2a46 : 0x202024);
+            legR.position.set(-0.11, 0.46, 0);
+            group.add(armL, armR, legL, legR);
+
+            group.userData.armL = armL; group.userData.armR = armR;
+            group.userData.legL = legL; group.userData.legR = legR;
+            group.userData.torso = torso;
+            return group;
         }
 
         // ---- 3D 장면 구성 ----
 
-        function vbBuildCreatureMesh(bodyColor, cheekColor) {
-            const group = new THREE.Group();
-            const bodyGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS, 20, 16);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.55, metalness: 0.05 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.castShadow = true; body.receiveShadow = false;
-            body.position.y = 0;
-            group.add(body);
-
-            // 배 쪽 밝은 패치 (원형, 살짝 앞으로 돌출)
-            const bellyGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.68, 16, 12);
-            const bellyMat = new THREE.MeshStandardMaterial({ color: 0xfff7e8, roughness: 0.7 });
-            const belly = new THREE.Mesh(bellyGeo, bellyMat);
-            belly.scale.set(0.9, 0.95, 0.55);
-            belly.position.set(0, -VB_PLAYER_RADIUS * 0.08, VB_PLAYER_RADIUS * 0.62);
-            group.add(belly);
-
-            // 둥근 귀 (끝이 뾰족하지 않은 럭비볼 모양, 살짝 바깥쪽으로)
-            const earGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.3, 10, 8);
-            [-1, 1].forEach(side => {
-                const ear = new THREE.Mesh(earGeo, bodyMat);
-                ear.scale.set(0.7, 1.35, 0.7);
-                ear.position.set(side * VB_PLAYER_RADIUS * 0.55, VB_PLAYER_RADIUS * 0.92, -VB_PLAYER_RADIUS * 0.05);
-                ear.rotation.z = side * 0.18;
-                group.add(ear);
-            });
-
-            // 볼 패치 (동글동글, 캐릭터마다 다른 포인트 컬러)
-            const cheekGeo = new THREE.CircleGeometry(VB_PLAYER_RADIUS * 0.22, 14);
-            const cheekMat = new THREE.MeshStandardMaterial({ color: cheekColor, roughness: 0.8, side: THREE.DoubleSide });
-            [-1, 1].forEach(side => {
-                const cheek = new THREE.Mesh(cheekGeo, cheekMat);
-                cheek.position.set(side * VB_PLAYER_RADIUS * 0.72, -VB_PLAYER_RADIUS * 0.02, VB_PLAYER_RADIUS * 0.6);
-                cheek.lookAt(cheek.position.x * 2, cheek.position.y, cheek.position.z * 2 + 1);
-                group.add(cheek);
-            });
-
-            // 눈 (단순한 검은 반구)
-            const eyeGeo = new THREE.SphereGeometry(VB_PLAYER_RADIUS * 0.1, 10, 8);
-            const eyeMat = new THREE.MeshStandardMaterial({ color: 0x241b12, roughness: 0.3 });
-            [-1, 1].forEach(side => {
-                const eye = new THREE.Mesh(eyeGeo, eyeMat);
-                eye.position.set(side * VB_PLAYER_RADIUS * 0.34, VB_PLAYER_RADIUS * 0.22, VB_PLAYER_RADIUS * 0.82);
-                group.add(eye);
-            });
-
-            group.userData.body = body;
-            return group;
-        }
-
-        function vbBuildScene(canvas) {
+        function cnrBuildScene(canvas) {
             const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xbfe8ff);
-            scene.fog = new THREE.Fog(0xbfe8ff, 14, 26);
+            scene.background = new THREE.Color(0xaee2f0);
+            scene.fog = new THREE.Fog(0xaee2f0, 16, 34);
 
             const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
 
-            // 바닥 (코트 + 주변 잔디 느낌)
-            const groundGeo = new THREE.PlaneGeometry(40, 40);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x8fd98a, roughness: 1 });
+            const groundGeo = new THREE.PlaneGeometry(60, 60);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x7fcf86, roughness: 1 });
             const ground = new THREE.Mesh(groundGeo, groundMat);
             ground.rotation.x = -Math.PI / 2;
-            ground.position.y = -0.01;
             ground.receiveShadow = true;
             scene.add(ground);
 
-            const courtGeo = new THREE.PlaneGeometry(VB_COURT_HALF_WIDTH * 2 + 0.6, VB_COURT_HALF_DEPTH * 2 + 0.6);
-            const courtMat = new THREE.MeshStandardMaterial({ color: 0xe3c88a, roughness: 0.95 });
-            const court = new THREE.Mesh(courtGeo, courtMat);
-            court.rotation.x = -Math.PI / 2;
-            court.receiveShadow = true;
-            scene.add(court);
+            const fieldGeo = new THREE.PlaneGeometry(CNR_ARENA_HALF_WIDTH * 2, CNR_ARENA_HALF_LENGTH * 2);
+            const fieldMat = new THREE.MeshStandardMaterial({ color: 0xdcd3ae, roughness: 0.95 });
+            const field = new THREE.Mesh(fieldGeo, fieldMat);
+            field.rotation.x = -Math.PI / 2;
+            field.position.y = 0.005;
+            field.receiveShadow = true;
+            scene.add(field);
 
-            // 코트 경계선 (얇은 흰 박스 라인)
-            const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            function addLine(w, d, x, z) {
-                const geo = new THREE.BoxGeometry(w, 0.02, d);
-                const m = new THREE.Mesh(geo, lineMat);
-                m.position.set(x, 0.011, z);
+            // 양쪽 끝 존 (도둑의 홈존 = 따뜻한 색, 깃발존 = 차가운 색)
+            const zoneGeo = new THREE.PlaneGeometry(CNR_ARENA_HALF_WIDTH * 2, CNR_ZONE_DEPTH);
+            const homeZoneMat = new THREE.MeshStandardMaterial({ color: 0xf4c86a, roughness: 0.9 });
+            const homeZone = new THREE.Mesh(zoneGeo, homeZoneMat);
+            homeZone.rotation.x = -Math.PI / 2;
+            homeZone.position.set(0, 0.01, CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2);
+            scene.add(homeZone);
+            const flagZoneMat = new THREE.MeshStandardMaterial({ color: 0x79b7e8, roughness: 0.9 });
+            const flagZone = new THREE.Mesh(zoneGeo, flagZoneMat);
+            flagZone.rotation.x = -Math.PI / 2;
+            flagZone.position.set(0, 0.01, -(CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH / 2));
+            scene.add(flagZone);
+
+            // 테두리 울타리 (낮은 펜스)
+            const fenceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 });
+            function fence(w, d, x, z) {
+                const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.4, d), fenceMat);
+                m.position.set(x, 0.2, z);
+                m.castShadow = true;
                 scene.add(m);
             }
-            addLine(VB_COURT_HALF_WIDTH * 2 + 0.1, 0.08, 0, VB_COURT_HALF_DEPTH);
-            addLine(VB_COURT_HALF_WIDTH * 2 + 0.1, 0.08, 0, -VB_COURT_HALF_DEPTH);
-            addLine(0.08, VB_COURT_HALF_DEPTH * 2 + 0.1, VB_COURT_HALF_WIDTH, 0);
-            addLine(0.08, VB_COURT_HALF_DEPTH * 2 + 0.1, -VB_COURT_HALF_WIDTH, 0);
-            addLine(0.06, VB_COURT_HALF_DEPTH * 2 + 0.1, 0, 0);
-
-            // 네트 기둥 + 네트
-            const postMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.6 });
-            [-VB_NET_HALF_WIDTH, VB_NET_HALF_WIDTH].forEach(x => {
-                const postGeo = new THREE.CylinderGeometry(0.06, 0.06, VB_NET_HEIGHT + 0.5, 10);
-                const post = new THREE.Mesh(postGeo, postMat);
-                post.position.set(x, (VB_NET_HEIGHT + 0.5) / 2, 0);
-                post.castShadow = true;
-                scene.add(post);
-            });
-            const netCanvas = document.createElement('canvas');
-            netCanvas.width = 64; netCanvas.height = 64;
-            const nctx = netCanvas.getContext('2d');
-            nctx.clearRect(0, 0, 64, 64);
-            nctx.strokeStyle = 'rgba(255,255,255,0.9)';
-            nctx.lineWidth = 2;
-            for (let i = 0; i <= 64; i += 10) {
-                nctx.beginPath(); nctx.moveTo(i, 0); nctx.lineTo(i, 64); nctx.stroke();
-                nctx.beginPath(); nctx.moveTo(0, i); nctx.lineTo(64, i); nctx.stroke();
-            }
-            const netTex = new THREE.CanvasTexture(netCanvas);
-            netTex.wrapS = THREE.RepeatWrapping; netTex.wrapT = THREE.RepeatWrapping;
-            netTex.repeat.set(VB_NET_HALF_WIDTH * 2 / 0.5, VB_NET_HEIGHT / 0.5);
-            const netGeo = new THREE.PlaneGeometry(VB_NET_HALF_WIDTH * 2, VB_NET_HEIGHT);
-            const netMat = new THREE.MeshBasicMaterial({ map: netTex, transparent: true, side: THREE.DoubleSide });
-            const net = new THREE.Mesh(netGeo, netMat);
-            net.position.set(0, VB_NET_HEIGHT / 2, 0);
-            scene.add(net);
-            const netTapeGeo = new THREE.BoxGeometry(VB_NET_HALF_WIDTH * 2, 0.1, 0.04);
-            const netTapeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-            const netTape = new THREE.Mesh(netTapeGeo, netTapeMat);
-            netTape.position.set(0, VB_NET_HEIGHT, 0);
-            scene.add(netTape);
+            fence(CNR_ARENA_HALF_WIDTH * 2 + 0.3, 0.12, 0, CNR_ARENA_HALF_LENGTH);
+            fence(CNR_ARENA_HALF_WIDTH * 2 + 0.3, 0.12, 0, -CNR_ARENA_HALF_LENGTH);
+            fence(0.12, CNR_ARENA_HALF_LENGTH * 2 + 0.3, CNR_ARENA_HALF_WIDTH, 0);
+            fence(0.12, CNR_ARENA_HALF_LENGTH * 2 + 0.3, -CNR_ARENA_HALF_WIDTH, 0);
+            // 중앙선
+            const centerLine = new THREE.Mesh(new THREE.BoxGeometry(CNR_ARENA_HALF_WIDTH * 2, 0.02, 0.08), fenceMat);
+            centerLine.position.y = 0.011;
+            scene.add(centerLine);
 
             // 조명
-            const ambient = new THREE.AmbientLight(0xffffff, 0.65);
-            scene.add(ambient);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.68));
             const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-            sun.position.set(6, 10, 4);
+            sun.position.set(8, 14, 6);
             sun.castShadow = true;
             sun.shadow.mapSize.set(1024, 1024);
-            sun.shadow.camera.left = -10; sun.shadow.camera.right = 10;
-            sun.shadow.camera.top = 10; sun.shadow.camera.bottom = -10;
+            sun.shadow.camera.left = -20; sun.shadow.camera.right = 20;
+            sun.shadow.camera.top = 20; sun.shadow.camera.bottom = -20;
             scene.add(sun);
 
-            // 공
-            const ballGroup = new THREE.Group();
-            const ballGeo = new THREE.SphereGeometry(VB_BALL_RADIUS, 20, 16);
-            const ballMat = new THREE.MeshStandardMaterial({ color: 0xfff8ee, roughness: 0.5 });
-            const ballMesh = new THREE.Mesh(ballGeo, ballMat);
-            ballMesh.castShadow = true;
-            ballGroup.add(ballMesh);
-            const stripeMat = new THREE.MeshStandardMaterial({ color: 0xff8a3d, roughness: 0.6 });
-            [0, Math.PI / 2].forEach(rot => {
-                const torus = new THREE.Mesh(new THREE.TorusGeometry(VB_BALL_RADIUS * 0.98, VB_BALL_RADIUS * 0.05, 6, 20), stripeMat);
-                torus.rotation.y = rot;
-                ballGroup.add(torus);
-            });
+            // 깃발 (기둥 + 천, 살짝 흔들리는 애니메이션)
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0x8a8a8a, roughness: 0.5, metalness: 0.4 });
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 8), poleMat);
+            pole.position.set(CNR_FLAG_SPAWN.x, 0.9, CNR_FLAG_SPAWN.z);
+            pole.castShadow = true;
+            scene.add(pole);
+            const flagCanvas = document.createElement('canvas');
+            flagCanvas.width = 32; flagCanvas.height = 32;
+            const fctx = flagCanvas.getContext('2d');
+            fctx.fillStyle = '#e4344a'; fctx.fillRect(0, 0, 32, 32);
+            fctx.fillStyle = '#ffffff'; fctx.fillRect(0, 0, 16, 16); fctx.fillRect(16, 16, 16, 16);
+            const flagTex = new THREE.CanvasTexture(flagCanvas);
+            const flagClothGeo = new THREE.PlaneGeometry(0.5, 0.34, 6, 4);
+            const flagClothMat = new THREE.MeshStandardMaterial({ map: flagTex, side: THREE.DoubleSide, roughness: 0.8 });
+            const flagCloth = new THREE.Mesh(flagClothGeo, flagClothMat);
+            flagCloth.position.set(CNR_FLAG_SPAWN.x + 0.26, 1.58, CNR_FLAG_SPAWN.z);
+            const flagClothOrig = Float32Array.from(flagClothGeo.attributes.position.array);
+            scene.add(flagCloth);
 
-            // 공 그림자(가짜 blob shadow — 바닥에 밀착된 투명 원)
-            const shadowGeo = new THREE.CircleGeometry(VB_BALL_RADIUS, 16);
-            const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 });
-            const ballShadow = new THREE.Mesh(shadowGeo, shadowMat);
-            ballShadow.rotation.x = -Math.PI / 2;
-            ballShadow.position.y = 0.012;
-            scene.add(ballShadow);
-            scene.add(ballGroup);
+            const shadowGeo = new THREE.CircleGeometry(0.45, 16);
+            const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25 });
 
-            // 캐릭터 (나 / 상대) — 원작 색상과 무관한 완전 오리지널 디자인
-            const myColor = vb.role === 'host' ? 0x5fd3c4 : 0xffb257;
-            const oppColor = vb.role === 'host' ? 0xffb257 : 0x5fd3c4;
-            const myCheek = vb.role === 'host' ? 0x2fa392 : 0xff7a3d;
-            const oppCheek = vb.role === 'host' ? 0xff7a3d : 0x2fa392;
-            const myMesh = vbBuildCreatureMesh(myColor, myCheek);
-            const oppMesh = vbBuildCreatureMesh(oppColor, oppCheek);
+            // 캐릭터
+            const myMesh = cnrBuildHumanoid(cnr.myRole);
+            const oppMesh = cnrBuildHumanoid(cnr.oppRole);
             scene.add(myMesh); scene.add(oppMesh);
             const myShadow = new THREE.Mesh(shadowGeo.clone(), shadowMat.clone());
-            myShadow.rotation.x = -Math.PI / 2; myShadow.position.y = 0.012; myShadow.scale.setScalar(1.6);
+            myShadow.rotation.x = -Math.PI / 2; myShadow.position.y = 0.012;
             const oppShadow = myShadow.clone();
             scene.add(myShadow); scene.add(oppShadow);
 
-            vb.scene = scene; vb.renderer = renderer; vb.camera = camera;
-            vb.ballGroup = ballGroup; vb.ballShadow = ballShadow;
-            vb.myMesh = myMesh; vb.oppMesh = oppMesh;
-            vb.myShadow = myShadow; vb.oppShadow = oppShadow;
+            cnr.scene = scene; cnr.renderer = renderer; cnr.camera = camera;
+            cnr.myMesh = myMesh; cnr.oppMesh = oppMesh;
+            cnr.myShadow = myShadow; cnr.oppShadow = oppShadow;
+            cnr.flagCloth = flagCloth; cnr.flagClothOrig = flagClothOrig; cnr.flagPole = pole;
         }
 
-        function vbResizeRenderer() {
-            if (!vb || !vb.renderer) return;
-            const canvas = vb.renderer.domElement;
+        function cnrResizeRenderer() {
+            if (!cnr || !cnr.renderer) return;
+            const canvas = cnr.renderer.domElement;
             const w = canvas.clientWidth || 640, h = canvas.clientHeight || 400;
-            vb.renderer.setSize(w, h, false);
-            vb.camera.aspect = w / h;
-            vb.camera.updateProjectionMatrix();
+            cnr.renderer.setSize(w, h, false);
+            cnr.camera.aspect = w / h;
+            cnr.camera.updateProjectionMatrix();
         }
 
-        function vbEnsureSceneBuilt() {
-            if (vb.renderer) return;
-            const canvas = document.getElementById('vb-canvas');
-            vbBuildScene(canvas);
-            vbResizeRenderer();
+        function cnrEnsureSceneBuilt() {
+            if (cnr.renderer) return;
+            const canvas = document.getElementById('cnr-canvas');
+            cnrBuildScene(canvas);
+            cnrResizeRenderer();
             if (window.ResizeObserver) {
-                vb.resizeObserver = new ResizeObserver(() => vbResizeRenderer());
-                vb.resizeObserver.observe(canvas.parentElement);
+                cnr.resizeObserver = new ResizeObserver(() => cnrResizeRenderer());
+                cnr.resizeObserver.observe(canvas.parentElement);
             }
         }
 
         // ---- 매치 시작 ----
 
-        function vbBeginMatch() {
-            if (!vb) return;
-            vb.phase = 'game';
-            vb.mySide = vb.role === 'host' ? 1 : -1;
-            vb.myScore = 0; vb.oppScore = 0;
-            vb.myPos = { x: 0, y: VB_PLAYER_REST_Y, z: vb.mySide * VB_COURT_HALF_DEPTH * 0.55 };
-            vb.myVelY = 0; vb.onGround = true;
-            vb.diving = false; vb.diveTimer = 0; vb.diveRecoverTimer = 0; vb.diveDir = { x: 0, z: 0 };
-            vb.facing = { x: 0, z: -vb.mySide };
-            vb.oppPos = { x: 0, y: VB_PLAYER_REST_Y, z: -vb.mySide * VB_COURT_HALF_DEPTH * 0.55 };
-            vb.oppVisual = { x: vb.oppPos.x, z: vb.oppPos.z, y: vb.oppPos.y };
-            vb.keys = {};
-            vb.mouseNdc = { x: 0, y: 0 };
-            vb.lastPlayerSendAt = 0; vb.lastBallSendAt = 0;
-            vb.isHostAuthority = (vb.role === 'host');
-            // 공 상태 (호스트가 권위, 게스트는 수신해서 보간)
-            const serverSide = 1; // 첫 서브는 호스트 쪽에서
-            vb.ball = { x: 0, y: VB_BALL_RADIUS, z: 0, vx: 0, vy: 0, vz: 0, held: true, serverSide };
-            vb.lastHitSide = null;
-            vb.ballVisual = { x: 0, y: VB_BALL_RADIUS, z: 0 };
+        function cnrBeginMatch(myRole, startAt) {
+            if (!cnr) return;
+            cnr.phase = 'game';
+            cnr.myRole = myRole;
+            cnr.oppRole = myRole === 'cop' ? 'thief' : 'cop';
+            cnr.isHostAuthority = (cnr.role === 'host');
+            cnr.startAt = startAt;
+            cnr.myPos = cnr.myRole === 'thief'
+                ? { x: 0, y: CNR_PLAYER_REST_Y, z: CNR_HOME_Z }
+                : { x: 0, y: CNR_PLAYER_REST_Y, z: 0 };
+            cnr.oppPos = cnr.oppRole === 'thief'
+                ? { x: 0, y: CNR_PLAYER_REST_Y, z: CNR_HOME_Z }
+                : { x: 0, y: CNR_PLAYER_REST_Y, z: 0 };
+            cnr.oppVisual = { x: cnr.oppPos.x, y: cnr.oppPos.y, z: cnr.oppPos.z };
+            cnr.myVel = { x: 0, z: 0 };
+            cnr.cameraYaw = myRole === 'thief' ? Math.PI : 0;
+            cnr.cameraPitch = 0.12;
+            cnr.dashCooldown = 0; cnr.dashing = false; cnr.dashTimer = 0; cnr.dashDir = { x: 0, z: 0 };
+            cnr.invulnTimer = 0; cnr.frozenTimer = 0;
+            cnr.flagCarried = false; cnr.flagCarrierRole = null;
+            cnr.keys = {}; cnr.spaceHeld = false;
+            cnr.lastPosSendAt = 0;
+            cnr.pointerLocked = false;
+            cnr.resultDecided = false;
 
-            document.getElementById('vb-my-name').innerText = vb.myName;
-            document.getElementById('vb-opp-name').innerText = vb.oppName || '상대';
-            document.getElementById('vb-my-score').innerText = '0';
-            document.getElementById('vb-opp-score').innerText = '0';
+            document.getElementById('cnr-role-badge').innerText = myRole === 'cop' ? '경찰' : '도둑';
+            document.getElementById('cnr-role-badge').className = 'cnr-hud-role ' + myRole;
+            document.getElementById('cnr-hud-timer').innerText = '1:00';
+            document.getElementById('cnr-dash-bar').style.width = '100%';
+            const hint = document.getElementById('cnr-pointerlock-hint');
+            if (hint) hint.classList.remove('hidden');
 
-            vbShowState('game');
-            vbEnsureSceneBuilt();
-            vbResetBallForServe(vb.ball.serverSide);
-            vbAttachInputListeners();
-            vb.rafId = requestAnimationFrame(vbAnimate);
-            showToast(vb.oppName + '님과 매치 시작!', 'success');
+            cnrShowState('game');
+            cnrEnsureSceneBuilt();
+            cnrAttachInputListeners();
+            cnr.rafId = requestAnimationFrame(cnrAnimate);
+            showToast(cnr.oppName + '님과 매치 시작! 당신은 ' + (myRole === 'cop' ? '경찰' : '도둑') + '입니다', 'success');
         }
 
         // ---- 입력 ----
 
-        function vbAttachInputListeners() {
-            vb.onKeyDown = (e) => vbOnKeyDown(e);
-            vb.onKeyUp = (e) => vbOnKeyUp(e);
-            vb.onMouseMove = (e) => vbOnMouseMove(e);
-            vb.onMouseDown = (e) => vbOnMouseDown(e);
-            window.addEventListener('keydown', vb.onKeyDown);
-            window.addEventListener('keyup', vb.onKeyUp);
-            const canvas = document.getElementById('vb-canvas');
-            canvas.addEventListener('mousemove', vb.onMouseMove);
-            canvas.addEventListener('mousedown', vb.onMouseDown);
+        function cnrAttachInputListeners() {
+            cnr.onKeyDown = (e) => cnrOnKeyDown(e);
+            cnr.onKeyUp = (e) => cnrOnKeyUp(e);
+            cnr.onMouseMove = (e) => cnrOnMouseMove(e);
+            cnr.onCanvasClick = () => cnrOnCanvasClick();
+            cnr.onPointerLockChange = () => cnrOnPointerLockChange();
+            window.addEventListener('keydown', cnr.onKeyDown);
+            window.addEventListener('keyup', cnr.onKeyUp);
+            document.addEventListener('mousemove', cnr.onMouseMove);
+            document.addEventListener('pointerlockchange', cnr.onPointerLockChange);
+            const canvas = document.getElementById('cnr-canvas');
+            const hint = document.getElementById('cnr-pointerlock-hint');
+            if (hint) hint.addEventListener('click', cnr.onCanvasClick);
+            if (canvas) canvas.addEventListener('click', cnr.onCanvasClick);
         }
 
-        function vbDetachInputListeners() {
-            if (!vb) return;
-            if (vb.onKeyDown) window.removeEventListener('keydown', vb.onKeyDown);
-            if (vb.onKeyUp) window.removeEventListener('keyup', vb.onKeyUp);
-            const canvas = document.getElementById('vb-canvas');
-            if (canvas && vb.onMouseMove) canvas.removeEventListener('mousemove', vb.onMouseMove);
-            if (canvas && vb.onMouseDown) canvas.removeEventListener('mousedown', vb.onMouseDown);
+        function cnrDetachInputListeners() {
+            if (!cnr) return;
+            if (cnr.onKeyDown) window.removeEventListener('keydown', cnr.onKeyDown);
+            if (cnr.onKeyUp) window.removeEventListener('keyup', cnr.onKeyUp);
+            if (cnr.onMouseMove) document.removeEventListener('mousemove', cnr.onMouseMove);
+            if (cnr.onPointerLockChange) document.removeEventListener('pointerlockchange', cnr.onPointerLockChange);
         }
 
-        function vbOnKeyDown(e) {
-            if (!vb || vb.phase !== 'game') return;
+        function cnrOnCanvasClick() {
+            const canvas = document.getElementById('cnr-canvas');
+            if (canvas && canvas.requestPointerLock) canvas.requestPointerLock();
+        }
+
+        function cnrOnPointerLockChange() {
+            if (!cnr) return;
+            const canvas = document.getElementById('cnr-canvas');
+            cnr.pointerLocked = (document.pointerLockElement === canvas);
+            const hint = document.getElementById('cnr-pointerlock-hint');
+            if (hint) hint.classList.toggle('hidden', cnr.pointerLocked);
+        }
+
+        function cnrOnMouseMove(e) {
+            if (!cnr || !cnr.pointerLocked || cnr.phase !== 'game') return;
+            cnr.cameraYaw -= (e.movementX || 0) * CNR_MOUSE_SENS;
+            cnr.cameraPitch -= (e.movementY || 0) * CNR_MOUSE_SENS;
+            cnr.cameraPitch = Math.max(CNR_PITCH_MIN, Math.min(CNR_PITCH_MAX, cnr.cameraPitch));
+        }
+
+        function cnrOnKeyDown(e) {
+            if (!cnr || cnr.phase !== 'game') return;
             const k = e.key.toLowerCase();
-            if (['w', 'a', 's', 'd', ' ', 'shift'].includes(k)) e.preventDefault();
-            vb.keys[k] = true;
-            if (k === ' ') vbTryJump();
-            if (k === 'shift') vbTryDive();
+            if (['w', 'a', 's', 'd', ' '].includes(k)) e.preventDefault();
+            cnr.keys[k] = true;
+            if (k === ' ' && !cnr.spaceHeld) { cnr.spaceHeld = true; cnrTryDash(); }
         }
-        function vbOnKeyUp(e) {
-            if (!vb) return;
-            vb.keys[e.key.toLowerCase()] = false;
-        }
-        function vbOnMouseMove(e) {
-            if (!vb) return;
-            const rect = e.target.getBoundingClientRect();
-            vb.mouseNdc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            vb.mouseNdc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-        }
-        function vbOnMouseDown(e) {
-            if (!vb || vb.phase !== 'game') return;
-            vbTryHit();
+        function cnrOnKeyUp(e) {
+            if (!cnr) return;
+            const k = e.key.toLowerCase();
+            cnr.keys[k] = false;
+            if (k === ' ') cnr.spaceHeld = false;
         }
 
-        function vbMouseToGroundPoint(groundY) {
-            if (!vb || !vb.camera) return { x: 0, z: 0 };
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(new THREE.Vector2(vb.mouseNdc.x, vb.mouseNdc.y), vb.camera);
-            const dir = raycaster.ray.direction, origin = raycaster.ray.origin;
-            if (Math.abs(dir.y) < 1e-5) return { x: 0, z: 0 };
-            const t = (groundY - origin.y) / dir.y;
-            return { x: origin.x + dir.x * t, z: origin.z + dir.z * t };
+        // ---- 이동/대쉬 ----
+
+        function cnrForwardVec(yaw) { return { x: -Math.sin(yaw), z: -Math.cos(yaw) }; }
+        function cnrRightVec(yaw) { return { x: Math.cos(yaw), z: -Math.sin(yaw) }; }
+
+        function cnrInputDir() {
+            const f = cnrForwardVec(cnr.cameraYaw), r = cnrRightVec(cnr.cameraYaw);
+            let fwdIn = (cnr.keys['w'] ? 1 : 0) - (cnr.keys['s'] ? 1 : 0);
+            let rightIn = (cnr.keys['d'] ? 1 : 0) - (cnr.keys['a'] ? 1 : 0);
+            let dx = f.x * fwdIn + r.x * rightIn;
+            let dz = f.z * fwdIn + r.z * rightIn;
+            const len = Math.hypot(dx, dz);
+            if (len < 0.001) return null;
+            return { x: dx / len, z: dz / len };
         }
 
-        function vbClampTarget(pt) {
-            // 상대 코트 안쪽으로만 떨어지도록 (너무 네트 바로 앞/뒤도 아니게 약간 여유)
-            const oppSide = -vb.mySide;
-            const minZ = oppSide === 1 ? 0.5 : -(VB_COURT_HALF_DEPTH - 0.3);
-            const maxZ = oppSide === 1 ? (VB_COURT_HALF_DEPTH - 0.3) : -0.5;
-            return {
-                x: Math.max(-(VB_COURT_HALF_WIDTH - 0.3), Math.min(VB_COURT_HALF_WIDTH - 0.3, pt.x)),
-                z: Math.max(minZ, Math.min(maxZ, pt.z)),
-            };
+        function cnrTryDash() {
+            if (!cnr || cnr.phase !== 'game' || cnr.dashCooldown > 0 || cnr.dashing || cnr.frozenTimer > 0) return;
+            let dir = cnrInputDir();
+            if (!dir) dir = cnrForwardVec(cnr.cameraYaw);
+            cnr.dashing = true; cnr.dashTimer = CNR_DASH_DURATION;
+            cnr.dashDir = dir;
+            cnr.myVel.x = dir.x * CNR_DASH_SPEED;
+            cnr.myVel.z = dir.z * CNR_DASH_SPEED;
+            cnr.dashCooldown = CNR_DASH_COOLDOWN;
+            cnr.dashFovKick = 1;
+            playCnrDashSound();
         }
 
-        // ---- 플레이어 행동 ----
-
-        function vbTryJump() {
-            if (!vb || vb.phase !== 'game' || !vb.onGround || vb.diving) return;
-            vb.myVelY = VB_JUMP_VELOCITY;
-            vb.onGround = false;
-        }
-
-        function vbTryDive() {
-            if (!vb || vb.phase !== 'game' || vb.diving || !vb.onGround) return;
-            let dx = 0, dz = 0;
-            if (vb.keys['w']) dz -= 1;
-            if (vb.keys['s']) dz += 1;
-            if (vb.keys['a']) dx -= 1;
-            if (vb.keys['d']) dx += 1;
-            if (dx === 0 && dz === 0) { dx = vb.facing.x; dz = vb.facing.z; }
-            const len = Math.hypot(dx, dz) || 1;
-            vb.diving = true; vb.diveTimer = VB_DIVE_DURATION;
-            vb.diveDir = { x: dx / len, z: dz / len };
-            playVbHitSound(false, true);
-        }
-
-        function vbTryHit() {
-            if (!vb || vb.phase !== 'game') return;
-            const ballPos = vb.isHostAuthority ? vb.ball : vb.ballVisual;
-            const dx = ballPos.x - vb.myPos.x, dz = ballPos.z - vb.myPos.z;
-            const dist = Math.hypot(dx, dz);
-            const reach = vb.diving ? VB_HIT_REACH_DIVE : VB_HIT_REACH;
-            if (dist > reach) return;
-            if (Math.abs(ballPos.y - vb.myPos.y) > 2.6) return;
-            // 서브는 서브권을 가진 쪽만
-            if (vb.ball.held && vb.ball.serverSide !== vb.mySide) return;
-            const isSpike = !vb.onGround && !vb.ball.held;
-            const target = vbClampTarget(vbMouseToGroundPoint(0));
-            if (vb.isHostAuthority) {
-                vbApplyHit(target, isSpike, vb.mySide);
+        function cnrUpdateMyPlayer(dt) {
+            if (cnr.frozenTimer > 0) {
+                cnr.frozenTimer -= dt;
+                cnr.myVel.x *= 0.85; cnr.myVel.z *= 0.85;
+            } else if (cnr.dashing) {
+                cnr.dashTimer -= dt;
+                if (cnr.dashTimer <= 0) cnr.dashing = false;
             } else {
-                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'hit_request', x: target.x, z: target.z, spike: isSpike, side: vb.mySide } });
-            }
-            vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'hit_fx', spike: isSpike } });
-            playVbHitSound(isSpike, false);
-        }
-
-        function vbApplyHit(target, isSpike, hitterSide) {
-            const b = vb.ball;
-            const startX = b.x, startY = b.y, startZ = b.z;
-            const T = isSpike ? VB_HIT_T_SPIKE : VB_HIT_T_NORMAL;
-            b.vx = (target.x - startX) / T;
-            b.vz = (target.z - startZ) / T;
-            b.vy = (0 - startY) / T + 0.5 * VB_GRAVITY * T;
-            b.held = false;
-            vb.lastHitSide = hitterSide;
-        }
-
-        // ---- 물리/게임 루프 ----
-
-        function vbUpdateMyPlayer(dt) {
-            let moveX = 0, moveZ = 0;
-            if (!vb.diving) {
-                let inX = 0, inZ = 0;
-                if (vb.keys['w']) inZ -= 1;
-                if (vb.keys['s']) inZ += 1;
-                if (vb.keys['a']) inX -= 1;
-                if (vb.keys['d']) inX += 1;
-                if (inX !== 0 || inZ !== 0) {
-                    const len = Math.hypot(inX, inZ);
-                    inX /= len; inZ /= len;
-                    vb.facing.x = inX; vb.facing.z = inZ;
-                }
-                // 화면상 전진(W)=네트쪽, 오른쪽(D)=내쪽 기준 오른쪽이 되도록 mySide로 반전시킨다
-                const worldForwardZ = -vb.mySide; // W가 네트(z=0) 방향이 되도록
-                const worldRightX = vb.mySide;
-                let speedMul = vb.diveRecoverTimer > 0 ? 0.45 : 1;
-                moveX = (inX * worldRightX) * VB_MOVE_SPEED * speedMul;
-                moveZ = (inZ * worldForwardZ) * VB_MOVE_SPEED * speedMul;
-            } else {
-                moveX = vb.diveDir.x * VB_DIVE_SPEED;
-                moveZ = vb.diveDir.z * VB_DIVE_SPEED;
-            }
-            vb.myPos.x += moveX * dt;
-            vb.myPos.z += moveZ * dt;
-
-            // 자기 코트 반쪽 + 좌우 경계 내로 제한 (선수끼리 충돌 처리가 필요 없어짐)
-            const minZ = vb.mySide === 1 ? VB_PLAYER_SAFE_MARGIN : -(VB_COURT_HALF_DEPTH - VB_PLAYER_SAFE_MARGIN);
-            const maxZ = vb.mySide === 1 ? (VB_COURT_HALF_DEPTH - VB_PLAYER_SAFE_MARGIN) : -VB_PLAYER_SAFE_MARGIN;
-            vb.myPos.z = Math.max(minZ, Math.min(maxZ, vb.myPos.z));
-            vb.myPos.x = Math.max(-(VB_COURT_HALF_WIDTH - VB_PLAYER_SAFE_MARGIN), Math.min(VB_COURT_HALF_WIDTH - VB_PLAYER_SAFE_MARGIN, vb.myPos.x));
-
-            // 점프/중력
-            if (!vb.onGround) {
-                vb.myVelY -= VB_GRAVITY * dt;
-                vb.myPos.y += vb.myVelY * dt;
-                if (vb.myPos.y <= VB_PLAYER_REST_Y) {
-                    vb.myPos.y = VB_PLAYER_REST_Y; vb.myVelY = 0; vb.onGround = true;
-                }
-            }
-
-            if (vb.diving) {
-                vb.diveTimer -= dt;
-                if (vb.diveTimer <= 0) { vb.diving = false; vb.diveRecoverTimer = VB_DIVE_RECOVERY; }
-            } else if (vb.diveRecoverTimer > 0) {
-                vb.diveRecoverTimer -= dt;
-            }
-        }
-
-        function vbUpdateBallPhysics(dt) {
-            const b = vb.ball;
-            if (b.held) {
-                const servePos = vbServeSpot(b.serverSide);
-                b.x = servePos.x; b.y = servePos.y; b.z = servePos.z;
-                b.vx = 0; b.vy = 0; b.vz = 0;
-                return;
-            }
-            b.vy -= VB_GRAVITY * dt;
-            b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
-
-            // 네트와의 충돌 (대략적인 박스 체크)
-            if (Math.abs(b.x) < VB_NET_HALF_WIDTH && b.y < VB_NET_HEIGHT + VB_BALL_RADIUS) {
-                const crossing = (b.z > 0 && b.z - b.vz * dt <= 0) || (b.z < 0 && b.z - b.vz * dt >= 0);
-                if (crossing && Math.abs(b.z) < 0.35) {
-                    b.vz *= -0.35; b.vx *= 0.6; b.vy = Math.max(b.vy, 0.5);
-                }
-            }
-
-            // 좌우 벽은 없음 (옆으로 너무 나가면 아웃 처리), 바닥 체크
-            if (b.y - VB_BALL_RADIUS <= 0) {
-                b.y = VB_BALL_RADIUS;
-                const inBounds = Math.abs(b.x) <= VB_COURT_HALF_WIDTH && Math.abs(b.z) <= VB_COURT_HALF_DEPTH;
-                let winner;
-                if (inBounds) {
-                    const landedHalf = b.z > 0 ? 1 : -1; // 어느 쪽 코트에 떨어졌는지
-                    winner = -landedHalf;
+                const dir = cnrInputDir();
+                if (dir) {
+                    cnr.myVel.x += dir.x * CNR_ACCEL * dt;
+                    cnr.myVel.z += dir.z * CNR_ACCEL * dt;
+                    const spd = Math.hypot(cnr.myVel.x, cnr.myVel.z);
+                    if (spd > CNR_MAX_SPEED) { cnr.myVel.x *= CNR_MAX_SPEED / spd; cnr.myVel.z *= CNR_MAX_SPEED / spd; }
                 } else {
-                    winner = vb.lastHitSide === 1 ? -1 : 1;
+                    const spd = Math.hypot(cnr.myVel.x, cnr.myVel.z);
+                    if (spd > 0.01) {
+                        const drop = Math.min(spd, CNR_DECEL * dt);
+                        const scale = (spd - drop) / spd;
+                        cnr.myVel.x *= scale; cnr.myVel.z *= scale;
+                    } else { cnr.myVel.x = 0; cnr.myVel.z = 0; }
                 }
-                vbScorePoint(winner);
+            }
+
+            cnr.myPos.x += cnr.myVel.x * dt;
+            cnr.myPos.z += cnr.myVel.z * dt;
+            cnr.myPos.x = Math.max(-(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS, cnr.myPos.x));
+            cnr.myPos.z = Math.max(-(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS, cnr.myPos.z));
+
+            if (cnr.invulnTimer > 0) cnr.invulnTimer -= dt;
+            if (cnr.dashCooldown > 0) {
+                cnr.dashCooldown = Math.max(0, cnr.dashCooldown - dt);
+                document.getElementById('cnr-dash-bar').style.width = (100 - (cnr.dashCooldown / CNR_DASH_COOLDOWN) * 100) + '%';
             }
         }
 
-        function vbServeSpot(serverSide) {
-            return { x: 0, y: VB_PLAYER_REST_Y + 0.75, z: serverSide * VB_COURT_HALF_DEPTH * 0.55 };
-        }
+        // ---- 호스트 권위 로직: 태그 판정 / 깃발 획득 / 승리 판정 / 타이머 ----
 
-        function vbResetBallForServe(serverSide) {
-            vb.ball.held = true; vb.ball.serverSide = serverSide;
-            vb.lastHitSide = null;
-            const sp = vbServeSpot(serverSide);
-            vb.ball.x = sp.x; vb.ball.y = sp.y; vb.ball.z = sp.z;
-            vb.ball.vx = 0; vb.ball.vy = 0; vb.ball.vz = 0;
-        }
-
-        function vbScorePoint(winnerSide) {
-            if (winnerSide === vb.mySide) vb.myScore++; else vb.oppScore++;
-            vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'score', host: vb.mySide === 1 ? vb.myScore : vb.oppScore, guest: vb.mySide === 1 ? vb.oppScore : vb.myScore } });
-            vbApplyScoreToUI();
-            playVbScoreSound();
-            vbFlashPointBanner(winnerSide === vb.mySide ? '득점! 🎉' : '상대 득점');
-            if (vb.myScore >= VB_WIN_SCORE || vb.oppScore >= VB_WIN_SCORE) {
-                const iWon = vb.myScore >= VB_WIN_SCORE;
-                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'game_over', winnerSide } });
-                vbEndMatch(iWon);
+        function cnrHostTick(dt) {
+            if (!cnr.isHostAuthority || cnr.resultDecided) return;
+            const elapsed = (Date.now() - cnr.startAt) / 1000;
+            if (elapsed < 0) return;
+            const remaining = CNR_ROUND_SECONDS - elapsed;
+            if (remaining <= 0) {
+                cnrFinishRound('cop', 'timeout');
                 return;
             }
-            vbResetBallForServe(winnerSide);
+
+            const thiefPos = cnr.myRole === 'thief' ? cnr.myPos : cnr.oppPos;
+            const copPos = cnr.myRole === 'cop' ? cnr.myPos : cnr.oppPos;
+            const thiefInvuln = cnr.myRole === 'thief' ? cnr.invulnTimer > 0 : null; // 상대(도둑)의 무적 타이머는 host가 직접 알 수 없으므로, 아래 쿨다운은 호스트 자신만의 근사치로 둔다
+            const dist = Math.hypot(thiefPos.x - copPos.x, thiefPos.z - copPos.z);
+
+            if (!cnr.tagCooldownUntil || Date.now() > cnr.tagCooldownUntil) {
+                if (dist < CNR_TAG_RADIUS) {
+                    cnr.tagCooldownUntil = Date.now() + CNR_TAG_INVULN * 1000;
+                    cnr.flagCarried = false; cnr.flagCarrierRole = null;
+                    cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'tagged' } });
+                    cnrApplyTagEffects();
+                }
+            }
+
+            if (!cnr.flagCarried) {
+                const dFlag = Math.hypot(thiefPos.x - CNR_FLAG_SPAWN.x, thiefPos.z - CNR_FLAG_SPAWN.z);
+                if (dFlag < CNR_FLAG_PICKUP_RADIUS) {
+                    cnr.flagCarried = true; cnr.flagCarrierRole = 'thief';
+                    cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'flag_pickup' } });
+                    showToast('깃발을 획득했습니다!', 'success');
+                    playCnrFlagSound();
+                }
+            } else {
+                const homeSign = 1; // 도둑의 홈존은 +Z
+                if (thiefPos.z > CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH) {
+                    cnrFinishRound('thief', 'flag_returned');
+                }
+            }
         }
 
-        function vbApplyScoreToUI() {
-            document.getElementById('vb-my-score').innerText = vb.myScore;
-            document.getElementById('vb-opp-score').innerText = vb.oppScore;
+        function cnrApplyTagEffects() {
+            // 태그는 "항상 도둑"에게 일어나는 일이므로, 내가 도둑이면 내 위치/속도를 리셋한다
+            if (cnr.myRole === 'thief') {
+                cnr.myPos.x = 0; cnr.myPos.z = CNR_HOME_Z;
+                cnr.myVel.x = 0; cnr.myVel.z = 0;
+                cnr.invulnTimer = CNR_TAG_INVULN;
+                cnr.frozenTimer = 0.5;
+            }
+            cnrFlashBanner(cnr.myRole === 'thief' ? '태그당했어요! 처음으로 돌아갑니다' : '상대를 태그했습니다!');
+            playCnrTagSound();
         }
 
-        function vbFlashPointBanner(text) {
-            const el = document.getElementById('vb-point-banner');
-            if (!el) return;
-            el.innerText = text;
-            el.classList.remove('hidden');
-            el.style.opacity = '1';
-            clearTimeout(vb.bannerTimer);
-            vb.bannerTimer = setTimeout(() => { el.style.opacity = '0'; }, 1000);
+        function cnrFinishRound(winnerRole, reason) {
+            if (cnr.resultDecided) return;
+            cnr.resultDecided = true;
+            cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'round_end', winnerRole, reason } });
+            cnrEndMatch(winnerRole, reason);
         }
 
         // ---- 네트워킹 ----
 
-        function vbMaybeBroadcast(nowMs) {
-            if (!vb.channel) return;
-            if (nowMs - vb.lastPlayerSendAt > 66) {
-                vb.lastPlayerSendAt = nowMs;
-                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: vb.myPos.x, y: vb.myPos.y, z: vb.myPos.z, diving: vb.diving } });
-            }
-            if (vb.isHostAuthority && nowMs - vb.lastBallSendAt > 50) {
-                vb.lastBallSendAt = nowMs;
-                vb.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'ball', x: vb.ball.x, y: vb.ball.y, z: vb.ball.z, held: vb.ball.held } });
+        function cnrMaybeBroadcast(nowMs) {
+            if (!cnr.channel) return;
+            if (nowMs - cnr.lastPosSendAt > 66) {
+                cnr.lastPosSendAt = nowMs;
+                cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: cnr.myPos.x, y: cnr.myPos.y, z: cnr.myPos.z, yaw: cnr.cameraYaw, dashing: cnr.dashing } });
             }
         }
 
-        function vbHandleMessage(payload) {
-            if (!vb || !payload) return;
+        function cnrHandleMessage(payload) {
+            if (!cnr || !payload) return;
             switch (payload.type) {
                 case 'player':
-                    vb.oppPos.x = payload.x; vb.oppPos.y = payload.y; vb.oppPos.z = payload.z;
+                    cnr.oppPos.x = payload.x; cnr.oppPos.y = payload.y; cnr.oppPos.z = payload.z;
+                    cnr.oppYaw = payload.yaw;
                     break;
-                case 'ball':
-                    if (!vb.isHostAuthority) {
-                        vb.ball.x = payload.x; vb.ball.y = payload.y; vb.ball.z = payload.z; vb.ball.held = payload.held;
+                case 'tagged':
+                    if (!cnr.isHostAuthority) cnrApplyTagEffects();
+                    break;
+                case 'flag_pickup':
+                    if (!cnr.isHostAuthority) {
+                        cnr.flagCarried = true; cnr.flagCarrierRole = 'thief';
+                        if (cnr.myRole !== 'thief') { showToast('상대가 깃발을 획득했습니다!', 'info'); playCnrFlagSound(); }
                     }
                     break;
-                case 'hit_request':
-                    if (vb.isHostAuthority) vbApplyHit({ x: payload.x, z: payload.z }, payload.spike, payload.side);
-                    break;
-                case 'hit_fx':
-                    playVbHitSound(payload.spike, false);
-                    break;
-                case 'score':
-                    if (!vb.isHostAuthority) {
-                        vb.myScore = vb.mySide === 1 ? payload.host : payload.guest;
-                        vb.oppScore = vb.mySide === 1 ? payload.guest : payload.host;
-                        vbApplyScoreToUI();
-                    }
-                    break;
-                case 'game_over':
-                    if (!vb.isHostAuthority) {
-                        const iWon = (payload.winnerSide === vb.mySide);
-                        vbEndMatch(iWon);
-                    }
+                case 'round_end':
+                    if (!cnr.isHostAuthority) cnrEndMatch(payload.winnerRole, payload.reason);
                     break;
             }
         }
 
-        function vbAnimate(t) {
-            if (!vb) return;
-            if (!vb.lastFrameT) vb.lastFrameT = t;
-            let dt = (t - vb.lastFrameT) / 1000;
-            vb.lastFrameT = t;
+        // ---- 게임 루프 ----
+
+        function cnrFlashBanner(text) {
+            const el = document.getElementById('cnr-banner');
+            if (!el) return;
+            el.innerText = text;
+            el.classList.remove('hidden');
+            el.style.opacity = '1';
+            clearTimeout(cnr.bannerTimer);
+            cnr.bannerTimer = setTimeout(() => { el.style.opacity = '0'; }, 1300);
+        }
+
+        function cnrThiefRenderPos() {
+            if (cnr.myRole === 'thief') return cnr.myPos;
+            if (cnr.oppRole === 'thief') return cnr.oppVisual;
+            return CNR_FLAG_SPAWN;
+        }
+
+        function cnrAnimateLimbs(mesh, speedRatio, t, dashing) {
+            const u = mesh.userData;
+            if (!u.armL) return;
+            const amp = dashing ? 0.9 : 0.6 * Math.min(1, speedRatio + 0.15);
+            const freq = dashing ? 11 : 7;
+            const phase = t * freq;
+            u.armL.rotation.x = Math.sin(phase) * amp;
+            u.armR.rotation.x = -Math.sin(phase) * amp;
+            u.legL.rotation.x = -Math.sin(phase) * amp;
+            u.legR.rotation.x = Math.sin(phase) * amp;
+            u.torso.rotation.x = dashing ? 0.3 : 0;
+        }
+
+        function cnrAnimate(t) {
+            if (!cnr) return;
+            if (!cnr.lastFrameT) cnr.lastFrameT = t;
+            let dt = (t - cnr.lastFrameT) / 1000;
+            cnr.lastFrameT = t;
             dt = Math.min(dt, 0.05);
 
-            vbUpdateMyPlayer(dt);
-            if (vb.isHostAuthority) vbUpdateBallPhysics(dt);
+            if (cnr.phase === 'game') {
+                cnrUpdateMyPlayer(dt);
+                cnrHostTick(dt);
 
-            // 상대 캐릭터 시각 보간 (네트워크 지연을 매끄럽게)
-            const lerp = 1 - Math.pow(0.001, dt);
-            vb.oppVisual.x += (vb.oppPos.x - vb.oppVisual.x) * lerp;
-            vb.oppVisual.y += (vb.oppPos.y - vb.oppVisual.y) * lerp;
-            vb.oppVisual.z += (vb.oppPos.z - vb.oppVisual.z) * lerp;
+                const lerp = 1 - Math.pow(0.001, dt);
+                cnr.oppVisual.x += (cnr.oppPos.x - cnr.oppVisual.x) * lerp;
+                cnr.oppVisual.y += (cnr.oppPos.y - cnr.oppVisual.y) * lerp;
+                cnr.oppVisual.z += (cnr.oppPos.z - cnr.oppVisual.z) * lerp;
 
-            if (vb.isHostAuthority) {
-                vb.ballVisual.x = vb.ball.x; vb.ballVisual.y = vb.ball.y; vb.ballVisual.z = vb.ball.z;
-            } else {
-                vb.ballVisual.x += (vb.ball.x - vb.ballVisual.x) * lerp;
-                vb.ballVisual.y += (vb.ball.y - vb.ballVisual.y) * lerp;
-                vb.ballVisual.z += (vb.ball.z - vb.ballVisual.z) * lerp;
+                cnr.myMesh.position.set(cnr.myPos.x, cnr.myPos.y, cnr.myPos.z);
+                cnr.myMesh.rotation.y = cnr.cameraYaw;
+                const mySpeed = Math.hypot(cnr.myVel.x, cnr.myVel.z) / CNR_MAX_SPEED;
+                cnrAnimateLimbs(cnr.myMesh, mySpeed, t / 1000, cnr.dashing);
+                cnr.myShadow.position.x = cnr.myPos.x; cnr.myShadow.position.z = cnr.myPos.z;
+
+                cnr.oppMesh.position.set(cnr.oppVisual.x, cnr.oppVisual.y, cnr.oppVisual.z);
+                cnr.oppMesh.rotation.y = cnr.oppYaw || 0;
+                cnrAnimateLimbs(cnr.oppMesh, 0.5, t / 1000, false);
+                cnr.oppShadow.position.x = cnr.oppVisual.x; cnr.oppShadow.position.z = cnr.oppVisual.z;
+
+                // 깃발: 들고 있으면 도둑 위치 위에, 아니면 원래 자리에
+                if (cnr.flagCarried) {
+                    const carrierPos = cnrThiefRenderPos();
+                    cnr.flagPole.position.set(carrierPos.x, 0.9, carrierPos.z);
+                    cnr.flagCloth.position.set(carrierPos.x + 0.26, 1.58, carrierPos.z);
+                } else {
+                    cnr.flagPole.position.set(CNR_FLAG_SPAWN.x, 0.9, CNR_FLAG_SPAWN.z);
+                    cnr.flagCloth.position.set(CNR_FLAG_SPAWN.x + 0.26, 1.58, CNR_FLAG_SPAWN.z);
+                }
+                // 깃발천 흔들림
+                const fp = cnr.flagCloth.geometry.attributes.position;
+                const orig = cnr.flagClothOrig;
+                for (let i = 0; i < fp.array.length; i += 3) {
+                    const ox = orig[i];
+                    fp.array[i + 2] = orig[i + 2] + Math.sin(t * 0.006 + ox * 6) * 0.05 * (ox + 0.25);
+                }
+                fp.needsUpdate = true;
+
+                // 카메라 (3인칭, 포인터락 마우스로 요/피치 회전)
+                const dist = CNR_CAM_DIST, pitch = cnr.cameraPitch;
+                const camX = cnr.myPos.x + Math.sin(cnr.cameraYaw) * dist * Math.cos(pitch);
+                const camZ = cnr.myPos.z + Math.cos(cnr.cameraYaw) * dist * Math.cos(pitch);
+                const camY = CNR_CAM_HEIGHT + dist * Math.sin(pitch);
+                cnr.camera.position.set(camX, camY, camZ);
+                cnr.camera.rotation.order = 'YXZ';
+                cnr.camera.rotation.y = cnr.cameraYaw;
+                cnr.camera.rotation.x = pitch;
+
+                // 대쉬 FOV 펀치 (화면이 살짝 넓어지며 가속감을 준다)
+                if (cnr.dashFovKick) {
+                    cnr.dashFovKick = Math.max(0, cnr.dashFovKick - dt * 3.2);
+                    cnr.camera.fov = 60 + cnr.dashFovKick * 14;
+                    cnr.camera.updateProjectionMatrix();
+                } else if (cnr.camera.fov !== 60) {
+                    cnr.camera.fov = 60; cnr.camera.updateProjectionMatrix();
+                }
+
+                // 타이머 UI
+                const remaining = Math.max(0, CNR_ROUND_SECONDS - (Date.now() - cnr.startAt) / 1000);
+                const mm = Math.floor(remaining / 60), ss = Math.floor(remaining % 60);
+                const timerEl = document.getElementById('cnr-hud-timer');
+                if (timerEl) {
+                    timerEl.innerText = mm + ':' + String(ss).padStart(2, '0');
+                    timerEl.classList.toggle('urgent', remaining <= 10);
+                }
+
+                cnrMaybeBroadcast(t);
+                cnr.renderer.render(cnr.scene, cnr.camera);
             }
-
-            vb.myMesh.position.set(vb.myPos.x, vb.myPos.y, vb.myPos.z);
-            vb.myMesh.rotation.x = vb.diving ? 1.1 : 0;
-            vb.myMesh.rotation.y = Math.atan2(vb.facing.x, -vb.facing.z);
-            vb.myShadow.position.x = vb.myPos.x; vb.myShadow.position.z = vb.myPos.z;
-
-            vb.oppMesh.position.set(vb.oppVisual.x, vb.oppVisual.y, vb.oppVisual.z);
-            vb.oppShadow.position.x = vb.oppVisual.x; vb.oppShadow.position.z = vb.oppVisual.z;
-
-            vb.ballGroup.position.set(vb.ballVisual.x, vb.ballVisual.y, vb.ballVisual.z);
-            vb.ballGroup.rotation.x += dt * 4; vb.ballGroup.rotation.z += dt * 2.3;
-            vb.ballShadow.position.x = vb.ballVisual.x; vb.ballShadow.position.z = vb.ballVisual.z;
-            const shadowScale = Math.max(0.4, 1 - vb.ballVisual.y * 0.18);
-            vb.ballShadow.scale.setScalar(shadowScale);
-
-            // 카메라: 네트 축과 평행한 쪽에서, 본인 코트 뒤쪽 3인칭으로 네트 너머를 바라본다
-            const camBackZ = vb.myPos.z + vb.mySide * 3.6;
-            const camX = vb.myPos.x * 0.5;
-            vb.camera.position.set(camX, 2.6, camBackZ);
-            const lookAtZ = vb.myPos.z - vb.mySide * 4.5;
-            vb.camera.lookAt(vb.myPos.x * 0.3, 1.1, lookAtZ);
-
-            vbMaybeBroadcast(t);
-            vb.renderer.render(vb.scene, vb.camera);
-            vb.rafId = requestAnimationFrame(vbAnimate);
+            cnr.rafId = requestAnimationFrame(cnrAnimate);
         }
 
         // ---- 매치 종료 & 순위 ----
 
-        async function vbEndMatch(iWon) {
-            if (!vb || vb.phase === 'ended') return;
-            vb.phase = 'ended';
-            if (vb.rafId) cancelAnimationFrame(vb.rafId);
-            vbDetachInputListeners();
-            document.getElementById('vb-result-title').innerText = iWon ? '승리했어요! 🏆' : '패배했어요';
-            document.getElementById('vb-result-score').innerText = vb.myScore + ' : ' + vb.oppScore;
-            vbShowState('result');
+        async function cnrEndMatch(winnerRole, reason) {
+            if (!cnr || cnr.phase === 'ended') return;
+            cnr.phase = 'ended';
+            if (cnr.rafId) cancelAnimationFrame(cnr.rafId);
+            cnrDetachInputListeners();
+            if (document.pointerLockElement && document.exitPointerLock) {
+                try { document.exitPointerLock(); } catch (e) {}
+            }
+            const iWon = (winnerRole === cnr.myRole);
+            document.getElementById('cnr-result-title').innerText = iWon ? '승리했어요! 🏆' : '패배했어요';
+            document.getElementById('cnr-result-detail').innerText =
+                reason === 'flag_returned' ? '도둑이 깃발을 무사히 가져왔습니다.' : '시간 종료! 경찰이 막아냈습니다.';
+            cnrShowState('result');
             try {
-                await supabaseClient.from('volleyball_scores').insert({
+                await supabaseClient.from('cnr_scores').insert({
                     user_id: currentUser.id, name: currentUser.name || '익명',
-                    score: vb.myScore, opponent_score: vb.oppScore, won: iWon,
+                    role: cnr.myRole, won: iWon,
                 });
-            } catch (e) { /* volleyball_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+            } catch (e) { /* cnr_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
         }
 
-        async function vbShowLeaderboard() {
-            vbShowState('leaderboard');
-            const list = document.getElementById('vb-leaderboard-list');
+        async function cnrShowLeaderboard() {
+            cnrShowState('leaderboard');
+            const list = document.getElementById('cnr-leaderboard-list');
             list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
             try {
                 const { data, error } = await supabaseClient
-                    .from('volleyball_scores')
-                    .select('name, score')
-                    .order('score', { ascending: false })
+                    .from('cnr_leaderboard')
+                    .select('name, wins')
+                    .order('wins', { ascending: false })
                     .limit(20);
                 if (error) throw error;
                 if (!data || data.length === 0) {
@@ -3504,54 +3605,66 @@
                     return;
                 }
                 list.innerHTML = data.map((row, i) => `
-                    <div class="vb-leaderboard-row">
-                        <span class="vb-leaderboard-rank">${i + 1}</span>
-                        <span class="vb-leaderboard-name">${escapeHtml(row.name || '익명')}</span>
-                        <span class="vb-leaderboard-points">${row.score}점</span>
+                    <div class="cnr-leaderboard-row">
+                        <span class="cnr-leaderboard-rank">${i + 1}</span>
+                        <span class="cnr-leaderboard-name">${escapeHtml(row.name || '익명')}</span>
+                        <span class="cnr-leaderboard-points">${row.wins}승</span>
                     </div>
                 `).join('');
             } catch (e) {
-                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (volleyball_scores 테이블이 준비되지 않았을 수 있어요)</p>';
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (cnr_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
             }
         }
 
         // ---- 사운드 ----
 
-        let vbAudioCtx = null;
-        function ensureVbAudioCtx() {
-            if (!vbAudioCtx) vbAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            return vbAudioCtx;
+        let cnrAudioCtx = null;
+        function ensureCnrAudioCtx() {
+            if (!cnrAudioCtx) cnrAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return cnrAudioCtx;
         }
-        function playVbHitSound(isSpike, isDive) {
+        function playCnrDashSound() {
             try {
-                const ctx = ensureVbAudioCtx();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = isDive ? 'triangle' : 'sine';
-                osc.frequency.value = isDive ? 180 : (isSpike ? 320 : 240);
+                const ctx = ensureCnrAudioCtx();
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(90, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.14);
                 gain.gain.setValueAtTime(0.001, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(isSpike ? 0.3 : 0.18, ctx.currentTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (isSpike ? 0.18 : 0.12));
+                gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.start(); osc.stop(ctx.currentTime + 0.2);
             } catch (e) {}
         }
-        function playVbScoreSound() {
+        function playCnrTagSound() {
             try {
-                const ctx = ensureVbAudioCtx();
-                [523.25, 659.25, 783.99].forEach((freq, i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
+                const ctx = ensureCnrAudioCtx();
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'square'; osc.frequency.setValueAtTime(220, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.22);
+                gain.gain.setValueAtTime(0.001, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.26);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.28);
+            } catch (e) {}
+        }
+        function playCnrFlagSound() {
+            try {
+                const ctx = ensureCnrAudioCtx();
+                [660, 880, 1100].forEach((freq, i) => {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.type = 'sine'; osc.frequency.value = freq;
-                    const startAt = ctx.currentTime + i * 0.09;
+                    const startAt = ctx.currentTime + i * 0.07;
                     gain.gain.setValueAtTime(0.001, startAt);
-                    gain.gain.exponentialRampToValueAtTime(0.22, startAt + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, startAt + 0.25);
+                    gain.gain.exponentialRampToValueAtTime(0.2, startAt + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startAt + 0.22);
                     osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(startAt); osc.stop(startAt + 0.3);
+                    osc.start(startAt); osc.stop(startAt + 0.25);
                 });
             } catch (e) {}
         }
+
 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
