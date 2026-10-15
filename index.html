@@ -650,6 +650,15 @@
             background: rgba(20,20,20,.38); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
             text-align: center; padding: 20px;
         }
+        .cnr-role-reveal {
+            position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            background: rgba(15,15,20,.6); color: #fff; transition: opacity .4s ease; opacity: 1;
+        }
+        .cnr-role-reveal.fade-out { opacity: 0; }
+        .cnr-role-reveal-icon { font-size: 40px; margin-bottom: 10px; }
+        .cnr-role-reveal-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+        .cnr-role-reveal-sub { font-size: 13px; font-weight: 600; color: #e8e8ea; }
         .cnr-controls-hint { font-size: 11px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
         .cnr-leave-btn {
             display: block; margin: 12px auto 0; font-size: 12px; font-weight: 700; color: var(--ink-soft);
@@ -1656,9 +1665,14 @@
                         <div class="cnr-canvas-wrap">
                             <canvas id="cnr-canvas"></canvas>
                             <p id="cnr-banner" class="cnr-banner hidden"></p>
-                            <div id="cnr-pointerlock-hint" class="cnr-pointerlock-hint">화면을 클릭하면 마우스로 시선을 둘러볼 수 있어요</div>
+                            <div id="cnr-pointerlock-hint" class="cnr-pointerlock-hint">화면을 클릭하면 마우스로 좌우를 둘러볼 수 있어요</div>
+                            <div id="cnr-role-reveal" class="cnr-role-reveal hidden">
+                                <span id="cnr-role-reveal-icon" class="cnr-role-reveal-icon"></span>
+                                <p id="cnr-role-reveal-title" class="cnr-role-reveal-title"></p>
+                                <p id="cnr-role-reveal-sub" class="cnr-role-reveal-sub"></p>
+                            </div>
                         </div>
-                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 마우스로 시선 회전</p>
+                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 마우스로 좌우 시선 회전</p>
                         <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                     </div>
 
@@ -2951,7 +2965,7 @@
             if (!cnr || cnr.role !== 'host' || cnr.phase !== 'waiting') return;
             cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
             const hostRole = Math.random() < 0.5 ? 'cop' : 'thief';
-            const startAt = Date.now() + 900;
+            const startAt = Date.now() + 2600; // 역할 공개 화면을 읽을 시간을 넉넉히 준다
             cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startAt } });
             cnrBeginMatch(hostRole, startAt);
         }
@@ -3231,11 +3245,30 @@
             const hint = document.getElementById('cnr-pointerlock-hint');
             if (hint) hint.classList.remove('hidden');
 
+            // 시작하기 전에 내 역할을 큼지막하게 먼저 보여준다 (경찰/도둑 구분이 헷갈리지 않도록)
+            const isCopRole = myRole === 'cop';
+            const reveal = document.getElementById('cnr-role-reveal');
+            document.getElementById('cnr-role-reveal-icon').innerHTML = isCopRole
+                ? '<i class="fa-solid fa-shield-halved" style="color:#8ec3ff;"></i>'
+                : '<i class="fa-solid fa-user-secret" style="color:#ffb257;"></i>';
+            document.getElementById('cnr-role-reveal-title').innerText = '당신은 ' + (isCopRole ? '경찰' : '도둑') + '입니다';
+            document.getElementById('cnr-role-reveal-sub').innerText = isCopRole
+                ? '도둑이 깃발을 가져가지 못하게 막으세요!'
+                : '반대쪽 깃발을 가져와 홈존으로 복귀하세요!';
+            if (reveal) {
+                reveal.classList.remove('hidden', 'fade-out');
+                const revealMs = Math.max(1600, startAt - Date.now());
+                clearTimeout(cnr.roleRevealTimer);
+                cnr.roleRevealTimer = setTimeout(() => {
+                    reveal.classList.add('fade-out');
+                    setTimeout(() => reveal.classList.add('hidden'), 420);
+                }, revealMs);
+            }
+
             cnrShowState('game');
             cnrEnsureSceneBuilt();
             cnrAttachInputListeners();
             cnr.rafId = requestAnimationFrame(cnrAnimate);
-            showToast(cnr.oppName + '님과 매치 시작! 당신은 ' + (myRole === 'cop' ? '경찰' : '도둑') + '입니다', 'success');
         }
 
         // ---- 입력 ----
@@ -3279,9 +3312,8 @@
 
         function cnrOnMouseMove(e) {
             if (!cnr || !cnr.pointerLocked || cnr.phase !== 'game') return;
+            // 좌우(요)만 마우스로 돌리고, 위아래는 고정된 각도를 그대로 쓴다 (단순하고 어지럽지 않게)
             cnr.cameraYaw -= (e.movementX || 0) * CNR_MOUSE_SENS;
-            cnr.cameraPitch -= (e.movementY || 0) * CNR_MOUSE_SENS;
-            cnr.cameraPitch = Math.max(CNR_PITCH_MIN, Math.min(CNR_PITCH_MAX, cnr.cameraPitch));
         }
 
         function cnrOnKeyDown(e) {
@@ -3552,7 +3584,7 @@
                 }
 
                 // 타이머 UI
-                const remaining = Math.max(0, CNR_ROUND_SECONDS - (Date.now() - cnr.startAt) / 1000);
+                const remaining = Math.min(CNR_ROUND_SECONDS, Math.max(0, CNR_ROUND_SECONDS - (Date.now() - cnr.startAt) / 1000));
                 const mm = Math.floor(remaining / 60), ss = Math.floor(remaining % 60);
                 const timerEl = document.getElementById('cnr-hud-timer');
                 if (timerEl) {
