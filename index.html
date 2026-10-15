@@ -2872,8 +2872,8 @@
         const CNR_PLAYER_RADIUS = 0.42;
         const CNR_PLAYER_REST_Y = 0.0;
         const CNR_MAX_SPEED = 6.2;
-        const CNR_ACCEL = 20;
-        const CNR_DECEL = 24;
+        const CNR_ACCEL = 60;
+        const CNR_DECEL = 70;
         const CNR_DASH_SPEED = 15.5;
         const CNR_DASH_DURATION = 0.22;
         const CNR_DASH_COOLDOWN = 3.0;
@@ -3387,6 +3387,11 @@
             cnr.myPos.z += cnr.myVel.z * dt;
             cnr.myPos.x = Math.max(-(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS, cnr.myPos.x));
             cnr.myPos.z = Math.max(-(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS, cnr.myPos.z));
+            // 도둑의 홈존(+Z)은 도둑에게 안전구역 — 경찰은 그 경계선을 넘어 들어올 수 없다
+            if (cnr.myRole === 'cop') {
+                const copZLimit = CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH;
+                if (cnr.myPos.z > copZLimit) { cnr.myPos.z = copZLimit; if (cnr.myVel.z > 0) cnr.myVel.z = 0; }
+            }
 
             if (cnr.invulnTimer > 0) cnr.invulnTimer -= dt;
             if (cnr.dashCooldown > 0) {
@@ -3409,13 +3414,11 @@
 
             const thiefPos = cnr.myRole === 'thief' ? cnr.myPos : cnr.oppPos;
             const copPos = cnr.myRole === 'cop' ? cnr.myPos : cnr.oppPos;
-            const thiefInvuln = cnr.myRole === 'thief' ? cnr.invulnTimer > 0 : null; // 상대(도둑)의 무적 타이머는 host가 직접 알 수 없으므로, 아래 쿨다운은 호스트 자신만의 근사치로 둔다
             const dist = Math.hypot(thiefPos.x - copPos.x, thiefPos.z - copPos.z);
 
             if (!cnr.tagCooldownUntil || Date.now() > cnr.tagCooldownUntil) {
                 if (dist < CNR_TAG_RADIUS) {
                     cnr.tagCooldownUntil = Date.now() + CNR_TAG_INVULN * 1000;
-                    cnr.flagCarried = false; cnr.flagCarrierRole = null;
                     cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'tagged' } });
                     cnrApplyTagEffects();
                 }
@@ -3429,23 +3432,24 @@
                     showToast('깃발을 획득했습니다!', 'success');
                     playCnrFlagSound();
                 }
-            } else {
-                const homeSign = 1; // 도둑의 홈존은 +Z
-                if (thiefPos.z > CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH) {
-                    cnrFinishRound('thief', 'flag_returned');
-                }
+            } else if (thiefPos.z > CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH) {
+                // 도둑의 홈존(+Z)까지 깃발을 들고 복귀하면 도둑 승리
+                cnrFinishRound('thief', 'flag_returned');
             }
         }
 
         function cnrApplyTagEffects() {
-            // 태그는 "항상 도둑"에게 일어나는 일이므로, 내가 도둑이면 내 위치/속도를 리셋한다
+            // 깃발을 들고 있다가 태그당했다면, 깃발은 반드시 원래 자리로 돌려놓는다 (호스트/게스트 양쪽 모두
+            // 이 함수를 통해 똑같이 리셋하므로, "깃발을 든 채로 리스폰"되는 버그가 생기지 않는다)
+            cnr.flagCarried = false; cnr.flagCarrierRole = null;
+            // 태그는 "항상 도둑"에게 일어나는 일이므로, 내가 도둑이면 내 위치/속도를 태어났던 자리로 리셋한다
             if (cnr.myRole === 'thief') {
                 cnr.myPos.x = 0; cnr.myPos.z = CNR_HOME_Z;
                 cnr.myVel.x = 0; cnr.myVel.z = 0;
                 cnr.invulnTimer = CNR_TAG_INVULN;
                 cnr.frozenTimer = 0.5;
             }
-            cnrFlashBanner(cnr.myRole === 'thief' ? '태그당했어요! 처음으로 돌아갑니다' : '상대를 태그했습니다!');
+            cnrFlashBanner(cnr.myRole === 'thief' ? '태그당했어요! 깃발과 함께 처음으로 돌아갑니다' : '상대를 태그했습니다!');
             playCnrTagSound();
         }
 
