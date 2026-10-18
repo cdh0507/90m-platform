@@ -779,7 +779,9 @@
         .chess-mv-empty { color: var(--ink-soft); font-weight: 600; }
 
         /* ---------- 게임 6: 바둑 ---------- */
-        .go-board-wrap canvas { width: 100%; height: 100%; display: block; touch-action: manipulation; cursor: pointer; }
+        .go-scroll { position: absolute; inset: 0; overflow: auto; -webkit-overflow-scrolling: touch; }
+        .go-board-wrap canvas { width: calc(100% * var(--go-zoom, 1)); height: auto; aspect-ratio: 1; display: block; touch-action: pan-x pan-y; cursor: pointer; }
+        .go-hide { display: none !important; }
         .go-info { text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); margin-top: 8px; }
         .go-size-row { display: flex; gap: 8px; margin-bottom: 14px; }
         .go-size-opt input { position: absolute; opacity: 0; pointer-events: none; }
@@ -794,6 +796,56 @@
         .go-intro-stone { width: 34px; height: 34px; border-radius: 50%; display: block; box-shadow: inset -3px -4px 6px rgba(0,0,0,.25), 0 3px 8px rgba(0,0,0,.4); }
         .go-intro-stone.b { background: radial-gradient(circle at 35% 30%, #77777c, #0e0e11 70%); }
         .go-intro-stone.w { background: radial-gradient(circle at 35% 30%, #fff, #cfcfc6 80%); }
+
+
+        /* ---------- 쉼터 모바일 모드 (rz-touch: 터치 기기 / rz-compact: 터치 기기 또는 좁은 창) ---------- */
+        .rz-touch-only { display: none; }
+        .rz-touch .cnr-controls-hint .rz-touch-only { display: inline; }
+        .rz-touch .rz-act-btn.rz-touch-only { display: inline-flex; align-items: center; }
+        .rz-touch .cnr-controls-hint .rz-kbd-only { display: none; }
+        .cnr-touch { display: none; }
+        .rz-touch .cnr-touch { display: flex; align-items: center; justify-content: space-between; padding: 16px 14px 2px; }
+        .cnr-joy {
+            position: relative; width: 132px; height: 132px; border-radius: 50%; flex-shrink: 0; touch-action: none; user-select: none; -webkit-user-select: none;
+            background: radial-gradient(circle, rgba(20,20,20,.05) 0, rgba(20,20,20,.12) 100%); border: 2px solid rgba(20,20,20,.16);
+        }
+        .cnr-joy-knob {
+            position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; pointer-events: none;
+            background: var(--accent); box-shadow: 0 5px 14px rgba(31,58,18,.35), inset 0 -3px 6px rgba(31,58,18,.18);
+        }
+        .cnr-dash-btn {
+            width: 96px; height: 96px; border-radius: 50%; border: none; background: var(--accent); color: var(--accent-ink); touch-action: none;
+            font-weight: 800; font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+            box-shadow: 0 8px 20px rgba(31,58,18,.28); user-select: none; -webkit-user-select: none; transition: opacity .15s ease, transform .08s ease;
+        }
+        .cnr-dash-btn i { font-size: 24px; }
+        .cnr-dash-btn:active { transform: scale(.94); }
+        .cnr-dash-btn.cooling { opacity: .42; }
+
+        #restzone-modal.rz-compact { padding: 0; align-items: stretch; }
+        #restzone-modal.rz-compact > .card { max-width: none; width: 100%; height: 100vh !important; height: 100dvh !important; border-radius: 0; }
+        #restzone-modal.rz-compact #restzone-body { padding: 12px 12px calc(16px + env(safe-area-inset-bottom)); }
+        .rz-compact #restzone-panel-hub .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .rz-compact .restzone-game-card { padding: 14px 12px; min-height: 132px; }
+        .rz-compact .restzone-game-desc { font-size: 11px; line-height: 1.4; }
+        .rz-compact .chess-wrap, .rz-compact .go-wrap { width: max(260px, min(100%, calc(100dvh - 300px))); }
+        .rz-touch .rz-act-btn, .rz-touch .rz-note-btn { padding: 11px 16px; font-size: 13px; touch-action: manipulation; }
+        .rz-touch .cnr-leave-btn { padding: 11px 18px; }
+        .rz-touch .chess-sq { touch-action: manipulation; }
+        .rz-touch .chess-clock { font-size: 20px; }
+
+        /* 폰을 가로로 눕힌 경우: 지도를 화면 가득, 조이스틱/대쉬는 양쪽 아래에 겹쳐 띄움 */
+        @media (orientation: landscape) and (max-height: 620px) {
+            #restzone-modal.rz-touch:has(#cnr-state-game:not(.hidden)) > .card > div:first-child { display: none; } /* 경기 중에는 헤더를 숨겨 지도를 더 크게 */
+            .rz-touch .cnr-canvas-wrap { aspect-ratio: auto; height: calc(100dvh - 92px); }
+            .rz-touch .cnr-hud { margin-bottom: 6px; }
+            .rz-touch .cnr-touch { position: fixed; left: 0; right: 0; bottom: calc(10px + env(safe-area-inset-bottom)); padding: 0 26px; pointer-events: none; z-index: 30; }
+            .rz-touch .cnr-joy, .rz-touch .cnr-dash-btn { pointer-events: auto; opacity: .88; }
+            .rz-touch .cnr-dash-btn.cooling { opacity: .4; }
+            .rz-touch .cnr-controls-hint { display: none; }
+            .rz-touch #cnr-state-game .cnr-leave-btn { position: fixed; top: 8px; right: 12px; z-index: 31; margin: 0; padding: 7px 14px; opacity: .85; }
+            #restzone-modal.rz-compact #restzone-body { padding-top: 8px; }
+        }
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
@@ -1830,7 +1882,14 @@
                             <canvas id="cnr-canvas"></canvas>
                             <p id="cnr-banner" class="cnr-banner hidden"></p>
                         </div>
-                        <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 탑뷰 2D</p>
+                        <div class="cnr-touch">
+                            <div id="cnr-joy" class="cnr-joy"><div id="cnr-joy-knob" class="cnr-joy-knob"></div></div>
+                            <button id="cnr-dash-btn" type="button" class="cnr-dash-btn"><i class="fa-solid fa-bolt"></i><span>대쉬</span></button>
+                        </div>
+                        <p class="cnr-controls-hint">
+                            <span class="rz-kbd-only">W A S D(또는 방향키) 이동 · Space 대쉬(쿨타임 3초) · 탑뷰 2D</span>
+                            <span class="rz-touch-only">왼쪽 조이스틱으로 이동 · ⚡ 버튼으로 대쉬(쿨타임 3초) · 폰을 가로로 돌리면 더 크게 보여요</span>
+                        </p>
                         <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                     </div>
 
@@ -2000,7 +2059,7 @@
                                 <span id="go-caps-top" class="go-caps"></span>
                             </div>
                             <div id="go-board-wrap" class="go-board-wrap">
-                                <canvas id="go-canvas"></canvas>
+                                <div class="go-scroll"><canvas id="go-canvas"></canvas></div>
 
                         <div id="go-end" class="rz-end hidden">
                             <p id="go-end-title" class="rz-end-title"></p>
@@ -2031,6 +2090,7 @@
                                 </div>
                             </div>
                             <div id="go-action-row" class="rz-action-row">
+                                <button id="go-zoom-btn" onclick="goToggleZoom()" class="press-feel rz-act-btn rz-touch-only"><i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i>확대</button>
                                 <button id="go-pass-btn" onclick="goPassMine()" class="press-feel rz-act-btn"><i class="fa-regular fa-hand mr-1.5"></i>한 수 쉬기</button>
                                 <button id="go-resign-btn" onclick="goResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
                                 <button onclick="goLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
@@ -2968,6 +3028,7 @@
         const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑' };
 
         function openRestZoneModal() {
+            rzApplyDeviceMode();
             document.getElementById('restzone-modal').classList.remove('hidden');
             lockBodyScroll();
             restzoneShowHub();
@@ -3448,6 +3509,7 @@
 
             cnrEnsureCanvasReady();
             cnrAttachInputListeners();
+            cnrAttachTouchControls();
             cnr.rafId = requestAnimationFrame(cnrAnimate);
         }
 
@@ -3464,30 +3526,70 @@
             if (!cnr) return;
             if (cnr.onKeyDown) window.removeEventListener('keydown', cnr.onKeyDown);
             if (cnr.onKeyUp) window.removeEventListener('keyup', cnr.onKeyUp);
+            cnr.touchDir = null;
+        }
+
+        // 물리 키 위치(e.code)로 판별한다 — 한글 입력 상태(ㅈㅁㄴㅇ)여도 WASD 자리를 누르면 똑같이 동작
+        const CNR_KEY_BY_CODE = {
+            KeyW: 'w', ArrowUp: 'w', KeyA: 'a', ArrowLeft: 'a', KeyS: 's', ArrowDown: 's', KeyD: 'd', ArrowRight: 'd', Space: ' ',
+        };
+        function cnrKeyName(e) {
+            return CNR_KEY_BY_CODE[e.code] || null;
         }
 
         function cnrOnKeyDown(e) {
             if (!cnr || cnr.phase !== 'game') return;
-            const k = e.key.toLowerCase();
-            if (['w', 'a', 's', 'd', ' '].includes(k)) e.preventDefault();
+            const k = cnrKeyName(e);
+            if (!k) return;
+            e.preventDefault();
             cnr.keys[k] = true;
             if (k === ' ' && !cnr.spaceHeld) { cnr.spaceHeld = true; cnrTryDash(); }
         }
         function cnrOnKeyUp(e) {
             if (!cnr) return;
-            const k = e.key.toLowerCase();
+            const k = cnrKeyName(e);
+            if (!k) return;
             cnr.keys[k] = false;
             if (k === ' ') cnr.spaceHeld = false;
         }
 
-        // ---- 이동/대쉬 (탑뷰라 카메라 회전 없이, 화면 방향 = 월드 방향 그대로) ----
-
+        // ---- 이동/대쉬 ----
+        // 지도를 가로로 눕혀 그리기 때문에(월드 x → 화면 아래쪽, 월드 z → 화면 왼쪽) 키 입력은 "화면 기준 방향"으로 먼저 만든 뒤
+        // 월드 방향으로 바꿔준다. W=화면 위, S=화면 아래, A=화면 왼쪽, D=화면 오른쪽. (조이스틱도 같은 화면 방향 벡터를 쓴다)
         function cnrInputDir() {
-            let dx = (cnr.keys['d'] ? 1 : 0) - (cnr.keys['a'] ? 1 : 0);
-            let dz = (cnr.keys['s'] ? 1 : 0) - (cnr.keys['w'] ? 1 : 0);
-            const len = Math.hypot(dx, dz);
+            let sx = ((cnr.keys['d'] ? 1 : 0) - (cnr.keys['a'] ? 1 : 0));
+            let sy = ((cnr.keys['s'] ? 1 : 0) - (cnr.keys['w'] ? 1 : 0));
+            if (sx === 0 && sy === 0 && cnr.touchDir) { sx = cnr.touchDir.x; sy = cnr.touchDir.y; }
+            const len = Math.hypot(sx, sy);
             if (len < 0.001) return null;
-            return { x: dx / len, z: dz / len };
+            sx /= len; sy /= len;
+            return { x: sy, z: -sx }; // cnrWorldToScreen의 역변환 (화면 x = -월드 z, 화면 y = 월드 x)
+        }
+
+        // ---- 모바일: 가상 조이스틱 + 대쉬 버튼 ----
+        function cnrAttachTouchControls() {
+            const joy = document.getElementById('cnr-joy'), knob = document.getElementById('cnr-joy-knob'), dash = document.getElementById('cnr-dash-btn');
+            if (!joy || !knob || !dash) return;
+            cnr.touchDir = null;
+            let activeId = null;
+            const update = (e) => {
+                const r = joy.getBoundingClientRect();
+                const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+                const d = Math.hypot(dx, dy), max = r.width * 0.34;
+                const k = d > max ? max / d : 1;
+                knob.style.transform = 'translate(' + (dx * k) + 'px,' + (dy * k) + 'px)';
+                cnr.touchDir = d > max * 0.25 ? { x: dx / d, y: dy / d } : null; // 가운데 살짝은 무시(데드존)
+            };
+            const end = (e) => {
+                if (e.pointerId !== activeId) return;
+                activeId = null;
+                if (cnr) cnr.touchDir = null;
+                knob.style.transform = '';
+            };
+            joy.onpointerdown = (e) => { e.preventDefault(); activeId = e.pointerId; try { joy.setPointerCapture(e.pointerId); } catch (err) {} update(e); };
+            joy.onpointermove = (e) => { if (e.pointerId === activeId) update(e); };
+            joy.onpointerup = end; joy.onpointercancel = end;
+            dash.onpointerdown = (e) => { e.preventDefault(); if (cnr) cnrTryDash(); };
         }
 
         function cnrTryDash() {
@@ -3544,6 +3646,8 @@
                 cnr.dashCooldown = Math.max(0, cnr.dashCooldown - dt);
                 document.getElementById('cnr-dash-bar').style.width = (100 - (cnr.dashCooldown / CNR_DASH_COOLDOWN) * 100) + '%';
             }
+            const dashBtn = document.getElementById('cnr-dash-btn');
+            if (dashBtn) dashBtn.classList.toggle('cooling', cnr.dashCooldown > 0);
         }
 
         // ---- 호스트 권위 로직: 태그 판정 / 깃발 획득 / 승리 판정 / 타이머 ----
@@ -3961,6 +4065,26 @@
         function rzSoundGo() { rzTone(784, 0.16, 'triangle', 0.2); setTimeout(() => rzTone(1175, 0.32, 'triangle', 0.2), 110); }
         function rzSoundWin() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => rzTone(f, 0.22, 'triangle', 0.18), i * 110)); }
         function rzSoundLose() { [392, 330, 262].forEach((f, i) => setTimeout(() => rzTone(f, 0.26, 'sine', 0.16), i * 140)); }
+
+        // ---- 기기 감지: 터치 기기면 쉼터를 모바일용 화면으로 ----
+        // rz-touch: 터치 기기(조이스틱/확대 버튼 등 터치 전용 컨트롤을 보여줌)
+        // rz-compact: 터치 기기이거나 창이 좁을 때(쉼터 모달을 전체 화면 시트로, 버튼은 크게)
+        function rzIsTouchDevice() {
+            try {
+                if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return true;
+                if (navigator.maxTouchPoints > 0 && Math.min(window.innerWidth, window.innerHeight) < 700) return true;
+                return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+            } catch (e) { return false; }
+        }
+        function rzApplyDeviceMode() {
+            const m = document.getElementById('restzone-modal');
+            if (!m) return;
+            const touch = rzIsTouchDevice();
+            m.classList.toggle('rz-touch', touch);
+            m.classList.toggle('rz-compact', touch || window.innerWidth < 640);
+        }
+        window.addEventListener('resize', rzApplyDeviceMode);
+        window.addEventListener('orientationchange', rzApplyDeviceMode);
 
         // ---- 시작 예고 연출 ----
         // opts: { startAt, title, me:{name,badge,sub,icon,color}, opp:{...}, notes:[문장...], onGo }
@@ -5085,6 +5209,10 @@
             go.mode = 'play'; // 'play' → 연속 패스 후 'scoring'
             go.dead = new Set(); go.confirmMe = false; go.confirmOpp = false; go.oppSig = null; go.preview = null;
             go.hover = -1; go.pending = -1; go.lastIdx = -1; go.anim = null;
+            go.zoom = 1; go.touchStart = null;
+            document.getElementById('go-board-wrap').style.setProperty('--go-zoom', '1');
+            document.getElementById('go-zoom-btn').innerHTML = '<i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i>확대';
+            document.getElementById('go-zoom-btn').classList.toggle('go-hide', cfg.n === 9);
             go.lastSeen = Date.now();
 
             ['go-end', 'go-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -5132,7 +5260,17 @@
         function goEnsureCanvas() {
             const canvas = document.getElementById('go-canvas');
             go.canvas = canvas; go.ctx = canvas.getContext('2d');
-            canvas.onpointerdown = goOnPointerDown;
+            canvas.onpointerdown = (e) => {
+                if (e.pointerType === 'mouse') { goOnPointerDown(e); return; }
+                go.touchStart = { x: e.clientX, y: e.clientY }; // 터치는 손을 뗄 때 판정 — 확대 상태에서 스크롤하려는 동작과 구분
+            };
+            canvas.onpointerup = (e) => {
+                if (e.pointerType === 'mouse' || !go || !go.touchStart) return;
+                const moved = Math.hypot(e.clientX - go.touchStart.x, e.clientY - go.touchStart.y);
+                go.touchStart = null;
+                if (moved < 10) goOnPointerDown(e);
+            };
+            canvas.onpointercancel = () => { if (go) go.touchStart = null; };
             canvas.onpointermove = goOnPointerMove;
             canvas.onpointerleave = () => { if (go && go.hover !== -1 && go.pending === -1) { go.hover = -1; goDraw(); } };
             goResizeCanvas();
@@ -5167,6 +5305,20 @@
             const idx = goPointToIdx(e);
             const hover = (idx >= 0 && go.st.board[idx] === 0) ? idx : -1;
             if (hover !== go.hover) { go.hover = hover; goDraw(); }
+        }
+
+        // 모바일 확대: 19줄처럼 촘촘한 판을 크게 보고 스크롤하면서 둘 수 있게 한다
+        function goToggleZoom() {
+            if (!go || !go.canvas) return;
+            go.zoom = go.zoom > 1 ? 1 : 1.8;
+            const wrap = document.getElementById('go-board-wrap');
+            wrap.style.setProperty('--go-zoom', String(go.zoom));
+            document.getElementById('go-zoom-btn').innerHTML = go.zoom > 1
+                ? '<i class="fa-solid fa-magnifying-glass-minus mr-1.5"></i>원래대로'
+                : '<i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i>확대';
+            goResizeCanvas();
+            const sc = go.canvas.parentElement;
+            requestAnimationFrame(() => { sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; sc.scrollTop = (sc.scrollHeight - sc.clientHeight) / 2; });
         }
 
         function goOnPointerDown(e) {
