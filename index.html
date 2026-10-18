@@ -645,15 +645,6 @@
             background: rgba(20,20,20,.75); color: #fff; font-size: 13px; font-weight: 800;
             padding: 7px 16px; border-radius: 999px; transition: opacity .25s ease; white-space: nowrap;
         }
-        .cnr-role-reveal {
-            position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            background: rgba(15,15,20,.6); color: #fff; transition: opacity .4s ease; opacity: 1;
-        }
-        .cnr-role-reveal.fade-out { opacity: 0; }
-        .cnr-role-reveal-icon { font-size: 40px; margin-bottom: 10px; }
-        .cnr-role-reveal-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
-        .cnr-role-reveal-sub { font-size: 13px; font-weight: 600; color: #e8e8ea; }
         .cnr-controls-hint { font-size: 11px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
         .cnr-leave-btn {
             display: block; margin: 12px auto 0; font-size: 12px; font-weight: 700; color: var(--ink-soft);
@@ -671,6 +662,138 @@
         .cnr-leaderboard-row:nth-child(3) .cnr-leaderboard-rank { color: #b8702f; }
         .cnr-leaderboard-name { flex: 1; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .cnr-leaderboard-points { font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+
+        /* ---------- 쉼터 공용: 시작 예고(VS 소개 + 카운트다운), 종료 카드, 상태/버튼 ---------- */
+        .rz-intro {
+            position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(ellipse at center, rgba(28,30,44,.9), rgba(10,10,16,.94)); color: #fff;
+            transition: opacity .45s ease; opacity: 1; overflow: hidden; text-align: center; container-type: size;
+        }
+        .rz-intro.fade-out { opacity: 0; }
+        .rz-intro.go { pointer-events: none; }
+        .rz-intro-card { transition: transform .45s ease, opacity .45s ease; width: 100%; padding: 0 14px; animation: rzIntroIn .5s ease backwards; }
+        .rz-intro.counting .rz-intro-card { transform: translateY(-36%) scale(.6); opacity: .55; }
+        .rz-intro.counting .rz-intro-notes { opacity: 0; max-height: 0; margin-top: 0; }
+        .rz-intro.go .rz-intro-card { transform: translateY(-30%) scale(.6); opacity: 0; transition-duration: .2s; }
+        .rz-intro-title { font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #c8cadb; margin-bottom: 14px; }
+        .rz-intro-vs { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .rz-intro-side { flex: 1; min-width: 0; max-width: 168px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .rz-intro-side.me { animation: rzSlideL .55s cubic-bezier(.2,.9,.3,1) both; }
+        .rz-intro-side.opp { animation: rzSlideR .55s cubic-bezier(.2,.9,.3,1) both; }
+        .rz-intro-avatar {
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--tone); box-shadow: 0 0 0 3px rgba(255,255,255,.25), 0 8px 22px rgba(0,0,0,.45); font-size: 28px; margin-bottom: 4px;
+        }
+        .rz-intro-avatar .chess-piece { width: 44px; height: 44px; }
+        .rz-intro-name { font-size: 14px; font-weight: 800; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .rz-intro-badge { font-style: normal; font-size: 11.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.14); }
+        .rz-intro-sub { font-size: 10.5px; font-weight: 600; color: #bfc2d6; line-height: 1.35; }
+        .rz-intro-x { font-size: 26px; font-weight: 900; font-style: italic; color: #ffd24a; text-shadow: 0 0 18px rgba(255,210,74,.55); animation: rzVsPop .6s .25s cubic-bezier(.2,1.6,.4,1) both; }
+        .rz-intro-notes { margin-top: 14px; display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow: hidden; transition: opacity .3s ease, max-height .4s ease, margin .4s ease; }
+        .rz-intro-notes p { font-size: 11.5px; font-weight: 600; color: #d6d8e8; }
+        .rz-intro-count { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding-top: 14%; pointer-events: none; }
+        .rz-intro-num { font-size: clamp(48px, 20cqmin, 92px); font-weight: 900; color: #fff; text-shadow: 0 6px 30px rgba(0,0,0,.5); opacity: 0; line-height: 1; }
+        .rz-intro-num.pop { animation: rzNumPop .95s ease-out both; }
+        .rz-intro.go .rz-intro-num { font-size: clamp(36px, 13cqmin, 60px); color: #ffd24a; }
+        .rz-intro.go .rz-intro-num.pop { animation: rzGoPop .8s ease-out both; }
+        @keyframes rzIntroIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+        @keyframes rzSlideL { from { opacity: 0; transform: translateX(-46px); } to { opacity: 1; transform: none; } }
+        @keyframes rzSlideR { from { opacity: 0; transform: translateX(46px); } to { opacity: 1; transform: none; } }
+        @keyframes rzVsPop { from { opacity: 0; transform: scale(2.4); } to { opacity: 1; transform: scale(1); } }
+        @keyframes rzNumPop { 0% { opacity: 0; transform: scale(1.9); } 18% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(.82); } }
+        @keyframes rzGoPop { 0% { opacity: 0; transform: scale(.6); } 30% { opacity: 1; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
+        @media (prefers-reduced-motion: reduce) {
+            .rz-intro *, .rz-intro { animation-duration: .01s !important; transition-duration: .01s !important; }
+        }
+
+        .rz-end {
+            position: absolute; inset: 0; z-index: 15; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px; text-align: center; padding: 16px; background: rgba(15,15,22,.74); color: #fff; animation: rzIntroIn .35s ease both;
+        }
+        .rz-end-title { font-size: 26px; font-weight: 900; }
+        .rz-end-detail { font-size: 12.5px; font-weight: 700; color: #d8dae8; margin-bottom: 12px; max-width: 92%; line-height: 1.5; }
+        .rz-end-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .rz-end-peek { margin-top: 10px; background: none; border: none; color: #c4c7da; font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        .rz-status { text-align: center; font-size: 13px; font-weight: 800; color: var(--ink); margin: 10px 0 6px; min-height: 18px; }
+        .rz-status.danger { color: #e11d48; }
+        .rz-wait-sub { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin: -8px 0 14px; }
+        .rz-note {
+            display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 6px 0;
+            padding: 8px 12px; border-radius: 12px; background: #fff6e0; font-size: 12px; font-weight: 700; color: #7a5410;
+        }
+        .rz-note-btn { font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; border: none; background: #ffd24a; color: #4a3200; cursor: pointer; }
+        .rz-note-btn.ghost { background: #ece9df; color: var(--ink-soft); }
+        .rz-action-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
+        .rz-act-btn {
+            font-size: 12px; font-weight: 800; padding: 8px 14px; border-radius: 999px; border: none; background: #f1f1ef; color: var(--ink); cursor: pointer;
+        }
+        .rz-act-btn:disabled { opacity: .45; cursor: default; }
+        .rz-act-btn.danger { background: #ffe4e8; color: #be123c; }
+        .rz-act-btn.primary { background: var(--accent); color: var(--accent-ink); }
+        .rz-board-note { text-align: center; font-size: 11px; font-weight: 600; color: var(--ink-soft); margin: -8px auto 12px; max-width: 380px; line-height: 1.5; }
+        .rz-board-score { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
+        .rz-board-score b { font-weight: 800; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+        .rz-board-score small { font-size: 10.5px; font-weight: 600; color: var(--ink-soft); }
+        .rz-unranked { opacity: .62; }
+
+        /* ---------- 게임 5: 체스 ---------- */
+        .chess-wrap, .go-wrap { width: max(260px, min(100%, 540px, calc(88dvh - 330px))); margin: 0 auto; }
+        .chess-bar, .go-bar {
+            display: flex; align-items: center; gap: 8px; padding: 7px 12px; margin: 8px 0; border-radius: 12px;
+            background: #f4f3ef; font-size: 13px; font-weight: 800; transition: background .2s ease, box-shadow .2s ease;
+        }
+        .chess-bar.active, .go-bar.active { background: #e9f7d6; box-shadow: inset 0 0 0 2px var(--accent); }
+        .chess-dot, .go-stone-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid #222; flex-shrink: 0; }
+        .chess-dot.w, .go-stone-dot.w { background: #fff; }
+        .chess-dot.b, .go-stone-dot.b { background: #222; }
+        .chess-name, .go-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chess-clock { font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 800; background: #fff; padding: 2px 10px; border-radius: 8px; }
+        .chess-clock.low { color: #e11d48; }
+        .go-caps { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+        .chess-board-wrap, .go-board-wrap { position: relative; width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(20,20,20,.08), 0 10px 26px rgba(20,20,20,.18); }
+        .chess-board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; height: 100%; user-select: none; -webkit-user-select: none; }
+        .chess-sq { position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .chess-sq.light { background-color: #eeeed2; }
+        .chess-sq.dark { background-color: #769656; }
+        .chess-sq.last { background-image: linear-gradient(rgba(255,214,10,.42), rgba(255,214,10,.42)); }
+        .chess-sq.sel { background-image: linear-gradient(rgba(70,150,255,.5), rgba(70,150,255,.5)); }
+        .chess-sq.check { background-image: radial-gradient(circle, rgba(255,40,40,.92) 0, rgba(255,40,40,.4) 55%, rgba(255,40,40,0) 78%); }
+        .chess-sq.tgt::after { content: ''; position: absolute; width: 30%; height: 30%; border-radius: 50%; background: rgba(20,20,20,.24); pointer-events: none; z-index: 2; }
+        .chess-sq.cap::after { content: ''; position: absolute; inset: 4%; border-radius: 50%; border: 5px solid rgba(20,20,20,.26); pointer-events: none; z-index: 2; }
+        .chess-piece { width: 92%; height: 92%; pointer-events: none; position: relative; z-index: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+        .chess-piece use { fill: var(--pf); stroke: var(--ps); stroke-width: 1.4; stroke-linejoin: round; }
+        .chess-piece.w { --pf: #fbfaf4; --ps: #1c1c22; --pd: #1c1c22; }
+        .chess-piece.b { --pf: #35353d; --ps: #0b0b0e; --pd: #d9d9e0; }
+        .chess-coord { position: absolute; font-size: 9px; font-weight: 800; font-style: normal; opacity: .8; pointer-events: none; z-index: 0; }
+        .chess-coord.f { right: 3px; bottom: 1px; }
+        .chess-coord.r { left: 3px; top: 1px; }
+        .chess-sq.light .chess-coord { color: #769656; }
+        .chess-sq.dark .chess-coord { color: #eeeed2; }
+        .chess-promo { position: absolute; inset: 0; z-index: 12; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; background: rgba(15,15,22,.6); padding: 12px; }
+        .chess-promo-btn { width: 21%; aspect-ratio: 1; border-radius: 14px; border: none; background: #eeeed2; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .chess-promo-btn .chess-piece { width: 88%; height: 88%; }
+        .chess-promo-cancel { flex-basis: 100%; max-width: 90px; font-size: 12px; font-weight: 800; padding: 6px 0; border-radius: 999px; border: none; background: #ece9df; color: var(--ink-soft); cursor: pointer; }
+        .chess-moves { margin-top: 10px; display: flex; align-items: center; gap: 6px; overflow-x: auto; white-space: nowrap; padding: 7px 10px; background: #faf9f6; border-radius: 10px; font-size: 12px; scrollbar-width: thin; }
+        .chess-mv-n { color: var(--ink-soft); font-weight: 700; }
+        .chess-mv { font-weight: 800; color: var(--ink); }
+        .chess-mv-empty { color: var(--ink-soft); font-weight: 600; }
+
+        /* ---------- 게임 6: 바둑 ---------- */
+        .go-board-wrap canvas { width: 100%; height: 100%; display: block; touch-action: manipulation; cursor: pointer; }
+        .go-info { text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); margin-top: 8px; }
+        .go-size-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .go-size-opt input { position: absolute; opacity: 0; pointer-events: none; }
+        .go-size-opt span {
+            display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 70px; padding: 8px 12px; border-radius: 14px;
+            background: #faf9f6; border: 2px solid rgba(20,20,20,.07); font-size: 13px; font-weight: 800; cursor: pointer;
+        }
+        .go-size-opt span small { font-size: 10px; font-weight: 600; color: var(--ink-soft); }
+        .go-size-opt input:checked + span { border-color: var(--accent); background: #eefadc; }
+        .go-score-row { text-align: center; }
+        .go-score-text { font-size: 12.5px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+        .go-intro-stone { width: 34px; height: 34px; border-radius: 50%; display: block; box-shadow: inset -3px -4px 6px rgba(0,0,0,.25), 0 3px 8px rgba(0,0,0,.4); }
+        .go-intro-stone.b { background: radial-gradient(circle at 35% 30%, #77777c, #0e0e11 70%); }
+        .go-intro-stone.w { background: radial-gradient(circle at 35% 30%, #fff, #cfcfc6 80%); }
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
@@ -914,7 +1037,7 @@
                 <button onclick="openRestZoneModal()" class="rest-zone-teaser reveal-on-scroll press-feel">
                     <span class="rest-zone-eyebrow">쉼터</span>
                     <p class="rest-zone-title">잠깐 쉬어가세요</p>
-                    <p class="rest-zone-sub">왁스볼부터 절대음감, 경찰과 도둑까지 — 눌러서 둘러보기</p>
+                    <p class="rest-zone-sub">왁스볼부터 체스·바둑, 경찰과 도둑까지 — 눌러서 둘러보기</p>
                     <span class="rest-zone-teaser-cta">쉼터 들어가기 <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </button>
             </section>
@@ -1506,6 +1629,42 @@
         </div>
     </div>
 
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="chess-sym-P" viewBox="0 0 45 45">
+          <circle cx="22.5" cy="12.5" r="5.3"/>
+          <path d="M17.2 20.6c1.6-1.6 3.4-2.2 5.3-2.2s3.7.6 5.3 2.2c-.4 3.6 1.6 7 3 12.4H14.2c1.4-5.4 3.4-8.8 3-12.4z"/>
+          <path d="M11.5 38.5c0-3.4 2.6-5.6 6-5.6h10c3.4 0 6 2.2 6 5.6z"/>
+        </symbol>
+        <symbol id="chess-sym-R" viewBox="0 0 45 45">
+          <path d="M11 38.5v-4.2h23v4.2z"/>
+          <path d="M14 34.3l1.4-17.6h14.2L31 34.3z"/>
+          <path d="M12 16.7V9h4.6v3h3.2V9h5.4v3h3.2V9H33v7.7z"/>
+          <path d="M14.6 21.2h15.8" style="fill:none;stroke:var(--pd);stroke-width:1.2"/>
+        </symbol>
+        <symbol id="chess-sym-N" viewBox="0 0 45 45">
+          <path d="M12 38.5c.2-6.8 1.6-12.2 7-16.6-2.6.2-5.2 1.6-7.2 4.2l-2.6-2.4c2.2-4.4 5.6-9.4 11.6-12.2l.6-4.4 3.6 3.2c8.6.8 12.8 9.6 12.4 28.2z"/>
+          <circle cx="22.8" cy="14.6" r="1.5" style="fill:var(--pd);stroke:none"/>
+          <path d="M12.4 24.2l2.6 1.4" style="fill:none;stroke:var(--pd);stroke-width:1.2"/>
+        </symbol>
+        <symbol id="chess-sym-B" viewBox="0 0 45 45">
+          <path d="M12 38.5v-3.2c4.2 0 6.6-.8 7.4-2.3-5.6-3.4-5.6-11.4 3.1-19.5 8.7 8.1 8.7 16.1 3.1 19.5.8 1.5 3.2 2.3 7.4 2.3v3.2z"/>
+          <circle cx="22.5" cy="10.2" r="3.6"/>
+          <path d="M22.5 17.4v7.2M19.2 21h6.6" style="fill:none;stroke:var(--pd);stroke-width:1.3"/>
+        </symbol>
+        <symbol id="chess-sym-Q" viewBox="0 0 45 45">
+          <path d="M11.5 38.5v-3.8L8.8 15.6l7.7 8.2 1.8-12.2 4.2 11.6 4.2-11.6 1.8 12.2 7.7-8.2-2.7 19.1v3.8z"/>
+          <circle cx="8.6" cy="13.8" r="2.4"/><circle cx="18.3" cy="9.6" r="2.4"/><circle cx="26.7" cy="9.6" r="2.4"/><circle cx="36.4" cy="13.8" r="2.4"/><circle cx="22.5" cy="8.2" r="2.4"/>
+          <path d="M13.2 31.2h18.6" style="fill:none;stroke:var(--pd);stroke-width:1.2"/>
+        </symbol>
+        <symbol id="chess-sym-K" viewBox="0 0 45 45">
+          <path d="M20.8 3.6h3.4v3.2h3.2v3.2h-3.2v3.2h-3.4V10h-3.2V6.8h3.2z"/>
+          <path d="M11.8 38.5v-3.6c-1.8-6.8 1.2-12.6 6.8-15.2l3.9-1.6 3.9 1.6c5.6 2.6 8.6 8.4 6.8 15.2v3.6z"/>
+          <path d="M13.4 31.2h18.2" style="fill:none;stroke:var(--pd);stroke-width:1.2"/>
+        </symbol>
+      </defs>
+    </svg>
+
     <!-- ============================== 쉼터 모달 — 로그인 여부와 상관없이(랜딩 화면·로그인 후 홈 화면 어디서든) 열 수 있음 ============================== -->
     <div id="restzone-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="card max-w-4xl w-full flex flex-col" style="height:88vh; height:88dvh;">
@@ -1540,7 +1699,17 @@
                         <button onclick="restzoneOpenGame('chase')" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#e4ecff;"><i class="fa-solid fa-user-secret" style="color:#2d4ed8;"></i></span>
                             <span class="restzone-game-name">경찰과 도둑</span>
-                            <span class="restzone-game-desc">3D 온라인 1:1 추격전 · 로그인 필요</span>
+                            <span class="restzone-game-desc">2D 온라인 1:1 추격전 · 로그인 필요</span>
+                        </button>
+                        <button onclick="restzoneOpenGame('chess')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#e6e8f3;"><i class="fa-solid fa-chess-knight" style="color:#3a3f5c;"></i></span>
+                            <span class="restzone-game-name">체스</span>
+                            <span class="restzone-game-desc">정식 룰 온라인 1:1 · 각자 10분 · 승률 순위 · 로그인 필요</span>
+                        </button>
+                        <button onclick="restzoneOpenGame('go')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#f6ecd2;"><i class="fa-solid fa-circle-half-stroke" style="color:#7a5a1f;"></i></span>
+                            <span class="restzone-game-name">바둑</span>
+                            <span class="restzone-game-desc">온라인 1:1 · 승률 차이만큼 접바둑 · 승률 순위 · 로그인 필요</span>
                         </button>
                     </div>
                 </div>
@@ -1625,7 +1794,7 @@
                     <!-- 로비: 방 만들기 / 참가하기 -->
                     <div id="cnr-state-lobby" class="hidden cnr-center">
                         <i class="fa-solid fa-user-secret text-3xl mb-3" style="color:#2d4ed8;"></i>
-                        <p class="cnr-msg">친구와 3D 경찰과 도둑 추격전을 해보세요<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">1분 안에 도둑이 반대쪽 깃발을 가져오면 도둑 승리, 경찰이 막아내면 경찰 승리!</span></p>
+                        <p class="cnr-msg">친구와 2D 경찰과 도둑 추격전을 해보세요<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">1분 안에 도둑이 반대쪽 깃발을 가져오면 도둑 승리, 경찰이 막아내면 경찰 승리!</span></p>
                         <button onclick="cnrCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
                         <div class="cnr-join-row">
                             <input id="cnr-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
@@ -1660,11 +1829,6 @@
                         <div class="cnr-canvas-wrap">
                             <canvas id="cnr-canvas"></canvas>
                             <p id="cnr-banner" class="cnr-banner hidden"></p>
-                            <div id="cnr-role-reveal" class="cnr-role-reveal hidden">
-                                <span id="cnr-role-reveal-icon" class="cnr-role-reveal-icon"></span>
-                                <p id="cnr-role-reveal-title" class="cnr-role-reveal-title"></p>
-                                <p id="cnr-role-reveal-sub" class="cnr-role-reveal-sub"></p>
-                            </div>
                         </div>
                         <p class="cnr-controls-hint">WASD 이동 · Space 대쉬(쿨타임 3초) · 탑뷰 2D</p>
                         <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
@@ -1686,6 +1850,201 @@
                         <div id="cnr-leaderboard-list" class="cnr-leaderboard-list"></div>
                         <div class="text-center">
                             <button onclick="cnrBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 게임 5: 체스 -->
+                <div id="restzone-panel-chess" class="hidden">
+
+                    <!-- 로그인 전 -->
+                    <div id="chess-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-chess-knight text-3xl mb-3" style="color:#3a3f5c;"></i>
+                        <p class="cnr-msg">체스 온라인 대국은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+
+                    <!-- 로비 -->
+                    <div id="chess-state-lobby" class="hidden cnr-center">
+                        <i class="fa-solid fa-chess-knight text-3xl mb-3" style="color:#3a3f5c;"></i>
+                        <p class="cnr-msg">친구와 정식 룰 체스 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">각자 10분 · 캐슬링/앙파상/프로모션 모두 가능</span></p>
+
+                        <button onclick="chessCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="cnr-join-row">
+                            <input id="chess-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="chessJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="chess-lobby-error" class="cnr-lobby-error hidden"></p>
+                        <button onclick="chessShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>승률 순위 보기</button>
+                    </div>
+
+                    <!-- 상대방을 기다리는 중 -->
+                    <div id="chess-state-waiting" class="hidden cnr-center">
+                        <div class="cnr-spinner"></div>
+                        <p class="cnr-msg">상대방을 기다리는 중...</p>
+
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="chess-room-code-display">-----</b>
+                            <button onclick="chessCopyRoomCode()" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <button onclick="chessLeaveRoom()" class="press-feel cnr-cancel-btn">취소</button>
+                    </div>
+
+                    <!-- 대국 화면 -->
+                    <div id="chess-state-game" class="hidden">
+                        <div class="chess-wrap">
+                            <div id="chess-bar-top" class="chess-bar">
+                                <span id="chess-dot-top" class="chess-dot b"></span>
+                                <span id="chess-name-top" class="chess-name"></span>
+                                <span id="chess-clock-top" class="chess-clock">10:00</span>
+                            </div>
+                            <div id="chess-board-wrap" class="chess-board-wrap">
+                                <div id="chess-board" class="chess-board"></div>
+                                <div id="chess-promo" class="chess-promo hidden"></div>
+
+                        <div id="chess-end" class="rz-end hidden">
+                            <p id="chess-end-title" class="rz-end-title"></p>
+                            <p id="chess-end-detail" class="rz-end-detail"></p>
+                            <div class="rz-end-actions">
+                                <button onclick="chessBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                                <button onclick="chessShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                            </div>
+                            <button onclick="chessHideEnd()" class="rz-end-peek">보드 다시 보기</button>
+                        </div>
+                            </div>
+                            <div id="chess-bar-bottom" class="chess-bar">
+                                <span id="chess-dot-bottom" class="chess-dot w"></span>
+                                <span id="chess-name-bottom" class="chess-name"></span>
+                                <span id="chess-clock-bottom" class="chess-clock">10:00</span>
+                            </div>
+                            <p id="chess-status" class="rz-status"></p>
+                            <div id="chess-disc" class="rz-note hidden">
+                                <span>상대와 연결이 끊긴 것 같아요.</span>
+                                <button onclick="chessClaimDisconnectWin()" class="press-feel rz-note-btn">승리로 처리</button>
+                            </div>
+                            <div id="chess-draw-offer" class="rz-note hidden">
+                                <span>상대가 무승부를 제안했어요.</span>
+                                <button onclick="chessAcceptDraw()" class="press-feel rz-note-btn">수락</button>
+                                <button onclick="chessDeclineDraw()" class="press-feel rz-note-btn ghost">거절</button>
+                            </div>
+                            <div class="rz-action-row">
+                                <button id="chess-draw-btn" onclick="chessOfferDraw()" class="press-feel rz-act-btn"><i class="fa-regular fa-handshake mr-1.5"></i>무승부 제안</button>
+                                <button id="chess-resign-btn" onclick="chessResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
+                                <button onclick="chessLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                            </div>
+                            <div id="chess-moves" class="chess-moves"></div>
+                        </div>
+                    </div>
+
+                    <!-- 승률 순위표 -->
+                    <div id="chess-state-leaderboard" class="hidden">
+                        <p class="cnr-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>체스 승률 순위</p>
+                        <p class="rz-board-note">승률 = 승수 ÷ 전체 판수 · 3판 이상 플레이한 분부터 순위에 올라요 (무승부는 판수에만 포함)</p>
+                        <div id="chess-leaderboard-list" class="cnr-leaderboard-list"></div>
+                        <div class="text-center">
+                            <button onclick="chessBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 게임 6: 바둑 -->
+                <div id="restzone-panel-go" class="hidden">
+
+                    <!-- 로그인 전 -->
+                    <div id="go-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-circle-half-stroke text-3xl mb-3" style="color:#7a5a1f;"></i>
+                        <p class="cnr-msg">바둑 온라인 대국은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+
+                    <!-- 로비 -->
+                    <div id="go-state-lobby" class="hidden cnr-center">
+                        <i class="fa-solid fa-circle-half-stroke text-3xl mb-3" style="color:#7a5a1f;"></i>
+                        <p class="cnr-msg">친구와 바둑 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">승률 차이 10%p마다 승률이 낮은 쪽이 1점씩 깔고 시작해요 (접바둑)</span></p>
+                        <div class="go-size-row" role="radiogroup" aria-label="바둑판 크기">
+                            <label class="go-size-opt"><input type="radio" name="go-size" value="9"><span>9줄<small>빠르게</small></span></label>
+                            <label class="go-size-opt"><input type="radio" name="go-size" value="13"><span>13줄<small>적당히</small></span></label>
+                            <label class="go-size-opt"><input type="radio" name="go-size" value="19" checked><span>19줄<small>정식</small></span></label>
+                        </div>
+                        <button onclick="goCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="cnr-join-row">
+                            <input id="go-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="goJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="go-lobby-error" class="cnr-lobby-error hidden"></p>
+                        <button onclick="goShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>승률 순위 보기</button>
+                    </div>
+
+                    <!-- 상대방을 기다리는 중 -->
+                    <div id="go-state-waiting" class="hidden cnr-center">
+                        <div class="cnr-spinner"></div>
+                        <p class="cnr-msg">상대방을 기다리는 중...</p>
+                        <p id="go-waiting-size" class="rz-wait-sub"></p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="go-room-code-display">-----</b>
+                            <button onclick="goCopyRoomCode()" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <button onclick="goLeaveRoom()" class="press-feel cnr-cancel-btn">취소</button>
+                    </div>
+
+                    <!-- 대국 화면 -->
+                    <div id="go-state-game" class="hidden">
+                        <div class="go-wrap">
+                            <div id="go-bar-top" class="go-bar">
+                                <span id="go-dot-top" class="go-stone-dot b"></span>
+                                <span id="go-name-top" class="go-name"></span>
+                                <span id="go-caps-top" class="go-caps"></span>
+                            </div>
+                            <div id="go-board-wrap" class="go-board-wrap">
+                                <canvas id="go-canvas"></canvas>
+
+                        <div id="go-end" class="rz-end hidden">
+                            <p id="go-end-title" class="rz-end-title"></p>
+                            <p id="go-end-detail" class="rz-end-detail"></p>
+                            <div class="rz-end-actions">
+                                <button onclick="goBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                                <button onclick="goShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                            </div>
+                            <button onclick="goHideEnd()" class="rz-end-peek">보드 다시 보기</button>
+                        </div>
+                            </div>
+                            <div id="go-bar-bottom" class="go-bar">
+                                <span id="go-dot-bottom" class="go-stone-dot w"></span>
+                                <span id="go-name-bottom" class="go-name"></span>
+                                <span id="go-caps-bottom" class="go-caps"></span>
+                            </div>
+                            <p id="go-info" class="go-info"></p>
+                            <p id="go-status" class="rz-status"></p>
+                            <div id="go-disc" class="rz-note hidden">
+                                <span>상대와 연결이 끊긴 것 같아요.</span>
+                                <button onclick="goClaimDisconnectWin()" class="press-feel rz-note-btn">승리로 처리</button>
+                            </div>
+                            <div id="go-score-row" class="go-score-row hidden">
+                                <p id="go-score-text" class="go-score-text"></p>
+                                <div class="rz-action-row">
+                                    <button id="go-confirm-btn" onclick="goConfirmScore()" class="press-feel rz-act-btn primary">확정</button>
+                                    <button onclick="goResume()" class="press-feel rz-act-btn">계속 두기</button>
+                                </div>
+                            </div>
+                            <div id="go-action-row" class="rz-action-row">
+                                <button id="go-pass-btn" onclick="goPassMine()" class="press-feel rz-act-btn"><i class="fa-regular fa-hand mr-1.5"></i>한 수 쉬기</button>
+                                <button id="go-resign-btn" onclick="goResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
+                                <button onclick="goLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 승률 순위표 -->
+                    <div id="go-state-leaderboard" class="hidden">
+                        <p class="cnr-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>바둑 승률 순위</p>
+                        <p class="rz-board-note">승률 = 승수 ÷ 전체 판수 · 3판 이상 플레이한 분부터 순위에 올라요 · 이 승률로 접바둑이 정해져요 (3판 미만은 50%로 계산)</p>
+                        <div id="go-leaderboard-list" class="cnr-leaderboard-list"></div>
+                        <div class="text-center">
+                            <button onclick="goBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
                         </div>
                     </div>
 
@@ -2606,7 +2965,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑' };
+        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑' };
 
         function openRestZoneModal() {
             document.getElementById('restzone-modal').classList.remove('hidden');
@@ -2614,16 +2973,22 @@
             restzoneShowHub();
         }
         function closeRestZoneModal() {
+            if (!rzConfirmLeaveLive()) return; // 진행 중인 체스/바둑 대국이 있으면 "나가면 패배" 확인
             document.getElementById('restzone-modal').classList.add('hidden');
             unlockBodyScroll();
             if (typeof teardownCnr === 'function') teardownCnr();
+            if (typeof teardownChess === 'function') teardownChess();
+            if (typeof teardownGo === 'function') teardownGo();
         }
         function restzoneShowHub() {
+            if (!rzConfirmLeaveLive()) return;
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
             document.getElementById('restzone-panel-hub').classList.remove('hidden');
             document.getElementById('restzone-back-btn').classList.add('hidden');
             document.getElementById('restzone-modal-title').innerHTML = '<i class="fa-solid fa-mug-hot mr-1.5" style="color:var(--accent-ink);"></i>쉼터';
             if (typeof teardownCnr === 'function') teardownCnr();
+            if (typeof teardownChess === 'function') teardownChess();
+            if (typeof teardownGo === 'function') teardownGo();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -2636,6 +3001,8 @@
             else if (name === 'color') ensureColorGameInit();
             else if (name === 'pitch') ensurePitchGameInit();
             else if (name === 'chase') ensureCnrInit();
+            else if (name === 'chess') ensureChessInit();
+            else if (name === 'go') ensureGoInit();
         }
 
         // =====================================================================
@@ -2955,16 +3322,16 @@
             if (!cnr || cnr.role !== 'host' || cnr.phase !== 'waiting') return;
             cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
             const hostRole = Math.random() < 0.5 ? 'cop' : 'thief';
-            const startAt = Date.now() + 2600; // 역할 공개 화면을 읽을 시간을 넉넉히 준다
-            cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startAt } });
-            cnrBeginMatch(hostRole, startAt);
+            // 공통 시작 예고(VS 소개 + 3·2·1)가 끝나는 시점. 상대 시계와 무관하게 "지금부터 N ms 뒤"로 전달한다.
+            cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startIn: RZ_INTRO_LEAD_MS } });
+            cnrBeginMatch(hostRole, Date.now() + RZ_INTRO_LEAD_MS);
         }
 
         function cnrHandleWelcome(payload) {
             if (!cnr || cnr.role !== 'guest' || cnr.phase !== 'waiting') return;
             cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
             const myRole = payload.hostRole === 'cop' ? 'thief' : 'cop';
-            cnrBeginMatch(myRole, payload.startAt);
+            cnrBeginMatch(myRole, Date.now() + (payload.startIn || RZ_INTRO_LEAD_MS));
         }
 
         function cnrCopyRoomCode() {
@@ -2992,7 +3359,7 @@
             if (!cnr) return;
             if (cnr.channel) { try { supabaseClient.removeChannel(cnr.channel); } catch (e) {} }
             if (cnr.rafId) cancelAnimationFrame(cnr.rafId);
-            clearTimeout(cnr.roleRevealTimer);
+            if (cnr.intro) cnr.intro.cancel();
             cnrDetachInputListeners();
             if (cnr.resizeObserver) { try { cnr.resizeObserver.disconnect(); } catch (e) {} }
             cnr = null;
@@ -3065,27 +3432,20 @@
             document.getElementById('cnr-hud-timer').innerText = '1:00';
             document.getElementById('cnr-dash-bar').style.width = '100%';
 
-            // 시작하기 전에 내 역할을 큼지막하게 먼저 보여준다 (경찰/도둑 구분이 헷갈리지 않도록)
-            const isCopRole = myRole === 'cop';
-            const reveal = document.getElementById('cnr-role-reveal');
-            document.getElementById('cnr-role-reveal-icon').innerHTML = isCopRole
-                ? '<i class="fa-solid fa-shield-halved" style="color:#8ec3ff;"></i>'
-                : '<i class="fa-solid fa-user-secret" style="color:#ffb257;"></i>';
-            document.getElementById('cnr-role-reveal-title').innerText = '당신은 ' + (isCopRole ? '경찰' : '도둑') + '입니다';
-            document.getElementById('cnr-role-reveal-sub').innerText = isCopRole
-                ? '도둑이 깃발을 가져가지 못하게 막으세요!'
-                : '반대쪽 깃발을 가져와 홈존으로 복귀하세요!';
-            if (reveal) {
-                reveal.classList.remove('hidden', 'fade-out');
-                const revealMs = Math.max(1600, startAt - Date.now());
-                clearTimeout(cnr.roleRevealTimer);
-                cnr.roleRevealTimer = setTimeout(() => {
-                    reveal.classList.add('fade-out');
-                    setTimeout(() => reveal.classList.add('hidden'), 420);
-                }, revealMs);
-            }
-
             cnrShowState('game');
+            // 시작 예고: VS 소개(내 역할 공개) → 3·2·1 → "시작!" (공통 연출)
+            const roleInfo = (role, name, me) => role === 'cop'
+                ? { name: name + (me ? ' (나)' : ''), badge: '경찰', sub: me ? '도둑이 깃발을 가져가지 못하게 막으세요!' : '추격하는 경찰', icon: '<i class="fa-solid fa-shield-halved" style="color:#fff;"></i>', color: '#2d4ed8' }
+                : { name: name + (me ? ' (나)' : ''), badge: '도둑', sub: me ? '반대쪽 깃발을 가져와 홈존으로 복귀하세요!' : '깃발을 노리는 도둑', icon: '<i class="fa-solid fa-user-secret" style="color:#fff;"></i>', color: '#d9730d' };
+            if (cnr.intro) cnr.intro.cancel();
+            cnr.intro = rzIntroPlay(document.querySelector('#cnr-state-game .cnr-canvas-wrap'), {
+                startAt,
+                title: '경찰과 도둑 · 1분 승부',
+                me: roleInfo(myRole, cnr.myName, true),
+                opp: roleInfo(cnr.oppRole, cnr.oppName || '상대', false),
+                notes: ['WASD 이동 · Space 대쉬(쿨타임 3초)', '도둑은 깃발을 홈존으로, 경찰은 1분을 버티면 승리'],
+            });
+
             cnrEnsureCanvasReady();
             cnrAttachInputListeners();
             cnr.rafId = requestAnimationFrame(cnrAnimate);
@@ -3131,7 +3491,7 @@
         }
 
         function cnrTryDash() {
-            if (!cnr || cnr.phase !== 'game' || cnr.dashCooldown > 0 || cnr.dashing || cnr.frozenTimer > 0) return;
+            if (!cnr || cnr.phase !== 'game' || Date.now() < cnr.startAt || cnr.dashCooldown > 0 || cnr.dashing || cnr.frozenTimer > 0) return;
             const dir = cnrInputDir() || cnr.facing;
             cnr.dashing = true; cnr.dashTimer = CNR_DASH_DURATION;
             cnr.dashDir = dir;
@@ -3143,6 +3503,7 @@
         }
 
         function cnrUpdateMyPlayer(dt) {
+            if (Date.now() < cnr.startAt) { cnr.myVel.x = 0; cnr.myVel.z = 0; return; } // 시작 예고(카운트다운) 중에는 대기
             if (cnr.frozenTimer > 0) {
                 cnr.frozenTimer -= dt;
                 cnr.myVel.x *= 0.85; cnr.myVel.z *= 0.85;
@@ -3567,6 +3928,1617 @@
         }
 
 
+
+        // =====================================================================
+        // 쉼터 공용 — 효과음, 시작 예고(VS 소개 → 3·2·1 카운트다운 → "시작!"), 온라인 방 헬퍼, 승률 순위표
+        // 방에서 하는 게임(경찰과 도둑 / 체스 / 바둑)이 모두 이 연출을 쓴다.
+        // 호스트가 "지금부터 N밀리초 뒤에 시작"(startIn)만 보내고, 각 클라이언트가 자기 시계로 startAt을 계산하므로
+        // 두 사람 컴퓨터의 시계가 조금 어긋나 있어도 거의 같은 순간에 시작한다.
+        // =====================================================================
+        const RZ_COUNT_MS = 3000;       // 3·2·1 카운트다운 길이
+        const RZ_INTRO_LEAD_MS = 5600;  // VS 소개 2.6초 + 카운트다운 3초
+        const RZ_MIN_GAMES_FOR_RANK = 3; // 순위표에 정식으로 오르는 최소 판 수 (그 전에는 '배치 중'으로 아래에 표시)
+
+        let rzAudioCtx = null;
+        function rzTone(freq, dur, type, vol, slideTo) {
+            try {
+                if (!rzAudioCtx) rzAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = rzAudioCtx;
+                if (ctx.state === 'suspended') ctx.resume();
+                const t0 = ctx.currentTime;
+                const osc = ctx.createOscillator(), gain = ctx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, t0);
+                if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+                gain.gain.setValueAtTime(0.0001, t0);
+                gain.gain.exponentialRampToValueAtTime(vol || 0.15, t0 + 0.012);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(t0); osc.stop(t0 + dur + 0.03);
+            } catch (e) { /* 소리는 없어도 게임은 계속된다 */ }
+        }
+        function rzSoundTick() { rzTone(540, 0.13, 'sine', 0.16); }
+        function rzSoundGo() { rzTone(784, 0.16, 'triangle', 0.2); setTimeout(() => rzTone(1175, 0.32, 'triangle', 0.2), 110); }
+        function rzSoundWin() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => rzTone(f, 0.22, 'triangle', 0.18), i * 110)); }
+        function rzSoundLose() { [392, 330, 262].forEach((f, i) => setTimeout(() => rzTone(f, 0.26, 'sine', 0.16), i * 140)); }
+
+        // ---- 시작 예고 연출 ----
+        // opts: { startAt, title, me:{name,badge,sub,icon,color}, opp:{...}, notes:[문장...], onGo }
+        // 반환값: { cancel() } — 게임을 나갈 때 호출해서 타이머를 정리한다.
+        function rzIntroPlay(hostEl, opts) {
+            if (!hostEl) return { cancel() {} };
+            const side = (p, cls) => `
+                <div class="rz-intro-side ${cls}" style="--tone:${p.color || '#8ec3ff'};">
+                    <span class="rz-intro-avatar">${p.icon || ''}</span>
+                    <b class="rz-intro-name">${escapeHtml(p.name || '')}</b>
+                    <em class="rz-intro-badge">${escapeHtml(p.badge || '')}</em>
+                    ${p.sub ? `<small class="rz-intro-sub">${escapeHtml(p.sub)}</small>` : ''}
+                </div>`;
+            const el = document.createElement('div');
+            el.className = 'rz-intro';
+            el.innerHTML = `
+                <div class="rz-intro-card">
+                    <p class="rz-intro-title">${escapeHtml(opts.title || '')}</p>
+                    <div class="rz-intro-vs">${side(opts.me, 'me')}<span class="rz-intro-x">VS</span>${side(opts.opp, 'opp')}</div>
+                    <div class="rz-intro-notes">${(opts.notes || []).map(n => `<p>${escapeHtml(n)}</p>`).join('')}</div>
+                </div>
+                <div class="rz-intro-count"><span class="rz-intro-num"></span></div>`;
+            hostEl.appendChild(el);
+            const numEl = el.querySelector('.rz-intro-num');
+            const timeouts = [];
+            let timer = null, lastN = 0;
+            const pop = () => { numEl.classList.remove('pop'); void numEl.offsetWidth; numEl.classList.add('pop'); };
+            const tick = () => {
+                const rem = opts.startAt - Date.now();
+                if (rem > RZ_COUNT_MS) return; // 아직 VS 소개 단계
+                if (rem > 0) {
+                    el.classList.add('counting');
+                    const n = Math.ceil(rem / 1000);
+                    if (n !== lastN) { lastN = n; numEl.textContent = String(n); pop(); rzSoundTick(); }
+                    return;
+                }
+                clearInterval(timer);
+                el.classList.add('counting', 'go');
+                numEl.textContent = '시작!';
+                pop();
+                rzSoundGo();
+                try { if (opts.onGo) opts.onGo(); } catch (e) {}
+                timeouts.push(setTimeout(() => el.classList.add('fade-out'), 650));
+                timeouts.push(setTimeout(() => el.remove(), 1150));
+            };
+            timer = setInterval(tick, 40);
+            tick();
+            return { cancel() { clearInterval(timer); timeouts.forEach(clearTimeout); el.remove(); } };
+        }
+
+        // ---- 온라인 방 (체스/바둑용) ----
+        function rzRoomChannel(game, code, handlers) {
+            return supabaseClient
+                .channel(game + '-room-' + code)
+                .on('broadcast', { event: 'hello' }, (m) => handlers.onHello(m.payload))
+                .on('broadcast', { event: 'welcome' }, (m) => handlers.onWelcome(m.payload))
+                .on('broadcast', { event: 'msg' }, (m) => handlers.onMsg(m.payload))
+                .subscribe((status) => { if (status === 'SUBSCRIBED' && handlers.onSubscribed) handlers.onSubscribed(); });
+        }
+        function rzSend(channel, event, payload) {
+            if (!channel) return;
+            try { channel.send({ type: 'broadcast', event, payload }); } catch (e) {}
+        }
+        // 나가기 직전에 보낸 메시지(기권 등)가 전송될 시간을 조금 주고 채널을 닫는다
+        function rzCloseChannelSoon(channel) {
+            if (!channel) return;
+            setTimeout(() => { try { supabaseClient.removeChannel(channel); } catch (e) {} }, 450);
+        }
+        function rzCopyRoomCode(code) {
+            try {
+                navigator.clipboard.writeText(code);
+                showToast('방 코드를 복사했어요: ' + code, 'success');
+            } catch (e) {
+                showToast('방 코드: ' + code, 'info');
+            }
+        }
+
+        // 진행 중인 체스/바둑 대국이 있는지 — 있으면 쉼터를 닫거나 허브로 돌아가기 전에 "나가면 패배" 확인을 받는다
+        function rzConfirmLeaveLive() {
+            let name = null;
+            if (typeof chess !== 'undefined' && chess && chess.phase === 'game') name = '체스';
+            else if (typeof go !== 'undefined' && go && go.phase === 'game') name = '바둑';
+            if (!name) return true;
+            return confirm('진행 중인 ' + name + ' 대국에서 나가면 패배로 기록돼요. 정말 나갈까요?');
+        }
+
+        // ---- 승률 순위표 ----
+        // rows: [{ name, wins, games, draws? }]  ·  승률 = 승수 ÷ 전체 판수 (무승부는 판수에만 포함)
+        function rzRenderWinrateBoard(listEl, rows, withDraws) {
+            const items = rows.map(r => {
+                const games = Number(r.games) || 0, wins = Number(r.wins) || 0, draws = Number(r.draws) || 0;
+                return { name: r.name, wins, games, draws, losses: Math.max(0, games - wins - draws),
+                         rate: games > 0 ? wins / games * 100 : 0, ranked: games >= RZ_MIN_GAMES_FOR_RANK };
+            });
+            items.sort((a, b) => (Number(b.ranked) - Number(a.ranked)) || (b.rate - a.rate) || (b.games - a.games));
+            if (items.length === 0) {
+                listEl.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">아직 기록이 없어요. 첫 대국을 플레이해보세요!</p>';
+                return;
+            }
+            let rank = 0;
+            listEl.innerHTML = items.slice(0, 30).map(it => {
+                if (it.ranked) rank++;
+                const record = withDraws ? `${it.wins}승 ${it.draws}무 ${it.losses}패` : `${it.wins}승 ${it.losses}패`;
+                return `
+                    <div class="cnr-leaderboard-row ${it.ranked ? '' : 'rz-unranked'}">
+                        <span class="cnr-leaderboard-rank">${it.ranked ? rank : '-'}</span>
+                        <span class="cnr-leaderboard-name">${escapeHtml(it.name || '익명')}</span>
+                        <span class="rz-board-score"><b>${it.rate.toFixed(1)}%</b><small>${record} · ${it.games}판${it.ranked ? '' : ' (배치 중)'}</small></span>
+                    </div>`;
+            }).join('');
+        }
+
+        // ---- 체스 엔진 (순수 로직: 정식 룰 — 캐슬링/앙파상/프로모션/체크메이트/스테일메이트/무승부 규칙) ----
+        // 보드: 길이 64 배열, index = rank행*8 + file열. rank행 0 = 흑의 뒷줄(8랭크), 7 = 백의 뒷줄(1랭크).
+        // 말: 대문자 = 백(P N B R Q K), 소문자 = 흑, 빈칸 = ''.
+
+        const CHESS_START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+        const CHESS_KNIGHT_STEPS = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
+        const CHESS_KING_STEPS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+        const CHESS_BISHOP_DIRS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+        const CHESS_ROOK_DIRS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+
+        function chessColorOf(p) { return p ? (p === p.toUpperCase() ? 'w' : 'b') : null; }
+        function chessSqName(i) { return 'abcdefgh'[i % 8] + (8 - Math.floor(i / 8)); }
+
+        function chessFromFen(fen) {
+            const parts = fen.split(' ');
+            const board = new Array(64).fill('');
+            let i = 0;
+            for (const ch of parts[0]) {
+                if (ch === '/') continue;
+                if (ch >= '1' && ch <= '8') { i += parseInt(ch, 10); continue; }
+                board[i++] = ch;
+            }
+            const st = {
+                board, turn: parts[1] || 'w', castle: parts[2] && parts[2] !== '-' ? parts[2] : '',
+                ep: -1, half: parseInt(parts[4] || '0', 10), full: parseInt(parts[5] || '1', 10), keys: [],
+            };
+            if (parts[3] && parts[3] !== '-') {
+                st.ep = (8 - parseInt(parts[3][1], 10)) * 8 + 'abcdefgh'.indexOf(parts[3][0]);
+            }
+            st.keys.push(chessPosKey(st));
+            return st;
+        }
+
+        function chessInitialState() { return chessFromFen(CHESS_START_FEN); }
+
+        // 앙파상이 실제로 가능한 경우에만 키에 포함 (3회 반복 판정용)
+        function chessPosKey(st) {
+            let epPart = '-';
+            if (st.ep >= 0) {
+                const r = Math.floor(st.ep / 8), f = st.ep % 8;
+                const pawn = st.turn === 'w' ? 'P' : 'p';
+                const pr = st.turn === 'w' ? r + 1 : r - 1;
+                if ((f > 0 && st.board[pr * 8 + f - 1] === pawn) || (f < 7 && st.board[pr * 8 + f + 1] === pawn)) epPart = String(st.ep);
+            }
+            return st.board.map(p => p || '.').join('') + st.turn + (st.castle || '-') + epPart;
+        }
+
+        function chessIsAttacked(board, sq, by) {
+            const r = Math.floor(sq / 8), f = sq % 8;
+            const P = by === 'w' ? 'P' : 'p', N = by === 'w' ? 'N' : 'n', B = by === 'w' ? 'B' : 'b';
+            const R = by === 'w' ? 'R' : 'r', Q = by === 'w' ? 'Q' : 'q', K = by === 'w' ? 'K' : 'k';
+            const pr = by === 'w' ? r + 1 : r - 1; // 이 칸을 공격하는 폰은 (백: 한 줄 아래, 흑: 한 줄 위)에 있다
+            if (pr >= 0 && pr < 8) {
+                if (f > 0 && board[pr * 8 + f - 1] === P) return true;
+                if (f < 7 && board[pr * 8 + f + 1] === P) return true;
+            }
+            for (const [dr, df] of CHESS_KNIGHT_STEPS) {
+                const rr = r + dr, ff = f + df;
+                if (rr >= 0 && rr < 8 && ff >= 0 && ff < 8 && board[rr * 8 + ff] === N) return true;
+            }
+            for (const [dr, df] of CHESS_KING_STEPS) {
+                const rr = r + dr, ff = f + df;
+                if (rr >= 0 && rr < 8 && ff >= 0 && ff < 8 && board[rr * 8 + ff] === K) return true;
+            }
+            for (const [dr, df] of CHESS_BISHOP_DIRS) {
+                let rr = r + dr, ff = f + df;
+                while (rr >= 0 && rr < 8 && ff >= 0 && ff < 8) {
+                    const p = board[rr * 8 + ff];
+                    if (p) { if (p === B || p === Q) return true; break; }
+                    rr += dr; ff += df;
+                }
+            }
+            for (const [dr, df] of CHESS_ROOK_DIRS) {
+                let rr = r + dr, ff = f + df;
+                while (rr >= 0 && rr < 8 && ff >= 0 && ff < 8) {
+                    const p = board[rr * 8 + ff];
+                    if (p) { if (p === R || p === Q) return true; break; }
+                    rr += dr; ff += df;
+                }
+            }
+            return false;
+        }
+
+        function chessKingSq(board, color) {
+            const k = color === 'w' ? 'K' : 'k';
+            return board.indexOf(k);
+        }
+        function chessInCheck(st, color) {
+            const ksq = chessKingSq(st.board, color);
+            return ksq >= 0 && chessIsAttacked(st.board, ksq, color === 'w' ? 'b' : 'w');
+        }
+
+        function chessPseudoMoves(st) {
+            const moves = [];
+            const color = st.turn, board = st.board;
+            const enemy = color === 'w' ? 'b' : 'w';
+            const push = (from, to, flag, promo) => {
+                moves.push({ from, to, piece: board[from], cap: flag === 'ep' ? (color === 'w' ? 'p' : 'P') : (board[to] || null), promo: promo || null, flag: flag || '' });
+            };
+            for (let from = 0; from < 64; from++) {
+                const p = board[from];
+                if (!p || chessColorOf(p) !== color) continue;
+                const r = Math.floor(from / 8), f = from % 8;
+                const type = p.toUpperCase();
+                if (type === 'P') {
+                    const dir = color === 'w' ? -1 : 1;
+                    const startRow = color === 'w' ? 6 : 1, promoRow = color === 'w' ? 0 : 7;
+                    const r1 = r + dir;
+                    if (r1 >= 0 && r1 < 8) {
+                        const addPawnMove = (to, flag) => {
+                            if (Math.floor(to / 8) === promoRow) { for (const pr of ['Q', 'R', 'B', 'N']) push(from, to, flag, pr); }
+                            else push(from, to, flag);
+                        };
+                        if (!board[r1 * 8 + f]) {
+                            addPawnMove(r1 * 8 + f, '');
+                            if (r === startRow && !board[(r + 2 * dir) * 8 + f]) push(from, (r + 2 * dir) * 8 + f, 'dbl');
+                        }
+                        for (const df of [-1, 1]) {
+                            const ff = f + df;
+                            if (ff < 0 || ff > 7) continue;
+                            const to = r1 * 8 + ff;
+                            if (board[to] && chessColorOf(board[to]) === enemy) addPawnMove(to, '');
+                            else if (to === st.ep) push(from, to, 'ep');
+                        }
+                    }
+                } else if (type === 'N' || type === 'K') {
+                    const steps = type === 'N' ? CHESS_KNIGHT_STEPS : CHESS_KING_STEPS;
+                    for (const [dr, df] of steps) {
+                        const rr = r + dr, ff = f + df;
+                        if (rr < 0 || rr > 7 || ff < 0 || ff > 7) continue;
+                        const to = rr * 8 + ff;
+                        if (board[to] && chessColorOf(board[to]) === color) continue;
+                        push(from, to);
+                    }
+                    if (type === 'K') {
+                        // 캐슬링: 권리가 남아 있고, 사이가 비어 있고, 킹이 체크 중이 아니며, 지나가는 칸/도착 칸이 공격받지 않을 때
+                        const homeRow = color === 'w' ? 7 : 0;
+                        if (r === homeRow && f === 4 && !chessIsAttacked(board, from, enemy)) {
+                            const kSide = color === 'w' ? 'K' : 'k', qSide = color === 'w' ? 'Q' : 'q';
+                            const rook = color === 'w' ? 'R' : 'r';
+                            const base = homeRow * 8;
+                            if (st.castle.includes(kSide) && board[base + 7] === rook && !board[base + 5] && !board[base + 6]
+                                && !chessIsAttacked(board, base + 5, enemy) && !chessIsAttacked(board, base + 6, enemy)) {
+                                push(from, base + 6, 'ck');
+                            }
+                            if (st.castle.includes(qSide) && board[base] === rook && !board[base + 1] && !board[base + 2] && !board[base + 3]
+                                && !chessIsAttacked(board, base + 3, enemy) && !chessIsAttacked(board, base + 2, enemy)) {
+                                push(from, base + 2, 'cq');
+                            }
+                        }
+                    }
+                } else {
+                    const dirs = type === 'B' ? CHESS_BISHOP_DIRS : type === 'R' ? CHESS_ROOK_DIRS : CHESS_BISHOP_DIRS.concat(CHESS_ROOK_DIRS);
+                    for (const [dr, df] of dirs) {
+                        let rr = r + dr, ff = f + df;
+                        while (rr >= 0 && rr < 8 && ff >= 0 && ff < 8) {
+                            const to = rr * 8 + ff;
+                            if (board[to]) {
+                                if (chessColorOf(board[to]) !== color) push(from, to);
+                                break;
+                            }
+                            push(from, to);
+                            rr += dr; ff += df;
+                        }
+                    }
+                }
+            }
+            return moves;
+        }
+
+        // 보드에 수를 적용 (보드 배열만 복사해서 반환 — 합법성 검사용 가벼운 버전)
+        function chessApplyToBoard(board, m) {
+            const b = board.slice();
+            const color = chessColorOf(m.piece);
+            b[m.to] = m.promo ? (color === 'w' ? m.promo : m.promo.toLowerCase()) : m.piece;
+            b[m.from] = '';
+            if (m.flag === 'ep') b[m.to + (color === 'w' ? 8 : -8)] = '';
+            if (m.flag === 'ck') { b[m.to - 1] = b[m.to + 1]; b[m.to + 1] = ''; }
+            if (m.flag === 'cq') { b[m.to + 1] = b[m.to - 2]; b[m.to - 2] = ''; }
+            return b;
+        }
+
+        function chessLegalMoves(st) {
+            const color = st.turn, enemy = color === 'w' ? 'b' : 'w';
+            const out = [];
+            for (const m of chessPseudoMoves(st)) {
+                const nb = chessApplyToBoard(st.board, m);
+                const ksq = nb.indexOf(color === 'w' ? 'K' : 'k');
+                if (ksq >= 0 && chessIsAttacked(nb, ksq, enemy)) continue;
+                out.push(m);
+            }
+            return out;
+        }
+
+        function chessApply(st, m) {
+            const color = st.turn;
+            const board = chessApplyToBoard(st.board, m);
+            let castle = st.castle;
+            const strip = (chars) => { for (const c of chars) castle = castle.replace(c, ''); };
+            if (m.piece === 'K') strip('KQ');
+            if (m.piece === 'k') strip('kq');
+            if (m.from === 63 || m.to === 63) strip('K');
+            if (m.from === 56 || m.to === 56) strip('Q');
+            if (m.from === 7 || m.to === 7) strip('k');
+            if (m.from === 0 || m.to === 0) strip('q');
+            const next = {
+                board, turn: color === 'w' ? 'b' : 'w', castle,
+                ep: m.flag === 'dbl' ? (m.from + m.to) / 2 : -1,
+                half: (m.piece.toUpperCase() === 'P' || m.cap) ? 0 : st.half + 1,
+                full: st.full + (color === 'b' ? 1 : 0),
+                keys: st.keys.slice(),
+            };
+            next.keys.push(chessPosKey(next));
+            return next;
+        }
+
+        function chessInsufficientMaterial(board) {
+            const others = [];
+            for (let i = 0; i < 64; i++) {
+                const p = board[i];
+                if (!p) continue;
+                const t = p.toUpperCase();
+                if (t === 'K') continue;
+                if (t === 'P' || t === 'R' || t === 'Q') return false;
+                others.push({ t, sq: i });
+            }
+            if (others.length === 0) return true;                 // K vs K
+            if (others.length === 1) return true;                 // K+B vs K, K+N vs K
+            if (others.every(o => o.t === 'B')) {                 // 모든 비숍이 같은 색 칸 위에 있으면 메이트 불가
+                const shade = (sq) => (Math.floor(sq / 8) + (sq % 8)) % 2;
+                return others.every(o => shade(o.sq) === shade(others[0].sq));
+            }
+            return false;
+        }
+
+        // 상태 판정: 'ongoing' | 'checkmate' | 'stalemate' | 'insufficient' | 'fifty' | 'threefold'
+        function chessStatus(st, legal) {
+            const moves = legal || chessLegalMoves(st);
+            if (moves.length === 0) return chessInCheck(st, st.turn) ? 'checkmate' : 'stalemate';
+            if (chessInsufficientMaterial(st.board)) return 'insufficient';
+            if (st.half >= 100) return 'fifty';
+            const key = st.keys[st.keys.length - 1];
+            let count = 0;
+            for (const k of st.keys) if (k === key) count++;
+            if (count >= 3) return 'threefold';
+            return 'ongoing';
+        }
+
+        // 대수 표기(SAN) — 기보 표시용
+        function chessSan(st, m, legal) {
+            let san;
+            if (m.flag === 'ck') san = 'O-O';
+            else if (m.flag === 'cq') san = 'O-O-O';
+            else {
+                const type = m.piece.toUpperCase();
+                const toName = chessSqName(m.to), fromName = chessSqName(m.from);
+                if (type === 'P') {
+                    san = (m.cap ? fromName[0] + 'x' : '') + toName;
+                } else {
+                    let dis = '';
+                    const rivals = (legal || chessLegalMoves(st)).filter(o => o !== m && o.piece === m.piece && o.to === m.to && o.from !== m.from);
+                    if (rivals.length) {
+                        const sameFile = rivals.some(o => o.from % 8 === m.from % 8);
+                        const sameRank = rivals.some(o => Math.floor(o.from / 8) === Math.floor(m.from / 8));
+                        if (!sameFile) dis = fromName[0];
+                        else if (!sameRank) dis = fromName[1];
+                        else dis = fromName;
+                    }
+                    san = type + dis + (m.cap ? 'x' : '') + toName;
+                }
+                if (m.promo) san += '=' + m.promo;
+            }
+            const after = chessApply(st, m);
+            const afterLegal = chessLegalMoves(after);
+            if (chessInCheck(after, after.turn)) san += afterLegal.length === 0 ? '#' : '+';
+            return san;
+        }
+
+        // =====================================================================
+        // 쉼터 — 체스 (온라인 1:1 · 정식 룰 · 각자 10분)
+        // 양쪽이 같은 엔진으로 규칙을 검증하고, 수(from/to/promo)만 주고받는다.
+        // =====================================================================
+        const CHESS_CLOCK_MS = 10 * 60 * 1000;
+        const CHESS_REASON_TEXT = {
+            checkmate: '체크메이트', stalemate: '스테일메이트 (둘 수 있는 수가 없는 무승부)', insufficient: '기물 부족 무승부',
+            fifty: '50수 규칙 무승부', threefold: '같은 형세 3회 반복 무승부', timeout: '시간 초과', resign: '기권',
+            agreement: '합의 무승부', disconnect: '상대의 연결이 끊겨 승리 처리했어요',
+        };
+        let chess = null; // 현재 체스 세션의 모든 런타임 상태
+
+        function chessShowState(name) {
+            document.querySelectorAll('#restzone-panel-chess > [id^="chess-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('chess-state-' + name);
+            if (el) el.classList.remove('hidden');
+        }
+
+        function ensureChessInit() {
+            if (!currentUser) { chessShowState('loggedout'); return; }
+            if (chess && (chess.phase === 'game' || chess.phase === 'ended')) { chessShowState('game'); return; }
+            if (chess && chess.phase === 'waiting') { chessShowState('waiting'); return; }
+            chessShowState('lobby');
+            const err = document.getElementById('chess-lobby-error');
+            if (err) err.classList.add('hidden');
+        }
+
+        function chessLobbyError(msg) {
+            const err = document.getElementById('chess-lobby-error');
+            if (!err) return;
+            err.innerText = msg;
+            err.classList.remove('hidden');
+        }
+
+        function chessCreateRoom() {
+            if (!currentUser) return;
+            teardownChess();
+            const code = cnrGenerateRoomCode();
+            chess = { phase: 'waiting', role: 'host', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('chess-room-code-display').innerText = code;
+            chessShowState('waiting');
+            chessOpenChannel();
+        }
+
+        function chessJoinRoom() {
+            if (!currentUser) return;
+            const input = document.getElementById('chess-join-code-input');
+            const code = (input.value || '').trim().toUpperCase();
+            if (code.length < 4) { chessLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            teardownChess();
+            chess = { phase: 'waiting', role: 'guest', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('chess-room-code-display').innerText = code;
+            chessShowState('waiting');
+            chessOpenChannel();
+            // 9초 안에 방장이 응답하지 않으면 없는 방/가득 찬 방으로 보고 로비로 돌려보낸다
+            chess.joinTimer = setTimeout(() => {
+                if (chess && chess.phase === 'waiting' && chess.role === 'guest') {
+                    teardownChess(); chessShowState('lobby');
+                    chessLobbyError('방을 찾지 못했어요. 코드를 다시 확인해주세요.');
+                }
+            }, 9000);
+        }
+
+        function chessOpenChannel() {
+            chess.channel = rzRoomChannel('chess', chess.roomCode, {
+                onHello: chessHandleHello, onWelcome: chessHandleWelcome, onMsg: chessHandleMsg,
+                onSubscribed: () => {
+                    if (chess && chess.role === 'guest') rzSend(chess.channel, 'hello', { name: chess.myName, id: currentUser.id });
+                },
+            });
+        }
+
+        function chessHandleHello(p) {
+            if (!chess || chess.role !== 'host' || chess.phase !== 'waiting') return;
+            chess.oppName = (p && p.name) || '상대'; chess.oppId = (p && p.id) || null;
+            const hostColor = Math.random() < 0.5 ? 'w' : 'b';
+            rzSend(chess.channel, 'welcome', { name: chess.myName, id: currentUser.id, hostColor, startIn: RZ_INTRO_LEAD_MS });
+            chessBeginMatch(hostColor, Date.now() + RZ_INTRO_LEAD_MS);
+        }
+
+        function chessHandleWelcome(p) {
+            if (!chess || chess.role !== 'guest' || chess.phase !== 'waiting') return;
+            chess.oppName = (p && p.name) || '상대'; chess.oppId = (p && p.id) || null;
+            chessBeginMatch(p.hostColor === 'w' ? 'b' : 'w', Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
+        }
+
+        function chessCopyRoomCode() { if (chess) rzCopyRoomCode(chess.roomCode); }
+
+        // ---- 대국 시작 ----
+
+        function chessPieceSvg(p) {
+            return `<svg class="chess-piece ${chessColorOf(p)}" viewBox="0 0 45 45"><use href="#chess-sym-${p.toUpperCase()}"/></svg>`;
+        }
+
+        function chessBeginMatch(myColor, startAt) {
+            if (!chess) return;
+            clearTimeout(chess.joinTimer);
+            chess.phase = 'game';
+            chess.myColor = myColor; chess.oppColor = myColor === 'w' ? 'b' : 'w';
+            chess.startAt = startAt;
+            chess.state = chessInitialState();
+            chess.legal = chessLegalMoves(chess.state);
+            chess.clocks = { w: CHESS_CLOCK_MS, b: CHESS_CLOCK_MS };
+            chess.turnStartAt = startAt; // 시계는 "시작!" 순간부터 흐른다
+            chess.moves = []; chess.lastMove = null;
+            chess.selected = -1; chess.legalFromSel = []; chess.promoCands = null;
+            chess.drawSent = false; chess.drawFromOpp = false;
+            chess.lastSeen = Date.now();
+
+            ['chess-end', 'chess-promo', 'chess-disc', 'chess-draw-offer'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('chess-board').onclick = (e) => {
+                const sq = e.target.closest('[data-sq]');
+                if (sq) chessOnSquare(parseInt(sq.dataset.sq, 10));
+            };
+            chessShowState('game');
+            chessRenderAll();
+
+            const colorName = (c) => c === 'w' ? '백' : '흑';
+            const sideInfo = (name, c) => ({
+                name, badge: colorName(c) + (c === 'w' ? ' · 먼저 둡니다' : ' · 나중에 둡니다'),
+                icon: chessPieceSvg(c === 'w' ? 'K' : 'k'), color: c === 'w' ? '#f4efe0' : '#4b4b57',
+            });
+            chess.intro = rzIntroPlay(document.getElementById('chess-board-wrap'), {
+                startAt,
+                title: '체스 · 각자 10분',
+                me: Object.assign(sideInfo(chess.myName, myColor), { name: chess.myName + ' (나)' }),
+                opp: sideInfo(chess.oppName, chess.oppColor),
+                notes: ['캐슬링·앙파상·프로모션 등 정식 규칙 그대로', '시간이 모두 떨어지면 패배해요'],
+                onGo: () => { if (chess) chessRenderAll(); },
+            });
+            chess.tickTimer = setInterval(chessTick, 200);
+            chess.hbTimer = setInterval(() => rzSend(chess.channel, 'msg', { t: 'hb' }), 4000);
+        }
+
+        // ---- 렌더링 ----
+
+        function chessRenderBoard() {
+            if (!chess || !chess.state) return;
+            const st = chess.state, flip = chess.myColor === 'b';
+            const targets = new Map(chess.legalFromSel.map(m => [m.to, m]));
+            const checkSq = chessInCheck(st, st.turn) ? chessKingSq(st.board, st.turn) : -1;
+            let html = '';
+            for (let k = 0; k < 64; k++) {
+                const i = flip ? 63 - k : k;
+                const r = Math.floor(i / 8), f = i % 8;
+                const cls = ['chess-sq', (r + f) % 2 === 1 ? 'dark' : 'light'];
+                if (i === chess.selected) cls.push('sel');
+                if (chess.lastMove && (i === chess.lastMove.from || i === chess.lastMove.to)) cls.push('last');
+                if (i === checkSq) cls.push('check');
+                if (targets.has(i)) cls.push((st.board[i] || targets.get(i).flag === 'ep') ? 'cap' : 'tgt');
+                const p = st.board[i];
+                const fileLabel = k >= 56 ? `<i class="chess-coord f">${'abcdefgh'[f]}</i>` : '';
+                const rankLabel = k % 8 === 0 ? `<i class="chess-coord r">${8 - r}</i>` : '';
+                html += `<div class="${cls.join(' ')}" data-sq="${i}">${p ? chessPieceSvg(p) : ''}${fileLabel}${rankLabel}</div>`;
+            }
+            document.getElementById('chess-board').innerHTML = html;
+        }
+
+        function chessFmtClock(ms) {
+            const total = Math.ceil(Math.max(0, ms) / 1000);
+            return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+        }
+        function chessRemaining(color) {
+            let rem = chess.clocks[color];
+            if (chess.phase === 'game' && Date.now() >= chess.startAt && chess.state.turn === color) rem -= (Date.now() - chess.turnStartAt);
+            return Math.max(0, rem);
+        }
+
+        function chessRenderBars() {
+            if (!chess || !chess.state) return;
+            const live = chess.phase === 'game' && Date.now() >= chess.startAt;
+            [['top', chess.oppColor, chess.oppName + ''], ['bottom', chess.myColor, chess.myName + ' (나)']].forEach(([pos, color, name]) => {
+                document.getElementById('chess-name-' + pos).innerText = name;
+                document.getElementById('chess-dot-' + pos).className = 'chess-dot ' + color;
+                const rem = chessRemaining(color);
+                const clock = document.getElementById('chess-clock-' + pos);
+                clock.innerText = chessFmtClock(rem);
+                clock.classList.toggle('low', rem <= 30000);
+                document.getElementById('chess-bar-' + pos).classList.toggle('active', live && chess.state.turn === color);
+            });
+        }
+
+        function chessRenderStatus() {
+            const el = document.getElementById('chess-status');
+            if (!el || !chess || !chess.state) return;
+            if (chess.phase === 'ended') { el.innerText = '대국이 끝났어요'; el.classList.remove('danger'); return; }
+            if (Date.now() < chess.startAt) { el.innerText = '곧 시작합니다'; el.classList.remove('danger'); return; }
+            const myTurn = chess.state.turn === chess.myColor;
+            const check = chessInCheck(chess.state, chess.state.turn);
+            el.innerText = myTurn ? (check ? '체크! 내 차례예요' : '내 차례예요') : (check ? '상대가 체크를 받았어요' : '상대가 생각하는 중...');
+            el.classList.toggle('danger', check && myTurn);
+        }
+
+        function chessRenderMoves() {
+            const el = document.getElementById('chess-moves');
+            if (!el) return;
+            let html = '';
+            chess.moves.forEach((san, i) => {
+                if (i % 2 === 0) html += `<span class="chess-mv-n">${i / 2 + 1}.</span>`;
+                html += `<span class="chess-mv">${escapeHtml(san)}</span>`;
+            });
+            el.innerHTML = html || '<span class="chess-mv-empty">기보가 여기에 쌓여요</span>';
+            el.scrollLeft = el.scrollWidth;
+        }
+
+        function chessRenderActions() {
+            const live = chess && chess.phase === 'game';
+            const drawBtn = document.getElementById('chess-draw-btn');
+            drawBtn.disabled = !live || chess.drawSent;
+            drawBtn.innerHTML = chess && chess.drawSent ? '<i class="fa-regular fa-handshake mr-1.5"></i>제안했어요' : '<i class="fa-regular fa-handshake mr-1.5"></i>무승부 제안';
+            document.getElementById('chess-resign-btn').disabled = !live;
+            document.getElementById('chess-draw-offer').classList.toggle('hidden', !(live && chess.drawFromOpp));
+        }
+
+        function chessRenderAll() {
+            chessRenderBoard(); chessRenderBars(); chessRenderStatus(); chessRenderMoves(); chessRenderActions();
+        }
+
+        // ---- 시계 / 연결 상태 ----
+
+        function chessTick() {
+            if (!chess || chess.phase !== 'game') return;
+            chessRenderBars();
+            chessRenderStatus();
+            const stale = Date.now() - chess.lastSeen > 30000;
+            document.getElementById('chess-disc').classList.toggle('hidden', !stale);
+            if (Date.now() < chess.startAt) return;
+            const turn = chess.state.turn;
+            const rem = chess.clocks[turn] - (Date.now() - chess.turnStartAt);
+            if (turn === chess.myColor && rem <= 0) {
+                rzSend(chess.channel, 'msg', { t: 'timeout', loser: chess.myColor });
+                chessFinish('loss', 'timeout');
+            } else if (turn === chess.oppColor && rem <= -2000) { // 네트워크 지연을 감안해 2초 유예
+                rzSend(chess.channel, 'msg', { t: 'timeout', loser: chess.oppColor });
+                chessFinish('win', 'timeout');
+            }
+        }
+
+        function chessClaimDisconnectWin() {
+            if (!chess || chess.phase !== 'game') return;
+            chessFinish('win', 'disconnect');
+        }
+
+        // ---- 입력 ----
+
+        function chessOnSquare(sq) {
+            if (!chess || chess.phase !== 'game' || Date.now() < chess.startAt || chess.promoCands) return;
+            const st = chess.state;
+            if (st.turn !== chess.myColor) return;
+            if (chess.selected >= 0) {
+                const cand = chess.legalFromSel.filter(m => m.to === sq);
+                if (cand.length) {
+                    if (cand[0].promo) { chessAskPromotion(cand); return; }
+                    chessPlayMove(cand[0], false);
+                    return;
+                }
+            }
+            const p = st.board[sq];
+            if (p && chessColorOf(p) === chess.myColor && sq !== chess.selected) {
+                chess.selected = sq;
+                chess.legalFromSel = chess.legal.filter(m => m.from === sq);
+                rzTone(620, 0.04, 'sine', 0.05);
+            } else {
+                chess.selected = -1; chess.legalFromSel = [];
+            }
+            chessRenderBoard();
+        }
+
+        function chessAskPromotion(cands) {
+            chess.promoCands = cands;
+            const box = document.getElementById('chess-promo');
+            const mine = (t) => chess.myColor === 'w' ? t : t.toLowerCase();
+            box.innerHTML = ['Q', 'R', 'B', 'N'].map(t =>
+                `<button class="chess-promo-btn press-feel" onclick="chessPickPromotion('${t}')">${chessPieceSvg(mine(t))}</button>`
+            ).join('') + '<button class="chess-promo-cancel press-feel" onclick="chessCancelPromotion()">취소</button>';
+            box.classList.remove('hidden');
+        }
+        function chessPickPromotion(letter) {
+            if (!chess || !chess.promoCands) return;
+            const m = chess.promoCands.find(c => c.promo === letter);
+            document.getElementById('chess-promo').classList.add('hidden');
+            chess.promoCands = null;
+            if (m) chessPlayMove(m, false);
+        }
+        function chessCancelPromotion() {
+            if (!chess) return;
+            chess.promoCands = null;
+            document.getElementById('chess-promo').classList.add('hidden');
+        }
+
+        // ---- 수 적용 (내 수 / 상대 수 공통) ----
+
+        function chessPlayMove(m, remote, remoteClock) {
+            const st = chess.state, now = Date.now(), mover = st.turn;
+            const san = chessSan(st, m, chess.legal);
+            if (remote) {
+                // 상대가 알려준 남은 시간 — 시간이 늘어나는 방향으로는 믿지 않는다(증가분 없는 규칙)
+                if (typeof remoteClock === 'number') chess.clocks[mover] = Math.max(0, Math.min(chess.clocks[mover], remoteClock));
+            } else {
+                chess.clocks[mover] = Math.max(0, chess.clocks[mover] - Math.max(0, now - chess.turnStartAt));
+            }
+            chess.state = chessApply(st, m);
+            chess.moves.push(san);
+            chess.lastMove = { from: m.from, to: m.to };
+            chess.turnStartAt = now;
+            chess.selected = -1; chess.legalFromSel = [];
+            chess.drawSent = false; chess.drawFromOpp = false; // 수가 오가면 무승부 제안은 자동으로 사라진다
+            chess.legal = chessLegalMoves(chess.state);
+
+            if (!remote) rzSend(chess.channel, 'msg', { t: 'move', from: m.from, to: m.to, promo: m.promo, clock: chess.clocks[mover] });
+
+            const gaveCheck = chessInCheck(chess.state, chess.state.turn);
+            if (m.cap) rzTone(170, 0.14, 'triangle', 0.22, 90); else rzTone(300, 0.07, 'triangle', 0.14, 210);
+            if (gaveCheck) setTimeout(() => rzTone(880, 0.12, 'square', 0.06), 90);
+
+            chessRenderAll();
+            const status = chessStatus(chess.state, chess.legal);
+            if (status === 'checkmate') {
+                const winner = chess.state.turn === 'w' ? 'b' : 'w'; // 지금 둘 차례인 쪽이 메이트당한 쪽
+                chessFinish(winner === chess.myColor ? 'win' : 'loss', 'checkmate');
+            } else if (status !== 'ongoing') {
+                chessFinish('draw', status);
+            }
+        }
+
+        // ---- 상대 메시지 ----
+
+        function chessHandleMsg(p) {
+            if (!chess || !p) return;
+            chess.lastSeen = Date.now();
+            if (chess.phase === 'game') document.getElementById('chess-disc').classList.add('hidden');
+            switch (p.t) {
+                case 'move': {
+                    if (chess.phase !== 'game' || chess.state.turn !== chess.oppColor) break;
+                    const m = chess.legal.find(x => x.from === p.from && x.to === p.to && (x.promo || null) === (p.promo || null));
+                    if (!m) { showToast('상대의 수가 규칙과 맞지 않아 무시했어요.', 'error'); break; }
+                    chessPlayMove(m, true, p.clock);
+                    break;
+                }
+                case 'resign':
+                    chessFinish('win', 'resign');
+                    break;
+                case 'timeout':
+                    if (chess.phase !== 'game') break;
+                    if (p.loser === chess.oppColor) chessFinish('win', 'timeout');
+                    else if (p.loser === chess.myColor && chess.state.turn === chess.myColor && chessRemaining(chess.myColor) <= 3000) chessFinish('loss', 'timeout');
+                    break;
+                case 'draw-offer':
+                    if (chess.phase !== 'game') break;
+                    chess.drawFromOpp = true; rzTone(660, 0.12, 'sine', 0.12);
+                    chessRenderActions();
+                    break;
+                case 'draw-accept':
+                    if (chess.phase === 'game' && chess.drawSent) chessFinish('draw', 'agreement');
+                    break;
+                case 'draw-decline':
+                    if (chess.phase !== 'game') break;
+                    chess.drawSent = false; showToast('상대가 무승부 제안을 거절했어요.', 'info');
+                    chessRenderActions();
+                    break;
+            }
+        }
+
+        // ---- 버튼 ----
+
+        function chessResign() {
+            if (!chess || chess.phase !== 'game') return;
+            if (!confirm('기권할까요? 패배로 기록돼요.')) return;
+            rzSend(chess.channel, 'msg', { t: 'resign' });
+            chessFinish('loss', 'resign');
+        }
+        function chessOfferDraw() {
+            if (!chess || chess.phase !== 'game' || chess.drawSent) return;
+            chess.drawSent = true;
+            rzSend(chess.channel, 'msg', { t: 'draw-offer' });
+            showToast('상대에게 무승부를 제안했어요.', 'info');
+            chessRenderActions();
+        }
+        function chessAcceptDraw() {
+            if (!chess || chess.phase !== 'game' || !chess.drawFromOpp) return;
+            rzSend(chess.channel, 'msg', { t: 'draw-accept' });
+            chessFinish('draw', 'agreement');
+        }
+        function chessDeclineDraw() {
+            if (!chess || chess.phase !== 'game') return;
+            chess.drawFromOpp = false;
+            rzSend(chess.channel, 'msg', { t: 'draw-decline' });
+            chessRenderActions();
+        }
+        function chessHideEnd() { document.getElementById('chess-end').classList.add('hidden'); }
+
+        function chessLeaveRoom() {
+            if (chess && chess.phase === 'game' && !confirm('나가면 패배로 기록돼요. 정말 나갈까요?')) return;
+            teardownChess();
+            ensureChessInit();
+        }
+        function chessBackToLobby() { teardownChess(); ensureChessInit(); }
+
+        // ---- 종료 / 기록 ----
+
+        function chessFinish(result, reason) {
+            if (!chess || chess.phase !== 'game') return;
+            chess.phase = 'ended';
+            chess.result = result;
+            clearInterval(chess.tickTimer); clearInterval(chess.hbTimer);
+            if (chess.intro) { chess.intro.cancel(); chess.intro = null; }
+            chess.selected = -1; chess.legalFromSel = []; chess.promoCands = null;
+            document.getElementById('chess-promo').classList.add('hidden');
+            document.getElementById('chess-disc').classList.add('hidden');
+            chessRenderAll();
+
+            let detail = CHESS_REASON_TEXT[reason] || '';
+            if (reason === 'timeout') detail = result === 'win' ? '상대의 시간이 모두 떨어졌어요' : '내 시간이 모두 떨어졌어요';
+            else if (reason === 'resign') detail = result === 'win' ? '상대가 기권했어요' : '기권했어요';
+            else if (reason === 'checkmate') detail = result === 'win' ? '체크메이트로 이겼어요' : '체크메이트를 당했어요';
+            document.getElementById('chess-end-title').innerText = result === 'win' ? '승리했어요! 🏆' : result === 'loss' ? '패배했어요' : '무승부';
+            document.getElementById('chess-end-detail').innerText = detail;
+            document.getElementById('chess-end').classList.remove('hidden');
+            if (result === 'win') rzSoundWin(); else if (result === 'loss') rzSoundLose(); else rzTone(440, 0.4, 'sine', 0.14);
+
+            chessRecordResult(result, chess.myColor);
+        }
+
+        async function chessRecordResult(result, color) {
+            if (!currentUser) return;
+            try {
+                await supabaseClient.from('chess_scores').insert({
+                    user_id: currentUser.id, name: currentUser.name || '익명', result, color,
+                });
+            } catch (e) { /* chess_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+        }
+
+        function teardownChess() {
+            if (!chess) return;
+            const c = chess;
+            chess = null;
+            if (c.phase === 'game') { // 대국 도중에 나가면 기권패
+                rzSend(c.channel, 'msg', { t: 'resign', leave: true });
+                chessRecordResult('loss', c.myColor);
+            }
+            clearTimeout(c.joinTimer); clearInterval(c.tickTimer); clearInterval(c.hbTimer);
+            if (c.intro) c.intro.cancel();
+            rzCloseChannelSoon(c.channel);
+        }
+
+        async function chessShowLeaderboard() {
+            chessShowState('leaderboard');
+            const list = document.getElementById('chess-leaderboard-list');
+            list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('chess_leaderboard')
+                    .select('name, wins, draws, losses, games')
+                    .limit(300);
+                if (error) throw error;
+                rzRenderWinrateBoard(list, data || [], true);
+            } catch (e) {
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (chess_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
+            }
+        }
+
+        // ---- 바둑 엔진 (순수 로직: 따냄 / 자충수 금지 / 코(포지셔널 슈퍼코) / 패스 / 사석 제거 후 계가(중국식 면적) / 승률 접바둑) ----
+        // 보드: 길이 n*n 배열, index = y*n + x (y=0이 맨 윗줄). 0=빈칸, 1=흑, 2=백.
+
+        function goNewState(n, handicapIdxs) {
+            const board = new Array(n * n).fill(0);
+            (handicapIdxs || []).forEach(i => { board[i] = 1; });
+            const st = {
+                n, board, turn: (handicapIdxs && handicapIdxs.length) ? 2 : 1, // 접바둑이면 백부터
+                caps: [0, 0, 0], lastMove: null, passes: 0, moveNum: 0, seen: new Set(),
+            };
+            st.seen.add(board.join(''));
+            return st;
+        }
+
+        function goNeighbors(n, idx) {
+            const x = idx % n, y = Math.floor(idx / n), out = [];
+            if (x > 0) out.push(idx - 1);
+            if (x < n - 1) out.push(idx + 1);
+            if (y > 0) out.push(idx - n);
+            if (y < n - 1) out.push(idx + n);
+            return out;
+        }
+
+        // 같은 색으로 이어진 돌 덩어리와 그 활로(빈 이웃 칸) 집합
+        function goGroup(board, n, idx) {
+            const color = board[idx];
+            const stones = [idx], seen = new Set([idx]), libs = new Set();
+            for (let k = 0; k < stones.length; k++) {
+                for (const nb of goNeighbors(n, stones[k])) {
+                    const v = board[nb];
+                    if (v === 0) libs.add(nb);
+                    else if (v === color && !seen.has(nb)) { seen.add(nb); stones.push(nb); }
+                }
+            }
+            return { stones, libs };
+        }
+
+        // 착수. 성공하면 {ok:true, state, captured:[idx...]}, 실패하면 {ok:false, reason:'occupied'|'suicide'|'ko'|'range'}
+        function goPlay(st, idx) {
+            const n = st.n;
+            if (!(idx >= 0 && idx < n * n)) return { ok: false, reason: 'range' };
+            if (st.board[idx] !== 0) return { ok: false, reason: 'occupied' };
+            const color = st.turn, enemy = color === 1 ? 2 : 1;
+            const board = st.board.slice();
+            board[idx] = color;
+            const captured = [];
+            for (const nb of goNeighbors(n, idx)) {
+                if (board[nb] === enemy) {
+                    const g = goGroup(board, n, nb);
+                    if (g.libs.size === 0) g.stones.forEach(s => { if (board[s] === enemy) { board[s] = 0; captured.push(s); } });
+                }
+            }
+            const own = goGroup(board, n, idx);
+            if (own.libs.size === 0) return { ok: false, reason: 'suicide' };
+            const key = board.join('');
+            if (st.seen.has(key)) return { ok: false, reason: 'ko' };
+            const seen = new Set(st.seen); seen.add(key);
+            const caps = st.caps.slice(); caps[color] += captured.length;
+            return {
+                ok: true, captured,
+                state: { n, board, turn: enemy, caps, lastMove: idx, passes: 0, moveNum: st.moveNum + 1, seen },
+            };
+        }
+
+        function goPass(st) {
+            return {
+                n: st.n, board: st.board, turn: st.turn === 1 ? 2 : 1, caps: st.caps, lastMove: -1,
+                passes: st.passes + 1, moveNum: st.moveNum + 1, seen: st.seen,
+            };
+        }
+
+        // 사석(dead) 인덱스 집합을 제거한 뒤 면적(돌 + 집) 계산.
+        function goScore(st, deadSet, komi) {
+            const n = st.n, board = st.board.slice();
+            (deadSet || []).forEach(i => { board[i] = 0; });
+            let stonesB = 0, stonesW = 0;
+            for (const v of board) { if (v === 1) stonesB++; else if (v === 2) stonesW++; }
+            const owner = new Array(n * n).fill(0); // 1=흑집, 2=백집, 3=공배(dame)
+            const visited = new Set();
+            let terrB = 0, terrW = 0;
+            for (let i = 0; i < n * n; i++) {
+                if (board[i] !== 0 || visited.has(i)) continue;
+                const region = [i]; visited.add(i);
+                let touchB = false, touchW = false;
+                for (let k = 0; k < region.length; k++) {
+                    for (const nb of goNeighbors(n, region[k])) {
+                        const v = board[nb];
+                        if (v === 0) { if (!visited.has(nb)) { visited.add(nb); region.push(nb); } }
+                        else if (v === 1) touchB = true;
+                        else touchW = true;
+                    }
+                }
+                const who = touchB && !touchW ? 1 : touchW && !touchB ? 2 : 3;
+                region.forEach(r => { owner[r] = who; });
+                if (who === 1) terrB += region.length; else if (who === 2) terrW += region.length;
+            }
+            const black = stonesB + terrB, white = stonesW + terrW;
+            return { black, white, whiteWithKomi: white + komi, komi, terrB, terrW, stonesB, stonesW, owner, board,
+                winner: black > white + komi ? 1 : 2 };
+        }
+
+        // ---- 접바둑 ----
+        function goStarPoints(n) {
+            const lo = n === 9 ? 2 : 3, hi = n - 1 - lo, mid = (n - 1) / 2;
+            const at = (x, y) => y * n + x;
+            return {
+                TR: at(hi, lo), BL: at(lo, hi), BR: at(hi, hi), TL: at(lo, lo), C: at(mid, mid),
+                L: at(lo, mid), R: at(hi, mid), T: at(mid, lo), B: at(mid, hi),
+            };
+        }
+        function goHandicapPoints(n, h) {
+            const p = goStarPoints(n);
+            const table = {
+                0: [], 1: [p.TR], 2: [p.TR, p.BL], 3: [p.TR, p.BL, p.BR], 4: [p.TR, p.BL, p.BR, p.TL],
+                5: [p.TR, p.BL, p.BR, p.TL, p.C], 6: [p.TR, p.BL, p.BR, p.TL, p.L, p.R],
+                7: [p.TR, p.BL, p.BR, p.TL, p.L, p.R, p.C], 8: [p.TR, p.BL, p.BR, p.TL, p.L, p.R, p.T, p.B],
+                9: [p.TR, p.BL, p.BR, p.TL, p.L, p.R, p.T, p.B, p.C],
+            };
+            return table[Math.max(0, Math.min(9, h))];
+        }
+        // 승률(0~100) 두 개 → 접바둑 돌 수. 10%p 차이마다 1점, 최대 9점. (부동소수 오차만 걷어내도록 1e-6 단위로 반올림)
+        function goHandicapFromRates(rateA, rateB) {
+            const diff = Math.round(Math.abs(rateA - rateB) * 1e6) / 1e6;
+            return Math.min(9, Math.floor(diff / 10 + 1e-9));
+        }
+        function goKomi(n, handicap) {
+            if (handicap > 0) return 0.5;
+            return n === 9 ? 5.5 : n === 13 ? 6.5 : 7.5;
+        }
+        function goCoordLabel(n, idx) {
+            const x = idx % n, y = Math.floor(idx / n);
+            return 'ABCDEFGHJKLMNOPQRST'[x] + (n - y);
+        }
+
+        // =====================================================================
+        // 쉼터 — 바둑 (온라인 1:1 · 9/13/19줄 · 중국식 면적 계가 · 승률 차이 10%p마다 1점 접바둑)
+        // 호스트가 두 사람의 승률을 조회해 접바둑 점수/흑백/덤을 정해 welcome에 실어 보내고,
+        // 이후에는 착수/패스/사석 표시/확정 같은 메시지만 주고받는다. 규칙 판정은 양쪽이 같은 엔진으로 각자 한다.
+        // =====================================================================
+        const GO_MIN_GAMES_FOR_RATE = 3; // 이 판 수 미만이면 승률을 50%로 취급해서 접바둑을 계산한다
+        const GO_REASON_TEXT = {
+            occupied: '이미 돌이 놓인 자리예요.',
+            suicide: '둘 수 없는 자리예요. (자충수 — 스스로 숨이 막혀요)',
+            ko: '패(코) 규칙 때문에 바로 되따낼 수 없어요. 다른 곳에 한 수 두고 오세요.',
+            range: '바둑판 밖이에요.',
+        };
+        let go = null; // 현재 바둑 세션의 모든 런타임 상태
+
+        function goShowState(name) {
+            document.querySelectorAll('#restzone-panel-go > [id^="go-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('go-state-' + name);
+            if (el) el.classList.remove('hidden');
+        }
+
+        function ensureGoInit() {
+            if (!currentUser) { goShowState('loggedout'); return; }
+            if (go && (go.phase === 'game' || go.phase === 'ended')) { goShowState('game'); goResizeCanvas(); return; }
+            if (go && go.phase === 'waiting') { goShowState('waiting'); return; }
+            goShowState('lobby');
+            const err = document.getElementById('go-lobby-error');
+            if (err) err.classList.add('hidden');
+        }
+
+        function goLobbyError(msg) {
+            const err = document.getElementById('go-lobby-error');
+            if (!err) return;
+            err.innerText = msg;
+            err.classList.remove('hidden');
+        }
+
+        function goSelectedSize() {
+            const r = document.querySelector('input[name="go-size"]:checked');
+            const v = r ? parseInt(r.value, 10) : 19;
+            return [9, 13, 19].includes(v) ? v : 19;
+        }
+
+        function goCreateRoom() {
+            if (!currentUser) return;
+            teardownGo();
+            const code = cnrGenerateRoomCode();
+            go = { phase: 'waiting', role: 'host', roomCode: code, n: goSelectedSize(), channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('go-room-code-display').innerText = code;
+            document.getElementById('go-waiting-size').innerText = go.n + '줄 바둑판';
+            goShowState('waiting');
+            goOpenChannel();
+        }
+
+        function goJoinRoom() {
+            if (!currentUser) return;
+            const input = document.getElementById('go-join-code-input');
+            const code = (input.value || '').trim().toUpperCase();
+            if (code.length < 4) { goLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            teardownGo();
+            go = { phase: 'waiting', role: 'guest', roomCode: code, n: 19, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('go-room-code-display').innerText = code;
+            document.getElementById('go-waiting-size').innerText = '방장이 정한 바둑판으로 시작해요';
+            goShowState('waiting');
+            goOpenChannel();
+            go.joinTimer = setTimeout(() => {
+                if (go && go.phase === 'waiting' && go.role === 'guest') {
+                    teardownGo(); goShowState('lobby');
+                    goLobbyError('방을 찾지 못했어요. 코드를 다시 확인해주세요.');
+                }
+            }, 9000);
+        }
+
+        function goOpenChannel() {
+            go.channel = rzRoomChannel('go', go.roomCode, {
+                onHello: goHandleHello, onWelcome: goHandleWelcome, onMsg: goHandleMsg,
+                onSubscribed: () => {
+                    if (go && go.role === 'guest') rzSend(go.channel, 'hello', { name: go.myName, id: currentUser.id });
+                },
+            });
+        }
+
+        function goCopyRoomCode() { if (go) rzCopyRoomCode(go.roomCode); }
+
+        // ---- 승률 조회 → 접바둑 결정 (호스트만) ----
+
+        async function goFetchStats(ids) {
+            const out = {};
+            try {
+                const { data } = await supabaseClient.from('go_leaderboard').select('user_id, wins, games').in('user_id', ids);
+                (data || []).forEach(r => { out[r.user_id] = r; });
+            } catch (e) { /* 뷰가 아직 없으면 모두 50%로 취급 */ }
+            return out;
+        }
+        function goRateOf(row) {
+            const games = row ? Number(row.games) || 0 : 0, wins = row ? Number(row.wins) || 0 : 0;
+            const rated = games >= GO_MIN_GAMES_FOR_RATE;
+            return { rate: rated ? wins / games * 100 : 50, games, rated };
+        }
+
+        async function goHandleHello(p) {
+            if (!go || go.role !== 'host' || go.phase !== 'waiting' || go.helloBusy) return;
+            go.helloBusy = true;
+            go.oppName = (p && p.name) || '상대'; go.oppId = (p && p.id) || null;
+            const stats = await goFetchStats([currentUser.id, go.oppId].filter(Boolean));
+            if (!go || go.phase !== 'waiting') return;
+            const mine = goRateOf(stats[currentUser.id]), theirs = goRateOf(go.oppId ? stats[go.oppId] : null);
+            const handicap = goHandicapFromRates(mine.rate, theirs.rate);
+            // 접바둑이면 승률이 낮은 쪽이 흑(돌을 깔고 시작). 맞바둑이면 무작위.
+            const hostIsBlack = handicap > 0 ? mine.rate < theirs.rate : Math.random() < 0.5;
+            const cfg = {
+                n: go.n, hostIsBlack, handicap, komi: goKomi(go.n, handicap),
+                host: mine, guest: theirs,
+            };
+            rzSend(go.channel, 'welcome', { name: go.myName, id: currentUser.id, cfg, startIn: RZ_INTRO_LEAD_MS });
+            goBeginMatch(cfg, Date.now() + RZ_INTRO_LEAD_MS);
+        }
+
+        function goHandleWelcome(p) {
+            if (!go || go.role !== 'guest' || go.phase !== 'waiting' || !p || !p.cfg) return;
+            go.oppName = p.name || '상대'; go.oppId = p.id || null;
+            goBeginMatch(p.cfg, Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
+        }
+
+        // ---- 대국 시작 ----
+
+        function goBeginMatch(cfg, startAt) {
+            if (!go) return;
+            clearTimeout(go.joinTimer);
+            const iAmHost = go.role === 'host';
+            const myIsBlack = iAmHost ? cfg.hostIsBlack : !cfg.hostIsBlack;
+            const myInfo = iAmHost ? cfg.host : cfg.guest, oppInfo = iAmHost ? cfg.guest : cfg.host;
+            go.phase = 'game';
+            go.n = cfg.n; go.handicap = cfg.handicap; go.komi = cfg.komi;
+            go.myColor = myIsBlack ? 1 : 2; go.oppColor = myIsBlack ? 2 : 1;
+            go.startAt = startAt;
+            go.st = goNewState(cfg.n, goHandicapPoints(cfg.n, cfg.handicap));
+            go.mode = 'play'; // 'play' → 연속 패스 후 'scoring'
+            go.dead = new Set(); go.confirmMe = false; go.confirmOpp = false; go.oppSig = null; go.preview = null;
+            go.hover = -1; go.pending = -1; go.lastIdx = -1; go.anim = null;
+            go.lastSeen = Date.now();
+
+            ['go-end', 'go-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            goShowState('game');
+            goEnsureCanvas();
+            goRenderAll();
+
+            const stoneIcon = (c) => `<span class="go-intro-stone ${c === 1 ? 'b' : 'w'}"></span>`;
+            const sideInfo = (name, c, info) => ({
+                name, badge: (c === 1 ? '흑' : '백') + (c === 1 ? ' · 선수' : ' · 후수'),
+                sub: info.rated ? `승률 ${info.rate.toFixed(0)}% (${info.games}판)` : `승률 미정 · ${info.games}판 (50%로 계산)`,
+                icon: stoneIcon(c), color: c === 1 ? '#4b4b57' : '#f4efe0',
+            });
+            const diff = Math.round(Math.abs(myInfo.rate - oppInfo.rate) * 10) / 10;
+            const lowerName = myInfo.rate < oppInfo.rate ? go.myName : go.oppName;
+            const notes = cfg.handicap > 0
+                ? [`승률 차이 ${diff}%p → ${cfg.handicap}점 접바둑`, `${lowerName}님(흑)이 ${cfg.handicap}점을 깔고 시작하고, 백이 먼저 둬요 · 덤 ${cfg.komi}집`]
+                : [`승률 차이 ${diff}%p → 맞바둑`, `흑이 먼저 둬요 · 덤 ${cfg.komi}집 · ${cfg.n}줄`];
+            go.intro = rzIntroPlay(document.getElementById('go-board-wrap'), {
+                startAt,
+                title: `바둑 · ${cfg.n}줄`,
+                me: Object.assign(sideInfo(go.myName, go.myColor, myInfo), { name: go.myName + ' (나)' }),
+                opp: sideInfo(go.oppName, go.oppColor, oppInfo),
+                notes,
+                onGo: () => { if (go) goRenderAll(); },
+            });
+            go.tickTimer = setInterval(goTick, 400);
+            go.hbTimer = setInterval(() => rzSend(go.channel, 'msg', { t: 'hb' }), 4000);
+        }
+
+        function goTick() {
+            if (!go || go.phase !== 'game') return;
+            goRenderStatus(); goRenderBars(); goRenderControls(); // 시작 예고가 끝나는 순간 버튼/차례 표시가 켜지도록 주기적으로 갱신
+            const stale = Date.now() - go.lastSeen > 30000;
+            document.getElementById('go-disc').classList.toggle('hidden', !stale);
+        }
+
+        function goClaimDisconnectWin() {
+            if (!go || go.phase !== 'game') return;
+            goFinish('win', 'disconnect', '상대의 연결이 끊겨 승리 처리했어요');
+        }
+
+        // ---- 캔버스 ----
+
+        function goEnsureCanvas() {
+            const canvas = document.getElementById('go-canvas');
+            go.canvas = canvas; go.ctx = canvas.getContext('2d');
+            canvas.onpointerdown = goOnPointerDown;
+            canvas.onpointermove = goOnPointerMove;
+            canvas.onpointerleave = () => { if (go && go.hover !== -1 && go.pending === -1) { go.hover = -1; goDraw(); } };
+            goResizeCanvas();
+            if (window.ResizeObserver) {
+                go.resizeObserver = new ResizeObserver(() => goResizeCanvas());
+                go.resizeObserver.observe(canvas.parentElement);
+            }
+        }
+        function goResizeCanvas() {
+            if (!go || !go.canvas) return;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const w = go.canvas.clientWidth;
+            if (!w) return;
+            go.canvas.width = Math.round(w * dpr); go.canvas.height = Math.round(w * dpr);
+            go.dpr = dpr;
+            goDraw();
+        }
+
+        function goPointToIdx(e) {
+            const rect = go.canvas.getBoundingClientRect();
+            const n = go.n;
+            const gx = (e.clientX - rect.left) / rect.width * (n + 1) - 1;
+            const gy = (e.clientY - rect.top) / rect.height * (n + 1) - 1;
+            const ix = Math.round(gx), iy = Math.round(gy);
+            if (ix < 0 || ix >= n || iy < 0 || iy >= n) return -1;
+            return iy * n + ix;
+        }
+
+        function goOnPointerMove(e) {
+            if (!go || go.phase !== 'game' || go.mode !== 'play' || e.pointerType !== 'mouse') return;
+            if (go.st.turn !== go.myColor || Date.now() < go.startAt) return;
+            const idx = goPointToIdx(e);
+            const hover = (idx >= 0 && go.st.board[idx] === 0) ? idx : -1;
+            if (hover !== go.hover) { go.hover = hover; goDraw(); }
+        }
+
+        function goOnPointerDown(e) {
+            if (!go || go.phase !== 'game' || Date.now() < go.startAt) return;
+            const idx = goPointToIdx(e);
+            if (idx < 0) return;
+            if (go.mode === 'scoring') { goToggleDead(idx); return; }
+            if (go.st.turn !== go.myColor) return;
+            if (e.pointerType !== 'mouse') {
+                // 터치/펜: 첫 번째 탭은 미리보기, 같은 자리를 한 번 더 탭하면 착수 (잘못 누르는 실수 방지)
+                if (go.pending !== idx) { go.pending = idx; go.hover = idx; goDraw(); goRenderStatus(); return; }
+                go.pending = -1; go.hover = -1;
+            }
+            goPlayMine(idx);
+        }
+
+        function goDraw() {
+            if (!go || !go.ctx || !go.st) return;
+            const ctx = go.ctx, W = go.canvas.width, n = go.n, st = go.st;
+            if (!W) return;
+            const cell = W / (n + 1);
+            const px = (i) => cell * (i + 1);
+
+            // 나무 바둑판
+            const bg = ctx.createLinearGradient(0, 0, W, W);
+            bg.addColorStop(0, '#e9c77f'); bg.addColorStop(1, '#d9ac5c');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, W, W);
+
+            // 격자
+            ctx.strokeStyle = '#5b4222'; ctx.lineWidth = Math.max(1, cell * 0.045);
+            ctx.beginPath();
+            for (let i = 0; i < n; i++) {
+                ctx.moveTo(px(0), px(i)); ctx.lineTo(px(n - 1), px(i));
+                ctx.moveTo(px(i), px(0)); ctx.lineTo(px(i), px(n - 1));
+            }
+            ctx.stroke();
+            ctx.lineWidth = Math.max(1.5, cell * 0.09);
+            ctx.strokeRect(px(0), px(0), px(n - 1) - px(0), px(n - 1) - px(0));
+
+            // 화점
+            const stars = goStarPoints(n);
+            const starIdx = n === 9 ? [stars.TR, stars.BL, stars.BR, stars.TL, stars.C] : Object.values(stars);
+            ctx.fillStyle = '#3d2c14';
+            starIdx.forEach(i => {
+                ctx.beginPath(); ctx.arc(px(i % n), px(Math.floor(i / n)), Math.max(2, cell * 0.11), 0, Math.PI * 2); ctx.fill();
+            });
+
+            // 좌표 글자
+            ctx.fillStyle = 'rgba(70,48,20,.78)';
+            ctx.font = `700 ${Math.max(9, cell * 0.36)}px sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            for (let i = 0; i < n; i++) {
+                const letter = 'ABCDEFGHJKLMNOPQRST'[i];
+                ctx.fillText(letter, px(i), cell * 0.4); ctx.fillText(letter, px(i), W - cell * 0.4);
+                ctx.fillText(String(n - i), cell * 0.4, px(i)); ctx.fillText(String(n - i), W - cell * 0.4, px(i));
+            }
+
+            // 계가 단계: 집 표시
+            const r = cell * 0.47;
+            if (go.mode === 'scoring' && go.preview) {
+                for (let i = 0; i < n * n; i++) {
+                    const o = go.preview.owner[i];
+                    if (go.preview.board[i] !== 0 || (o !== 1 && o !== 2)) continue;
+                    const cx = px(i % n), cy = px(Math.floor(i / n)), s = cell * 0.28;
+                    ctx.fillStyle = o === 1 ? '#1b1b1f' : '#fbfbf7';
+                    ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 1;
+                    ctx.fillRect(cx - s / 2, cy - s / 2, s, s); ctx.strokeRect(cx - s / 2, cy - s / 2, s, s);
+                }
+            }
+
+            // 돌
+            let animScale = 1, animIdx = -1;
+            if (go.anim) {
+                const t = (performance.now() - go.anim.t0) / 170;
+                if (t < 1) { animScale = 1.35 - 0.35 * t; animIdx = go.anim.idx; } else go.anim = null;
+            }
+            const drawStone = (cx, cy, color, alpha, scale) => {
+                const rr = r * scale;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = 'rgba(0,0,0,.3)';
+                ctx.beginPath(); ctx.arc(cx + cell * 0.05, cy + cell * 0.07, rr, 0, Math.PI * 2); ctx.fill();
+                const g = ctx.createRadialGradient(cx - rr * 0.35, cy - rr * 0.35, rr * 0.1, cx, cy, rr);
+                if (color === 1) { g.addColorStop(0, '#6d6d72'); g.addColorStop(1, '#0e0e11'); }
+                else { g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#cfcfc6'); }
+                ctx.fillStyle = g;
+                ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI * 2); ctx.fill();
+                if (color === 2) { ctx.strokeStyle = 'rgba(0,0,0,.28)'; ctx.lineWidth = 1; ctx.stroke(); }
+                ctx.restore();
+            };
+            for (let i = 0; i < n * n; i++) {
+                const v = st.board[i];
+                if (!v) continue;
+                const cx = px(i % n), cy = px(Math.floor(i / n));
+                const dead = go.mode === 'scoring' && go.dead.has(i);
+                drawStone(cx, cy, v, dead ? 0.45 : 1, i === animIdx ? animScale : 1);
+                if (dead) {
+                    const s = cell * 0.2;
+                    ctx.strokeStyle = v === 1 ? '#fff' : '#222'; ctx.lineWidth = Math.max(1.5, cell * 0.07);
+                    ctx.beginPath(); ctx.moveTo(cx - s, cy - s); ctx.lineTo(cx + s, cy + s); ctx.moveTo(cx + s, cy - s); ctx.lineTo(cx - s, cy + s); ctx.stroke();
+                }
+            }
+
+            // 마지막 수 표시
+            if (st.lastMove !== null && st.lastMove >= 0 && st.board[st.lastMove]) {
+                const i = st.lastMove;
+                ctx.strokeStyle = st.board[i] === 1 ? '#ffd24a' : '#e5382d'; ctx.lineWidth = Math.max(2, cell * 0.09);
+                ctx.beginPath(); ctx.arc(px(i % n), px(Math.floor(i / n)), r * 0.42, 0, Math.PI * 2); ctx.stroke();
+            }
+
+            // 마우스 올린 자리/터치 미리보기
+            if (go.mode === 'play' && go.hover >= 0 && go.st.turn === go.myColor && st.board[go.hover] === 0) {
+                drawStone(px(go.hover % n), px(Math.floor(go.hover / n)), go.myColor, 0.5, 1);
+            }
+
+            if (go.anim) requestAnimationFrame(goDraw);
+        }
+
+        // ---- 렌더링(바/상태/버튼) ----
+
+        function goRenderBars() {
+            if (!go || !go.st) return;
+            [['top', go.oppColor, go.oppName + ''], ['bottom', go.myColor, go.myName + ' (나)']].forEach(([pos, color, name]) => {
+                document.getElementById('go-name-' + pos).innerText = name;
+                document.getElementById('go-dot-' + pos).className = 'go-stone-dot ' + (color === 1 ? 'b' : 'w');
+                document.getElementById('go-caps-' + pos).innerText = '따낸 돌 ' + go.st.caps[color];
+                const active = go.phase === 'game' && go.mode === 'play' && Date.now() >= go.startAt && go.st.turn === color;
+                document.getElementById('go-bar-' + pos).classList.toggle('active', active);
+            });
+        }
+
+        function goRenderInfo() {
+            const el = document.getElementById('go-info');
+            if (!el || !go) return;
+            const hc = go.handicap > 0 ? `${go.handicap}점 접바둑 (백 선수)` : '맞바둑 (흑 선수)';
+            el.innerText = `${go.n}줄 · ${hc} · 덤 ${go.komi}집 · 나는 ${go.myColor === 1 ? '흑' : '백'}`;
+        }
+
+        function goRenderStatus() {
+            const el = document.getElementById('go-status');
+            if (!el || !go || !go.st) return;
+            let text = '';
+            if (go.phase === 'ended') text = '대국이 끝났어요';
+            else if (Date.now() < go.startAt) text = '곧 시작합니다';
+            else if (go.mode === 'scoring') {
+                text = '계가 단계 — 죽은 돌을 눌러 표시하세요. 둘 다 [확정]을 누르면 끝나요';
+                if (go.confirmMe && !go.confirmOpp) text = '내가 확정했어요 · 상대가 확인하는 중...';
+                else if (!go.confirmMe && go.confirmOpp) text = '상대가 확정했어요 · 맞으면 [확정]을 눌러주세요';
+            } else if (go.st.turn === go.myColor) {
+                text = go.pending >= 0 ? '같은 자리를 한 번 더 누르면 둡니다' : '내 차례예요';
+            } else text = '상대가 생각하는 중...';
+            el.innerText = text;
+        }
+
+        function goRenderControls() {
+            if (!go) return;
+            const live = go.phase === 'game';
+            const myTurn = live && go.mode === 'play' && go.st.turn === go.myColor && Date.now() >= go.startAt;
+            document.getElementById('go-pass-btn').disabled = !myTurn;
+            document.getElementById('go-resign-btn').disabled = !live;
+            const scoring = live && go.mode === 'scoring';
+            document.getElementById('go-score-row').classList.toggle('hidden', !scoring);
+            document.getElementById('go-action-row').classList.toggle('hidden', scoring);
+            if (scoring && go.preview) {
+                const p = go.preview;
+                document.getElementById('go-score-text').innerText =
+                    `흑 ${p.black} : 백 ${p.white} + 덤 ${p.komi} = ${p.whiteWithKomi}  →  ${p.winner === 1 ? '흑' : '백'} 우세`;
+                document.getElementById('go-confirm-btn').disabled = go.confirmMe;
+                document.getElementById('go-confirm-btn').innerText = go.confirmMe ? '확정함' : '확정';
+            }
+        }
+
+        function goRenderAll() { goRenderBars(); goRenderInfo(); goRenderStatus(); goRenderControls(); goDraw(); }
+
+        // ---- 착수 / 패스 ----
+
+        function goPlayMine(idx) {
+            if (!go || go.phase !== 'game' || go.mode !== 'play' || go.st.turn !== go.myColor) return;
+            const r = goPlay(go.st, idx);
+            if (!r.ok) { showToast(GO_REASON_TEXT[r.reason] || '둘 수 없는 자리예요.', 'error'); return; }
+            goApplyMove(r, idx);
+            rzSend(go.channel, 'msg', { t: 'move', idx });
+        }
+
+        function goApplyMove(r, idx) {
+            go.st = r.state; go.lastIdx = idx; go.hover = -1; go.pending = -1;
+            go.anim = { idx, t0: performance.now() };
+            rzTone(210, 0.09, 'triangle', 0.2, 120);
+            if (r.captured.length) setTimeout(() => rzTone(520, 0.1, 'sine', 0.09), 70);
+            goRenderAll();
+        }
+
+        function goPassMine() {
+            if (!go || go.phase !== 'game' || go.mode !== 'play' || go.st.turn !== go.myColor) return;
+            go.st = goPass(go.st); go.hover = -1; go.pending = -1;
+            rzSend(go.channel, 'msg', { t: 'pass' });
+            showToast('한 수 쉬었어요.', 'info');
+            if (go.st.passes >= 2) goEnterScoring(); else goRenderAll();
+        }
+
+        // ---- 계가 (사석 표시 → 양쪽 확정) ----
+
+        function goEnterScoring() {
+            go.mode = 'scoring'; go.dead = new Set(); go.confirmMe = false; go.confirmOpp = false; go.oppSig = null; go.hover = -1; go.pending = -1;
+            goRecomputePreview();
+            showToast('두 사람이 연달아 쉬어서 계가 단계예요. 죽은 돌을 눌러 표시하세요.', 'info');
+            goRenderAll();
+        }
+        function goRecomputePreview() { go.preview = goScore(go.st, [...go.dead], go.komi); }
+        function goSig() { return [...go.dead].sort((a, b) => a - b).join(','); }
+
+        function goToggleDead(idx) {
+            if (!go || go.mode !== 'scoring' || go.st.board[idx] === 0) return;
+            const g = goGroup(go.st.board, go.n, idx);
+            const anyDead = g.stones.some(s => go.dead.has(s));
+            g.stones.forEach(s => { if (anyDead) go.dead.delete(s); else go.dead.add(s); });
+            go.confirmMe = false; go.confirmOpp = false; go.oppSig = null;
+            goRecomputePreview();
+            rzSend(go.channel, 'msg', { t: 'dead', list: [...go.dead] });
+            rzTone(400, 0.05, 'sine', 0.07);
+            goRenderAll();
+        }
+
+        function goConfirmScore() {
+            if (!go || go.mode !== 'scoring' || go.confirmMe) return;
+            go.confirmMe = true;
+            rzSend(go.channel, 'msg', { t: 'confirm', sig: goSig() });
+            goCheckBothConfirmed();
+            goRenderAll();
+        }
+
+        function goCheckBothConfirmed() {
+            if (!go || !go.confirmMe || !go.confirmOpp) return;
+            if (go.oppSig === goSig()) { goFinishByScore(); return; }
+            go.confirmMe = false; go.confirmOpp = false; go.oppSig = null;
+            showToast('서로 표시한 죽은 돌이 달라요. 다시 확인해주세요.', 'error');
+        }
+
+        function goResume() {
+            if (!go || go.mode !== 'scoring' || go.phase !== 'game') return;
+            go.mode = 'play'; go.dead = new Set(); go.preview = null; go.confirmMe = false; go.confirmOpp = false;
+            go.st = Object.assign({}, go.st, { turn: go.myColor, passes: 0 }); // 계속 두자고 한 사람이 먼저 둔다
+            rzSend(go.channel, 'msg', { t: 'resume' });
+            showToast('대국을 이어가요. 내 차례예요.', 'info');
+            goRenderAll();
+        }
+
+        function goFinishByScore() {
+            const sc = goScore(go.st, [...go.dead], go.komi);
+            const winner = sc.winner;
+            const margin = Math.abs(sc.black - sc.whiteWithKomi);
+            const detail = `흑 ${sc.black} : 백 ${sc.white} + 덤 ${sc.komi} = ${sc.whiteWithKomi}  ·  ${winner === 1 ? '흑' : '백'}이 ${margin}집 차로 승리`;
+            goFinish(winner === go.myColor ? 'win' : 'loss', 'score', detail);
+        }
+
+        // ---- 상대 메시지 ----
+
+        function goHandleMsg(p) {
+            if (!go || !p) return;
+            go.lastSeen = Date.now();
+            if (go.phase === 'game') document.getElementById('go-disc').classList.add('hidden');
+            if (go.phase !== 'game' && p.t !== 'hb') return;
+            switch (p.t) {
+                case 'move': {
+                    if (go.mode !== 'play' || go.st.turn !== go.oppColor) break;
+                    const r = goPlay(go.st, p.idx);
+                    if (!r.ok) { showToast('상대의 수가 규칙과 맞지 않아 무시했어요.', 'error'); break; }
+                    goApplyMove(r, p.idx);
+                    break;
+                }
+                case 'pass':
+                    if (go.mode !== 'play' || go.st.turn !== go.oppColor) break;
+                    go.st = goPass(go.st);
+                    showToast('상대가 한 수 쉬었어요.', 'info');
+                    if (go.st.passes >= 2) goEnterScoring(); else goRenderAll();
+                    break;
+                case 'dead':
+                    if (go.mode !== 'scoring' || !Array.isArray(p.list)) break;
+                    go.dead = new Set(p.list.filter(i => Number.isInteger(i) && go.st.board[i] !== 0));
+                    go.confirmMe = false; go.confirmOpp = false; go.oppSig = null;
+                    goRecomputePreview(); goRenderAll();
+                    break;
+                case 'confirm':
+                    if (go.mode !== 'scoring') break;
+                    go.confirmOpp = true; go.oppSig = String(p.sig || '');
+                    goCheckBothConfirmed(); goRenderAll();
+                    break;
+                case 'resume':
+                    if (go.mode !== 'scoring') break;
+                    go.mode = 'play'; go.dead = new Set(); go.preview = null; go.confirmMe = false; go.confirmOpp = false;
+                    go.st = Object.assign({}, go.st, { turn: go.oppColor, passes: 0 });
+                    showToast('상대가 대국을 이어가자고 했어요.', 'info');
+                    goRenderAll();
+                    break;
+                case 'resign':
+                    goFinish('win', 'resign', '상대가 기권했어요');
+                    break;
+            }
+        }
+
+        // ---- 버튼 ----
+
+        function goResign() {
+            if (!go || go.phase !== 'game') return;
+            if (!confirm('기권할까요? 패배로 기록돼요.')) return;
+            rzSend(go.channel, 'msg', { t: 'resign' });
+            goFinish('loss', 'resign', '기권했어요');
+        }
+        function goHideEnd() { document.getElementById('go-end').classList.add('hidden'); }
+        function goLeaveRoom() {
+            if (go && go.phase === 'game' && !confirm('나가면 패배로 기록돼요. 정말 나갈까요?')) return;
+            teardownGo();
+            ensureGoInit();
+        }
+        function goBackToLobby() { teardownGo(); ensureGoInit(); }
+
+        // ---- 종료 / 기록 ----
+
+        function goFinish(result, reason, detail) {
+            if (!go || go.phase !== 'game') return;
+            go.phase = 'ended'; go.result = result;
+            clearInterval(go.tickTimer); clearInterval(go.hbTimer);
+            if (go.intro) { go.intro.cancel(); go.intro = null; }
+            go.hover = -1; go.pending = -1;
+            document.getElementById('go-disc').classList.add('hidden');
+            goRenderAll();
+            document.getElementById('go-end-title').innerText = result === 'win' ? '승리했어요! 🏆' : '패배했어요';
+            document.getElementById('go-end-detail').innerText = detail || '';
+            document.getElementById('go-end').classList.remove('hidden');
+            if (result === 'win') rzSoundWin(); else rzSoundLose();
+            goRecordResult(result === 'win', go.n, go.handicap, go.myColor === 1);
+        }
+
+        async function goRecordResult(won, boardSize, handicap, playedBlack) {
+            if (!currentUser) return;
+            try {
+                await supabaseClient.from('go_scores').insert({
+                    user_id: currentUser.id, name: currentUser.name || '익명',
+                    won, board_size: boardSize, handicap, played_black: playedBlack,
+                });
+            } catch (e) { /* go_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+        }
+
+        function teardownGo() {
+            if (!go) return;
+            const g = go;
+            go = null;
+            if (g.phase === 'game') { // 대국 도중에 나가면 기권패
+                rzSend(g.channel, 'msg', { t: 'resign', leave: true });
+                goRecordResult(false, g.n, g.handicap, g.myColor === 1);
+            }
+            clearTimeout(g.joinTimer); clearInterval(g.tickTimer); clearInterval(g.hbTimer);
+            if (g.intro) g.intro.cancel();
+            if (g.resizeObserver) { try { g.resizeObserver.disconnect(); } catch (e) {} }
+            rzCloseChannelSoon(g.channel);
+        }
+
+        async function goShowLeaderboard() {
+            goShowState('leaderboard');
+            const list = document.getElementById('go-leaderboard-list');
+            list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('go_leaderboard')
+                    .select('name, wins, games')
+                    .limit(300);
+                if (error) throw error;
+                rzRenderWinrateBoard(list, data || [], false);
+            } catch (e) {
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (go_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
+            }
+        }
 
         // =====================================================================
         // 멘티 홈 — 멘토 목록 (평점 요약 + 실시간 "지금 상담 가능" 배지)
