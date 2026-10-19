@@ -1775,6 +1775,11 @@
                             <span class="restzone-game-name">바둑</span>
                             <span class="restzone-game-desc">온라인 1:1 · 승률 차이만큼 접바둑 · 승률 순위 · 로그인 필요</span>
                         </button>
+                        <button onclick="restzoneOpenGame('omok')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#f3e6cf;"><i class="fa-solid fa-table-cells" style="color:#8a5a14;"></i></span>
+                            <span class="restzone-game-name">오목</span>
+                            <span class="restzone-game-desc">렌주 룰(흑 3·3/4·4/장목 금지) 온라인 1:1 · 각자 10분 · 승률 순위 · 로그인 필요</span>
+                        </button>
                     </div>
                 </div>
 
@@ -2016,6 +2021,86 @@
                         <div id="chess-leaderboard-list" class="cnr-leaderboard-list"></div>
                         <div class="text-center">
                             <button onclick="chessBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 게임 7: 오목 -->
+                <div id="restzone-panel-omok" class="hidden">
+
+                    <div id="omok-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-table-cells text-3xl mb-3" style="color:#8a5a14;"></i>
+                        <p class="cnr-msg">오목 온라인 대국은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+
+                    <div id="omok-state-lobby" class="hidden cnr-center">
+                        <i class="fa-solid fa-table-cells text-3xl mb-3" style="color:#8a5a14;"></i>
+                        <p class="cnr-msg">친구와 정식 룰 오목 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">15×15 · 렌주 룰 · 흑 금수(3·3 / 4·4 / 장목) · 각자 10분<br>흑 첫 수는 천원 자동 · 백 첫 수는 중앙 한 칸 이내 · 흑 둘째 수는 중앙 5×5 바깥</span></p>
+                        <button onclick="omokCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="cnr-join-row">
+                            <input id="omok-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="omokJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="omok-lobby-error" class="cnr-lobby-error hidden"></p>
+                        <button onclick="omokShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>승률 순위 보기</button>
+                    </div>
+
+                    <div id="omok-state-waiting" class="hidden cnr-center">
+                        <div class="cnr-spinner"></div>
+                        <p class="cnr-msg">상대방을 기다리는 중...</p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="omok-room-code-display">-----</b>
+                            <button onclick="omokCopyRoomCode()" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <button onclick="omokLeaveRoom()" class="press-feel cnr-cancel-btn">취소</button>
+                    </div>
+
+                    <div id="omok-state-game" class="hidden">
+                        <div class="go-wrap">
+                            <div id="omok-bar-top" class="go-bar">
+                                <span id="omok-dot-top" class="go-stone-dot b"></span>
+                                <span id="omok-name-top" class="go-name"></span>
+                                <span id="omok-clock-top" class="chess-clock">10:00</span>
+                            </div>
+                            <div id="omok-board-wrap" class="go-board-wrap">
+                                <div class="go-scroll"><canvas id="omok-canvas"></canvas></div>
+                                <div id="omok-end" class="rz-end hidden">
+                                    <p id="omok-end-title" class="rz-end-title"></p>
+                                    <p id="omok-end-detail" class="rz-end-detail"></p>
+                                    <div class="rz-end-actions">
+                                        <button onclick="omokBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                                        <button onclick="omokShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                                    </div>
+                                    <button onclick="omokHideEnd()" class="rz-end-peek">보드 다시 보기</button>
+                                </div>
+                            </div>
+                            <div id="omok-bar-bottom" class="go-bar">
+                                <span id="omok-dot-bottom" class="go-stone-dot w"></span>
+                                <span id="omok-name-bottom" class="go-name"></span>
+                                <span id="omok-clock-bottom" class="chess-clock">10:00</span>
+                            </div>
+                            <p id="omok-info" class="go-info"></p>
+                            <p id="omok-status" class="rz-status"></p>
+                            <div id="omok-disc" class="rz-note hidden">
+                                <span>상대와 연결이 끊긴 것 같아요.</span>
+                                <button onclick="omokClaimDisconnectWin()" class="press-feel rz-note-btn">승리로 처리</button>
+                            </div>
+                            <div class="rz-action-row">
+                                <button id="omok-resign-btn" onclick="omokResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
+                                <button onclick="omokLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="omok-state-leaderboard" class="hidden">
+                        <p class="cnr-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>오목 승률 순위</p>
+                        <p class="rz-board-note">승률 = 승수 ÷ 전체 판수 · 3판 이상 플레이한 분부터 순위에 올라요 (무승부는 판수에만 포함)</p>
+                        <div id="omok-leaderboard-list" class="cnr-leaderboard-list"></div>
+                        <div class="text-center">
+                            <button onclick="omokBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
                         </div>
                     </div>
 
@@ -3106,7 +3191,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑' };
+        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목' };
 
         function openRestZoneModal() {
             rzApplyDeviceMode();
@@ -3121,6 +3206,7 @@
             if (typeof teardownCnr === 'function') teardownCnr();
             if (typeof teardownChess === 'function') teardownChess();
             if (typeof teardownGo === 'function') teardownGo();
+            if (typeof teardownOmok === 'function') teardownOmok();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -3131,6 +3217,7 @@
             if (typeof teardownCnr === 'function') teardownCnr();
             if (typeof teardownChess === 'function') teardownChess();
             if (typeof teardownGo === 'function') teardownGo();
+            if (typeof teardownOmok === 'function') teardownOmok();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -3145,6 +3232,7 @@
             else if (name === 'chase') ensureCnrInit();
             else if (name === 'chess') ensureChessInit();
             else if (name === 'go') ensureGoInit();
+            else if (name === 'omok') ensureOmokInit();
         }
 
         // =====================================================================
@@ -4254,6 +4342,7 @@
             let name = null;
             if (typeof chess !== 'undefined' && chess && chess.phase === 'game') name = '체스';
             else if (typeof go !== 'undefined' && go && go.phase === 'game') name = '바둑';
+            else if (typeof omok !== 'undefined' && omok && omok.phase === 'game') name = '오목';
             if (!name) return true;
             return confirm('진행 중인 ' + name + ' 대국에서 나가면 패배로 기록돼요. 정말 나갈까요?');
         }
@@ -5041,6 +5130,632 @@
                 rzRenderWinrateBoard(list, data || [], true);
             } catch (e) {
                 list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (chess_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
+            }
+        }
+
+        // =====================================================================
+        // 오목 엔진 (순수 로직) — 15×15, 렌주(공식) 룰
+        //  · 흑 금수: 3·3, 4·4, 장목(6목 이상). 단, 그 수로 정확히 5목이 되면 금수가 아니라 승리
+        //  · 흑은 정확히 5목일 때만 승리 / 백은 5목 이상이면 승리 (백은 금수 없음)
+        //  · 오프닝: 흑 첫 수는 천원(중앙) · 백 첫 수는 중앙 주변 한 칸 이내 · 흑 둘째 수는 중앙 5×5 바깥
+        // 보드: 길이 225 배열, index = y*15 + x, 0=빈칸 1=흑 2=백
+        // =====================================================================
+        const OMOK_N = 15;
+        const OMOK_CENTER = 7 * 15 + 7;
+        const OMOK_DIRS = [[1, 0], [0, 1], [1, 1], [1, -1]];
+        const OMOK_CLOCK_MS = 10 * 60 * 1000;
+
+        function omokIn(x, y) { return x >= 0 && y >= 0 && x < OMOK_N && y < OMOK_N; }
+        // idx 위치(색 c가 놓여 있다고 가정)를 지나는 방향 d의 연속된 돌 구간 {len, sx, sy, ex, ey}
+        function omokExtent(b, idx, c, d) {
+            const x = idx % OMOK_N, y = (idx / OMOK_N) | 0, dx = d[0], dy = d[1];
+            let sx = x, sy = y, ex = x, ey = y;
+            while (omokIn(sx - dx, sy - dy) && b[(sy - dy) * OMOK_N + sx - dx] === c) { sx -= dx; sy -= dy; }
+            while (omokIn(ex + dx, ey + dy) && b[(ey + dy) * OMOK_N + ex + dx] === c) { ex += dx; ey += dy; }
+            return { len: Math.max(Math.abs(ex - sx), Math.abs(ey - sy)) + 1, sx, sy, ex, ey };
+        }
+        function omokRun(b, idx, c, d) { return omokExtent(b, idx, c, d).len; }
+
+        // 방향 d 한 줄에서 idx를 포함해 "한 수 더 두면 정확히 5목"이 되는 지점 수 → 4(사)의 개수 (0, 1, 2)
+        function omokFourCount(b, idx, d) {
+            const x = idx % OMOK_N, y = (idx / OMOK_N) | 0, comps = [];
+            for (let k = -4; k <= 4; k++) {
+                if (k === 0) continue;
+                const cx = x + k * d[0], cy = y + k * d[1];
+                if (!omokIn(cx, cy)) continue;
+                const q = cy * OMOK_N + cx;
+                if (b[q] !== 0) continue;
+                b[q] = 1;
+                const e = omokExtent(b, q, 1, d);
+                b[q] = 0;
+                if (e.len !== 5) continue;
+                // 그 5목이 idx를 포함해야 이 수가 만든 4다
+                const inside = omokInSegment(idx, e, d);
+                if (inside) comps.push(q);
+            }
+            if (comps.length === 0) return 0;
+            if (comps.length === 1) return 1;
+            return omokRun(b, idx, 1, d) === 4 ? 1 : 2; // 연속 4개(열린 4)는 하나의 4, 떨어져 있으면 4가 둘(쌍사)
+        }
+        function omokInSegment(idx, e, d) {
+            const x = idx % OMOK_N, y = (idx / OMOK_N) | 0;
+            const t = Math.max(Math.abs(x - e.sx), Math.abs(y - e.sy));
+            return x === e.sx + t * d[0] && y === e.sy + t * d[1] && t < e.len;
+        }
+
+        // 방향 d에서 idx가 만든 "열린 3"인가: 한 수를 더 두면 양쪽 모두 정확히 5목이 되는 열린 4가 되고, 그 자리가 금수가 아닐 것
+        function omokOpenThree(b, idx, d, depth) {
+            const x = idx % OMOK_N, y = (idx / OMOK_N) | 0;
+            for (let k = -4; k <= 4; k++) {
+                if (k === 0) continue;
+                const cx = x + k * d[0], cy = y + k * d[1];
+                if (!omokIn(cx, cy)) continue;
+                const q = cy * OMOK_N + cx;
+                if (b[q] !== 0) continue;
+                b[q] = 1;
+                let ok = false;
+                const e = omokExtent(b, q, 1, d);
+                if (e.len === 4 && omokInSegment(idx, e, d)) {
+                    const ax = e.sx - d[0], ay = e.sy - d[1], bx = e.ex + d[0], by = e.ey + d[1];
+                    if (omokIn(ax, ay) && omokIn(bx, by) && b[ay * OMOK_N + ax] === 0 && b[by * OMOK_N + bx] === 0) {
+                        const a = ay * OMOK_N + ax, c2 = by * OMOK_N + bx;
+                        b[a] = 1; const r1 = omokRun(b, a, 1, d); b[a] = 0;
+                        b[c2] = 1; const r2 = omokRun(b, c2, 1, d); b[c2] = 0;
+                        ok = r1 === 5 && r2 === 5;
+                    }
+                }
+                b[q] = 0;
+                if (ok && !omokForbiddenReason(b, q, depth + 1)) return true;
+            }
+            return false;
+        }
+
+        // 흑이 빈 자리 idx에 두면 금수인가? → null | '33' | '44' | 'overline'
+        function omokForbiddenReason(b, idx, depth) {
+            depth = depth || 0;
+            if (b[idx] !== 0) return null;
+            b[idx] = 1;
+            let reason = null;
+            try {
+                let five = false, over = false;
+                for (const d of OMOK_DIRS) { const r = omokRun(b, idx, 1, d); if (r === 5) five = true; else if (r >= 6) over = true; }
+                if (five) return null;               // 정확히 5목이 되면 금수보다 승리가 먼저
+                if (over) return 'overline';
+                let fours = 0;
+                for (const d of OMOK_DIRS) fours += omokFourCount(b, idx, d);
+                if (fours >= 2) return '44';
+                if (depth < 3) {
+                    let threes = 0;
+                    for (const d of OMOK_DIRS) if (omokOpenThree(b, idx, d, depth)) threes++;
+                    if (threes >= 2) return '33';
+                }
+            } finally { b[idx] = 0; }
+            return reason;
+        }
+
+        function omokNewState() {
+            const board = new Array(OMOK_N * OMOK_N).fill(0);
+            board[OMOK_CENTER] = 1; // 흑 첫 수는 천원에 자동으로
+            return { board, turn: 2, count: 1, last: OMOK_CENTER, winner: 0, winLine: null, draw: false };
+        }
+        function omokCheb(idx) { return Math.max(Math.abs(idx % OMOK_N - 7), Math.abs(((idx / OMOK_N) | 0) - 7)); }
+
+        // color가 idx에 둔다. (color가 현재 차례가 아니면 — 관리자 특수 능력 — 차례는 그대로 유지)
+        function omokPlay(st, idx, color) {
+            color = color || st.turn;
+            if (st.winner || st.draw) return { ok: false, reason: 'over' };
+            if (!Number.isInteger(idx) || idx < 0 || idx >= OMOK_N * OMOK_N) return { ok: false, reason: 'range' };
+            if (st.board[idx] !== 0) return { ok: false, reason: 'occupied' };
+            if (st.count === 1 && color === 2 && omokCheb(idx) > 1) return { ok: false, reason: 'open1' };
+            if (st.count === 2 && color === 1 && omokCheb(idx) < 3) return { ok: false, reason: 'open2' };
+            if (color === 1) {
+                const f = omokForbiddenReason(st.board, idx, 0);
+                if (f) return { ok: false, reason: 'forbidden', detail: f };
+            }
+            const board = st.board.slice();
+            board[idx] = color;
+            let winner = 0, winLine = null;
+            for (const d of OMOK_DIRS) {
+                const e = omokExtent(board, idx, color, d);
+                if ((color === 1 && e.len === 5) || (color === 2 && e.len >= 5)) {
+                    winner = color; winLine = [e.sx, e.sy, e.ex, e.ey]; break;
+                }
+            }
+            const count = st.count + 1;
+            const draw = !winner && count >= OMOK_N * OMOK_N;
+            return { ok: true, state: { board, turn: color === st.turn ? (color === 1 ? 2 : 1) : st.turn, count, last: idx, winner, winLine, draw } };
+        }
+
+        // ---- 오목 온라인 대국 (체스와 같은 방 코드 방식 · 호스트가 흑/백을 정하고 양쪽이 같은 엔진으로 수를 검증) ----
+        const OMOK_REASON_TEXT = {
+            five: '5목 완성!', resign: '기권', timeout: '시간 초과', full: '판이 가득 차서 무승부', disconnect: '상대의 연결이 끊겨 승리 처리했어요',
+        };
+        const OMOK_BLOCK_TEXT = {
+            occupied: '이미 돌이 놓인 자리예요.', range: '바둑판 밖이에요.', over: '대국이 이미 끝났어요.',
+            open1: '백의 첫 수는 천원(중앙) 바로 주변 한 칸 안에 둬야 해요.',
+            open2: '흑의 두 번째 수는 중앙 5×5 영역 바깥에 둬야 해요.',
+        };
+        const OMOK_FORBID_TEXT = { '33': '3·3 금수예요. (열린 3이 두 개 생겨요)', '44': '4·4 금수예요. (4가 두 개 생겨요)', overline: '장목(6목 이상) 금수예요.' };
+        let omok = null; // 현재 오목 세션의 모든 런타임 상태
+
+        function omokShowState(name) {
+            document.querySelectorAll('#restzone-panel-omok > [id^="omok-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('omok-state-' + name);
+            if (el) el.classList.remove('hidden');
+        }
+        function ensureOmokInit() {
+            if (!currentUser) { omokShowState('loggedout'); return; }
+            if (omok && (omok.phase === 'game' || omok.phase === 'ended')) { omokShowState('game'); omokResizeCanvas(); return; }
+            if (omok && omok.phase === 'waiting') { omokShowState('waiting'); return; }
+            omokShowState('lobby');
+            const err = document.getElementById('omok-lobby-error');
+            if (err) err.classList.add('hidden');
+        }
+        function omokLobbyError(msg) {
+            const err = document.getElementById('omok-lobby-error');
+            if (!err) return;
+            err.innerText = msg; err.classList.remove('hidden');
+        }
+
+        function omokCreateRoom() {
+            if (!currentUser) return;
+            teardownOmok();
+            const code = cnrGenerateRoomCode();
+            omok = { phase: 'waiting', role: 'host', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('omok-room-code-display').innerText = code;
+            omokShowState('waiting');
+            omokOpenChannel();
+        }
+        function omokJoinRoom() {
+            if (!currentUser) return;
+            const code = (document.getElementById('omok-join-code-input').value || '').trim().toUpperCase();
+            if (code.length < 4) { omokLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            teardownOmok();
+            omok = { phase: 'waiting', role: 'guest', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('omok-room-code-display').innerText = code;
+            omokShowState('waiting');
+            omokOpenChannel();
+            omok.joinTimer = setTimeout(() => {
+                if (omok && omok.phase === 'waiting' && omok.role === 'guest') {
+                    teardownOmok(); omokShowState('lobby');
+                    omokLobbyError('방을 찾지 못했어요. 코드를 다시 확인해주세요.');
+                }
+            }, 9000);
+        }
+        function omokOpenChannel() {
+            omok.channel = rzRoomChannel('omok', omok.roomCode, {
+                onHello: omokHandleHello, onWelcome: omokHandleWelcome, onMsg: omokHandleMsg,
+                onSubscribed: () => {
+                    if (omok && omok.role === 'guest') rzSend(omok.channel, 'hello', { name: omok.myName, id: currentUser.id, admin: currentUser.role === 'admin' });
+                },
+            });
+        }
+        function omokCopyRoomCode() { if (omok) rzCopyRoomCode(omok.roomCode); }
+
+        function omokHandleHello(p) {
+            if (!omok || omok.role !== 'host' || omok.phase !== 'waiting') return;
+            omok.oppName = (p && p.name) || '상대'; omok.oppId = (p && p.id) || null;
+            omok.oppAdmin = !!(p && p.admin);
+            const hostColor = Math.random() < 0.5 ? 1 : 2;
+            const hostAdmin = currentUser.role === 'admin';
+            rzSend(omok.channel, 'welcome', { name: omok.myName, id: currentUser.id, hostColor, admin: hostAdmin, startIn: RZ_INTRO_LEAD_MS });
+            omokBeginMatch(hostColor, Date.now() + RZ_INTRO_LEAD_MS);
+        }
+        function omokHandleWelcome(p) {
+            if (!omok || omok.role !== 'guest' || omok.phase !== 'waiting' || !p) return;
+            omok.oppName = p.name || '상대'; omok.oppId = p.id || null;
+            omok.oppAdmin = !!p.admin;
+            omokBeginMatch(p.hostColor === 1 ? 2 : 1, Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
+        }
+
+        function omokBeginMatch(myColor, startAt) {
+            if (!omok) return;
+            clearTimeout(omok.joinTimer);
+            omok.phase = 'game';
+            omok.myAdmin = currentUser.role === 'admin';
+            omok.unrated = !!(omok.myAdmin || omok.oppAdmin); // 관리자가 낀 대국은 전적에 반영하지 않는다
+            omok.myColor = myColor; omok.oppColor = myColor === 1 ? 2 : 1;
+            omok.startAt = startAt;
+            omok.st = omokNewState();
+            omok.clocks = { 1: OMOK_CLOCK_MS, 2: OMOK_CLOCK_MS };
+            omok.turnStartAt = startAt;
+            omok.hover = -1; omok.pending = -1; omok.touchStart = null; omok.forbKey = -1; omok.forb = [];
+            omok.lastSeen = Date.now();
+            omok.anim = null;
+            ['omok-end', 'omok-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            omokShowState('game');
+            omokEnsureCanvas();
+            omokRenderAll();
+
+            const stoneIcon = (c) => `<span class="go-intro-stone ${c === 1 ? 'b' : 'w'}"></span>`;
+            const sideInfo = (name, c, admin) => ({
+                name, badge: (c === 1 ? '흑' : '백') + (c === 1 ? ' · 선수' : ' · 후수'),
+                sub: admin ? '👑 관리자 · 시간·차례 무시' : (c === 1 ? '3·3 / 4·4 / 장목 금수' : '금수 없음'),
+                icon: stoneIcon(c), color: c === 1 ? '#4b4b57' : '#f4efe0',
+            });
+            omok.intro = rzIntroPlay(document.getElementById('omok-board-wrap'), {
+                startAt,
+                title: '오목 · 렌주 룰',
+                me: Object.assign(sideInfo(omok.myName, myColor, omok.myAdmin), { name: omok.myName + ' (나)' }),
+                opp: sideInfo(omok.oppName, omok.oppColor, omok.oppAdmin),
+                notes: omok.unrated
+                    ? ['👑 관리자 대국 · 관리자는 시간과 차례에 상관없이 돌을 놓을 수 있어요', '전적(승률)에는 기록되지 않아요']
+                    : ['정확히 5목이면 승리 (백은 6목 이상도 승리) · 각자 10분', '흑 금수: 3·3 · 4·4 · 장목 / 흑 첫 수는 천원에 자동으로 놓여요'],
+                onGo: () => { if (omok) omokRenderAll(); },
+            });
+            omok.tickTimer = setInterval(omokTick, 250);
+            omok.hbTimer = setInterval(() => rzSend(omok.channel, 'msg', { t: 'hb' }), 4000);
+        }
+
+        // ---- 시계 ----
+        function omokIsAdminColor(c) { return c === omok.myColor ? omok.myAdmin : omok.oppAdmin; }
+        function omokRemaining(color) {
+            if (omokIsAdminColor(color)) return Infinity; // 관리자는 시간 제한이 없다
+            let rem = omok.clocks[color];
+            if (omok.phase === 'game' && Date.now() >= omok.startAt && omok.st.turn === color) rem -= (Date.now() - omok.turnStartAt);
+            return Math.max(0, rem);
+        }
+        function omokFmtClock(ms) {
+            if (!isFinite(ms)) return '∞';
+            const total = Math.ceil(Math.max(0, ms) / 1000);
+            return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+        }
+
+        // ---- 캔버스 ----
+        function omokEnsureCanvas() {
+            const canvas = document.getElementById('omok-canvas');
+            omok.canvas = canvas; omok.ctx = canvas.getContext('2d');
+            canvas.onpointerdown = (e) => {
+                if (e.pointerType === 'mouse') { omokOnPointerDown(e); return; }
+                omok.touchStart = { x: e.clientX, y: e.clientY };
+            };
+            canvas.onpointerup = (e) => {
+                if (e.pointerType === 'mouse' || !omok || !omok.touchStart) return;
+                const moved = Math.hypot(e.clientX - omok.touchStart.x, e.clientY - omok.touchStart.y);
+                omok.touchStart = null;
+                if (moved < 10) omokOnPointerDown(e);
+            };
+            canvas.onpointercancel = () => { if (omok) omok.touchStart = null; };
+            canvas.onpointermove = omokOnPointerMove;
+            canvas.onpointerleave = () => { if (omok && omok.hover !== -1 && omok.pending === -1) { omok.hover = -1; omokDraw(); } };
+            omokResizeCanvas();
+            if (window.ResizeObserver) {
+                omok.resizeObserver = new ResizeObserver(() => omokResizeCanvas());
+                omok.resizeObserver.observe(canvas.parentElement);
+            }
+        }
+        function omokResizeCanvas() {
+            if (!omok || !omok.canvas) return;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const w = omok.canvas.clientWidth;
+            if (!w) return;
+            omok.canvas.width = Math.round(w * dpr); omok.canvas.height = Math.round(w * dpr);
+            omokDraw();
+        }
+        function omokPointToIdx(e) {
+            const rect = omok.canvas.getBoundingClientRect();
+            const n = OMOK_N;
+            const ix = Math.round((e.clientX - rect.left) / rect.width * (n + 1) - 1);
+            const iy = Math.round((e.clientY - rect.top) / rect.height * (n + 1) - 1);
+            if (ix < 0 || ix >= n || iy < 0 || iy >= n) return -1;
+            return iy * n + ix;
+        }
+        function omokCanAct() {
+            if (!omok || omok.phase !== 'game' || Date.now() < omok.startAt) return false;
+            return omok.st.turn === omok.myColor || omok.myAdmin; // 관리자는 차례와 상관없이
+        }
+        function omokOnPointerMove(e) {
+            if (!omok || e.pointerType !== 'mouse' || !omokCanAct()) return;
+            const idx = omokPointToIdx(e);
+            const hover = (idx >= 0 && omok.st.board[idx] === 0) ? idx : -1;
+            if (hover !== omok.hover) { omok.hover = hover; omokDraw(); }
+        }
+        function omokOnPointerDown(e) {
+            if (!omokCanAct()) return;
+            const idx = omokPointToIdx(e);
+            if (idx < 0) return;
+            if (e.pointerType !== 'mouse') {
+                if (omok.pending !== idx) { omok.pending = idx; omok.hover = idx; omokDraw(); omokRenderStatus(); return; }
+                omok.pending = -1; omok.hover = -1;
+            }
+            omokPlayMine(idx);
+        }
+
+        // 흑 차례에 흑 금수 자리를 빨간 ×로 보여준다
+        function omokForbiddenList() {
+            if (!omok || omok.myColor !== 1 || omok.phase !== 'game' || omok.st.winner) return [];
+            if (omok.forbKey !== omok.st.count) {
+                omok.forbKey = omok.st.count;
+                const list = [];
+                for (let i = 0; i < OMOK_N * OMOK_N; i++) if (omok.st.board[i] === 0 && omokForbiddenReason(omok.st.board, i, 0)) list.push(i);
+                omok.forb = list;
+            }
+            return omok.forb;
+        }
+
+        function omokDraw() {
+            if (!omok || !omok.ctx || !omok.st) return;
+            const ctx = omok.ctx, W = omok.canvas.width, n = OMOK_N, st = omok.st;
+            if (!W) return;
+            const cell = W / (n + 1), px = (i) => cell * (i + 1);
+            const bg = ctx.createLinearGradient(0, 0, W, W);
+            bg.addColorStop(0, '#e9c77f'); bg.addColorStop(1, '#d9ac5c');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, W, W);
+            ctx.strokeStyle = '#5b4222'; ctx.lineWidth = Math.max(1, cell * 0.045);
+            ctx.beginPath();
+            for (let i = 0; i < n; i++) {
+                ctx.moveTo(px(0), px(i)); ctx.lineTo(px(n - 1), px(i));
+                ctx.moveTo(px(i), px(0)); ctx.lineTo(px(i), px(n - 1));
+            }
+            ctx.stroke();
+            ctx.lineWidth = Math.max(1.5, cell * 0.09);
+            ctx.strokeRect(px(0), px(0), px(n - 1) - px(0), px(n - 1) - px(0));
+            ctx.fillStyle = '#3d2c14';
+            [[3, 3], [11, 3], [3, 11], [11, 11], [7, 7]].forEach(([x, y]) => {
+                ctx.beginPath(); ctx.arc(px(x), px(y), Math.max(2, cell * 0.11), 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.fillStyle = 'rgba(70,48,20,.78)';
+            ctx.font = `700 ${Math.max(9, cell * 0.36)}px sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            for (let i = 0; i < n; i++) {
+                const letter = 'ABCDEFGHIJKLMNO'[i];
+                ctx.fillText(letter, px(i), cell * 0.4); ctx.fillText(letter, px(i), W - cell * 0.4);
+                ctx.fillText(String(n - i), cell * 0.4, px(i)); ctx.fillText(String(n - i), W - cell * 0.4, px(i));
+            }
+
+            const r = cell * 0.46;
+            let animScale = 1, animIdx = -1;
+            if (omok.anim) {
+                const t = (performance.now() - omok.anim.t0) / 170;
+                if (t < 1) { animScale = 1.35 - 0.35 * t; animIdx = omok.anim.idx; } else omok.anim = null;
+            }
+            const drawStone = (cx, cy, color, alpha, scale) => {
+                const rr = r * scale;
+                ctx.save(); ctx.globalAlpha = alpha;
+                ctx.fillStyle = 'rgba(0,0,0,.3)';
+                ctx.beginPath(); ctx.arc(cx + cell * 0.05, cy + cell * 0.07, rr, 0, Math.PI * 2); ctx.fill();
+                const g = ctx.createRadialGradient(cx - rr * 0.35, cy - rr * 0.35, rr * 0.1, cx, cy, rr);
+                if (color === 1) { g.addColorStop(0, '#6d6d72'); g.addColorStop(1, '#0e0e11'); }
+                else { g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#cfcfc6'); }
+                ctx.fillStyle = g;
+                ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI * 2); ctx.fill();
+                if (color === 2) { ctx.strokeStyle = 'rgba(0,0,0,.28)'; ctx.lineWidth = 1; ctx.stroke(); }
+                ctx.restore();
+            };
+
+            // 금수 표시 (흑 차례)
+            if (omok.myColor === 1 && st.turn === 1 && omok.phase === 'game') {
+                const s = cell * 0.17;
+                ctx.strokeStyle = '#e11d48'; ctx.lineWidth = Math.max(1.8, cell * 0.08); ctx.lineCap = 'round';
+                omokForbiddenList().forEach(i => {
+                    const cx = px(i % n), cy = px((i / n) | 0);
+                    ctx.beginPath(); ctx.moveTo(cx - s, cy - s); ctx.lineTo(cx + s, cy + s); ctx.moveTo(cx + s, cy - s); ctx.lineTo(cx - s, cy + s); ctx.stroke();
+                });
+                ctx.lineCap = 'butt';
+            }
+
+            for (let i = 0; i < n * n; i++) {
+                const v = st.board[i];
+                if (!v) continue;
+                drawStone(px(i % n), px((i / n) | 0), v, 1, i === animIdx ? animScale : 1);
+            }
+            if (st.last >= 0 && st.board[st.last]) {
+                const i = st.last;
+                ctx.strokeStyle = st.board[i] === 1 ? '#ffd24a' : '#e5382d'; ctx.lineWidth = Math.max(2, cell * 0.09);
+                ctx.beginPath(); ctx.arc(px(i % n), px((i / n) | 0), r * 0.42, 0, Math.PI * 2); ctx.stroke();
+            }
+            if (st.winLine) {
+                ctx.strokeStyle = '#22c55e'; ctx.lineWidth = Math.max(3, cell * 0.14); ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(px(st.winLine[0]), px(st.winLine[1])); ctx.lineTo(px(st.winLine[2]), px(st.winLine[3])); ctx.stroke();
+                ctx.lineCap = 'butt';
+            }
+            if (omok.hover >= 0 && omokCanAct() && st.board[omok.hover] === 0) {
+                drawStone(px(omok.hover % n), px((omok.hover / n) | 0), omok.myColor, 0.5, 1);
+            }
+            if (omok.anim) requestAnimationFrame(omokDraw);
+        }
+
+        // ---- 렌더링 ----
+        function omokRenderBars() {
+            if (!omok || !omok.st) return;
+            const live = omok.phase === 'game' && Date.now() >= omok.startAt;
+            [['top', omok.oppColor, omok.oppName + ''], ['bottom', omok.myColor, omok.myName + ' (나)']].forEach(([pos, color, name]) => {
+                const adminTag = omokIsAdminColor(color) ? ' 👑' : '';
+                document.getElementById('omok-name-' + pos).innerText = name + adminTag;
+                document.getElementById('omok-dot-' + pos).className = 'go-stone-dot ' + (color === 1 ? 'b' : 'w');
+                const rem = omokRemaining(color);
+                const clock = document.getElementById('omok-clock-' + pos);
+                clock.innerText = omokFmtClock(rem);
+                clock.classList.toggle('low', rem <= 30000);
+                document.getElementById('omok-bar-' + pos).classList.toggle('active', live && omok.st.turn === color);
+            });
+        }
+        function omokRenderInfo() {
+            const el = document.getElementById('omok-info');
+            if (el && omok) el.innerText = `15×15 · 렌주 룰 · 나는 ${omok.myColor === 1 ? '흑 (금수 있음)' : '백'}`;
+        }
+        function omokRenderStatus() {
+            const el = document.getElementById('omok-status');
+            if (!el || !omok || !omok.st) return;
+            let text;
+            const st = omok.st;
+            if (omok.phase === 'ended') text = '대국이 끝났어요';
+            else if (Date.now() < omok.startAt) text = '곧 시작합니다';
+            else if (st.turn === omok.myColor) {
+                text = '내 차례예요';
+                if (st.count === 1 && omok.myColor === 2) text = '내 차례예요 · 천원 바로 주변 한 칸 안에 두세요';
+                else if (st.count === 2 && omok.myColor === 1) text = '내 차례예요 · 중앙 5×5 바깥에 두세요';
+                else if (omok.myColor === 1) text = '내 차례예요 · 빨간 ×는 둘 수 없는 금수 자리';
+                if (omok.pending >= 0) text = '같은 자리를 한 번 더 누르면 둡니다';
+            } else text = omok.myAdmin ? '👑 상대 차례지만 관리자는 지금도 둘 수 있어요' : '상대가 생각하는 중...';
+            el.innerText = text;
+        }
+        function omokRenderActions() {
+            const live = omok && omok.phase === 'game';
+            document.getElementById('omok-resign-btn').disabled = !live;
+        }
+        function omokRenderAll() { omokRenderBars(); omokRenderInfo(); omokRenderStatus(); omokRenderActions(); omokDraw(); }
+
+        function omokTick() {
+            if (!omok || omok.phase !== 'game') return;
+            omokRenderBars(); omokRenderStatus();
+            document.getElementById('omok-disc').classList.toggle('hidden', !(Date.now() - omok.lastSeen > 30000));
+            if (Date.now() < omok.startAt) return;
+            const turn = omok.st.turn;
+            if (omokIsAdminColor(turn)) return; // 관리자는 시간 초과가 없다
+            const rem = omok.clocks[turn] - (Date.now() - omok.turnStartAt);
+            if (turn === omok.myColor && rem <= 0) {
+                rzSend(omok.channel, 'msg', { t: 'timeout', loser: omok.myColor });
+                omokFinish('loss', 'timeout');
+            } else if (turn === omok.oppColor && rem <= -2000) {
+                rzSend(omok.channel, 'msg', { t: 'timeout', loser: omok.oppColor });
+                omokFinish('win', 'timeout');
+            }
+        }
+        function omokClaimDisconnectWin() {
+            if (!omok || omok.phase !== 'game') return;
+            omokFinish('win', 'disconnect');
+        }
+
+        // ---- 착수 ----
+        function omokPlayMine(idx) {
+            if (!omokCanAct()) return;
+            const r = omokPlay(omok.st, idx, omok.myColor);
+            if (!r.ok) {
+                const msg = r.reason === 'forbidden' ? (OMOK_FORBID_TEXT[r.detail] || '금수 자리예요.') : (OMOK_BLOCK_TEXT[r.reason] || '둘 수 없는 자리예요.');
+                showToast(msg, 'error');
+                return;
+            }
+            omokApply(r.state, omok.myColor, idx, false);
+        }
+        function omokApply(newState, color, idx, remote, remoteClock) {
+            const now = Date.now(), inTurn = omok.st.turn === color;
+            if (inTurn) {
+                // 차례에 둔 수만 시계에 반영한다. (관리자는 시계가 없고, 관리자의 차례 밖 착수는 상대 시계를 건드리지 않는다)
+                if (!omokIsAdminColor(color)) {
+                    if (remote) { if (typeof remoteClock === 'number') omok.clocks[color] = Math.max(0, Math.min(omok.clocks[color], remoteClock)); }
+                    else omok.clocks[color] = Math.max(0, omok.clocks[color] - Math.max(0, now - omok.turnStartAt));
+                }
+                omok.turnStartAt = now;
+            }
+            omok.st = newState;
+            omok.hover = -1; omok.pending = -1;
+            omok.anim = { idx, t0: performance.now() };
+            rzTone(color === 1 ? 190 : 230, 0.09, 'triangle', 0.2, 110);
+            if (!remote) rzSend(omok.channel, 'msg', { t: 'move', idx, clock: omok.clocks[color] });
+            omokRenderAll();
+            if (newState.winner) omokFinish(newState.winner === omok.myColor ? 'win' : 'loss', 'five');
+            else if (newState.draw) omokFinish('draw', 'full');
+        }
+
+        // ---- 관리자 충돌 정리: 관리자가 차례 밖에 둔 자리와 상대의 수가 겹치면 관리자 쪽 판을 기준으로 맞춘다 ----
+        function omokSendSnap() {
+            if (!omok || !omok.myAdmin) return;
+            const st = omok.st;
+            rzSend(omok.channel, 'msg', { t: 'snap', board: st.board.join(''), turn: st.turn, count: st.count, last: st.last });
+        }
+        function omokAdoptSnap(p) {
+            if (!omok || !omok.oppAdmin || omok.phase !== 'game' || typeof p.board !== 'string' || p.board.length !== OMOK_N * OMOK_N) return;
+            const board = p.board.split('').map(Number);
+            if (board.some(v => v !== 0 && v !== 1 && v !== 2)) return;
+            const last = Number.isInteger(p.last) ? p.last : -1;
+            omok.st = { board, turn: p.turn === 1 ? 1 : 2, count: board.filter(Boolean).length, last, winner: 0, winLine: null, draw: false };
+            omok.turnStartAt = Date.now(); omok.forbKey = -1; omok.pending = -1; omok.hover = -1;
+            omokRenderAll();
+        }
+
+        // ---- 상대 메시지 ----
+        function omokHandleMsg(p) {
+            if (!omok || !p) return;
+            omok.lastSeen = Date.now();
+            if (omok.phase === 'game') document.getElementById('omok-disc').classList.add('hidden');
+            switch (p.t) {
+                case 'move': {
+                    if (omok.phase !== 'game') break;
+                    if (omok.st.turn !== omok.oppColor && !omok.oppAdmin) break; // 관리자가 아니면 자기 차례에만
+                    const r = omokPlay(omok.st, p.idx, omok.oppColor);
+                    if (!r.ok) {
+                        if (omok.myAdmin) omokSendSnap(); // 내(관리자) 판이 기준
+                        else if (!omok.oppAdmin) showToast('상대의 수가 규칙과 맞지 않아 무시했어요.', 'error');
+                        break;
+                    }
+                    omokApply(r.state, omok.oppColor, p.idx, true, p.clock);
+                    break;
+                }
+                case 'snap': omokAdoptSnap(p); break;
+                case 'resign': omokFinish('win', 'resign'); break;
+                case 'timeout':
+                    if (omok.phase !== 'game') break;
+                    if (p.loser === omok.oppColor) omokFinish('win', 'timeout');
+                    else if (p.loser === omok.myColor && omok.st.turn === omok.myColor && omokRemaining(omok.myColor) <= 3000) omokFinish('loss', 'timeout');
+                    break;
+            }
+        }
+
+        // ---- 버튼 / 종료 / 기록 ----
+        function omokResign() {
+            if (!omok || omok.phase !== 'game') return;
+            if (!confirm('기권할까요? 패배로 기록돼요.')) return;
+            rzSend(omok.channel, 'msg', { t: 'resign' });
+            omokFinish('loss', 'resign');
+        }
+        function omokHideEnd() { document.getElementById('omok-end').classList.add('hidden'); }
+        function omokLeaveRoom() {
+            if (omok && omok.phase === 'game' && !confirm('나가면 패배로 기록돼요. 정말 나갈까요?')) return;
+            teardownOmok();
+            ensureOmokInit();
+        }
+        function omokBackToLobby() { teardownOmok(); ensureOmokInit(); }
+
+        function omokFinish(result, reason) {
+            if (!omok || omok.phase !== 'game') return;
+            omok.phase = 'ended'; omok.result = result;
+            clearInterval(omok.tickTimer); clearInterval(omok.hbTimer);
+            if (omok.intro) { omok.intro.cancel(); omok.intro = null; }
+            omok.hover = -1; omok.pending = -1;
+            document.getElementById('omok-disc').classList.add('hidden');
+            omokRenderAll();
+            let detail = OMOK_REASON_TEXT[reason] || '';
+            if (reason === 'timeout') detail = result === 'win' ? '상대의 시간이 모두 떨어졌어요' : '내 시간이 모두 떨어졌어요';
+            else if (reason === 'resign') detail = result === 'win' ? '상대가 기권했어요' : '기권했어요';
+            else if (reason === 'five') detail = result === 'win' ? '5목을 완성했어요' : '상대가 5목을 완성했어요';
+            document.getElementById('omok-end-title').innerText = result === 'win' ? '승리했어요! 🏆' : result === 'loss' ? '패배했어요' : '무승부';
+            document.getElementById('omok-end-detail').innerText = detail;
+            document.getElementById('omok-end').classList.remove('hidden');
+            if (result === 'win') rzSoundWin(); else if (result === 'loss') rzSoundLose(); else rzTone(440, 0.4, 'sine', 0.14);
+            omokRecordResult(result, omok.myColor, omok.unrated);
+        }
+        async function omokRecordResult(result, color, unrated) {
+            if (!currentUser || unrated) return;
+            try {
+                await supabaseClient.from('omok_scores').insert({
+                    user_id: currentUser.id, name: currentUser.name || '익명', result, color: color === 1 ? 'b' : 'w',
+                });
+            } catch (e) { /* omok_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+        }
+        function teardownOmok() {
+            if (!omok) return;
+            const o = omok;
+            omok = null;
+            if (o.phase === 'game') { // 대국 도중에 나가면 기권패
+                rzSend(o.channel, 'msg', { t: 'resign', leave: true });
+                omokRecordResult('loss', o.myColor, o.unrated);
+            }
+            clearTimeout(o.joinTimer); clearInterval(o.tickTimer); clearInterval(o.hbTimer);
+            if (o.intro) o.intro.cancel();
+            if (o.resizeObserver) { try { o.resizeObserver.disconnect(); } catch (e) {} }
+            rzCloseChannelSoon(o.channel);
+        }
+        async function omokShowLeaderboard() {
+            omokShowState('leaderboard');
+            const list = document.getElementById('omok-leaderboard-list');
+            list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
+            try {
+                const { data, error } = await supabaseClient.from('omok_leaderboard').select('name, wins, draws, losses, games').limit(300);
+                if (error) throw error;
+                rzRenderWinrateBoard(list, data || [], true);
+            } catch (e) {
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (omok_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
             }
         }
 
