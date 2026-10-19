@@ -1926,6 +1926,7 @@
                             <span class="rz-kbd-only">W A S D(또는 방향키) 이동 · Space 대쉬(쿨타임 3초) · 탑뷰 2D</span>
                             <span class="rz-touch-only">왼쪽 조이스틱으로 이동 · ⚡ 버튼으로 대쉬(쿨타임 3초) · 폰을 가로로 돌리면 더 크게 보여요</span>
                         </p>
+                        <button id="cnr-size-btn" onclick="cnrCycleSize()" class="press-feel cnr-leave-btn hidden"><i class="fa-solid fa-up-right-and-down-left-from-center mr-1.5"></i><span id="cnr-size-label">몸 크기 ×1</span></button>
                         <button onclick="cnrLeaveRoom()" class="press-feel cnr-leave-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                     </div>
 
@@ -2107,6 +2108,7 @@
                                 </div>
                             </div>
                             <div class="rz-action-row">
+                                <button id="vb-size-btn" onclick="vbCycleSize()" class="press-feel rz-act-btn hidden"><i class="fa-solid fa-up-right-and-down-left-from-center mr-1.5"></i><span id="vb-size-label">몸 크기 ×1</span></button>
                                 <button onclick="vbLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                             </div>
                             <p class="go-info">A/D 이동 · W/Space 점프 · 공중에서 S/Shift 스파이크 (방향키도 가능)</p>
@@ -3668,6 +3670,13 @@
             cnrBeginMatch(myRole, Date.now() + (payload.startIn || RZ_INTRO_LEAD_MS));
         }
 
+        const CNR_SIZES = [1, 1.5, 2, 3, 0.6];
+        function cnrCycleSize() {
+            if (!cnr || cnr.phase !== 'game' || !cnr.myAdmin) return;
+            cnr.sizeIdx = ((cnr.sizeIdx || 0) + 1) % CNR_SIZES.length;
+            cnr.mySize = CNR_SIZES[cnr.sizeIdx];
+            const lb = document.getElementById('cnr-size-label'); if (lb) lb.innerText = '몸 크기 ×' + cnr.mySize;
+        }
         function cnrCopyRoomCode() {
             if (!cnr) return;
             const code = cnr.roomCode;
@@ -3743,6 +3752,8 @@
             if (!cnr) return;
             cnr.phase = 'game';
             cnr.myAdmin = currentUser.role === 'admin'; // 관리자 특수 능력: 대쉬 쿨타임 없음 (관리자가 낀 판은 전적 미반영)
+            cnr.mySize = 1; cnr.oppSize = 1; // 관리자 몸 크기 배율 (상대에게는 위치 메시지로 함께 전달)
+            { const sb = document.getElementById('cnr-size-btn'); if (sb) { sb.classList.toggle('hidden', !cnr.myAdmin); const lb = document.getElementById('cnr-size-label'); if (lb) lb.innerText = '몸 크기 ×1'; } }
             cnr.myRole = myRole;
             cnr.oppRole = myRole === 'cop' ? 'thief' : 'cop';
             cnr.isHostAuthority = (cnr.role === 'host');
@@ -3776,11 +3787,9 @@
             cnr.intro = rzIntroPlay(document.querySelector('#cnr-state-game .cnr-canvas-wrap'), {
                 startAt,
                 title: '경찰과 도둑 · 1분 승부',
-                me: Object.assign(roleInfo(myRole, cnr.myName, true), cnr.myAdmin ? { sub: '👑 관리자 · 대쉬 무제한' } : {}),
-                opp: Object.assign(roleInfo(cnr.oppRole, cnr.oppName || '상대', false), cnr.oppAdmin ? { sub: '👑 관리자 · 대쉬 무제한' } : {}),
-                notes: (cnr.myAdmin || cnr.oppAdmin)
-                    ? ['👑 관리자 대국 · 관리자는 대쉬를 쿨타임 없이 계속 쓸 수 있어요', '전적(승수)에는 기록되지 않아요 · WASD 이동 · Space 대쉬']
-                    : ['WASD 이동 · Space 대쉬(쿨타임 3초)', '도둑은 깃발을 홈존으로, 경찰은 1분을 버티면 승리'],
+                me: roleInfo(myRole, cnr.myName, true),
+                opp: roleInfo(cnr.oppRole, cnr.oppName || '상대', false),
+                notes: ['WASD 이동 · Space 대쉬(쿨타임 3초)', '도둑은 깃발을 홈존으로, 경찰은 1분을 버티면 승리'],
             });
 
             cnrEnsureCanvasReady();
@@ -3908,8 +3917,9 @@
 
             cnr.myPos.x += cnr.myVel.x * dt;
             cnr.myPos.z += cnr.myVel.z * dt;
-            cnr.myPos.x = Math.max(-(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_WIDTH - CNR_PLAYER_RADIUS, cnr.myPos.x));
-            cnr.myPos.z = Math.max(-(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS), Math.min(CNR_ARENA_HALF_LENGTH - CNR_PLAYER_RADIUS, cnr.myPos.z));
+            const myR = CNR_PLAYER_RADIUS * (cnr.mySize || 1);
+            cnr.myPos.x = Math.max(-(CNR_ARENA_HALF_WIDTH - myR), Math.min(CNR_ARENA_HALF_WIDTH - myR, cnr.myPos.x));
+            cnr.myPos.z = Math.max(-(CNR_ARENA_HALF_LENGTH - myR), Math.min(CNR_ARENA_HALF_LENGTH - myR, cnr.myPos.z));
             // 도둑의 홈존(+Z)은 도둑에게 안전구역 — 경찰은 그 경계선을 넘어 들어올 수 없다
             if (cnr.myRole === 'cop') {
                 const copZLimit = CNR_ARENA_HALF_LENGTH - CNR_ZONE_DEPTH;
@@ -3943,7 +3953,8 @@
             const dist = Math.hypot(thiefPos.x - copPos.x, thiefPos.z - copPos.z);
 
             if (!cnr.tagCooldownUntil || Date.now() > cnr.tagCooldownUntil) {
-                if (dist < CNR_TAG_RADIUS) {
+                const extra = CNR_PLAYER_RADIUS * ((cnr.mySize || 1) + (cnr.oppSize || 1) - 2); // 몸이 커지면 닿는 거리도 늘어난다
+                if (dist < CNR_TAG_RADIUS + extra) {
                     cnr.tagCooldownUntil = Date.now() + CNR_TAG_INVULN * 1000;
                     cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'tagged' } });
                     cnrApplyTagEffects();
@@ -3952,7 +3963,8 @@
 
             if (!cnr.flagCarried) {
                 const dFlag = Math.hypot(thiefPos.x - CNR_FLAG_SPAWN.x, thiefPos.z - CNR_FLAG_SPAWN.z);
-                if (dFlag < CNR_FLAG_PICKUP_RADIUS) {
+                const thiefSize = cnr.myRole === 'thief' ? (cnr.mySize || 1) : (cnr.oppSize || 1);
+                if (dFlag < CNR_FLAG_PICKUP_RADIUS + CNR_PLAYER_RADIUS * (thiefSize - 1)) {
                     cnr.flagCarried = true; cnr.flagCarrierRole = 'thief';
                     cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'flag_pickup' } });
                     showToast('깃발을 획득했습니다!', 'success');
@@ -3992,7 +4004,7 @@
             if (!cnr.channel) return;
             if (nowMs - cnr.lastPosSendAt > 66) {
                 cnr.lastPosSendAt = nowMs;
-                cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: cnr.myPos.x, z: cnr.myPos.z, fx: cnr.facing.x, fz: cnr.facing.z, dashing: cnr.dashing } });
+                cnr.channel.send({ type: 'broadcast', event: 'msg', payload: { type: 'player', x: cnr.myPos.x, z: cnr.myPos.z, fx: cnr.facing.x, fz: cnr.facing.z, dashing: cnr.dashing, sz: cnr.mySize || 1 } });
             }
         }
 
@@ -4003,6 +4015,7 @@
                     cnr.oppPos.x = payload.x; cnr.oppPos.z = payload.z;
                     if (payload.fx !== undefined) cnr.oppFacing = { x: payload.fx, z: payload.fz };
                     cnr.oppDashing = !!payload.dashing;
+                    if (typeof payload.sz === 'number') cnr.oppSize = Math.max(0.5, Math.min(3, payload.sz));
                     break;
                 case 'tagged':
                     if (!cnr.isHostAuthority) cnrApplyTagEffects();
@@ -4096,10 +4109,10 @@
             ctx.restore();
         }
 
-        function cnrDrawCharacter(ctx, pos, role, facing, isDashing, speed, isMe, flashAmt) {
+        function cnrDrawCharacter(ctx, pos, role, facing, isDashing, speed, isMe, flashAmt, size) {
             const s = cnrWorldToScreen(pos.x, pos.z);
             const sf = cnrWorldDirToScreen(facing.x, facing.z); // 화면에 그릴 때는 바라보는 방향도 같은 회전을 거쳐야 한다
-            const r = CNR_PLAYER_RADIUS * s.scale;
+            const r = CNR_PLAYER_RADIUS * s.scale * (size || 1);
             const isCop = role === 'cop';
             const color = isCop ? '#2d4ed8' : '#e07a1f';
             const darkColor = isCop ? '#1b2a46' : '#8a4a0f';
@@ -4174,8 +4187,8 @@
             cnrDrawFlag(ctx);
 
             const mySpeed = Math.hypot(cnr.myVel.x, cnr.myVel.z) / CNR_MAX_SPEED;
-            cnrDrawCharacter(ctx, cnr.oppVisual, cnr.oppRole, cnr.oppFacing, cnr.oppDashing, 0.5, false, 0);
-            cnrDrawCharacter(ctx, cnr.myPos, cnr.myRole, cnr.facing, cnr.dashing, mySpeed, true, cnr.dashFlash);
+            cnrDrawCharacter(ctx, cnr.oppVisual, cnr.oppRole, cnr.oppFacing, cnr.oppDashing, 0.5, false, 0, cnr.oppSize);
+            cnrDrawCharacter(ctx, cnr.myPos, cnr.myRole, cnr.facing, cnr.dashing, mySpeed, true, cnr.dashFlash, cnr.mySize);
         }
 
         // ---- 게임 루프 ----
@@ -4892,7 +4905,7 @@
             const colorName = (c) => c === 'w' ? '백' : '흑';
             const sideInfo = (name, c) => ({
                 name, badge: colorName(c) + (c === 'w' ? ' · 먼저 둡니다' : ' · 나중에 둡니다'),
-                sub: (c === myColor ? chess.myAdmin : chess.oppAdmin) ? '👑 관리자 · 왕 빼고 모두 퀸' : '',
+                sub: '',
                 icon: chessPieceSvg(c === 'w' ? 'K' : 'k'), color: c === 'w' ? '#f4efe0' : '#4b4b57',
             });
             chess.intro = rzIntroPlay(document.getElementById('chess-board-wrap'), {
@@ -4900,9 +4913,7 @@
                 title: '체스 · 각자 10분',
                 me: Object.assign(sideInfo(chess.myName, myColor), { name: chess.myName + ' (나)' }),
                 opp: sideInfo(chess.oppName, chess.oppColor),
-                notes: chess.unrated
-                    ? ['👑 관리자 대국 · 관리자 쪽 기물은 왕을 빼고 모두 퀸이에요', '전적(승률)에는 기록되지 않아요 · 각자 10분']
-                    : ['캐슬링·앙파상·프로모션 등 정식 규칙 그대로', '시간이 모두 떨어지면 패배해요'],
+                notes: ['캐슬링·앙파상·프로모션 등 정식 규칙 그대로', '시간이 모두 떨어지면 패배해요'],
                 onGo: () => { if (chess) chessRenderAll(); },
             });
             chess.tickTimer = setInterval(chessTick, 200);
@@ -5379,30 +5390,41 @@
         const VB_PR = 34, VB_BR = 14, VB_WIN = 10;
         const VB_READY_TICKS = 70, VB_POINT_TICKS = 90;
 
-        function vbMakePlayer(side) {
-            return { x: side === 1 ? 160 : 480, y: VB_GROUND - VB_PR, vx: 0, vy: 0, dir: 0, air: false, spike: 0, spikeReq: 0, spikeCd: 0, hitCd: 0, sHeld: false };
+        const VB_SIZES = [1, 1.5, 2, 3, 0.6]; // 관리자 몸 크기 배율 (버튼으로 순환)
+        function vbMakePlayer(side, r) {
+            r = r || VB_PR;
+            return { r, x: side === 1 ? 160 : 480, y: VB_GROUND - r, vx: 0, vy: 0, dir: 0, air: false, spike: 0, spikeReq: 0, spikeCd: 0, hitCd: 0, sHeld: false };
         }
         function vbNewWorld(firstServe) {
             return {
-                tick: 0, phase: 'wait', timer: 0, serve: firstServe === 2 ? 2 : 1, score: [0, 0], winner: 0,
+                tick: 0, rally: 0, phase: 'wait', timer: 0, serve: firstServe === 2 ? 2 : 1, score: [0, 0], winner: 0,
                 p: [vbMakePlayer(1), vbMakePlayer(2)], ball: { x: 160, y: 110, vx: 0, vy: 0, rot: 0 }, ev: [],
             };
         }
         function vbResetRally(w) {
-            w.p = [vbMakePlayer(1), vbMakePlayer(2)];
+            w.p = [vbMakePlayer(1, w.p[0].r), vbMakePlayer(2, w.p[1].r)];
+            w.rally = (w.rally || 0) + 1;
             w.ball = { x: w.serve === 1 ? 160 : 480, y: 110, vx: 0, vy: 0, rot: 0 };
             w.phase = 'ready'; w.timer = VB_READY_TICKS;
         }
         function vbStart(w) { vbResetRally(w); }
 
+        // 몸 크기 바꾸기 (땅에 서 있으면 땅에 맞춰 위치를 다시 잡는다)
+        function vbSetSize(pl, k) {
+            k = Math.max(0.5, Math.min(3, Number(k) || 1));
+            const wasGround = pl.y >= VB_GROUND - pl.r - 0.5;
+            pl.r = VB_PR * k;
+            if (wasGround || pl.y > VB_GROUND - pl.r) { pl.y = VB_GROUND - pl.r; if (wasGround) pl.vy = 0; }
+        }
         function vbMovePlayer(pl, side, inp, frozen) {
+            const R = pl.r || VB_PR;
             const dir = frozen ? 0 : (inp.r ? 1 : 0) - (inp.l ? 1 : 0);
             pl.dir = dir; pl.vx = dir * 5.2;
             pl.x += pl.vx;
-            const minX = side === 1 ? VB_PR + 2 : VB_NET_X + VB_NET_HW + VB_PR + 2;
-            const maxX = side === 1 ? VB_NET_X - VB_NET_HW - VB_PR - 2 : VB_W - VB_PR - 2;
+            const minX = side === 1 ? R + 2 : VB_NET_X + VB_NET_HW + R + 2;
+            const maxX = side === 1 ? VB_NET_X - VB_NET_HW - R - 2 : VB_W - R - 2;
             if (pl.x < minX) pl.x = minX; if (pl.x > maxX) pl.x = maxX;
-            const floorY = VB_GROUND - VB_PR;
+            const floorY = VB_GROUND - R;
             if (!frozen && inp.j && pl.y >= floorY - 0.01 && pl.vy === 0) pl.vy = -13.4;
             pl.vy += 0.72; pl.y += pl.vy;
             if (pl.y >= floorY) { pl.y = floorY; pl.vy = 0; }
@@ -5418,9 +5440,9 @@
         function vbBallPlayer(w, pl, side) {
             const b = w.ball;
             const dx = b.x - pl.x, dy = b.y - pl.y, d = Math.hypot(dx, dy) || 0.0001;
-            const reach = VB_PR + VB_BR;
+            const R = pl.r || VB_PR, reach = R + VB_BR;
             const spiking = pl.spikeReq > 0 && pl.air && pl.spikeCd <= 0;
-            if (spiking && d < reach + 16 && b.y < pl.y + 24) {
+            if (spiking && d < reach + 16 && b.y < pl.y + 24 * (R / VB_PR)) {
                 const to = side === 1 ? 1 : -1;
                 b.vx = to * (10.5 + 1.2 * Math.abs(pl.dir)); b.vy = 6.8;
                 pl.spikeCd = 30; pl.spike = 14; pl.spikeReq = 0; pl.hitCd = 8;
@@ -5549,21 +5571,21 @@
         function vbOpenChannel() {
             vb.channel = rzRoomChannel('vball', vb.roomCode, {
                 onHello: vbHandleHello, onWelcome: vbHandleWelcome, onMsg: vbHandleMsg,
-                onSubscribed: () => { if (vb && vb.role === 'guest') rzSend(vb.channel, 'hello', { name: vb.myName, id: currentUser.id }); },
+                onSubscribed: () => { if (vb && vb.role === 'guest') rzSend(vb.channel, 'hello', { name: vb.myName, id: currentUser.id, admin: currentUser.role === 'admin' }); },
             });
         }
         function vbCopyRoomCode() { if (vb) rzCopyRoomCode(vb.roomCode); }
 
         function vbHandleHello(p) {
             if (!vb || vb.role !== 'host' || vb.phase !== 'waiting') return;
-            vb.oppName = (p && p.name) || '상대'; vb.oppId = (p && p.id) || null;
+            vb.oppName = (p && p.name) || '상대'; vb.oppId = (p && p.id) || null; vb.oppAdmin = !!(p && p.admin);
             const serve = Math.random() < 0.5 ? 1 : 2;
-            rzSend(vb.channel, 'welcome', { name: vb.myName, id: currentUser.id, serve, startIn: RZ_INTRO_LEAD_MS });
+            rzSend(vb.channel, 'welcome', { name: vb.myName, id: currentUser.id, serve, startIn: RZ_INTRO_LEAD_MS, admin: currentUser.role === 'admin' });
             vbBeginMatch(serve, Date.now() + RZ_INTRO_LEAD_MS);
         }
         function vbHandleWelcome(p) {
             if (!vb || vb.role !== 'guest' || vb.phase !== 'waiting' || !p) return;
-            vb.oppName = p.name || '상대'; vb.oppId = p.id || null;
+            vb.oppName = p.name || '상대'; vb.oppId = p.id || null; vb.oppAdmin = !!p.admin;
             vbBeginMatch(p.serve === 2 ? 2 : 1, Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
         }
 
@@ -5572,6 +5594,9 @@
             clearTimeout(vb.joinTimer);
             vb.phase = 'game';
             vb.mySide = vb.role === 'host' ? 1 : 2;
+            vb.myAdmin = currentUser.role === 'admin';
+            vb.unrated = vb.myAdmin || !!vb.oppAdmin; // 관리자가 낀 판은 전적에 넣지 않는다
+            vb.sizeIdx = 0; vb.rally = 0; vb.off = null; vb.prev = null;
             vb.startAt = startAt;
             vb.names = vb.role === 'host' ? [vb.myName, vb.oppName] : [vb.oppName, vb.myName];
             vb.w = vbNewWorld(serve);                 // 호스트: 진짜 월드 / 게스트: 화면용(스냅샷으로 덮어씀)
@@ -5582,6 +5607,8 @@
             vb.snaps = []; vb.evBuf = []; vb.acc = 0; vb.lastT = 0; vb.lastSend = 0; vb.lastInSig = '';
             vb.lastSeen = Date.now(); vb.finished = false; vb.flash = null;
             ['vb-end', 'vb-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            const sizeBtn = document.getElementById('vb-size-btn');
+            if (sizeBtn) { sizeBtn.classList.toggle('hidden', !vb.myAdmin); const lb = document.getElementById('vb-size-label'); if (lb) lb.innerText = '몸 크기 ×1'; }
             vbShowState('game');
             vbEnsureCanvas();
             vbAttachInput();
@@ -5604,6 +5631,18 @@
                 document.getElementById('vb-disc').classList.toggle('hidden', !(Date.now() - vb.lastSeen > 30000));
             }, 1000);
             vb.raf = requestAnimationFrame(vbFrame);
+            vbStartBgTicker();
+        }
+
+        // 다른 탭/창에 가려지면 브라우저가 requestAnimationFrame을 멈춰서 게임이 뚝뚝 끊긴다.
+        // 가려진 동안에는 웹 워커 타이머(제한을 덜 받음)로 시뮬레이션만 계속 돌린다.
+        function vbStartBgTicker() {
+            try {
+                const url = URL.createObjectURL(new Blob(['setInterval(function(){postMessage(0)},16)'], { type: 'text/javascript' }));
+                vb.worker = new Worker(url);
+                URL.revokeObjectURL(url);
+                vb.worker.onmessage = () => { if (document.hidden && vb && vb.phase === 'game') vbAdvance(performance.now()); };
+            } catch (e) { vb.worker = null; }
         }
 
         // ---- 입력 ----
@@ -5635,13 +5674,45 @@
         function vbFrame(t) {
             if (!vb || vb.phase === 'waiting') return;
             vb.raf = requestAnimationFrame(vbFrame);
+            vbAdvance(t);
+            vbDraw();
+        }
+        // 고정 60Hz로 시뮬레이션을 진행 (그리기와 분리)
+        function vbAdvance(t) {
+            if (!vb || vb.phase !== 'game') return;
             if (!vb.lastT) vb.lastT = t;
+            if (t <= vb.lastT) return;
             vb.acc += Math.min(100, t - vb.lastT); vb.lastT = t;
             let steps = 0;
-            while (vb.acc >= VB_DT && steps < 6) { vb.acc -= VB_DT; steps++; vb.role === 'host' ? vbHostTick() : vbGuestTick(); }
+            while (vb.acc >= VB_DT && steps < 6) {
+                vb.acc -= VB_DT; steps++;
+                vbSnapPrev();
+                vb.role === 'host' ? vbHostTick() : vbGuestTick();
+                if (!vb || vb.phase !== 'game') return;
+            }
             if (steps === 6) vb.acc = 0;
             if (vb.role === 'guest') vbSendInput(false);
-            vbDraw();
+        }
+        // 직전 틱의 위치를 기억해 두었다가, 그릴 때 틱 사이를 부드럽게 이어 준다 (주사율이 60Hz가 아니어도 떨리지 않게)
+        function vbSnapPrev() {
+            if (vb.role === 'host') { const w = vb.w; vb.prev = { p: [[w.p[0].x, w.p[0].y], [w.p[1].x, w.p[1].y]], b: [w.ball.x, w.ball.y] }; }
+            else vb.prev = { m: [vb.me.x, vb.me.y] };
+        }
+        function vbSmooth(v) {
+            const pv = vb.prev;
+            if (!pv) return v;
+            const a = Math.max(0, Math.min(1, vb.acc / VB_DT));
+            const mix = (cur, old) => (Math.abs(cur - old) > 70 ? cur : old + (cur - old) * a);
+            const o = Object.assign({}, v);
+            o.p = v.p.map(p => Object.assign({}, p));
+            o.ball = Object.assign({}, v.ball);
+            if (vb.role === 'host') {
+                [0, 1].forEach(i => { o.p[i].x = mix(v.p[i].x, pv.p[i][0]); o.p[i].y = mix(v.p[i].y, pv.p[i][1]); });
+                o.ball.x = mix(v.ball.x, pv.b[0]); o.ball.y = mix(v.ball.y, pv.b[1]);
+            } else {
+                o.p[1].x = mix(v.p[1].x, pv.m[0]); o.p[1].y = mix(v.p[1].y, pv.m[1]);
+            }
+            return o;
         }
 
         function vbHostTick() {
@@ -5659,6 +5730,7 @@
             const w = vb.w, r = (n) => Math.round(n * 10) / 10;
             rzSend(vb.channel, 'msg', {
                 t: 's', a: [r(w.p[0].x), r(w.p[0].y), r(w.p[1].x), r(w.p[1].y), r(w.ball.x), r(w.ball.y), r(w.ball.rot)],
+                tk: w.tick, rd: w.rally, rr: [Math.round(w.p[0].r * 10) / 10, Math.round(w.p[1].r * 10) / 10],
                 sc: w.score, ph: w.phase, tm: w.timer, sv: w.serve, sp: [w.p[0].spike, w.p[1].spike], dr: [w.p[0].dir, w.p[1].dir],
                 ai: [w.p[0].air ? 1 : 0, w.p[1].air ? 1 : 0], w: w.winner, ls: w.lastScorer || 0, ev: vb.evBuf,
             });
@@ -5671,24 +5743,40 @@
         }
         function vbSendInput(force) {
             const i = vbMyInput(), sig = (i.l ? 1 : 0) + '' + (i.r ? 1 : 0) + (i.j ? 1 : 0) + (i.s ? 1 : 0), now = performance.now();
-            if (force || sig !== vb.lastInSig || now - vb.lastSend > 100) {
+            const me = vb.me, moving = i.l || i.r || me.vy !== 0 || me.y < VB_GROUND - me.r - 0.5;
+            if (force || sig !== vb.lastInSig || now - vb.lastSend > (moving ? 50 : 150)) {
                 vb.lastInSig = sig; vb.lastSend = now;
-                rzSend(vb.channel, 'msg', { t: 'in', l: !!i.l, r: !!i.r, j: !!i.j, s: !!i.s });
+                const q = (n) => Math.round(n * 10) / 10;
+                // 입력과 함께 내 캐릭터의 위치도 알려 준다 (내 캐릭터는 내 화면이 기준 → 되돌려지며 떨리는 일이 없다)
+                rzSend(vb.channel, 'msg', { t: 'in', l: !!i.l, r: !!i.r, j: !!i.j, s: !!i.s, x: q(me.x), y: q(me.y), vy: q(me.vy), rd: vb.rally | 0, z: q(me.r) });
             }
         }
 
         function vbOnSnapshot(p) {
             if (vb.role !== 'guest' || vb.phase !== 'game' || !Array.isArray(p.a)) return;
-            vb.snaps.push({ at: performance.now(), p });
-            if (vb.snaps.length > 8) vb.snaps.shift();
+            // 스냅샷 시각: 호스트의 틱 번호로 매끈한 시간축을 만든다 (도착 시각이 들쭉날쭉해도 움직임이 일정하게)
+            const now = performance.now();
+            let at = now;
+            if (typeof p.tk === 'number') {
+                const off = now - p.tk * VB_DT;
+                if (vb.off === null || off < vb.off) vb.off = off; else vb.off += (off - vb.off) * 0.02;
+                at = p.tk * VB_DT + vb.off;
+            }
+            const lastS = vb.snaps[vb.snaps.length - 1];
+            if (!lastS || at > lastS.at) vb.snaps.push({ at, p });
+            if (vb.snaps.length > 12) vb.snaps.shift();
             const prev = vb.view.phase;
             const v = vb.view;
             v.score = p.sc; v.phase = p.ph; v.timer = p.tm; v.serve = p.sv; v.winner = p.w; v.lastScorer = p.ls;
             v.p[0].spike = p.sp[0]; v.p[1].spike = p.sp[1]; v.p[0].dir = p.dr[0]; v.p[1].dir = p.dr[1]; v.p[0].air = !!p.ai[0]; v.p[1].air = !!p.ai[1];
             // 내 캐릭터 보정: 호스트 위치로 부드럽게 맞추고, 차이가 크거나 새 랠리면 바로 맞춘다
-            const hx = p.a[2], hy = p.a[3], ex = hx - vb.me.x, ey = hy - vb.me.y;
-            if (Math.abs(ex) > 30 || Math.abs(ey) > 50 || (prev !== p.ph && p.ph === 'ready')) { vb.me.x = hx; vb.me.y = hy; vb.me.vy = 0; }
-            else { vb.me.x += ex * 0.25; vb.me.y += ey * 0.25; }
+            // (평소엔 내 화면의 위치가 기준이고, 새 랠리가 시작될 때만 호스트 위치로 맞춘다)
+            if (Array.isArray(p.rr)) v.p[0].r = p.rr[0];
+            if (typeof p.rd === 'number' && p.rd !== vb.rally) {
+                vb.rally = p.rd;
+                vb.me.x = p.a[2]; vb.me.y = p.a[3]; vb.me.vy = 0;
+                vb.prev = null;
+            }
             if (p.ev && p.ev.length) vbPlayEvents(p.ev, p.ls);
             if (prev !== p.ph) vbUpdateStatus();
             if (p.ph === 'over' && !vb.finished) vbFinish(p.w);
@@ -5704,7 +5792,7 @@
             const L = (i) => a.p.a[i] + (b.p.a[i] - a.p.a[i]) * k;
             v.p[0].x = L(0); v.p[0].y = L(1);
             v.ball.x = L(4); v.ball.y = L(5); v.ball.rot = L(6);
-            v.p[1].x = vb.me.x; v.p[1].y = vb.me.y; v.p[1].air = vb.me.air;
+            v.p[1].x = vb.me.x; v.p[1].y = vb.me.y; v.p[1].air = vb.me.air; v.p[1].r = vb.me.r;
             return v;
         }
 
@@ -5712,10 +5800,29 @@
             if (!vb || !p) return;
             vb.lastSeen = Date.now();
             switch (p.t) {
-                case 'in': if (vb.role === 'host') vb.remoteIn = { l: !!p.l, r: !!p.r, j: !!p.j, s: !!p.s }; break;
+                case 'in': if (vb.role === 'host') { vb.remoteIn = { l: !!p.l, r: !!p.r, j: !!p.j, s: !!p.s }; vbApplyGuestState(p); } break;
                 case 's': vbOnSnapshot(p); break;
                 case 'leave': if (vb.phase === 'game') vbFinish(vb.mySide); break;
             }
+        }
+        // 호스트: 게스트가 알려 준 위치·크기를 받아들인다 (오래된 메시지는 랠리 번호로 걸러낸다)
+        function vbApplyGuestState(p) {
+            const w = vb.w, pl = w.p[1];
+            if (typeof p.z === 'number' && Math.abs(p.z - pl.r) > 0.05) vbSetSize(pl, p.z / VB_PR);
+            if (typeof p.x !== 'number' || p.rd !== w.rally || (w.phase !== 'ready' && w.phase !== 'play')) return;
+            const minX = VB_NET_X + VB_NET_HW + pl.r + 2, maxX = VB_W - pl.r - 2, floorY = VB_GROUND - pl.r;
+            const tx = Math.max(minX, Math.min(maxX, p.x)), ty = Math.min(floorY, p.y);
+            if (Math.abs(tx - pl.x) > 40) pl.x = tx; else pl.x += (tx - pl.x) * 0.6; // 작은 차이는 부드럽게 따라가고, 큰 차이는 바로 맞춘다
+            pl.y = ty; pl.vy = typeof p.vy === 'number' ? p.vy : pl.vy;
+        }
+        // 관리자: 몸 크기 순환 버튼
+        function vbCycleSize() {
+            if (!vb || vb.phase !== 'game' || !vb.myAdmin) return;
+            vb.sizeIdx = ((vb.sizeIdx || 0) + 1) % VB_SIZES.length;
+            const k = VB_SIZES[vb.sizeIdx];
+            vbSetSize(vb.role === 'host' ? vb.w.p[0] : vb.me, k);
+            const lb = document.getElementById('vb-size-label'); if (lb) lb.innerText = '몸 크기 ×' + k;
+            if (vb.role === 'guest') vbSendInput(true); else vbBroadcast();
         }
         function vbPlayEvents(evs, scorer) {
             evs.forEach(e => {
@@ -5744,6 +5851,7 @@
             if (!vb || vb.finished) return;
             vb.finished = true; vb.phase = 'ended';
             cancelAnimationFrame(vb.raf);
+            if (vb.worker) { try { vb.worker.terminate(); } catch (e) {} vb.worker = null; }
             if (vb.intro) { vb.intro.cancel(); vb.intro = null; }
             clearInterval(vb.hbTimer); clearInterval(vb.discTimer); vbDetachInput();
             document.getElementById('vb-disc').classList.add('hidden');
@@ -5755,7 +5863,7 @@
             document.getElementById('vb-end').classList.remove('hidden');
             vbUpdateStatus();
             if (won) rzSoundWin(); else rzSoundLose();
-            vbRecordResult(won);
+            if (!vb.unrated) vbRecordResult(won);
             if (vb.role === 'host') { const o = vb; [250, 700].forEach(ms => setTimeout(() => { if (vb === o) vbBroadcast(); }, ms)); } // 마지막 스냅샷이 유실돼도 상대가 종료를 알 수 있게
         }
         async function vbRecordResult(won) {
@@ -5773,8 +5881,9 @@
         function teardownVb() {
             if (!vb) return;
             const o = vb; vb = null;
-            if (o.phase === 'game') { rzSend(o.channel, 'msg', { t: 'leave' }); vbRecordResultFor(o, false); }
+            if (o.phase === 'game') { rzSend(o.channel, 'msg', { t: 'leave' }); if (!o.unrated) vbRecordResultFor(o, false); }
             cancelAnimationFrame(o.raf);
+            if (o.worker) { try { o.worker.terminate(); } catch (e) {} }
             clearTimeout(o.joinTimer); clearInterval(o.hbTimer); clearInterval(o.discTimer);
             if (o.intro) o.intro.cancel();
             if (o.onKeyDown) { window.removeEventListener('keydown', o.onKeyDown); window.removeEventListener('keyup', o.onKeyUp); window.removeEventListener('blur', o.onBlur); }
@@ -5815,7 +5924,8 @@
         function vbDrawChar(ctx, p, side, ball) {
             const col = side === 1 ? { body: '#8fd16a', dark: '#5fa83e', cheek: '#ffb3a7' } : { body: '#ff9a8a', dark: '#e0705f', cheek: '#ffd1c9' };
             const squash = p.air ? 1.06 : 1, sy = squash, sx = 1 / squash;
-            ctx.save(); ctx.translate(p.x, p.y); ctx.scale(sx, sy);
+            const bs = (p.r || VB_PR) / VB_PR;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.scale(sx * bs, sy * bs);
             // 그림자는 밖에서. 몸통
             ctx.fillStyle = col.body; ctx.beginPath(); ctx.arc(0, 0, VB_PR, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = col.dark; ctx.lineWidth = 3; ctx.stroke();
@@ -5850,7 +5960,7 @@
 
         function vbDraw() {
             if (!vb || !vb.ctx || !vb.canvas.width) return;
-            const ctx = vb.ctx, v = vb.role === 'guest' ? vbInterpView() : vb.w;
+            const ctx = vb.ctx, v = vbSmooth(vb.role === 'guest' ? vbInterpView() : vb.w);
             const k = vb.canvas.width / VB_W;
             ctx.setTransform(k, 0, 0, k, 0, 0);
             // 하늘
@@ -5867,7 +5977,7 @@
             ctx.strokeStyle = 'rgba(120,90,40,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, VB_GROUND + 24); ctx.lineTo(VB_W, VB_GROUND + 24); ctx.stroke();
             // 그림자
             const shadow = (x, r) => { ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(x, VB_GROUND + 3, r, r * 0.22, 0, 0, Math.PI * 2); ctx.fill(); };
-            v.p.forEach(p => shadow(p.x, VB_PR * (0.7 + 0.3 * Math.max(0, 1 - (VB_GROUND - VB_PR - p.y) / 160))));
+            v.p.forEach(p => { const R = p.r || VB_PR; shadow(p.x, R * (0.7 + 0.3 * Math.max(0, 1 - (VB_GROUND - R - p.y) / 160))); });
             shadow(v.ball.x, VB_BR * (0.6 + 0.6 * Math.max(0, 1 - (VB_GROUND - v.ball.y) / 330)));
             // 네트
             ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fillRect(VB_NET_X - 1, VB_NET_TOP, 2, VB_GROUND - VB_NET_TOP);
@@ -5906,7 +6016,7 @@
             }
             // 내 캐릭터 표시 화살표
             const me = v.p[vb.mySide - 1];
-            ctx.fillStyle = 'rgba(30,50,70,.55)'; ctx.beginPath(); ctx.moveTo(me.x, me.y - VB_PR - 34); ctx.lineTo(me.x - 6, me.y - VB_PR - 44); ctx.lineTo(me.x + 6, me.y - VB_PR - 44); ctx.closePath();
+            ctx.fillStyle = 'rgba(30,50,70,.55)'; ctx.beginPath(); const mr = me.r || VB_PR; ctx.moveTo(me.x, me.y - mr - 34); ctx.lineTo(me.x - 6, me.y - mr - 44); ctx.lineTo(me.x + 6, me.y - mr - 44); ctx.closePath();
             if (Date.now() < vb.startAt + 3000) ctx.fill();
         }
 
@@ -6015,7 +6125,7 @@
             const stoneIcon = (c) => `<span class="go-intro-stone ${c === 1 ? 'b' : 'w'}"></span>`;
             const sideInfo = (name, c, admin) => ({
                 name, badge: (c === 1 ? '흑' : '백') + (c === 1 ? ' · 선수' : ' · 후수'),
-                sub: admin ? '👑 관리자 · 상대 경질 · 시간 무제한' : (c === 1 ? '3·3 / 4·4 / 장목 금수' : '금수 없음'),
+                sub: (c === 1 ? '3·3 / 4·4 / 장목 금수' : '금수 없음'),
                 icon: stoneIcon(c), color: c === 1 ? '#4b4b57' : '#f4efe0',
             });
             omok.intro = rzIntroPlay(document.getElementById('omok-board-wrap'), {
@@ -6023,9 +6133,7 @@
                 title: '오목 · 렌주 룰',
                 me: Object.assign(sideInfo(omok.myName, myColor, omok.myAdmin), { name: omok.myName + ' (나)' }),
                 opp: sideInfo(omok.oppName, omok.oppColor, omok.oppAdmin),
-                notes: omok.unrated
-                    ? ['👑 관리자 대국 · [상대 경질] 버튼으로 상대를 멈추고 연달아 둘 수 있어요', '관리자는 시간 제한이 없고, 전적(승률)에는 기록되지 않아요']
-                    : ['정확히 5목이면 승리 (백은 6목 이상도 승리) · 각자 10분', '흑 금수: 3·3 · 4·4 · 장목 / 흑 첫 수는 천원에 자동으로 놓여요'],
+                notes: ['정확히 5목이면 승리 (백은 6목 이상도 승리) · 각자 10분', '흑 금수: 3·3 · 4·4 · 장목 / 흑 첫 수는 천원에 자동으로 놓여요'],
                 onGo: () => { if (omok) omokRenderAll(); },
             });
             omok.tickTimer = setInterval(omokTick, 250);
@@ -6771,15 +6879,12 @@
             const notes = cfg.handicap > 0
                 ? [`승률 차이 ${diff}%p → ${cfg.handicap}점 접바둑`, `${lowerName}님(흑)이 ${cfg.handicap}점을 깔고 시작하고, 백이 먼저 둬요 · 덤 ${cfg.komi}집`]
                 : [`승률 차이 ${diff}%p → 맞바둑`, `흑이 먼저 둬요 · 덤 ${cfg.komi}집 · ${cfg.n}줄`];
-            const adminNames = [go.myAdmin ? go.myName : null, go.oppAdmin ? go.oppName : null].filter(Boolean).join(', ');
-            const finalNotes = go.unrated
-                ? [`👑 관리자 대국 · 맞바둑 · 덤 ${cfg.komi}집 · 전적에 기록되지 않아요`, `${adminNames}님은 자기 차례에 상대 돌을 다른 자리로 옮길 수 있어요`]
-                : notes;
+            const finalNotes = notes;
             go.intro = rzIntroPlay(document.getElementById('go-board-wrap'), {
                 startAt,
                 title: `바둑 · ${cfg.n}줄`,
-                me: Object.assign(sideInfo(go.myName, go.myColor, myInfo), { name: go.myName + ' (나)' }, go.myAdmin ? { sub: '👑 관리자 · 돌 옮기기' } : {}),
-                opp: Object.assign(sideInfo(go.oppName, go.oppColor, oppInfo), go.oppAdmin ? { sub: '👑 관리자 · 돌 옮기기' } : {}),
+                me: Object.assign(sideInfo(go.myName, go.myColor, myInfo), { name: go.myName + ' (나)' }),
+                opp: sideInfo(go.oppName, go.oppColor, oppInfo),
                 notes: finalNotes,
                 onGo: () => { if (go) goRenderAll(); },
             });
