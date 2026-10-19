@@ -144,6 +144,10 @@
         ::-webkit-scrollbar-thumb { background:#d9d3c8; border-radius:99px; }
 
         /* ---------- 초기 로딩 화면 ---------- */
+        /* 상단 메뉴: 좁은 화면에서는 페이지가 옆으로 밀리지 않고 메뉴만 가로로 스크롤 */
+        .nav-actions { min-width: 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 8px 2px; }
+        .nav-actions::-webkit-scrollbar { display: none; }
+        .nav-actions > *, .nav-actions button { flex-shrink: 0; white-space: nowrap; }
         #app-loading-screen {
             position: fixed; inset: 0; z-index: 9999; background: var(--bg);
             display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem;
@@ -1162,6 +1166,15 @@
                         로그인 상태 유지 (체크 안 하면 브라우저를 닫을 때 로그아웃됩니다)
                     </label>
                     <button type="submit" class="w-full accent-btn py-3 rounded-xl text-sm">로그인</button>
+                    <button type="button" onclick="showForgotPassword()" class="w-full text-xs font-bold underline pt-1" style="color:var(--ink-soft);">비밀번호를 잊으셨나요?</button>
+                </form>
+
+                <form id="form-forgot" onsubmit="handleForgotPassword(event)" class="space-y-3 text-sm hidden">
+                    <p class="font-bold">비밀번호 찾기</p>
+                    <p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>가입할 때 사용한 이메일을 입력하면, 비밀번호를 새로 정할 수 있는 링크를 메일로 보내드려요. 메일이 안 보이면 스팸함도 확인해주세요.</p>
+                    <input type="email" id="forgot-email" required placeholder="가입한 이메일" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                    <button type="submit" id="forgot-submit-btn" class="w-full accent-btn py-3 rounded-xl text-sm">재설정 메일 보내기</button>
+                    <button type="button" onclick="switchAuthTab('login')" class="w-full text-xs font-bold underline pt-1" style="color:var(--ink-soft);">로그인으로 돌아가기</button>
                 </form>
 
                 <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-3 text-sm hidden">
@@ -1187,11 +1200,11 @@
 
         <header id="app-header" class="sticky top-0 z-40 bg-[#f7f4ee]/90 backdrop-blur-md" style="transition: box-shadow .25s ease, border-color .25s ease; border-bottom: 1px solid transparent;">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
+                <div class="flex items-center gap-2 cursor-pointer flex-shrink-0 mr-2" onclick="goHome()">
                     <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-seedling text-sm" style="color:var(--accent-ink);"></i></span>
-                    <span class="font-extrabold tracking-tight">AgeLess Lab</span>
+                    <span class="font-extrabold tracking-tight hidden sm:inline">AgeLess Lab</span>
                 </div>
-                <div class="flex items-center gap-3 text-sm">
+                <div class="nav-actions flex items-center gap-3 text-sm">
                     <button onclick="openRestZoneModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-mug-hot mr-1"></i>쉼터</button>
                     <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
                     <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-user-plus mr-1"></i>멘토 신청</button>
@@ -1204,6 +1217,7 @@
                         </button>
                         <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white z-10" style="background:#f43f5e;">0</span>
                     </span>
+                    <button id="nav-profile" onclick="openProfileModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-user-pen mr-1"></i>내 프로필</button>
                     <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
                     <button onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                 </div>
@@ -1268,29 +1282,14 @@
                     <p class="text-sm mt-1" style="color:var(--ink-soft);">프로필, 예약, 일정, 상담을 한 곳에서 관리하세요.</p>
                 </div>
 
-                <!-- 프로필 -->
+                <!-- 프로필 (멘토는 관리자 승인으로만 변경) -->
                 <section class="card p-6 space-y-3">
-                    <h2 class="font-bold text-lg">내 프로필</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-bold" style="color:var(--ink-soft);">직함</label>
-                            <input type="text" id="mentor-edit-title" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold" style="color:var(--ink-soft);">전문 분야</label>
-                            <select id="mentor-edit-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
-                                <option value="1">업무 적응 & 실무 커뮤니케이션</option>
-                                <option value="2">조직생활 & 인간관계</option>
-                                <option value="3">커리어 방향 & 이직 고민</option>
-                                <option value="4">포트폴리오 & 성과 피드백</option>
-                            </select>
-                        </div>
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <h2 class="font-bold text-lg">내 프로필</h2>
+                        <button onclick="openProfileModal()" class="ghost-btn px-4 py-1.5 rounded-full text-sm"><i class="fa-solid fa-pen mr-1"></i>수정 요청</button>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold" style="color:var(--ink-soft);">소개</label>
-                        <textarea id="mentor-edit-intro" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm"></textarea>
-                    </div>
-                    <button onclick="saveMentorProfile()" class="accent-btn px-5 py-2 rounded-full text-sm">저장</button>
+                    <div id="mentor-profile-summary" class="text-sm space-y-1"></div>
+                    <p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>멘토 프로필은 관리자가 확인한 뒤 반영돼요. '수정 요청'으로 바꾸고 싶은 내용을 보내주세요.</p>
                 </section>
 
                 <!-- 지금 바로 상담 -->
@@ -1365,6 +1364,12 @@
                 </section>
 
                 <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
+                    <h2 class="font-bold text-lg">멘토 프로필 수정 요청</h2>
+                    <p class="text-sm" style="color:var(--ink-soft);">멘토가 보낸 프로필 변경 요청이에요. 승인하면 바로 반영되고, 기각하면 사유가 멘토에게 전달돼요.</p>
+                    <div id="admin-profile-requests-list" class="space-y-3 text-sm"></div>
+                </section>
+
+                <section class="card p-6 space-y-3" style="border:2px solid var(--accent);">
                     <h2 class="font-bold text-lg">진행 중인 상담 (관전)</h2>
                     <p class="text-sm" style="color:var(--ink-soft);">열려있거나 진행 중인 1:1 상담방에 조용히 접속해 화면을 확인할 수 있습니다. 관리자의 모습·음성은 상대방에게 전달되지 않습니다.</p>
                     <div id="admin-live-rooms-list" class="space-y-2 text-sm"></div>
@@ -1381,6 +1386,13 @@
                     <h2 class="font-bold text-lg">멘티 계정 관리</h2>
                     <input type="text" id="admin-mentee-search" oninput="filterAdminList('mentee')" placeholder="이름으로 검색" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-slate-400">
                     <div id="admin-mentee-list" class="space-y-2 text-sm"></div>
+                </section>
+
+                <section class="card p-6 space-y-3">
+                    <h2 class="font-bold text-lg">멘토 후기 관리</h2>
+                    <p class="text-sm" style="color:var(--ink-soft);">멘토가 받은 후기를 확인하고, 부적절한 후기는 삭제할 수 있어요. 삭제하면 멘토의 평균 별점도 다시 계산돼요.</p>
+                    <select id="admin-review-mentor-filter" onchange="renderAdminReviews()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm outline-none focus:border-slate-400"><option value="">전체 멘토 (최근 50개)</option></select>
+                    <div id="admin-reviews-list" class="space-y-2 text-sm"></div>
                 </section>
 
                 <section class="card p-6 space-y-3">
@@ -2091,6 +2103,7 @@
                             </div>
                             <div id="go-action-row" class="rz-action-row">
                                 <button id="go-zoom-btn" onclick="goToggleZoom()" class="press-feel rz-act-btn rz-touch-only"><i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i>확대</button>
+                                <button id="go-shift-btn" onclick="goShiftToggle()" class="press-feel rz-act-btn go-hide"><i class="fa-solid fa-crown mr-1.5"></i>돌 옮기기</button>
                                 <button id="go-pass-btn" onclick="goPassMine()" class="press-feel rz-act-btn"><i class="fa-regular fa-hand mr-1.5"></i>한 수 쉬기</button>
                                 <button id="go-resign-btn" onclick="goResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
                                 <button onclick="goLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
@@ -2112,6 +2125,67 @@
 
             </div>
         </div>
+    </div>
+
+    <!-- ============================== 내 프로필 모달 ============================== -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this)closeProfileModal()">
+        <div class="card max-w-md w-full p-6 space-y-5 overflow-y-auto" style="max-height:92vh;">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-lg">내 프로필</h3>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <section class="space-y-3 text-sm">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="pf-role" class="px-2.5 py-0.5 rounded-full text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);"></span>
+                    <span id="pf-email" class="text-xs" style="color:var(--ink-soft);"></span>
+                </div>
+                <div id="pf-mentor-banner" class="hidden"></div>
+                <div>
+                    <label class="text-xs font-bold" style="color:var(--ink-soft);">이름</label>
+                    <input type="text" id="pf-name" maxlength="30" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-title-label">직함 / 하는 일</label>
+                    <input type="text" id="pf-title" maxlength="60" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-sector-label">관심 / 전문 분야</label>
+                    <select id="pf-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                        <option value="">선택 안 함</option>
+                        <option value="1">업무 적응 & 실무 커뮤니케이션</option>
+                        <option value="2">조직생활 & 인간관계</option>
+                        <option value="3">커리어 방향 & 이직 고민</option>
+                        <option value="4">포트폴리오 & 성과 피드백</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold" style="color:var(--ink-soft);">소개</label>
+                    <textarea id="pf-intro" rows="3" maxlength="500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm"></textarea>
+                </div>
+                <p id="pf-mentor-note" class="hidden text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>멘토 프로필은 관리자 승인 후에 바뀌어요. 아래 버튼으로 요청을 보내면 관리자가 확인합니다.</p>
+                <button id="pf-save-btn" onclick="saveMyProfile()" class="w-full accent-btn py-2.5 rounded-full text-sm">저장</button>
+            </section>
+            <hr class="border-slate-100">
+            <section class="space-y-3 text-sm">
+                <h4 class="font-bold">비밀번호 변경</h4>
+                <input type="password" id="pf-pw-current" autocomplete="current-password" placeholder="현재 비밀번호" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                <input type="password" id="pf-pw-new" autocomplete="new-password" placeholder="새 비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                <input type="password" id="pf-pw-new2" autocomplete="new-password" placeholder="새 비밀번호 확인" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                <button id="pf-pw-btn" onclick="changeMyPassword()" class="w-full ghost-btn py-2.5 rounded-full text-sm">비밀번호 변경</button>
+            </section>
+        </div>
+    </div>
+
+    <!-- ============================== 비밀번호 재설정(메일 링크로 들어왔을 때) ============================== -->
+    <div id="recovery-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4" style="background:rgba(247,244,238,.97);">
+        <form onsubmit="submitRecoveryPassword(event)" class="card max-w-sm w-full p-6 space-y-3 text-sm">
+            <h3 class="font-extrabold text-lg">새 비밀번호 설정</h3>
+            <p class="text-xs" style="color:var(--ink-soft);">메일 인증이 확인됐어요. 앞으로 사용할 새 비밀번호를 입력해주세요.</p>
+            <input type="password" id="recovery-pw" required minlength="8" autocomplete="new-password" placeholder="새 비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+            <input type="password" id="recovery-pw2" required minlength="8" autocomplete="new-password" placeholder="새 비밀번호 확인" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+            <button type="submit" id="recovery-btn" class="w-full accent-btn py-3 rounded-xl text-sm">비밀번호 바꾸기</button>
+            <button type="button" onclick="cancelRecovery()" class="w-full text-xs font-bold underline pt-1" style="color:var(--ink-soft);">취소</button>
+        </form>
     </div>
 
     <!-- ============================== 관리자 정지(페널티) 모달 ============================== -->
@@ -2158,6 +2232,12 @@
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: { storage: dynamicAuthStorage, persistSession: true, autoRefreshToken: true }
+        });
+
+        // 비밀번호 재설정 메일의 링크로 들어오면 Supabase가 PASSWORD_RECOVERY 이벤트를 보냅니다
+        let recoveryPending = /type=recovery/.test(location.hash) || /type=recovery/.test(location.search);
+        supabaseClient.auth.onAuthStateChange((event) => {
+            if (event === 'PASSWORD_RECOVERY') { recoveryPending = true; setTimeout(() => openRecoveryModal(), 0); }
         });
 
         const sectorLabels = { 1: '업무 적응 & 실무 커뮤니케이션', 2: '조직생활 & 인간관계', 3: '커리어 방향 & 이직 고민', 4: '포트폴리오 & 성과 피드백' };
@@ -2300,6 +2380,7 @@
         // 인증: 로그인 전에는 view-auth만 보이고, 로그인 후에만 app-shell이 열립니다.
         // =====================================================================
         function switchAuthTab(mode) {
+            document.getElementById('form-forgot').classList.add('hidden');
             const loginTab = document.getElementById('tab-auth-login');
             const signupTab = document.getElementById('tab-auth-signup');
             if (mode === 'login') {
@@ -2411,15 +2492,14 @@
             document.getElementById('view-landing').classList.add('hidden');
             document.getElementById('view-auth').classList.add('hidden');
             document.getElementById('app-shell').classList.remove('hidden');
-            const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? '관리자' : '멘티');
-            document.getElementById('topbar-user').innerText = `${currentUser.name} · ${roleLabel}`;
-            document.getElementById('topbar-user').classList.remove('hidden');
+            refreshTopbarUser();
             document.getElementById('nav-my-bookings').classList.toggle('hidden', currentUser.role !== 'mentee');
             document.getElementById('nav-my-dashboard').classList.toggle('hidden', currentUser.role !== 'mentor');
             document.getElementById('nav-admin-home').classList.toggle('hidden', currentUser.role !== 'admin');
             document.getElementById('nav-mentor-apply').classList.toggle('hidden', currentUser.role !== 'mentee');
             if (currentUser.role === 'mentor') setupMentorOwnRoomWatch(); // 대시보드에 들어가지 않아도 입장 대기 알림을 받을 수 있도록 즉시 구독
             setupGlobalMessageWatch(); // 어느 화면에 있든 새 메시지 배지가 실시간으로 갱신되도록
+            if (currentUser.role === 'mentor') notifyEditRequestResult(); // 프로필 수정 요청이 처리됐다면 알려준다
             goHome();
         }
 
@@ -2451,6 +2531,7 @@
         }
 
         restoreSession();
+        if (recoveryPending) openRecoveryModal();
 
         // 스크롤 시 헤더에 은은한 음영을 줘서 "떠 있는" 느낌과 공식적인 사이트 느낌을 더함
         window.addEventListener('scroll', () => {
@@ -3373,7 +3454,7 @@
                 .subscribe((status) => {
                     if (status !== 'SUBSCRIBED' || !cnr) return;
                     if (cnr.role === 'guest') {
-                        cnr.channel.send({ type: 'broadcast', event: 'hello', payload: { name: cnr.myName, id: currentUser.id } });
+                        cnr.channel.send({ type: 'broadcast', event: 'hello', payload: { name: cnr.myName, id: currentUser.id, admin: currentUser.role === 'admin' } });
                     }
                 });
             cnr.channel = channel;
@@ -3382,15 +3463,17 @@
         function cnrHandleHello(payload) {
             if (!cnr || cnr.role !== 'host' || cnr.phase !== 'waiting') return;
             cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
+            cnr.oppAdmin = !!payload.admin;
             const hostRole = Math.random() < 0.5 ? 'cop' : 'thief';
             // 공통 시작 예고(VS 소개 + 3·2·1)가 끝나는 시점. 상대 시계와 무관하게 "지금부터 N ms 뒤"로 전달한다.
-            cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startIn: RZ_INTRO_LEAD_MS } });
+            cnr.channel.send({ type: 'broadcast', event: 'welcome', payload: { name: cnr.myName, id: currentUser.id, hostRole, startIn: RZ_INTRO_LEAD_MS, admin: currentUser.role === 'admin' } });
             cnrBeginMatch(hostRole, Date.now() + RZ_INTRO_LEAD_MS);
         }
 
         function cnrHandleWelcome(payload) {
             if (!cnr || cnr.role !== 'guest' || cnr.phase !== 'waiting') return;
             cnr.oppName = payload.name || '상대'; cnr.oppId = payload.id || null;
+            cnr.oppAdmin = !!payload.admin;
             const myRole = payload.hostRole === 'cop' ? 'thief' : 'cop';
             cnrBeginMatch(myRole, Date.now() + (payload.startIn || RZ_INTRO_LEAD_MS));
         }
@@ -3469,6 +3552,7 @@
         function cnrBeginMatch(myRole, startAt) {
             if (!cnr) return;
             cnr.phase = 'game';
+            cnr.myAdmin = currentUser.role === 'admin'; // 관리자 특수 능력: 대쉬 쿨타임 없음 (관리자가 낀 판은 전적 미반영)
             cnr.myRole = myRole;
             cnr.oppRole = myRole === 'cop' ? 'thief' : 'cop';
             cnr.isHostAuthority = (cnr.role === 'host');
@@ -3502,9 +3586,11 @@
             cnr.intro = rzIntroPlay(document.querySelector('#cnr-state-game .cnr-canvas-wrap'), {
                 startAt,
                 title: '경찰과 도둑 · 1분 승부',
-                me: roleInfo(myRole, cnr.myName, true),
-                opp: roleInfo(cnr.oppRole, cnr.oppName || '상대', false),
-                notes: ['WASD 이동 · Space 대쉬(쿨타임 3초)', '도둑은 깃발을 홈존으로, 경찰은 1분을 버티면 승리'],
+                me: Object.assign(roleInfo(myRole, cnr.myName, true), cnr.myAdmin ? { sub: '👑 관리자 · 대쉬 무제한' } : {}),
+                opp: Object.assign(roleInfo(cnr.oppRole, cnr.oppName || '상대', false), cnr.oppAdmin ? { sub: '👑 관리자 · 대쉬 무제한' } : {}),
+                notes: (cnr.myAdmin || cnr.oppAdmin)
+                    ? ['👑 관리자 대국 · 관리자는 대쉬를 쿨타임 없이 계속 쓸 수 있어요', '전적(승수)에는 기록되지 않아요 · WASD 이동 · Space 대쉬']
+                    : ['WASD 이동 · Space 대쉬(쿨타임 3초)', '도둑은 깃발을 홈존으로, 경찰은 1분을 버티면 승리'],
             });
 
             cnrEnsureCanvasReady();
@@ -3599,7 +3685,7 @@
             cnr.dashDir = dir;
             cnr.myVel.x = dir.x * CNR_DASH_SPEED;
             cnr.myVel.z = dir.z * CNR_DASH_SPEED;
-            cnr.dashCooldown = CNR_DASH_COOLDOWN;
+            cnr.dashCooldown = cnr.myAdmin ? 0 : CNR_DASH_COOLDOWN; // 관리자는 쿨타임 없음
             cnr.dashFlash = 1;
             playCnrDashSound();
         }
@@ -3947,6 +4033,7 @@
             document.getElementById('cnr-result-detail').innerText =
                 reason === 'flag_returned' ? '도둑이 깃발을 무사히 가져왔습니다.' : '시간 종료! 경찰이 막아냈습니다.';
             cnrShowState('result');
+            if (cnr.myAdmin || cnr.oppAdmin) return; // 관리자가 낀 판은 전적에 넣지 않는다
             try {
                 await supabaseClient.from('cnr_scores').insert({
                     user_id: currentUser.id, name: currentUser.name || '익명',
@@ -4231,6 +4318,18 @@
         }
 
         function chessInitialState() { return chessFromFen(CHESS_START_FEN); }
+
+        // 관리자 특수 능력: 관리자 쪽은 왕만 그대로 두고 나머지 기물(폰 포함)이 전부 퀸으로 시작한다.
+        // 룩이 없으니 그쪽 캐슬링 권리는 없앤다.
+        function chessAdminStartFen(whiteAdmin, blackAdmin) {
+            if (!whiteAdmin && !blackAdmin) return CHESS_START_FEN;
+            const ranks = CHESS_START_FEN.split(' ')[0].split('/');
+            const conv = (rank, upper) => rank.replace(/[a-zA-Z]/g, ch => ch.toLowerCase() === 'k' ? ch : (upper ? 'Q' : 'q'));
+            if (blackAdmin) { ranks[0] = conv(ranks[0], false); ranks[1] = conv(ranks[1], false); }
+            if (whiteAdmin) { ranks[6] = conv(ranks[6], true); ranks[7] = conv(ranks[7], true); }
+            const castle = (whiteAdmin ? '' : 'KQ') + (blackAdmin ? '' : 'kq');
+            return ranks.join('/') + ' w ' + (castle || '-') + ' - 0 1';
+        }
 
         // 앙파상이 실제로 가능한 경우에만 키에 포함 (3회 반복 판정용)
         function chessPosKey(st) {
@@ -4542,7 +4641,7 @@
             chess.channel = rzRoomChannel('chess', chess.roomCode, {
                 onHello: chessHandleHello, onWelcome: chessHandleWelcome, onMsg: chessHandleMsg,
                 onSubscribed: () => {
-                    if (chess && chess.role === 'guest') rzSend(chess.channel, 'hello', { name: chess.myName, id: currentUser.id });
+                    if (chess && chess.role === 'guest') rzSend(chess.channel, 'hello', { name: chess.myName, id: currentUser.id, admin: currentUser.role === 'admin' });
                 },
             });
         }
@@ -4551,14 +4650,18 @@
             if (!chess || chess.role !== 'host' || chess.phase !== 'waiting') return;
             chess.oppName = (p && p.name) || '상대'; chess.oppId = (p && p.id) || null;
             const hostColor = Math.random() < 0.5 ? 'w' : 'b';
-            rzSend(chess.channel, 'welcome', { name: chess.myName, id: currentUser.id, hostColor, startIn: RZ_INTRO_LEAD_MS });
-            chessBeginMatch(hostColor, Date.now() + RZ_INTRO_LEAD_MS);
+            const hostAdmin = currentUser.role === 'admin', guestAdmin = !!(p && p.admin);
+            chess.oppAdmin = guestAdmin;
+            const fen = chessAdminStartFen(hostColor === 'w' ? hostAdmin : guestAdmin, hostColor === 'b' ? hostAdmin : guestAdmin);
+            rzSend(chess.channel, 'welcome', { name: chess.myName, id: currentUser.id, hostColor, startIn: RZ_INTRO_LEAD_MS, fen, admin: hostAdmin });
+            chessBeginMatch(hostColor, Date.now() + RZ_INTRO_LEAD_MS, fen);
         }
 
         function chessHandleWelcome(p) {
             if (!chess || chess.role !== 'guest' || chess.phase !== 'waiting') return;
             chess.oppName = (p && p.name) || '상대'; chess.oppId = (p && p.id) || null;
-            chessBeginMatch(p.hostColor === 'w' ? 'b' : 'w', Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
+            chess.oppAdmin = !!p.admin;
+            chessBeginMatch(p.hostColor === 'w' ? 'b' : 'w', Date.now() + (p.startIn || RZ_INTRO_LEAD_MS), p.fen);
         }
 
         function chessCopyRoomCode() { if (chess) rzCopyRoomCode(chess.roomCode); }
@@ -4569,13 +4672,15 @@
             return `<svg class="chess-piece ${chessColorOf(p)}" viewBox="0 0 45 45"><use href="#chess-sym-${p.toUpperCase()}"/></svg>`;
         }
 
-        function chessBeginMatch(myColor, startAt) {
+        function chessBeginMatch(myColor, startAt, startFen) {
             if (!chess) return;
             clearTimeout(chess.joinTimer);
             chess.phase = 'game';
+            chess.myAdmin = currentUser.role === 'admin';
+            chess.unrated = !!(chess.myAdmin || chess.oppAdmin); // 관리자가 낀 대국은 전적에 반영하지 않는다
             chess.myColor = myColor; chess.oppColor = myColor === 'w' ? 'b' : 'w';
             chess.startAt = startAt;
-            chess.state = chessInitialState();
+            chess.state = chessFromFen(startFen || CHESS_START_FEN);
             chess.legal = chessLegalMoves(chess.state);
             chess.clocks = { w: CHESS_CLOCK_MS, b: CHESS_CLOCK_MS };
             chess.turnStartAt = startAt; // 시계는 "시작!" 순간부터 흐른다
@@ -4595,6 +4700,7 @@
             const colorName = (c) => c === 'w' ? '백' : '흑';
             const sideInfo = (name, c) => ({
                 name, badge: colorName(c) + (c === 'w' ? ' · 먼저 둡니다' : ' · 나중에 둡니다'),
+                sub: (c === myColor ? chess.myAdmin : chess.oppAdmin) ? '👑 관리자 · 왕 빼고 모두 퀸' : '',
                 icon: chessPieceSvg(c === 'w' ? 'K' : 'k'), color: c === 'w' ? '#f4efe0' : '#4b4b57',
             });
             chess.intro = rzIntroPlay(document.getElementById('chess-board-wrap'), {
@@ -4602,7 +4708,9 @@
                 title: '체스 · 각자 10분',
                 me: Object.assign(sideInfo(chess.myName, myColor), { name: chess.myName + ' (나)' }),
                 opp: sideInfo(chess.oppName, chess.oppColor),
-                notes: ['캐슬링·앙파상·프로모션 등 정식 규칙 그대로', '시간이 모두 떨어지면 패배해요'],
+                notes: chess.unrated
+                    ? ['👑 관리자 대국 · 관리자 쪽 기물은 왕을 빼고 모두 퀸이에요', '전적(승률)에는 기록되지 않아요 · 각자 10분']
+                    : ['캐슬링·앙파상·프로모션 등 정식 규칙 그대로', '시간이 모두 떨어지면 패배해요'],
                 onGo: () => { if (chess) chessRenderAll(); },
             });
             chess.tickTimer = setInterval(chessTick, 200);
@@ -4895,11 +5003,11 @@
             document.getElementById('chess-end').classList.remove('hidden');
             if (result === 'win') rzSoundWin(); else if (result === 'loss') rzSoundLose(); else rzTone(440, 0.4, 'sine', 0.14);
 
-            chessRecordResult(result, chess.myColor);
+            chessRecordResult(result, chess.myColor, chess.unrated);
         }
 
-        async function chessRecordResult(result, color) {
-            if (!currentUser) return;
+        async function chessRecordResult(result, color, unrated) {
+            if (!currentUser || unrated) return;
             try {
                 await supabaseClient.from('chess_scores').insert({
                     user_id: currentUser.id, name: currentUser.name || '익명', result, color,
@@ -4913,7 +5021,7 @@
             chess = null;
             if (c.phase === 'game') { // 대국 도중에 나가면 기권패
                 rzSend(c.channel, 'msg', { t: 'resign', leave: true });
-                chessRecordResult('loss', c.myColor);
+                chessRecordResult('loss', c.myColor, c.unrated);
             }
             clearTimeout(c.joinTimer); clearInterval(c.tickTimer); clearInterval(c.hbTimer);
             if (c.intro) c.intro.cancel();
@@ -4998,6 +5106,34 @@
                 ok: true, captured,
                 state: { n, board, turn: enemy, caps, lastMove: idx, passes: 0, moveNum: st.moveNum + 1, seen },
             };
+        }
+
+        // 관리자 특수 능력: 상대(enemy) 돌 하나를 빈 자리로 옮긴다. 옮긴 뒤 숨 쉴 곳이 없어진 상대 돌은 따내고,
+        // 관리자 쪽 돌이 숨이 막히게 되는 이동은 허용하지 않는다. (차례는 그대로 — 이어서 평범하게 한 수를 둔다)
+        function goShift(st, color, from, to) {
+            const n = st.n, enemy = color === 1 ? 2 : 1;
+            if (!Number.isInteger(from) || !Number.isInteger(to) || from < 0 || to < 0 || from >= n * n || to >= n * n || from === to) return { ok: false, reason: 'range' };
+            if (st.board[from] !== enemy) return { ok: false, reason: 'notEnemy' };
+            if (st.board[to] !== 0) return { ok: false, reason: 'occupied' };
+            const board = st.board.slice();
+            board[from] = 0; board[to] = enemy;
+            const captured = [], visited = new Set();
+            for (let i = 0; i < n * n; i++) {
+                if (board[i] !== enemy || visited.has(i)) continue;
+                const g = goGroup(board, n, i);
+                g.stones.forEach(x => visited.add(x));
+                if (g.libs.size === 0) g.stones.forEach(x => { board[x] = 0; captured.push(x); });
+            }
+            const checked = new Set();
+            for (let i = 0; i < n * n; i++) {
+                if (board[i] !== color || checked.has(i)) continue;
+                const g = goGroup(board, n, i);
+                g.stones.forEach(x => checked.add(x));
+                if (g.libs.size === 0) return { ok: false, reason: 'selfkill' };
+            }
+            const caps = st.caps.slice(); caps[color] += captured.length;
+            const seen = new Set(st.seen); seen.add(board.join(''));
+            return { ok: true, captured, state: { n, board, turn: st.turn, caps, lastMove: to, passes: 0, moveNum: st.moveNum, seen } };
         }
 
         function goPass(st) {
@@ -5146,7 +5282,7 @@
             go.channel = rzRoomChannel('go', go.roomCode, {
                 onHello: goHandleHello, onWelcome: goHandleWelcome, onMsg: goHandleMsg,
                 onSubscribed: () => {
-                    if (go && go.role === 'guest') rzSend(go.channel, 'hello', { name: go.myName, id: currentUser.id });
+                    if (go && go.role === 'guest') rzSend(go.channel, 'hello', { name: go.myName, id: currentUser.id, admin: currentUser.role === 'admin' });
                 },
             });
         }
@@ -5173,15 +5309,17 @@
             if (!go || go.role !== 'host' || go.phase !== 'waiting' || go.helloBusy) return;
             go.helloBusy = true;
             go.oppName = (p && p.name) || '상대'; go.oppId = (p && p.id) || null;
-            const stats = await goFetchStats([currentUser.id, go.oppId].filter(Boolean));
+            const hostAdmin = currentUser.role === 'admin', guestAdmin = !!(p && p.admin);
+            // 관리자가 낀 대국은 승률과 무관하게 맞바둑(전적 미반영)
+            const stats = (hostAdmin || guestAdmin) ? {} : await goFetchStats([currentUser.id, go.oppId].filter(Boolean));
             if (!go || go.phase !== 'waiting') return;
             const mine = goRateOf(stats[currentUser.id]), theirs = goRateOf(go.oppId ? stats[go.oppId] : null);
-            const handicap = goHandicapFromRates(mine.rate, theirs.rate);
+            const handicap = (hostAdmin || guestAdmin) ? 0 : goHandicapFromRates(mine.rate, theirs.rate);
             // 접바둑이면 승률이 낮은 쪽이 흑(돌을 깔고 시작). 맞바둑이면 무작위.
             const hostIsBlack = handicap > 0 ? mine.rate < theirs.rate : Math.random() < 0.5;
             const cfg = {
                 n: go.n, hostIsBlack, handicap, komi: goKomi(go.n, handicap),
-                host: mine, guest: theirs,
+                host: mine, guest: theirs, hostAdmin, guestAdmin,
             };
             rzSend(go.channel, 'welcome', { name: go.myName, id: currentUser.id, cfg, startIn: RZ_INTRO_LEAD_MS });
             goBeginMatch(cfg, Date.now() + RZ_INTRO_LEAD_MS);
@@ -5202,6 +5340,10 @@
             const myIsBlack = iAmHost ? cfg.hostIsBlack : !cfg.hostIsBlack;
             const myInfo = iAmHost ? cfg.host : cfg.guest, oppInfo = iAmHost ? cfg.guest : cfg.host;
             go.phase = 'game';
+            go.myAdmin = !!(iAmHost ? cfg.hostAdmin : cfg.guestAdmin);
+            go.oppAdmin = !!(iAmHost ? cfg.guestAdmin : cfg.hostAdmin);
+            go.unrated = go.myAdmin || go.oppAdmin; // 관리자가 낀 대국은 전적에 반영하지 않는다
+            go.shiftMode = false; go.shiftFrom = -1;
             go.n = cfg.n; go.handicap = cfg.handicap; go.komi = cfg.komi;
             go.myColor = myIsBlack ? 1 : 2; go.oppColor = myIsBlack ? 2 : 1;
             go.startAt = startAt;
@@ -5231,12 +5373,16 @@
             const notes = cfg.handicap > 0
                 ? [`승률 차이 ${diff}%p → ${cfg.handicap}점 접바둑`, `${lowerName}님(흑)이 ${cfg.handicap}점을 깔고 시작하고, 백이 먼저 둬요 · 덤 ${cfg.komi}집`]
                 : [`승률 차이 ${diff}%p → 맞바둑`, `흑이 먼저 둬요 · 덤 ${cfg.komi}집 · ${cfg.n}줄`];
+            const adminNames = [go.myAdmin ? go.myName : null, go.oppAdmin ? go.oppName : null].filter(Boolean).join(', ');
+            const finalNotes = go.unrated
+                ? [`👑 관리자 대국 · 맞바둑 · 덤 ${cfg.komi}집 · 전적에 기록되지 않아요`, `${adminNames}님은 자기 차례에 상대 돌을 다른 자리로 옮길 수 있어요`]
+                : notes;
             go.intro = rzIntroPlay(document.getElementById('go-board-wrap'), {
                 startAt,
                 title: `바둑 · ${cfg.n}줄`,
-                me: Object.assign(sideInfo(go.myName, go.myColor, myInfo), { name: go.myName + ' (나)' }),
-                opp: sideInfo(go.oppName, go.oppColor, oppInfo),
-                notes,
+                me: Object.assign(sideInfo(go.myName, go.myColor, myInfo), { name: go.myName + ' (나)' }, go.myAdmin ? { sub: '👑 관리자 · 돌 옮기기' } : {}),
+                opp: Object.assign(sideInfo(go.oppName, go.oppColor, oppInfo), go.oppAdmin ? { sub: '👑 관리자 · 돌 옮기기' } : {}),
+                notes: finalNotes,
                 onGo: () => { if (go) goRenderAll(); },
             });
             go.tickTimer = setInterval(goTick, 400);
@@ -5300,7 +5446,7 @@
         }
 
         function goOnPointerMove(e) {
-            if (!go || go.phase !== 'game' || go.mode !== 'play' || e.pointerType !== 'mouse') return;
+            if (!go || go.phase !== 'game' || go.mode !== 'play' || e.pointerType !== 'mouse' || go.shiftMode) return;
             if (go.st.turn !== go.myColor || Date.now() < go.startAt) return;
             const idx = goPointToIdx(e);
             const hover = (idx >= 0 && go.st.board[idx] === 0) ? idx : -1;
@@ -5327,6 +5473,7 @@
             if (idx < 0) return;
             if (go.mode === 'scoring') { goToggleDead(idx); return; }
             if (go.st.turn !== go.myColor) return;
+            if (go.shiftMode) { goShiftClick(idx); return; }
             if (e.pointerType !== 'mouse') {
                 // 터치/펜: 첫 번째 탭은 미리보기, 같은 자리를 한 번 더 탭하면 착수 (잘못 누르는 실수 방지)
                 if (go.pending !== idx) { go.pending = idx; go.hover = idx; goDraw(); goRenderStatus(); return; }
@@ -5429,6 +5576,16 @@
                 ctx.beginPath(); ctx.arc(px(i % n), px(Math.floor(i / n)), r * 0.42, 0, Math.PI * 2); ctx.stroke();
             }
 
+            // 관리자: 옮기려고 고른 상대 돌 강조
+            if (go.shiftMode && go.shiftFrom >= 0 && st.board[go.shiftFrom]) {
+                const i = go.shiftFrom;
+                ctx.save();
+                ctx.strokeStyle = '#d946ef'; ctx.lineWidth = Math.max(2.5, cell * 0.1);
+                ctx.setLineDash([cell * 0.14, cell * 0.1]);
+                ctx.beginPath(); ctx.arc(px(i % n), px(Math.floor(i / n)), r * 1.08, 0, Math.PI * 2); ctx.stroke();
+                ctx.restore();
+            }
+
             // 마우스 올린 자리/터치 미리보기
             if (go.mode === 'play' && go.hover >= 0 && go.st.turn === go.myColor && st.board[go.hover] === 0) {
                 drawStone(px(go.hover % n), px(Math.floor(go.hover / n)), go.myColor, 0.5, 1);
@@ -5468,7 +5625,8 @@
                 if (go.confirmMe && !go.confirmOpp) text = '내가 확정했어요 · 상대가 확인하는 중...';
                 else if (!go.confirmMe && go.confirmOpp) text = '상대가 확정했어요 · 맞으면 [확정]을 눌러주세요';
             } else if (go.st.turn === go.myColor) {
-                text = go.pending >= 0 ? '같은 자리를 한 번 더 누르면 둡니다' : '내 차례예요';
+                if (go.shiftMode) text = go.shiftFrom < 0 ? '👑 옮길 상대 돌을 눌러주세요' : '👑 그 돌을 옮겨놓을 빈 자리를 눌러주세요';
+                else text = go.pending >= 0 ? '같은 자리를 한 번 더 누르면 둡니다' : '내 차례예요';
             } else text = '상대가 생각하는 중...';
             el.innerText = text;
         }
@@ -5478,6 +5636,13 @@
             const live = go.phase === 'game';
             const myTurn = live && go.mode === 'play' && go.st.turn === go.myColor && Date.now() >= go.startAt;
             document.getElementById('go-pass-btn').disabled = !myTurn;
+            if (!myTurn && go.shiftMode) { go.shiftMode = false; go.shiftFrom = -1; }
+            const shiftBtn = document.getElementById('go-shift-btn');
+            if (shiftBtn) {
+                shiftBtn.classList.toggle('go-hide', !go.myAdmin);
+                shiftBtn.disabled = !myTurn;
+                shiftBtn.innerHTML = go.shiftMode ? '<i class="fa-solid fa-xmark mr-1.5"></i>옮기기 취소' : '<i class="fa-solid fa-crown mr-1.5"></i>돌 옮기기';
+            }
             document.getElementById('go-resign-btn').disabled = !live;
             const scoring = live && go.mode === 'scoring';
             document.getElementById('go-score-row').classList.toggle('hidden', !scoring);
@@ -5508,6 +5673,42 @@
             go.anim = { idx, t0: performance.now() };
             rzTone(210, 0.09, 'triangle', 0.2, 120);
             if (r.captured.length) setTimeout(() => rzTone(520, 0.1, 'sine', 0.09), 70);
+            goRenderAll();
+        }
+
+        // ---- 관리자 능력: 상대 돌 옮기기 ----
+        const GO_SHIFT_REASON = {
+            notEnemy: '상대(흑/백) 돌만 옮길 수 있어요.', occupied: '이미 돌이 있는 자리예요.', range: '옮길 수 없는 자리예요.',
+            selfkill: '그 자리로 옮기면 내 돌이 숨이 막혀요.',
+        };
+        function goShiftToggle() {
+            if (!go || !go.myAdmin || go.phase !== 'game' || go.mode !== 'play' || go.st.turn !== go.myColor) return;
+            go.shiftMode = !go.shiftMode; go.shiftFrom = -1; go.hover = -1; go.pending = -1;
+            goRenderAll();
+        }
+        function goShiftClick(idx) {
+            if (!go || !go.shiftMode) return;
+            const b = go.st.board;
+            if (go.shiftFrom < 0) {
+                if (b[idx] === go.oppColor) { go.shiftFrom = idx; goRenderAll(); }
+                else showToast('옮길 상대 돌을 눌러주세요.', 'info');
+                return;
+            }
+            if (idx === go.shiftFrom) { go.shiftFrom = -1; goRenderAll(); return; }
+            if (b[idx] === go.oppColor) { go.shiftFrom = idx; goRenderAll(); return; }
+            if (b[idx] !== 0) { showToast('빈 자리를 눌러주세요.', 'info'); return; }
+            const from = go.shiftFrom;
+            const r = goShift(go.st, go.myColor, from, idx);
+            if (!r.ok) { showToast(GO_SHIFT_REASON[r.reason] || '옮길 수 없어요.', 'error'); return; }
+            go.shiftMode = false; go.shiftFrom = -1;
+            goApplyShift(r, idx);
+            rzSend(go.channel, 'msg', { t: 'shift', from, to: idx });
+        }
+        function goApplyShift(r, to) {
+            go.st = r.state; go.lastIdx = to; go.hover = -1; go.pending = -1;
+            go.anim = { idx: to, t0: performance.now() };
+            rzTone(660, 0.14, 'triangle', 0.14, 330);
+            if (r.captured.length) setTimeout(() => rzTone(520, 0.1, 'sine', 0.09), 90);
             goRenderAll();
         }
 
@@ -5589,6 +5790,14 @@
                     goApplyMove(r, p.idx);
                     break;
                 }
+                case 'shift': {
+                    if (!go.oppAdmin || go.mode !== 'play' || go.st.turn !== go.oppColor) break;
+                    const r = goShift(go.st, go.oppColor, p.from, p.to);
+                    if (!r.ok) { showToast('상대(관리자)의 돌 옮기기가 규칙과 맞지 않아 무시했어요.', 'error'); break; }
+                    goApplyShift(r, p.to);
+                    showToast('👑 관리자가 내 돌을 옮겼어요!', 'info');
+                    break;
+                }
                 case 'pass':
                     if (go.mode !== 'play' || go.st.turn !== go.oppColor) break;
                     go.st = goPass(go.st);
@@ -5649,7 +5858,7 @@
             document.getElementById('go-end-detail').innerText = detail || '';
             document.getElementById('go-end').classList.remove('hidden');
             if (result === 'win') rzSoundWin(); else rzSoundLose();
-            goRecordResult(result === 'win', go.n, go.handicap, go.myColor === 1);
+            if (!go.unrated) goRecordResult(result === 'win', go.n, go.handicap, go.myColor === 1);
         }
 
         async function goRecordResult(won, boardSize, handicap, playedBlack) {
@@ -5668,7 +5877,7 @@
             go = null;
             if (g.phase === 'game') { // 대국 도중에 나가면 기권패
                 rzSend(g.channel, 'msg', { t: 'resign', leave: true });
-                goRecordResult(false, g.n, g.handicap, g.myColor === 1);
+                if (!g.unrated) goRecordResult(false, g.n, g.handicap, g.myColor === 1);
             }
             clearTimeout(g.joinTimer); clearInterval(g.tickTimer); clearInterval(g.hbTimer);
             if (g.intro) g.intro.cancel();
@@ -5808,7 +6017,7 @@
                     <div class="border-t border-slate-100 pt-3">
                         <div class="flex items-center gap-1 text-amber-400 text-sm">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
                         <p class="text-sm mt-1">${escapeHtml(r.comment || '')}</p>
-                        <p class="text-xs mt-1" style="color:var(--ink-soft);">${escapeHtml(r.mentee_display_name || '멘티')}</p>
+                        <p class="text-xs mt-1 flex items-center justify-between gap-2" style="color:var(--ink-soft);"><span>${escapeHtml(r.mentee_display_name || '멘티')}</span>${currentUser.role === 'admin' ? `<button onclick="adminDeleteReview('${r.id}', true)" class="ghost-btn px-2.5 py-1 rounded-full text-xs text-rose-600"><i class="fa-regular fa-trash-can mr-1"></i>삭제</button>` : ''}</p>
                     </div>`).join('')
                 : `<p class="text-sm" style="color:var(--ink-soft);">아직 등록된 후기가 없습니다.</p>`;
 
@@ -5921,9 +6130,7 @@
         // 멘토 대시보드
         // =====================================================================
         async function renderMentorDashboard() {
-            document.getElementById('mentor-edit-title').value = currentUser.title || '';
-            document.getElementById('mentor-edit-sector').value = currentUser.sector_id || 1;
-            document.getElementById('mentor-edit-intro').value = currentUser.intro || '';
+            renderMentorProfileSummary();
 
             await renderBookingRequests();
             await renderApprovedBookings();
@@ -5931,16 +6138,6 @@
             await renderMentorMessages();
             await renderMentorLogs();
             setupMentorOwnRoomWatch();
-        }
-
-        async function saveMentorProfile() {
-            const title = document.getElementById('mentor-edit-title').value.trim();
-            const sector_id = document.getElementById('mentor-edit-sector').value;
-            const intro = document.getElementById('mentor-edit-intro').value.trim();
-            const { error } = await supabaseClient.from('profiles').update({ title, sector_id, intro }).eq('id', currentUser.id);
-            if (error) return showToast('저장 실패: ' + error.message, 'error');
-            currentUser.title = title; currentUser.sector_id = sector_id; currentUser.intro = intro;
-            showToast('프로필이 저장되었습니다.', 'success');
         }
 
         async function renderBookingRequests() {
@@ -6606,6 +6803,8 @@
             adminMenteesCache = mentees || [];
             document.getElementById('admin-mentor-search').value = '';
             document.getElementById('admin-mentee-search').value = '';
+            await renderAdminProfileRequests();
+            await renderAdminReviews(true);
 
             document.getElementById('admin-bookings-list').innerHTML = (bookings || []).length === 0
                 ? `<p style="color:var(--ink-soft);">예약 내역이 없습니다.</p>`
@@ -6634,6 +6833,307 @@
                     <button onclick="adminDeleteUser('${m.id}', '${escapeHtml(m.name)}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">추방(삭제)</button>
                 </div>
             </div>`;
+        }
+
+        // =====================================================================
+        // 내 프로필 / 비밀번호 / 비밀번호 찾기
+        // 멘티·관리자: 바로 저장 · 멘토: 관리자에게 "수정 요청"을 보내고 승인 후 반영
+        // =====================================================================
+        function refreshTopbarUser() {
+            const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? '관리자' : '멘티');
+            const el = document.getElementById('topbar-user');
+            el.innerText = `${currentUser.name} · ${roleLabel}`;
+            el.classList.remove('hidden');
+        }
+
+        function renderMentorProfileSummary() {
+            const el = document.getElementById('mentor-profile-summary');
+            if (!el) return;
+            el.innerHTML = `
+                <p><strong>이름</strong> ${escapeHtml(currentUser.name || '')}</p>
+                <p><strong>직함</strong> ${escapeHtml(currentUser.title || '-')}</p>
+                <p><strong>전문 분야</strong> ${escapeHtml(sectorLabels[currentUser.sector_id] || '-')}</p>
+                <p><strong>소개</strong> ${escapeHtml(currentUser.intro || '-')}</p>`;
+        }
+
+        let myLatestEditRequest = null;
+
+        async function openProfileModal() {
+            if (!currentUser) return;
+            const isMentor = currentUser.role === 'mentor';
+            const roleLabel = isMentor ? '멘토' : (currentUser.role === 'admin' ? '관리자' : '멘티');
+            document.getElementById('pf-role').innerText = roleLabel;
+            document.getElementById('pf-email').innerText = currentUser.email || '';
+            document.getElementById('pf-name').value = currentUser.name || '';
+            document.getElementById('pf-title').value = currentUser.title || '';
+            document.getElementById('pf-sector').value = currentUser.sector_id ? String(currentUser.sector_id) : '';
+            document.getElementById('pf-intro').value = currentUser.intro || '';
+            document.getElementById('pf-title-label').innerText = isMentor ? '직함' : '직함 / 하는 일';
+            document.getElementById('pf-sector-label').innerText = isMentor ? '전문 분야' : '관심 분야';
+            document.getElementById('pf-mentor-note').classList.toggle('hidden', !isMentor);
+            document.getElementById('pf-save-btn').innerText = isMentor ? '수정 요청 보내기' : '저장';
+            ['pf-pw-current', 'pf-pw-new', 'pf-pw-new2'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('pf-mentor-banner').classList.add('hidden');
+            document.getElementById('profile-modal').classList.remove('hidden');
+            if (isMentor) await refreshProfileEditBanner();
+        }
+        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
+
+        async function refreshProfileEditBanner() {
+            const box = document.getElementById('pf-mentor-banner');
+            const { data } = await supabaseClient.from('profile_edit_requests').select('*')
+                .eq('mentor_id', currentUser.id).order('created_at', { ascending: false }).limit(1);
+            myLatestEditRequest = (data && data[0]) || null;
+            const r = myLatestEditRequest;
+            if (!r || r.status === 'approved') { box.classList.add('hidden'); return; }
+            if (r.status === 'pending') {
+                box.className = 'rounded-xl p-3 text-xs space-y-1';
+                box.style.cssText = 'background:#fef3c7;color:#92400e;';
+                box.innerHTML = `<p class="font-bold"><i class="fa-solid fa-hourglass-half mr-1"></i>관리자가 확인 중인 수정 요청이 있어요 (${formatDateTime(r.created_at)})</p>
+                    <p>이름 ${escapeHtml(r.name)} · 직함 ${escapeHtml(r.title || '-')} · ${escapeHtml(sectorLabels[r.sector_id] || '-')}</p>
+                    <p>소개 ${escapeHtml(r.intro || '-')}</p>
+                    <button onclick="cancelMyEditRequest('${r.id}')" class="underline font-bold pt-1">요청 취소</button>`;
+            } else {
+                box.className = 'rounded-xl p-3 text-xs space-y-1';
+                box.style.cssText = 'background:#fee2e2;color:#991b1b;';
+                box.innerHTML = `<p class="font-bold"><i class="fa-solid fa-circle-xmark mr-1"></i>지난 수정 요청이 기각되었어요</p>
+                    <p>사유: ${escapeHtml(r.admin_note || '(사유 없음)')}</p>`;
+            }
+        }
+
+        async function cancelMyEditRequest(id) {
+            const { error } = await supabaseClient.from('profile_edit_requests').delete().eq('id', id);
+            if (error) return showToast('요청 취소 실패: ' + error.message, 'error');
+            showToast('수정 요청을 취소했어요.', 'info');
+            await refreshProfileEditBanner();
+        }
+
+        async function saveMyProfile() {
+            const name = document.getElementById('pf-name').value.trim();
+            const title = document.getElementById('pf-title').value.trim();
+            const sectorRaw = document.getElementById('pf-sector').value;
+            const sector_id = sectorRaw ? Number(sectorRaw) : null;
+            const intro = document.getElementById('pf-intro').value.trim();
+            if (!name) return showToast('이름을 입력해주세요.', 'error');
+            const btn = document.getElementById('pf-save-btn');
+
+            if (currentUser.role === 'mentor') {
+                if (!sector_id) return showToast('전문 분야를 선택해주세요.', 'error');
+                const changed = name !== (currentUser.name || '') || title !== (currentUser.title || '')
+                    || sector_id !== Number(currentUser.sector_id || 0) || intro !== (currentUser.intro || '');
+                if (!changed) return showToast('바뀐 내용이 없어요.', 'info');
+                btn.disabled = true;
+                try {
+                    // 대기 중인 이전 요청이 있으면 새 요청으로 교체
+                    await supabaseClient.from('profile_edit_requests').delete().eq('mentor_id', currentUser.id).eq('status', 'pending');
+                    const { error } = await supabaseClient.from('profile_edit_requests').insert({ mentor_id: currentUser.id, name, title, sector_id, intro });
+                    if (error) return showToast('요청 전송 실패: ' + error.message, 'error');
+                    showToast('수정 요청을 보냈어요. 관리자가 확인하면 반영돼요.', 'success');
+                    await refreshProfileEditBanner();
+                } finally { btn.disabled = false; }
+                return;
+            }
+
+            btn.disabled = true;
+            try {
+                const { data, error } = await supabaseClient.from('profiles').update({ name, title, sector_id, intro }).eq('id', currentUser.id).select('id');
+                if (error) return showToast('저장 실패: ' + error.message, 'error');
+                if (!data || data.length === 0) return showToast('저장되지 않았어요. 잠시 후 다시 시도해주세요.', 'error');
+                currentUser.name = name; currentUser.title = title; currentUser.sector_id = sector_id; currentUser.intro = intro;
+                refreshTopbarUser();
+                showToast('프로필이 저장되었어요.', 'success');
+            } finally { btn.disabled = false; }
+        }
+
+        // 멘토에게: 수정 요청이 처리됐다면 로그인할 때 한 번 알려준다
+        async function notifyEditRequestResult() {
+            try {
+                const { data } = await supabaseClient.from('profile_edit_requests').select('id,status,admin_note,reviewed_at')
+                    .eq('mentor_id', currentUser.id).neq('status', 'pending').order('reviewed_at', { ascending: false }).limit(1);
+                const r = data && data[0];
+                if (!r) return;
+                const key = 'agl_seen_edit_req_' + currentUser.id;
+                let seen = null;
+                try { seen = window.localStorage.getItem(key); } catch (e) {}
+                if (seen === r.id) return;
+                try { window.localStorage.setItem(key, r.id); } catch (e) {}
+                if (r.status === 'approved') showToast('프로필 수정 요청이 승인되어 반영되었어요.', 'success');
+                else showToast('프로필 수정 요청이 기각되었어요. 사유: ' + (r.admin_note || '(없음)'), 'error');
+                // 승인 결과를 화면에 반영하기 위해 프로필을 다시 읽는다
+                const { data: p } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+                if (p) { currentUser.name = p.name; currentUser.title = p.title; currentUser.sector_id = p.sector_id; currentUser.intro = p.intro; refreshTopbarUser(); }
+            } catch (e) { /* 알림은 없어도 앱은 계속 동작 */ }
+        }
+
+        async function changeMyPassword() {
+            const cur = document.getElementById('pf-pw-current').value;
+            const nw = document.getElementById('pf-pw-new').value;
+            const nw2 = document.getElementById('pf-pw-new2').value;
+            if (!cur) return showToast('현재 비밀번호를 입력해주세요.', 'error');
+            if (nw.length < 8) return showToast('새 비밀번호는 8자리 이상이어야 해요.', 'error');
+            if (nw !== nw2) return showToast('새 비밀번호 확인이 일치하지 않아요.', 'error');
+            if (nw === cur) return showToast('현재 비밀번호와 다른 비밀번호를 입력해주세요.', 'error');
+            const btn = document.getElementById('pf-pw-btn');
+            btn.disabled = true;
+            try {
+                // 현재 비밀번호가 맞는지 먼저 확인
+                const { error: e1 } = await supabaseClient.auth.signInWithPassword({ email: currentUser.email, password: cur });
+                if (e1) return showToast('현재 비밀번호가 올바르지 않아요.', 'error');
+                const { error: e2 } = await supabaseClient.auth.updateUser({ password: nw });
+                if (e2) return showToast('비밀번호 변경 실패: ' + e2.message, 'error');
+                ['pf-pw-current', 'pf-pw-new', 'pf-pw-new2'].forEach(id => document.getElementById(id).value = '');
+                showToast('비밀번호가 변경되었어요.', 'success');
+            } finally { btn.disabled = false; }
+        }
+
+        function showForgotPassword() {
+            document.getElementById('form-login').classList.add('hidden');
+            document.getElementById('form-signup').classList.add('hidden');
+            document.getElementById('form-forgot').classList.remove('hidden');
+            document.getElementById('forgot-email').value = document.getElementById('login-email').value.trim();
+        }
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value.trim();
+            if (!email) return;
+            const btn = document.getElementById('forgot-submit-btn');
+            btn.disabled = true;
+            try {
+                // 메일 속 링크를 누르면 이 페이지로 돌아와서 "새 비밀번호 설정" 창이 열린다
+                const redirectTo = location.href.split('#')[0].split('?')[0];
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+                if (error) return showToast('메일 발송 실패: ' + error.message, 'error');
+                showToast('재설정 링크를 보냈어요. 메일함(스팸함 포함)을 확인해주세요.', 'success');
+                switchAuthTab('login');
+            } finally { btn.disabled = false; }
+        }
+
+        function openRecoveryModal() {
+            const m = document.getElementById('recovery-modal');
+            if (!m || !m.classList.contains('hidden')) return;
+            document.getElementById('recovery-pw').value = '';
+            document.getElementById('recovery-pw2').value = '';
+            m.classList.remove('hidden');
+        }
+
+        async function submitRecoveryPassword(e) {
+            e.preventDefault();
+            const pw = document.getElementById('recovery-pw').value;
+            const pw2 = document.getElementById('recovery-pw2').value;
+            if (pw.length < 8) return showToast('비밀번호는 8자리 이상이어야 해요.', 'error');
+            if (pw !== pw2) return showToast('비밀번호 확인이 일치하지 않아요.', 'error');
+            const btn = document.getElementById('recovery-btn');
+            btn.disabled = true;
+            try {
+                const { error } = await supabaseClient.auth.updateUser({ password: pw });
+                if (error) return showToast('비밀번호 변경 실패: ' + error.message, 'error');
+                recoveryPending = false;
+                document.getElementById('recovery-modal').classList.add('hidden');
+                try { history.replaceState(null, '', location.href.split('#')[0].split('?')[0]); } catch (e2) {}
+                showToast('새 비밀번호로 변경되었어요.', 'success');
+                if (!currentUser) {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (session) { await loadCurrentUserProfile(session.user); if (!(await blockIfSuspended())) enterApp(); }
+                }
+            } finally { btn.disabled = false; }
+        }
+
+        async function cancelRecovery() {
+            recoveryPending = false;
+            document.getElementById('recovery-modal').classList.add('hidden');
+            try { history.replaceState(null, '', location.href.split('#')[0].split('?')[0]); } catch (e) {}
+            await supabaseClient.auth.signOut(); // 재설정 링크로 열린 임시 로그인 상태는 정리
+            currentUser = null;
+            location.reload();
+        }
+
+        // =====================================================================
+        // 관리자: 멘토 프로필 수정 요청 승인/기각 · 후기 관리(삭제)
+        // =====================================================================
+        async function renderAdminProfileRequests() {
+            const box = document.getElementById('admin-profile-requests-list');
+            const { data: reqs, error } = await supabaseClient.from('profile_edit_requests').select('*')
+                .eq('status', 'pending').order('created_at', { ascending: false });
+            if (error) { box.innerHTML = `<p style="color:var(--ink-soft);">요청 목록을 불러오지 못했어요. 새 SQL(supabase_profile_edit_and_reviews.sql)을 실행했는지 확인해주세요.</p>`; return; }
+            if (!reqs || reqs.length === 0) { box.innerHTML = `<p style="color:var(--ink-soft);">대기 중인 프로필 수정 요청이 없습니다.</p>`; return; }
+            const byId = {}; (adminMentorsCache || []).forEach(m => byId[m.id] = m);
+            const row = (label, oldV, newV) => {
+                const same = (oldV || '') === (newV || '');
+                return `<p><strong>${label}</strong> ${same ? escapeHtml(newV || '-') + ' <span class="text-xs" style="color:var(--ink-soft);">(변경 없음)</span>'
+                    : `<span style="color:var(--ink-soft);text-decoration:line-through;">${escapeHtml(oldV || '-')}</span> → <span class="font-bold" style="color:var(--accent-ink);">${escapeHtml(newV || '-')}</span>`}</p>`;
+            };
+            box.innerHTML = reqs.map(r => {
+                const cur = byId[r.mentor_id] || {};
+                return `<div class="border border-slate-100 rounded-xl p-4 space-y-1.5">
+                    <div class="flex justify-between items-start flex-wrap gap-1">
+                        <p class="font-bold">${escapeHtml(cur.name || r.name)} <span class="text-xs font-normal" style="color:var(--ink-soft);">멘토</span></p>
+                        <span class="text-xs" style="color:var(--ink-soft);">${formatDateTime(r.created_at)}</span>
+                    </div>
+                    ${row('이름', cur.name, r.name)}
+                    ${row('직함', cur.title, r.title)}
+                    ${row('전문 분야', sectorLabels[cur.sector_id], sectorLabels[r.sector_id])}
+                    ${row('소개', cur.intro, r.intro)}
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="adminApproveProfileEdit('${r.id}')" class="accent-btn px-3 py-1.5 rounded-full text-xs">승인</button>
+                        <button onclick="adminRejectProfileEdit('${r.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600">기각</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function adminApproveProfileEdit(id) {
+            if (!confirm('이 수정 요청을 승인할까요? 승인 즉시 멘토 프로필에 반영돼요.')) return;
+            const { error } = await supabaseClient.rpc('admin_approve_profile_edit', { p_request_id: id });
+            if (error) return showToast('승인 실패: ' + error.message, 'error');
+            showToast('승인되어 멘토 프로필에 반영되었어요.', 'success');
+            renderAdminDashboard();
+        }
+        async function adminRejectProfileEdit(id) {
+            const note = prompt('기각 사유를 입력해주세요 (멘토에게 전달돼요).');
+            if (note === null) return;
+            const { error } = await supabaseClient.rpc('admin_reject_profile_edit', { p_request_id: id, p_note: note });
+            if (error) return showToast('기각 처리 실패: ' + error.message, 'error');
+            showToast('수정 요청을 기각했어요.', 'info');
+            renderAdminDashboard();
+        }
+
+        async function renderAdminReviews(rebuildFilter) {
+            const sel = document.getElementById('admin-review-mentor-filter');
+            if (rebuildFilter) {
+                const keep = sel.value;
+                sel.innerHTML = '<option value="">전체 멘토 (최근 50개)</option>' + (adminMentorsCache || [])
+                    .map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
+                sel.value = keep;
+                if (sel.value !== keep) sel.value = '';
+            }
+            const box = document.getElementById('admin-reviews-list');
+            let q = supabaseClient.from('reviews').select('*').order('created_at', { ascending: false }).limit(50);
+            if (sel.value) q = q.eq('mentor_id', sel.value);
+            const { data: reviews, error } = await q;
+            if (error) { box.innerHTML = `<p style="color:var(--ink-soft);">후기를 불러오지 못했어요.</p>`; return; }
+            const nameById = {}; (adminMentorsCache || []).forEach(m => nameById[m.id] = m.name);
+            box.innerHTML = (reviews || []).length === 0
+                ? `<p style="color:var(--ink-soft);">등록된 후기가 없습니다.</p>`
+                : reviews.map(r => `
+                    <div class="border border-slate-100 rounded-xl p-3 flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold" style="color:var(--ink-soft);">${escapeHtml(nameById[r.mentor_id] || '멘토')} 멘토 · ${escapeHtml(r.mentee_display_name || '멘티')} · ${formatDateTime(r.created_at)}</p>
+                            <p class="text-amber-400 text-sm">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</p>
+                            <p class="text-sm break-words">${escapeHtml(r.comment || '(내용 없음)')}</p>
+                        </div>
+                        <button onclick="adminDeleteReview('${r.id}')" class="ghost-btn px-3 py-1.5 rounded-full text-xs text-rose-600 flex-shrink-0"><i class="fa-regular fa-trash-can mr-1"></i>삭제</button>
+                    </div>`).join('');
+        }
+
+        async function adminDeleteReview(id, fromMentorDetail) {
+            if (!confirm('이 후기를 삭제할까요? 되돌릴 수 없고, 멘토의 평균 별점도 다시 계산돼요.')) return;
+            const { data, error } = await supabaseClient.from('reviews').delete().eq('id', id).select('id');
+            if (error) return showToast('삭제 실패: ' + error.message, 'error');
+            if (!data || data.length === 0) return showToast('삭제되지 않았어요. 새 SQL(supabase_profile_edit_and_reviews.sql)이 적용됐는지 확인해주세요.', 'error');
+            showToast('후기를 삭제했어요.', 'success');
+            if (fromMentorDetail && viewingMentor) openMentorDetail(viewingMentor.id);
+            else renderAdminReviews();
         }
 
         async function adminDeleteUser(userId, name) {
