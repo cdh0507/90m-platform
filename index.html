@@ -785,6 +785,20 @@
         /* ---------- 게임 6: 바둑 ---------- */
         .go-scroll { position: absolute; inset: 0; overflow: auto; -webkit-overflow-scrolling: touch; }
         .go-board-wrap canvas { width: calc(100% * var(--go-zoom, 1)); height: auto; aspect-ratio: 1; display: block; touch-action: pan-x pan-y; cursor: pointer; }
+        /* 말랑 배구 */
+        .vb-wrap { width: min(100%, 640px); margin: 0 auto; }
+        .rz-compact .vb-wrap { width: min(100%, calc((100dvh - 250px) * 5 / 3)); min-width: 260px; }
+        .vb-canvas-wrap { position: relative; width: 100%; aspect-ratio: 5 / 3; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(20,20,20,.08), 0 10px 26px rgba(20,20,20,.18); background: #cfeaff; }
+        .vb-canvas-wrap canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+        .vb-pad { display: none; justify-content: space-between; gap: 10px; margin-top: 10px; }
+        .rz-touch .vb-pad { display: flex; }
+        .vb-pad-group { display: flex; gap: 10px; }
+        .vb-btn { width: 70px; height: 70px; border-radius: 22px; background: #fff; border: 2px solid #e5e5df; font-size: 22px; font-weight: 800; color: var(--ink); box-shadow: 0 3px 8px rgba(20,20,20,.12); touch-action: none; user-select: none; -webkit-user-select: none; display: flex; align-items: center; justify-content: center; }
+        .vb-btn small { display: block; font-size: 10px; font-weight: 700; color: var(--ink-soft); }
+        .vb-btn.on { background: var(--accent); border-color: var(--accent); }
+        .vb-intro-icon { width: 34px; height: 34px; border-radius: 50%; display: block; border: 3px solid rgba(0,0,0,.25); box-shadow: 0 3px 8px rgba(0,0,0,.35); }
+        .vb-intro-icon.a { background: #8fd16a; }
+        .vb-intro-icon.b { background: #ff9a8a; }
         .go-hide { display: none !important; }
         .go-info { text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); margin-top: 8px; }
         .go-size-row { display: flex; gap: 8px; margin-bottom: 14px; }
@@ -1775,6 +1789,11 @@
                             <span class="restzone-game-name">바둑</span>
                             <span class="restzone-game-desc">온라인 1:1 · 승률 차이만큼 접바둑 · 승률 순위 · 로그인 필요</span>
                         </button>
+                        <button onclick="restzoneOpenGame('vball')" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:#e3f6d6;"><i class="fa-solid fa-volleyball" style="color:#3f9a2a;"></i></span>
+                            <span class="restzone-game-name">말랑 배구</span>
+                            <span class="restzone-game-desc">2D 온라인 1:1 · 점프·스파이크 · 10점 선취 · 승률 순위 · 로그인 필요</span>
+                        </button>
                         <button onclick="restzoneOpenGame('omok')" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#f3e6cf;"><i class="fa-solid fa-table-cells" style="color:#8a5a14;"></i></span>
                             <span class="restzone-game-name">오목</span>
@@ -2026,6 +2045,85 @@
 
                 </div>
 
+                <!-- 게임 8: 말랑 배구 -->
+                <div id="restzone-panel-vball" class="hidden">
+
+                    <div id="vb-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#3f9a2a;"></i>
+                        <p class="cnr-msg">말랑 배구 온라인 대결은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+
+                    <div id="vb-state-lobby" class="hidden cnr-center">
+                        <i class="fa-solid fa-volleyball text-3xl mb-3" style="color:#3f9a2a;"></i>
+                        <p class="cnr-msg">친구와 말랑 배구 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">새싹이 vs 말랑이 · 점프하고 공중에서 스파이크 · 10점 먼저 따면 승리</span></p>
+                        <button onclick="vbCreateRoom()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기</button>
+                        <div class="cnr-join-row">
+                            <input id="vb-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="vbJoinRoom()" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="vb-lobby-error" class="cnr-lobby-error hidden"></p>
+                        <button onclick="vbShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>승률 순위 보기</button>
+                    </div>
+
+                    <div id="vb-state-waiting" class="hidden cnr-center">
+                        <div class="cnr-spinner"></div>
+                        <p class="cnr-msg">상대방을 기다리는 중...</p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="vb-room-code-display">-----</b>
+                            <button onclick="vbCopyRoomCode()" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <button onclick="vbLeaveRoom()" class="press-feel cnr-cancel-btn">취소</button>
+                    </div>
+
+                    <div id="vb-state-game" class="hidden">
+                        <div class="vb-wrap">
+                            <div id="vb-canvas-wrap" class="vb-canvas-wrap">
+                                <canvas id="vb-canvas"></canvas>
+                                <div id="vb-end" class="rz-end hidden">
+                                    <p id="vb-end-title" class="rz-end-title"></p>
+                                    <p id="vb-end-detail" class="rz-end-detail"></p>
+                                    <div class="rz-end-actions">
+                                        <button onclick="vbBackToLobby()" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로비로</button>
+                                        <button onclick="vbShowLeaderboard()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">순위 보기</button>
+                                    </div>
+                                    <button onclick="vbHideEnd()" class="rz-end-peek">화면 다시 보기</button>
+                                </div>
+                            </div>
+                            <p id="vb-status" class="rz-status"></p>
+                            <div id="vb-disc" class="rz-note hidden">
+                                <span>상대와 연결이 끊긴 것 같아요.</span>
+                                <button onclick="vbClaimDisconnectWin()" class="press-feel rz-note-btn">승리로 처리</button>
+                            </div>
+                            <div class="vb-pad">
+                                <div class="vb-pad-group">
+                                    <button class="vb-btn" onpointerdown="vbPad('l',true,this)" onpointerup="vbPad('l',false,this)" onpointerleave="vbPad('l',false,this)" onpointercancel="vbPad('l',false,this)" aria-label="왼쪽"><i class="fa-solid fa-arrow-left"></i></button>
+                                    <button class="vb-btn" onpointerdown="vbPad('r',true,this)" onpointerup="vbPad('r',false,this)" onpointerleave="vbPad('r',false,this)" onpointercancel="vbPad('r',false,this)" aria-label="오른쪽"><i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                                <div class="vb-pad-group">
+                                    <button class="vb-btn" onpointerdown="vbPad('s',true,this)" onpointerup="vbPad('s',false,this)" onpointerleave="vbPad('s',false,this)" onpointercancel="vbPad('s',false,this)" aria-label="스파이크"><span><i class="fa-solid fa-burst"></i><small>스파이크</small></span></button>
+                                    <button class="vb-btn" onpointerdown="vbPad('j',true,this)" onpointerup="vbPad('j',false,this)" onpointerleave="vbPad('j',false,this)" onpointercancel="vbPad('j',false,this)" aria-label="점프"><span><i class="fa-solid fa-arrow-up"></i><small>점프</small></span></button>
+                                </div>
+                            </div>
+                            <div class="rz-action-row">
+                                <button onclick="vbLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
+                            </div>
+                            <p class="go-info">A/D 이동 · W/Space 점프 · 공중에서 S/Shift 스파이크 (방향키도 가능)</p>
+                        </div>
+                    </div>
+
+                    <div id="vb-state-leaderboard" class="hidden">
+                        <p class="cnr-leaderboard-title"><i class="fa-solid fa-ranking-star mr-1.5"></i>말랑 배구 승률 순위</p>
+                        <p class="rz-board-note">승률 = 승수 ÷ 전체 판수 · 3판 이상 플레이한 분부터 순위에 올라요</p>
+                        <div id="vb-leaderboard-list" class="cnr-leaderboard-list"></div>
+                        <div class="text-center">
+                            <button onclick="vbBackToLobby()" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm mt-3">돌아가기</button>
+                        </div>
+                    </div>
+
+                </div>
+
                 <!-- 게임 7: 오목 -->
                 <div id="restzone-panel-omok" class="hidden">
 
@@ -2089,6 +2187,7 @@
                                 <button onclick="omokClaimDisconnectWin()" class="press-feel rz-note-btn">승리로 처리</button>
                             </div>
                             <div class="rz-action-row">
+                                <button id="omok-dismiss-btn" onclick="omokToggleDismiss()" class="press-feel rz-act-btn go-hide"><i class="fa-solid fa-user-slash mr-1.5"></i>상대 경질</button>
                                 <button id="omok-resign-btn" onclick="omokResign()" class="press-feel rz-act-btn danger"><i class="fa-regular fa-flag mr-1.5"></i>기권</button>
                                 <button onclick="omokLeaveRoom()" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                             </div>
@@ -3191,7 +3290,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목' };
+        const RESTZONE_TITLES = { ball: '왁스볼', color: '절대색감', pitch: '절대음감', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', vball: '말랑 배구' };
 
         function openRestZoneModal() {
             rzApplyDeviceMode();
@@ -3207,6 +3306,7 @@
             if (typeof teardownChess === 'function') teardownChess();
             if (typeof teardownGo === 'function') teardownGo();
             if (typeof teardownOmok === 'function') teardownOmok();
+            if (typeof teardownVb === 'function') teardownVb();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -3218,6 +3318,7 @@
             if (typeof teardownChess === 'function') teardownChess();
             if (typeof teardownGo === 'function') teardownGo();
             if (typeof teardownOmok === 'function') teardownOmok();
+            if (typeof teardownVb === 'function') teardownVb();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -3233,6 +3334,7 @@
             else if (name === 'chess') ensureChessInit();
             else if (name === 'go') ensureGoInit();
             else if (name === 'omok') ensureOmokInit();
+            else if (name === 'vball') ensureVbInit();
         }
 
         // =====================================================================
@@ -4343,6 +4445,7 @@
             if (typeof chess !== 'undefined' && chess && chess.phase === 'game') name = '체스';
             else if (typeof go !== 'undefined' && go && go.phase === 'game') name = '바둑';
             else if (typeof omok !== 'undefined' && omok && omok.phase === 'game') name = '오목';
+            else if (typeof vb !== 'undefined' && vb && vb.phase === 'game') name = '말랑 배구';
             if (!name) return true;
             return confirm('진행 중인 ' + name + ' 대국에서 나가면 패배로 기록돼요. 정말 나갈까요?');
         }
@@ -5266,6 +5369,547 @@
             return { ok: true, state: { board, turn: color === st.turn ? (color === 1 ? 2 : 1) : st.turn, count, last: idx, winner, winLine, draw } };
         }
 
+        // =====================================================================
+        // 말랑 배구 엔진 (순수 로직) — 640×384 코트, 60틱/초 고정 스텝
+        // 1=왼쪽(새싹이) 2=오른쪽(말랑이). 랠리 득점제, 먼저 VB_WIN점을 얻으면 승리.
+        // 호스트가 이 시뮬레이션을 돌리고, 게스트는 입력만 보낸 뒤 결과 화면을 받는다.
+        // =====================================================================
+        const VB_W = 640, VB_H = 384, VB_GROUND = 336;
+        const VB_NET_X = 320, VB_NET_TOP = 232, VB_NET_HW = 5;
+        const VB_PR = 34, VB_BR = 14, VB_WIN = 10;
+        const VB_READY_TICKS = 70, VB_POINT_TICKS = 90;
+
+        function vbMakePlayer(side) {
+            return { x: side === 1 ? 160 : 480, y: VB_GROUND - VB_PR, vx: 0, vy: 0, dir: 0, air: false, spike: 0, spikeReq: 0, spikeCd: 0, hitCd: 0, sHeld: false };
+        }
+        function vbNewWorld(firstServe) {
+            return {
+                tick: 0, phase: 'wait', timer: 0, serve: firstServe === 2 ? 2 : 1, score: [0, 0], winner: 0,
+                p: [vbMakePlayer(1), vbMakePlayer(2)], ball: { x: 160, y: 110, vx: 0, vy: 0, rot: 0 }, ev: [],
+            };
+        }
+        function vbResetRally(w) {
+            w.p = [vbMakePlayer(1), vbMakePlayer(2)];
+            w.ball = { x: w.serve === 1 ? 160 : 480, y: 110, vx: 0, vy: 0, rot: 0 };
+            w.phase = 'ready'; w.timer = VB_READY_TICKS;
+        }
+        function vbStart(w) { vbResetRally(w); }
+
+        function vbMovePlayer(pl, side, inp, frozen) {
+            const dir = frozen ? 0 : (inp.r ? 1 : 0) - (inp.l ? 1 : 0);
+            pl.dir = dir; pl.vx = dir * 5.2;
+            pl.x += pl.vx;
+            const minX = side === 1 ? VB_PR + 2 : VB_NET_X + VB_NET_HW + VB_PR + 2;
+            const maxX = side === 1 ? VB_NET_X - VB_NET_HW - VB_PR - 2 : VB_W - VB_PR - 2;
+            if (pl.x < minX) pl.x = minX; if (pl.x > maxX) pl.x = maxX;
+            const floorY = VB_GROUND - VB_PR;
+            if (!frozen && inp.j && pl.y >= floorY - 0.01 && pl.vy === 0) pl.vy = -13.4;
+            pl.vy += 0.72; pl.y += pl.vy;
+            if (pl.y >= floorY) { pl.y = floorY; pl.vy = 0; }
+            pl.air = pl.y < floorY - 0.5;
+            if (!frozen && inp.s && !pl.sHeld && pl.air) pl.spikeReq = 10; // 공중에서 스파이크 키를 "누른 순간"부터 10틱 동안 유효
+            pl.sHeld = !!inp.s;
+            if (pl.spikeReq > 0) pl.spikeReq--;
+            if (pl.spikeCd > 0) pl.spikeCd--;
+            if (pl.spike > 0) pl.spike--;
+            if (pl.hitCd > 0) pl.hitCd--;
+        }
+
+        function vbBallPlayer(w, pl, side) {
+            const b = w.ball;
+            const dx = b.x - pl.x, dy = b.y - pl.y, d = Math.hypot(dx, dy) || 0.0001;
+            const reach = VB_PR + VB_BR;
+            const spiking = pl.spikeReq > 0 && pl.air && pl.spikeCd <= 0;
+            if (spiking && d < reach + 16 && b.y < pl.y + 24) {
+                const to = side === 1 ? 1 : -1;
+                b.vx = to * (10.5 + 1.2 * Math.abs(pl.dir)); b.vy = 6.8;
+                pl.spikeCd = 30; pl.spike = 14; pl.spikeReq = 0; pl.hitCd = 8;
+                if (d < reach) { b.x = pl.x + dx / d * (reach + 1); b.y = pl.y + dy / d * (reach + 1); }
+                w.ev.push('spike');
+                return;
+            }
+            if (d < reach && pl.hitCd <= 0) {
+                const nx = dx / d, ny = dy / d;
+                const speed = 8.4 + 0.35 * Math.hypot(pl.vx, pl.vy);
+                b.vx = nx * speed + pl.vx * 0.5;
+                b.vy = ny * speed + pl.vy * 0.3 - 1.6;
+                if (ny > -0.15) b.vy -= 2.2; // 옆이나 아래에서 맞아도 살짝 띄워준다
+                b.x = pl.x + nx * (reach + 1); b.y = pl.y + ny * (reach + 1);
+                pl.hitCd = 8;
+                w.ev.push('hit');
+            }
+        }
+
+        function vbBallStep(w, scoring) {
+            const b = w.ball;
+            b.vy += 0.30;
+            const sp = Math.hypot(b.vx, b.vy);
+            if (sp > 15) { b.vx *= 15 / sp; b.vy *= 15 / sp; }
+            b.x += b.vx; b.y += b.vy; b.rot += b.vx * 0.04;
+            if (b.x < VB_BR) { b.x = VB_BR; b.vx = Math.abs(b.vx) * 0.95; w.ev.push('wall'); }
+            if (b.x > VB_W - VB_BR) { b.x = VB_W - VB_BR; b.vx = -Math.abs(b.vx) * 0.95; w.ev.push('wall'); }
+            if (b.y < VB_BR) { b.y = VB_BR; b.vy = Math.abs(b.vy) * 0.8; }
+            // 네트 윗부분(둥근 끝)
+            const cdx = b.x - VB_NET_X, cdy = b.y - VB_NET_TOP, cd = Math.hypot(cdx, cdy);
+            if (cd < VB_BR + VB_NET_HW && b.y <= VB_NET_TOP + 2) {
+                const nx = cdx / (cd || 0.0001), ny = cdy / (cd || 0.0001);
+                const dot = b.vx * nx + b.vy * ny;
+                if (dot < 0) { b.vx -= 1.8 * dot * nx; b.vy -= 1.8 * dot * ny; w.ev.push('net'); }
+                b.x = VB_NET_X + nx * (VB_BR + VB_NET_HW + 0.5); b.y = VB_NET_TOP + ny * (VB_BR + VB_NET_HW + 0.5);
+            } else if (b.y > VB_NET_TOP && Math.abs(b.x - VB_NET_X) < VB_BR + VB_NET_HW) { // 네트 옆면
+                const left = b.x < VB_NET_X;
+                b.x = VB_NET_X + (left ? -1 : 1) * (VB_BR + VB_NET_HW + 0.5);
+                b.vx = (left ? -1 : 1) * Math.max(2, Math.abs(b.vx) * 0.7);
+                w.ev.push('net');
+            }
+            // 바닥
+            if (b.y >= VB_GROUND - VB_BR) {
+                b.y = VB_GROUND - VB_BR;
+                if (scoring) {
+                    const landedLeft = b.x < VB_NET_X;
+                    const scorer = landedLeft ? 2 : 1;
+                    w.score[scorer - 1]++;
+                    w.serve = scorer;
+                    w.phase = 'point'; w.timer = VB_POINT_TICKS;
+                    w.lastScorer = scorer;
+                    w.ev.push('score');
+                    if (w.score[scorer - 1] >= VB_WIN) { w.winner = scorer; }
+                    b.vy = -Math.abs(b.vy) * 0.45; b.vx *= 0.6;
+                } else { b.vy = -Math.abs(b.vy) * 0.45; b.vx *= 0.8; if (Math.abs(b.vy) < 1) b.vy = 0; }
+            }
+        }
+
+        // inputs: [{l,r,j,s}, {l,r,j,s}]
+        function vbStep(w, inputs) {
+            w.tick++;
+            w.ev = [];
+            if (w.phase === 'wait' || w.phase === 'over') return;
+            const frozen = w.phase === 'point';
+            vbMovePlayer(w.p[0], 1, inputs[0] || {}, frozen);
+            vbMovePlayer(w.p[1], 2, inputs[1] || {}, frozen);
+            if (w.phase === 'ready') {
+                w.ball.vx = 0; w.ball.vy = 0;
+                if (--w.timer <= 0) w.phase = 'play';
+                return;
+            }
+            if (w.phase === 'play') { vbBallPlayer(w, w.p[0], 1); vbBallPlayer(w, w.p[1], 2); vbBallStep(w, true); }
+            else if (w.phase === 'point') {
+                vbBallStep(w, false);
+                if (--w.timer <= 0) { if (w.winner) w.phase = 'over'; else vbResetRally(w); }
+            }
+        }
+
+        // ---- 말랑 배구 온라인 (호스트가 시뮬레이션 · 게스트는 입력 전송 + 보간 렌더링) ----
+        const VB_NAMES = { 1: '새싹이', 2: '말랑이' };
+        let vb = null;
+
+        function vbShowState(name) {
+            document.querySelectorAll('#restzone-panel-vball > [id^="vb-state-"]').forEach(el => el.classList.add('hidden'));
+            const el = document.getElementById('vb-state-' + name);
+            if (el) el.classList.remove('hidden');
+        }
+        function ensureVbInit() {
+            if (!currentUser) { vbShowState('loggedout'); return; }
+            if (vb && (vb.phase === 'game' || vb.phase === 'ended')) { vbShowState('game'); vbResizeCanvas(); return; }
+            if (vb && vb.phase === 'waiting') { vbShowState('waiting'); return; }
+            vbShowState('lobby');
+            const err = document.getElementById('vb-lobby-error');
+            if (err) err.classList.add('hidden');
+        }
+        function vbLobbyError(msg) {
+            const err = document.getElementById('vb-lobby-error');
+            if (!err) return;
+            err.innerText = msg; err.classList.remove('hidden');
+        }
+        function vbCreateRoom() {
+            if (!currentUser) return;
+            teardownVb();
+            const code = cnrGenerateRoomCode();
+            vb = { phase: 'waiting', role: 'host', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('vb-room-code-display').innerText = code;
+            vbShowState('waiting');
+            vbOpenChannel();
+        }
+        function vbJoinRoom() {
+            if (!currentUser) return;
+            const code = (document.getElementById('vb-join-code-input').value || '').trim().toUpperCase();
+            if (code.length < 4) { vbLobbyError('방 코드를 정확히 입력해주세요.'); return; }
+            teardownVb();
+            vb = { phase: 'waiting', role: 'guest', roomCode: code, channel: null, myName: currentUser.name || '나', oppName: null, oppId: null };
+            document.getElementById('vb-room-code-display').innerText = code;
+            vbShowState('waiting');
+            vbOpenChannel();
+            vb.joinTimer = setTimeout(() => {
+                if (vb && vb.phase === 'waiting' && vb.role === 'guest') {
+                    teardownVb(); vbShowState('lobby');
+                    vbLobbyError('방을 찾지 못했어요. 코드를 다시 확인해주세요.');
+                }
+            }, 9000);
+        }
+        function vbOpenChannel() {
+            vb.channel = rzRoomChannel('vball', vb.roomCode, {
+                onHello: vbHandleHello, onWelcome: vbHandleWelcome, onMsg: vbHandleMsg,
+                onSubscribed: () => { if (vb && vb.role === 'guest') rzSend(vb.channel, 'hello', { name: vb.myName, id: currentUser.id }); },
+            });
+        }
+        function vbCopyRoomCode() { if (vb) rzCopyRoomCode(vb.roomCode); }
+
+        function vbHandleHello(p) {
+            if (!vb || vb.role !== 'host' || vb.phase !== 'waiting') return;
+            vb.oppName = (p && p.name) || '상대'; vb.oppId = (p && p.id) || null;
+            const serve = Math.random() < 0.5 ? 1 : 2;
+            rzSend(vb.channel, 'welcome', { name: vb.myName, id: currentUser.id, serve, startIn: RZ_INTRO_LEAD_MS });
+            vbBeginMatch(serve, Date.now() + RZ_INTRO_LEAD_MS);
+        }
+        function vbHandleWelcome(p) {
+            if (!vb || vb.role !== 'guest' || vb.phase !== 'waiting' || !p) return;
+            vb.oppName = p.name || '상대'; vb.oppId = p.id || null;
+            vbBeginMatch(p.serve === 2 ? 2 : 1, Date.now() + (p.startIn || RZ_INTRO_LEAD_MS));
+        }
+
+        function vbBeginMatch(serve, startAt) {
+            if (!vb) return;
+            clearTimeout(vb.joinTimer);
+            vb.phase = 'game';
+            vb.mySide = vb.role === 'host' ? 1 : 2;
+            vb.startAt = startAt;
+            vb.names = vb.role === 'host' ? [vb.myName, vb.oppName] : [vb.oppName, vb.myName];
+            vb.w = vbNewWorld(serve);                 // 호스트: 진짜 월드 / 게스트: 화면용(스냅샷으로 덮어씀)
+            vb.view = vb.w;
+            vb.keys = { l: false, r: false, j: false, s: false }; vb.pad = { l: false, r: false, j: false, s: false };
+            vb.remoteIn = { l: false, r: false, j: false, s: false };
+            vb.me = vbMakePlayer(2);                  // 게스트의 예측용 내 캐릭터
+            vb.snaps = []; vb.evBuf = []; vb.acc = 0; vb.lastT = 0; vb.lastSend = 0; vb.lastInSig = '';
+            vb.lastSeen = Date.now(); vb.finished = false; vb.flash = null;
+            ['vb-end', 'vb-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            vbShowState('game');
+            vbEnsureCanvas();
+            vbAttachInput();
+
+            const icon = (side) => `<span class="vb-intro-icon ${side === 1 ? 'a' : 'b'}"></span>`;
+            const info = (side, name, me) => ({
+                name: name + (me ? ' (나)' : ''), badge: VB_NAMES[side] + (side === 1 ? ' · 왼쪽' : ' · 오른쪽'),
+                sub: me ? '공을 상대 코트에 떨어뜨리세요!' : '', icon: icon(side), color: side === 1 ? '#8fd16a' : '#ff9a8a',
+            });
+            const my = vb.mySide, opp = my === 1 ? 2 : 1;
+            vb.intro = rzIntroPlay(document.getElementById('vb-canvas-wrap'), {
+                startAt, title: '말랑 배구 · 10점 선취',
+                me: info(my, vb.myName, true), opp: info(opp, vb.oppName, false),
+                notes: ['A/D 또는 ←/→ 이동 · W/↑/Space 점프 · S/Shift 공중 스파이크', '공을 상대 코트 바닥에 떨어뜨리면 1점'],
+                onGo: () => { vbUpdateStatus(); },
+            });
+            vb.hbTimer = setInterval(() => rzSend(vb.channel, 'msg', { t: 'hb' }), 4000);
+            vb.discTimer = setInterval(() => {
+                if (!vb || vb.phase !== 'game') return;
+                document.getElementById('vb-disc').classList.toggle('hidden', !(Date.now() - vb.lastSeen > 30000));
+            }, 1000);
+            vb.raf = requestAnimationFrame(vbFrame);
+        }
+
+        // ---- 입력 ----
+        const VB_KEYMAP = { KeyA: 'l', ArrowLeft: 'l', KeyD: 'r', ArrowRight: 'r', KeyW: 'j', ArrowUp: 'j', Space: 'j', KeyS: 's', ArrowDown: 's', ShiftLeft: 's', ShiftRight: 's', Enter: 's' };
+        function vbAttachInput() {
+            vb.onKeyDown = (e) => {
+                const k = VB_KEYMAP[e.code];
+                if (!k || !vb || vb.phase !== 'game') return;
+                if (document.getElementById('restzone-modal').classList.contains('hidden')) return;
+                e.preventDefault(); vb.keys[k] = true;
+            };
+            vb.onKeyUp = (e) => { const k = VB_KEYMAP[e.code]; if (k && vb) { vb.keys[k] = false; } };
+            vb.onBlur = () => { if (vb) vb.keys = { l: false, r: false, j: false, s: false }; };
+            window.addEventListener('keydown', vb.onKeyDown); window.addEventListener('keyup', vb.onKeyUp); window.addEventListener('blur', vb.onBlur);
+        }
+        function vbDetachInput() {
+            if (!vb) return;
+            window.removeEventListener('keydown', vb.onKeyDown); window.removeEventListener('keyup', vb.onKeyUp); window.removeEventListener('blur', vb.onBlur);
+        }
+        function vbPad(k, on, el) { if (!vb) return; vb.pad[k] = on; if (el) el.classList.toggle('on', on); }
+        function vbMyInput() {
+            if (!vb) return {};
+            const k = vb.keys, p = vb.pad;
+            return { l: k.l || p.l, r: k.r || p.r, j: k.j || p.j, s: k.s || p.s };
+        }
+
+        // ---- 메인 루프 ----
+        const VB_DT = 1000 / 60;
+        function vbFrame(t) {
+            if (!vb || vb.phase === 'waiting') return;
+            vb.raf = requestAnimationFrame(vbFrame);
+            if (!vb.lastT) vb.lastT = t;
+            vb.acc += Math.min(100, t - vb.lastT); vb.lastT = t;
+            let steps = 0;
+            while (vb.acc >= VB_DT && steps < 6) { vb.acc -= VB_DT; steps++; vb.role === 'host' ? vbHostTick() : vbGuestTick(); }
+            if (steps === 6) vb.acc = 0;
+            if (vb.role === 'guest') vbSendInput(false);
+            vbDraw();
+        }
+
+        function vbHostTick() {
+            const w = vb.w;
+            if (vb.phase !== 'game') return;
+            if (w.phase === 'wait' && Date.now() >= vb.startAt) vbStart(w);
+            const prevPhase = w.phase;
+            vbStep(w, [vbMyInput(), vb.remoteIn]);
+            if (w.ev.length) { vbPlayEvents(w.ev, w.lastScorer); vb.evBuf.push(...w.ev); }
+            if (w.tick % 3 === 0 || w.phase !== prevPhase) vbBroadcast();
+            if (w.phase === 'over' && !vb.finished) { vbBroadcast(); vbFinish(w.winner); }
+            if (w.phase !== prevPhase) vbUpdateStatus();
+        }
+        function vbBroadcast() {
+            const w = vb.w, r = (n) => Math.round(n * 10) / 10;
+            rzSend(vb.channel, 'msg', {
+                t: 's', a: [r(w.p[0].x), r(w.p[0].y), r(w.p[1].x), r(w.p[1].y), r(w.ball.x), r(w.ball.y), r(w.ball.rot)],
+                sc: w.score, ph: w.phase, tm: w.timer, sv: w.serve, sp: [w.p[0].spike, w.p[1].spike], dr: [w.p[0].dir, w.p[1].dir],
+                ai: [w.p[0].air ? 1 : 0, w.p[1].air ? 1 : 0], w: w.winner, ls: w.lastScorer || 0, ev: vb.evBuf,
+            });
+            vb.evBuf = [];
+        }
+
+        function vbGuestTick() {
+            const v = vb.view;
+            if (v.phase === 'ready' || v.phase === 'play') vbMovePlayer(vb.me, 2, vbMyInput(), false); // 내 캐릭터는 바로 반응하도록 예측
+        }
+        function vbSendInput(force) {
+            const i = vbMyInput(), sig = (i.l ? 1 : 0) + '' + (i.r ? 1 : 0) + (i.j ? 1 : 0) + (i.s ? 1 : 0), now = performance.now();
+            if (force || sig !== vb.lastInSig || now - vb.lastSend > 100) {
+                vb.lastInSig = sig; vb.lastSend = now;
+                rzSend(vb.channel, 'msg', { t: 'in', l: !!i.l, r: !!i.r, j: !!i.j, s: !!i.s });
+            }
+        }
+
+        function vbOnSnapshot(p) {
+            if (vb.role !== 'guest' || vb.phase !== 'game' || !Array.isArray(p.a)) return;
+            vb.snaps.push({ at: performance.now(), p });
+            if (vb.snaps.length > 8) vb.snaps.shift();
+            const prev = vb.view.phase;
+            const v = vb.view;
+            v.score = p.sc; v.phase = p.ph; v.timer = p.tm; v.serve = p.sv; v.winner = p.w; v.lastScorer = p.ls;
+            v.p[0].spike = p.sp[0]; v.p[1].spike = p.sp[1]; v.p[0].dir = p.dr[0]; v.p[1].dir = p.dr[1]; v.p[0].air = !!p.ai[0]; v.p[1].air = !!p.ai[1];
+            // 내 캐릭터 보정: 호스트 위치로 부드럽게 맞추고, 차이가 크거나 새 랠리면 바로 맞춘다
+            const hx = p.a[2], hy = p.a[3], ex = hx - vb.me.x, ey = hy - vb.me.y;
+            if (Math.abs(ex) > 30 || Math.abs(ey) > 50 || (prev !== p.ph && p.ph === 'ready')) { vb.me.x = hx; vb.me.y = hy; vb.me.vy = 0; }
+            else { vb.me.x += ex * 0.25; vb.me.y += ey * 0.25; }
+            if (p.ev && p.ev.length) vbPlayEvents(p.ev, p.ls);
+            if (prev !== p.ph) vbUpdateStatus();
+            if (p.ph === 'over' && !vb.finished) vbFinish(p.w);
+        }
+        // 게스트 화면용: 100ms 전 상태를 두 스냅샷 사이에서 보간
+        function vbInterpView() {
+            const v = vb.view, S = vb.snaps;
+            if (!S.length) return v;
+            const target = performance.now() - 100;
+            let a = S[0], b = S[S.length - 1];
+            for (let i = S.length - 1; i > 0; i--) { if (S[i - 1].at <= target) { a = S[i - 1]; b = S[i]; break; } }
+            const k = b.at === a.at ? 1 : Math.max(0, Math.min(1, (target - a.at) / (b.at - a.at)));
+            const L = (i) => a.p.a[i] + (b.p.a[i] - a.p.a[i]) * k;
+            v.p[0].x = L(0); v.p[0].y = L(1);
+            v.ball.x = L(4); v.ball.y = L(5); v.ball.rot = L(6);
+            v.p[1].x = vb.me.x; v.p[1].y = vb.me.y; v.p[1].air = vb.me.air;
+            return v;
+        }
+
+        function vbHandleMsg(p) {
+            if (!vb || !p) return;
+            vb.lastSeen = Date.now();
+            switch (p.t) {
+                case 'in': if (vb.role === 'host') vb.remoteIn = { l: !!p.l, r: !!p.r, j: !!p.j, s: !!p.s }; break;
+                case 's': vbOnSnapshot(p); break;
+                case 'leave': if (vb.phase === 'game') vbFinish(vb.mySide); break;
+            }
+        }
+        function vbPlayEvents(evs, scorer) {
+            evs.forEach(e => {
+                if (e === 'hit') rzTone(300, 0.08, 'triangle', 0.16, 200);
+                else if (e === 'spike') { rzTone(130, 0.16, 'sawtooth', 0.16, 70); rzTone(620, 0.08, 'square', 0.06, 900); }
+                else if (e === 'net') rzTone(520, 0.05, 'square', 0.05);
+                else if (e === 'wall') rzTone(200, 0.05, 'sine', 0.08);
+                else if (e === 'score') { if (scorer === vb.mySide) { rzTone(660, 0.12, 'triangle', 0.16); setTimeout(() => rzTone(990, 0.2, 'triangle', 0.16), 90); } else rzTone(220, 0.3, 'sine', 0.14, 140); }
+            });
+        }
+        function vbUpdateStatus() {
+            const el = document.getElementById('vb-status');
+            if (!el || !vb) return;
+            const v = vb.view;
+            let t = '';
+            if (vb.phase === 'ended') t = '경기가 끝났어요';
+            else if (Date.now() < vb.startAt) t = '곧 시작합니다';
+            else if (v.phase === 'ready') t = v.serve === vb.mySide ? '내 서브예요!' : '상대 서브예요';
+            else if (v.phase === 'point') t = v.lastScorer === vb.mySide ? '득점했어요! 🎉' : '실점했어요';
+            else t = '점프해서 공중에서 S / Shift 로 스파이크!';
+            el.innerText = t;
+        }
+
+        // ---- 종료 / 나가기 ----
+        function vbFinish(winnerSide) {
+            if (!vb || vb.finished) return;
+            vb.finished = true; vb.phase = 'ended';
+            cancelAnimationFrame(vb.raf);
+            if (vb.intro) { vb.intro.cancel(); vb.intro = null; }
+            clearInterval(vb.hbTimer); clearInterval(vb.discTimer); vbDetachInput();
+            document.getElementById('vb-disc').classList.add('hidden');
+            const won = winnerSide === vb.mySide;
+            vbDraw();
+            document.getElementById('vb-end-title').innerText = won ? '승리했어요! 🏆' : '패배했어요';
+            const sc = vb.view.score || [0, 0];
+            document.getElementById('vb-end-detail').innerText = `${sc[0]} : ${sc[1]}`;
+            document.getElementById('vb-end').classList.remove('hidden');
+            vbUpdateStatus();
+            if (won) rzSoundWin(); else rzSoundLose();
+            vbRecordResult(won);
+            if (vb.role === 'host') { const o = vb; [250, 700].forEach(ms => setTimeout(() => { if (vb === o) vbBroadcast(); }, ms)); } // 마지막 스냅샷이 유실돼도 상대가 종료를 알 수 있게
+        }
+        async function vbRecordResult(won) {
+            if (!currentUser) return;
+            try { await supabaseClient.from('vb_scores').insert({ user_id: currentUser.id, name: currentUser.name || '익명', won }); }
+            catch (e) { /* vb_scores 테이블이 아직 없을 수 있어요 — 조용히 무시 */ }
+        }
+        function vbHideEnd() { document.getElementById('vb-end').classList.add('hidden'); }
+        function vbClaimDisconnectWin() { if (vb && vb.phase === 'game') vbFinish(vb.mySide); }
+        function vbLeaveRoom() {
+            if (vb && vb.phase === 'game' && !confirm('나가면 패배로 기록돼요. 정말 나갈까요?')) return;
+            teardownVb(); ensureVbInit();
+        }
+        function vbBackToLobby() { teardownVb(); ensureVbInit(); }
+        function teardownVb() {
+            if (!vb) return;
+            const o = vb; vb = null;
+            if (o.phase === 'game') { rzSend(o.channel, 'msg', { t: 'leave' }); vbRecordResultFor(o, false); }
+            cancelAnimationFrame(o.raf);
+            clearTimeout(o.joinTimer); clearInterval(o.hbTimer); clearInterval(o.discTimer);
+            if (o.intro) o.intro.cancel();
+            if (o.onKeyDown) { window.removeEventListener('keydown', o.onKeyDown); window.removeEventListener('keyup', o.onKeyUp); window.removeEventListener('blur', o.onBlur); }
+            if (o.resizeObserver) { try { o.resizeObserver.disconnect(); } catch (e) {} }
+            rzCloseChannelSoon(o.channel);
+        }
+        async function vbRecordResultFor(o, won) {
+            if (!currentUser) return;
+            try { await supabaseClient.from('vb_scores').insert({ user_id: currentUser.id, name: currentUser.name || '익명', won }); } catch (e) {}
+        }
+        async function vbShowLeaderboard() {
+            vbShowState('leaderboard');
+            const list = document.getElementById('vb-leaderboard-list');
+            list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">불러오는 중...</p>';
+            try {
+                const { data, error } = await supabaseClient.from('vb_leaderboard').select('name, wins, games').limit(300);
+                if (error) throw error;
+                rzRenderWinrateBoard(list, data || [], false);
+            } catch (e) {
+                list.innerHTML = '<p class="text-center text-sm text-slate-400 py-6">순위를 불러올 수 없어요. (vb_scores 테이블/뷰가 준비되지 않았을 수 있어요)</p>';
+            }
+        }
+
+        // ---- 캔버스 / 그리기 ----
+        function vbEnsureCanvas() {
+            const canvas = document.getElementById('vb-canvas');
+            vb.canvas = canvas; vb.ctx = canvas.getContext('2d');
+            vbResizeCanvas();
+            if (window.ResizeObserver) { vb.resizeObserver = new ResizeObserver(() => vbResizeCanvas()); vb.resizeObserver.observe(canvas.parentElement); }
+        }
+        function vbResizeCanvas() {
+            if (!vb || !vb.canvas) return;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2), w = vb.canvas.clientWidth;
+            if (!w) return;
+            vb.canvas.width = Math.round(w * dpr); vb.canvas.height = Math.round(w * dpr * VB_H / VB_W);
+        }
+
+        function vbDrawChar(ctx, p, side, ball) {
+            const col = side === 1 ? { body: '#8fd16a', dark: '#5fa83e', cheek: '#ffb3a7' } : { body: '#ff9a8a', dark: '#e0705f', cheek: '#ffd1c9' };
+            const squash = p.air ? 1.06 : 1, sy = squash, sx = 1 / squash;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.scale(sx, sy);
+            // 그림자는 밖에서. 몸통
+            ctx.fillStyle = col.body; ctx.beginPath(); ctx.arc(0, 0, VB_PR, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = col.dark; ctx.lineWidth = 3; ctx.stroke();
+            if (side === 1) { // 새싹이: 머리 위 새싹 잎
+                ctx.fillStyle = '#4fae3a';
+                ctx.beginPath(); ctx.ellipse(-7, -VB_PR - 5, 11, 6, -0.6, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(8, -VB_PR - 7, 11, 6, 0.6, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#3d8f2d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, -VB_PR + 2); ctx.lineTo(0, -VB_PR - 6); ctx.stroke();
+            } else { // 말랑이: 동그란 귀 두 개
+                ctx.fillStyle = col.body; ctx.strokeStyle = col.dark; ctx.lineWidth = 3;
+                [-22, 22].forEach(ex => { ctx.beginPath(); ctx.arc(ex, -VB_PR + 4, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
+                ctx.fillStyle = col.cheek; [-22, 22].forEach(ex => { ctx.beginPath(); ctx.arc(ex, -VB_PR + 5, 5, 0, Math.PI * 2); ctx.fill(); });
+            }
+            // 얼굴: 공을 바라본다
+            const look = Math.max(-1, Math.min(1, (ball.x - p.x) / 120)), lookY = Math.max(-1, Math.min(1, (ball.y - p.y) / 120));
+            const angry = p.spike > 0;
+            [-12, 12].forEach(ex => {
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ex, -5, 8.5, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(ex + look * 3.2, -5 + lookY * 3, 4.4, 0, Math.PI * 2); ctx.fill();
+            });
+            if (angry) { ctx.strokeStyle = '#222'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-20, -17); ctx.lineTo(-6, -12); ctx.moveTo(20, -17); ctx.lineTo(6, -12); ctx.stroke(); }
+            ctx.fillStyle = col.cheek; [-21, 21].forEach(ex => { ctx.beginPath(); ctx.ellipse(ex, 8, 6, 4, 0, 0, Math.PI * 2); ctx.fill(); });
+            ctx.strokeStyle = '#7a2e2e'; ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.beginPath();
+            if (angry) { ctx.arc(0, 14, 7, Math.PI, 0); } else if (p.air) { ctx.arc(0, 12, 6, 0, Math.PI * 2); } else { ctx.arc(0, 8, 8, 0.15 * Math.PI, 0.85 * Math.PI); }
+            ctx.stroke(); ctx.lineCap = 'butt';
+            // 팔 (스파이크 때 번쩍 든다)
+            ctx.fillStyle = col.body; ctx.strokeStyle = col.dark; ctx.lineWidth = 3;
+            const dirS = side === 1 ? 1 : -1;
+            if (angry) { ctx.beginPath(); ctx.arc(dirS * 30, -26, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+            ctx.restore();
+        }
+
+        function vbDraw() {
+            if (!vb || !vb.ctx || !vb.canvas.width) return;
+            const ctx = vb.ctx, v = vb.role === 'guest' ? vbInterpView() : vb.w;
+            const k = vb.canvas.width / VB_W;
+            ctx.setTransform(k, 0, 0, k, 0, 0);
+            // 하늘
+            const sky = ctx.createLinearGradient(0, 0, 0, VB_GROUND);
+            sky.addColorStop(0, '#9fd8ff'); sky.addColorStop(1, '#e6f6ff');
+            ctx.fillStyle = sky; ctx.fillRect(0, 0, VB_W, VB_H);
+            // 구름
+            const cl = (x, y, s) => { ctx.fillStyle = 'rgba(255,255,255,.85)'; [[0, 0, 22], [22, 6, 17], [-22, 8, 16], [10, -10, 16]].forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(x + dx * s, y + dy * s, r * s, 0, Math.PI * 2); ctx.fill(); }); };
+            const drift = performance.now() / 25;
+            cl(90 + drift % 40, 70, 1); cl(430 - drift % 30, 50, 1.2); cl(560, 110, 0.8);
+            // 땅
+            ctx.fillStyle = '#f3dba0'; ctx.fillRect(0, VB_GROUND, VB_W, VB_H - VB_GROUND);
+            ctx.fillStyle = '#e4c57a'; ctx.fillRect(0, VB_GROUND, VB_W, 6);
+            ctx.strokeStyle = 'rgba(120,90,40,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, VB_GROUND + 24); ctx.lineTo(VB_W, VB_GROUND + 24); ctx.stroke();
+            // 그림자
+            const shadow = (x, r) => { ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(x, VB_GROUND + 3, r, r * 0.22, 0, 0, Math.PI * 2); ctx.fill(); };
+            v.p.forEach(p => shadow(p.x, VB_PR * (0.7 + 0.3 * Math.max(0, 1 - (VB_GROUND - VB_PR - p.y) / 160))));
+            shadow(v.ball.x, VB_BR * (0.6 + 0.6 * Math.max(0, 1 - (VB_GROUND - v.ball.y) / 330)));
+            // 네트
+            ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fillRect(VB_NET_X - 1, VB_NET_TOP, 2, VB_GROUND - VB_NET_TOP);
+            ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 1;
+            for (let y = VB_NET_TOP + 8; y < VB_GROUND; y += 12) { ctx.beginPath(); ctx.moveTo(VB_NET_X - 7, y); ctx.lineTo(VB_NET_X + 7, y); ctx.stroke(); }
+            ctx.fillStyle = '#fff'; ctx.strokeStyle = '#c9c9c9'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(VB_NET_X, VB_NET_TOP, VB_NET_HW + 1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#c9c9c9'; ctx.fillRect(VB_NET_X - 4, VB_NET_TOP + 4, 8, VB_GROUND - VB_NET_TOP - 4); ctx.fillStyle = '#e8e8e8'; ctx.fillRect(VB_NET_X - 3, VB_NET_TOP + 4, 6, VB_GROUND - VB_NET_TOP - 4);
+            // 캐릭터
+            vbDrawChar(ctx, v.p[0], 1, v.ball); vbDrawChar(ctx, v.p[1], 2, v.ball);
+            // 공
+            ctx.save(); ctx.translate(v.ball.x, v.ball.y); ctx.rotate(v.ball.rot || 0);
+            ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, VB_BR, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#e9b53a'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(0, 0, VB_BR - 1, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-VB_BR, 0); ctx.quadraticCurveTo(0, -6, VB_BR, 0); ctx.moveTo(0, -VB_BR); ctx.quadraticCurveTo(7, 0, 0, VB_BR); ctx.stroke();
+            ctx.strokeStyle = '#3b82c4'; ctx.beginPath(); ctx.arc(0, 0, VB_BR, 0.2, 1.1); ctx.stroke();
+            ctx.restore();
+            // 점수판
+            const sc = v.score || [0, 0];
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.font = '800 38px sans-serif'; ctx.fillStyle = 'rgba(30,50,70,.85)';
+            ctx.fillText(`${sc[0]}  :  ${sc[1]}`, VB_W / 2, 34);
+            ctx.font = '700 13px sans-serif'; ctx.fillStyle = 'rgba(30,50,70,.7)';
+            ctx.textAlign = 'left'; ctx.fillText(`${vb.names[0] || ''}`, 12, 16);
+            ctx.textAlign = 'right'; ctx.fillText(`${vb.names[1] || ''}`, VB_W - 12, 16);
+            ctx.textAlign = 'center'; ctx.font = '700 11px sans-serif'; ctx.fillStyle = 'rgba(30,50,70,.5)';
+            ctx.fillText(`${VB_WIN}점 선취`, VB_W / 2, 62);
+            // 중앙 안내
+            if (v.phase === 'ready' && Date.now() >= vb.startAt) {
+                ctx.font = '800 26px sans-serif'; ctx.fillStyle = 'rgba(30,50,70,.8)';
+                ctx.fillText(v.serve === vb.mySide ? '내 서브!' : '상대 서브', VB_W / 2, 140);
+            } else if (v.phase === 'point') {
+                ctx.font = '800 28px sans-serif'; ctx.fillStyle = v.lastScorer === vb.mySide ? '#16a34a' : '#e11d48';
+                ctx.fillText(v.lastScorer === vb.mySide ? '득점!' : '실점…', VB_W / 2, 140);
+            }
+            // 내 캐릭터 표시 화살표
+            const me = v.p[vb.mySide - 1];
+            ctx.fillStyle = 'rgba(30,50,70,.55)'; ctx.beginPath(); ctx.moveTo(me.x, me.y - VB_PR - 34); ctx.lineTo(me.x - 6, me.y - VB_PR - 44); ctx.lineTo(me.x + 6, me.y - VB_PR - 44); ctx.closePath();
+            if (Date.now() < vb.startAt + 3000) ctx.fill();
+        }
+
         // ---- 오목 온라인 대국 (체스와 같은 방 코드 방식 · 호스트가 흑/백을 정하고 양쪽이 같은 엔진으로 수를 검증) ----
         const OMOK_REASON_TEXT = {
             five: '5목 완성!', resign: '기권', timeout: '시간 초과', full: '판이 가득 차서 무승부', disconnect: '상대의 연결이 끊겨 승리 처리했어요',
@@ -5360,6 +6004,7 @@
             omok.clocks = { 1: OMOK_CLOCK_MS, 2: OMOK_CLOCK_MS };
             omok.turnStartAt = startAt;
             omok.hover = -1; omok.pending = -1; omok.touchStart = null; omok.forbKey = -1; omok.forb = [];
+            omok.iDismissed = false; omok.oppDismissed = false; // 경질: 내가 상대를 멈췄는지 / 상대(관리자)가 나를 멈췄는지
             omok.lastSeen = Date.now();
             omok.anim = null;
             ['omok-end', 'omok-disc'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -5370,7 +6015,7 @@
             const stoneIcon = (c) => `<span class="go-intro-stone ${c === 1 ? 'b' : 'w'}"></span>`;
             const sideInfo = (name, c, admin) => ({
                 name, badge: (c === 1 ? '흑' : '백') + (c === 1 ? ' · 선수' : ' · 후수'),
-                sub: admin ? '👑 관리자 · 시간·차례 무시' : (c === 1 ? '3·3 / 4·4 / 장목 금수' : '금수 없음'),
+                sub: admin ? '👑 관리자 · 상대 경질 · 시간 무제한' : (c === 1 ? '3·3 / 4·4 / 장목 금수' : '금수 없음'),
                 icon: stoneIcon(c), color: c === 1 ? '#4b4b57' : '#f4efe0',
             });
             omok.intro = rzIntroPlay(document.getElementById('omok-board-wrap'), {
@@ -5379,7 +6024,7 @@
                 me: Object.assign(sideInfo(omok.myName, myColor, omok.myAdmin), { name: omok.myName + ' (나)' }),
                 opp: sideInfo(omok.oppName, omok.oppColor, omok.oppAdmin),
                 notes: omok.unrated
-                    ? ['👑 관리자 대국 · 관리자는 시간과 차례에 상관없이 돌을 놓을 수 있어요', '전적(승률)에는 기록되지 않아요']
+                    ? ['👑 관리자 대국 · [상대 경질] 버튼으로 상대를 멈추고 연달아 둘 수 있어요', '관리자는 시간 제한이 없고, 전적(승률)에는 기록되지 않아요']
                     : ['정확히 5목이면 승리 (백은 6목 이상도 승리) · 각자 10분', '흑 금수: 3·3 · 4·4 · 장목 / 흑 첫 수는 천원에 자동으로 놓여요'],
                 onGo: () => { if (omok) omokRenderAll(); },
             });
@@ -5392,8 +6037,30 @@
         function omokRemaining(color) {
             if (omokIsAdminColor(color)) return Infinity; // 관리자는 시간 제한이 없다
             let rem = omok.clocks[color];
-            if (omok.phase === 'game' && Date.now() >= omok.startAt && omok.st.turn === color) rem -= (Date.now() - omok.turnStartAt);
+            if (omok.phase === 'game' && Date.now() >= omok.startAt && omok.st.turn === color && !omokPaused()) rem -= (Date.now() - omok.turnStartAt);
             return Math.max(0, rem);
+        }
+        function omokPaused() { return !!(omok.iDismissed || omok.oppDismissed); } // 경질 중에는 시계가 멈춘다
+        // 시계 상태가 바뀌는 순간(경질/복귀)에 지금까지 흐른 시간을 정산한다
+        function omokSettleClock() {
+            const now = Date.now();
+            if (omok.phase === 'game' && now >= omok.startAt && !omokPaused() && !omokIsAdminColor(omok.st.turn)) {
+                omok.clocks[omok.st.turn] = Math.max(0, omok.clocks[omok.st.turn] - Math.max(0, now - omok.turnStartAt));
+            }
+            omok.turnStartAt = now;
+        }
+        function omokSetDismiss(mine, on) {
+            omokSettleClock();
+            if (mine) omok.iDismissed = on; else omok.oppDismissed = on;
+            omok.turnStartAt = Date.now(); omok.pending = -1; omok.hover = -1;
+            omokRenderAll();
+        }
+        function omokToggleDismiss() {
+            if (!omok || !omok.myAdmin || omok.phase !== 'game' || Date.now() < omok.startAt) return;
+            const on = !omok.iDismissed;
+            omokSetDismiss(true, on);
+            rzSend(omok.channel, 'msg', { t: 'dismiss', on });
+            showToast(on ? '👑 상대를 경질했어요. 이제 연달아 둘 수 있어요.' : '상대를 복귀시켰어요.', 'info');
         }
         function omokFmtClock(ms) {
             if (!isFinite(ms)) return '∞';
@@ -5442,7 +6109,8 @@
         }
         function omokCanAct() {
             if (!omok || omok.phase !== 'game' || Date.now() < omok.startAt) return false;
-            return omok.st.turn === omok.myColor || omok.myAdmin; // 관리자는 차례와 상관없이
+            if (omok.oppDismissed) return false;                         // 관리자에게 경질당했으면 둘 수 없다
+            return omok.st.turn === omok.myColor || (omok.myAdmin && omok.iDismissed); // 관리자는 상대를 경질한 동안만 연달아 둘 수 있다
         }
         function omokOnPointerMove(e) {
             if (!omok || e.pointerType !== 'mouse' || !omokCanAct()) return;
@@ -5587,12 +6255,21 @@
                 else if (st.count === 2 && omok.myColor === 1) text = '내 차례예요 · 중앙 5×5 바깥에 두세요';
                 else if (omok.myColor === 1) text = '내 차례예요 · 빨간 ×는 둘 수 없는 금수 자리';
                 if (omok.pending >= 0) text = '같은 자리를 한 번 더 누르면 둡니다';
-            } else text = omok.myAdmin ? '👑 상대 차례지만 관리자는 지금도 둘 수 있어요' : '상대가 생각하는 중...';
+            } else text = '상대가 생각하는 중...';
+            if (omok.oppDismissed) text = '👑 관리자가 경질했어요 · 복귀할 때까지 기다려주세요';
+            else if (omok.iDismissed) text = '👑 상대를 경질했어요 · 마음껏 두세요 (다시 누르면 복귀)';
             el.innerText = text;
+            el.classList.toggle('danger', !!omok.oppDismissed);
         }
         function omokRenderActions() {
             const live = omok && omok.phase === 'game';
             document.getElementById('omok-resign-btn').disabled = !live;
+            const db = document.getElementById('omok-dismiss-btn');
+            if (db) {
+                db.classList.toggle('go-hide', !(omok && omok.myAdmin));
+                db.disabled = !live || (omok && Date.now() < omok.startAt);
+                db.innerHTML = omok && omok.iDismissed ? '<i class="fa-solid fa-user-check mr-1.5"></i>상대 복귀' : '<i class="fa-solid fa-user-slash mr-1.5"></i>상대 경질';
+            }
         }
         function omokRenderAll() { omokRenderBars(); omokRenderInfo(); omokRenderStatus(); omokRenderActions(); omokDraw(); }
 
@@ -5602,7 +6279,7 @@
             document.getElementById('omok-disc').classList.toggle('hidden', !(Date.now() - omok.lastSeen > 30000));
             if (Date.now() < omok.startAt) return;
             const turn = omok.st.turn;
-            if (omokIsAdminColor(turn)) return; // 관리자는 시간 초과가 없다
+            if (omokIsAdminColor(turn) || omokPaused()) return; // 관리자는 시간 초과가 없고, 경질 중에는 시계가 멈춘다
             const rem = omok.clocks[turn] - (Date.now() - omok.turnStartAt);
             if (turn === omok.myColor && rem <= 0) {
                 rzSend(omok.channel, 'msg', { t: 'timeout', loser: omok.myColor });
@@ -5631,7 +6308,7 @@
         function omokApply(newState, color, idx, remote, remoteClock) {
             const now = Date.now(), inTurn = omok.st.turn === color;
             if (inTurn) {
-                // 차례에 둔 수만 시계에 반영한다. (관리자는 시계가 없고, 관리자의 차례 밖 착수는 상대 시계를 건드리지 않는다)
+                // 차례에 둔 수만 시계에 반영한다. (관리자는 시계가 없고, 경질 중 차례 밖 착수는 상대 시계를 건드리지 않는다)
                 if (!omokIsAdminColor(color)) {
                     if (remote) { if (typeof remoteClock === 'number') omok.clocks[color] = Math.max(0, Math.min(omok.clocks[color], remoteClock)); }
                     else omok.clocks[color] = Math.max(0, omok.clocks[color] - Math.max(0, now - omok.turnStartAt));
@@ -5672,7 +6349,8 @@
             switch (p.t) {
                 case 'move': {
                     if (omok.phase !== 'game') break;
-                    if (omok.st.turn !== omok.oppColor && !omok.oppAdmin) break; // 관리자가 아니면 자기 차례에만
+                    // 자기 차례의 수는 언제나 받는다. 차례 밖의 수는 상대 관리자가 나를 경질한 동안만 허용
+                    if (omok.st.turn !== omok.oppColor && !(omok.oppAdmin && omok.oppDismissed)) break;
                     const r = omokPlay(omok.st, p.idx, omok.oppColor);
                     if (!r.ok) {
                         if (omok.myAdmin) omokSendSnap(); // 내(관리자) 판이 기준
@@ -5683,6 +6361,11 @@
                     break;
                 }
                 case 'snap': omokAdoptSnap(p); break;
+                case 'dismiss':
+                    if (!omok.oppAdmin || omok.phase !== 'game') break;
+                    omokSetDismiss(false, !!p.on);
+                    showToast(p.on ? '👑 관리자가 나를 경질했어요. 잠시 둘 수 없어요.' : '관리자가 복귀시켜줬어요. 다시 둘 수 있어요.', p.on ? 'error' : 'info');
+                    break;
                 case 'resign': omokFinish('win', 'resign'); break;
                 case 'timeout':
                     if (omok.phase !== 'game') break;
