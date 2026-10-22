@@ -839,6 +839,15 @@
         .rm-tile.joker { background: linear-gradient(#fffdf6, #efe6ff); font-size: 22px; }
         .rm-tile.joker::after { display: none; }
         .rm-tile.moon { color: #6d4cc9; } .rm-tile.sun { color: #e8a40c; }
+        .rm-tile { touch-action: none; }
+        .rm-tile.dragging { opacity: .3; }
+        .rm-ghost { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; display: flex; gap: 2px; opacity: .92; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); }
+        .rm-ghost .rm-tile { transform: rotate(-4deg); }
+        .rm-ghost-n { align-self: center; font-size: 12px; font-weight: 900; color: #fff; background: rgba(0,0,0,.6); border-radius: 999px; padding: 2px 7px; }
+        .dropover { outline: 3px dashed #ffe27a; outline-offset: 2px; }
+        .rm-table.dropover { background: rgba(255,255,255,.08); border-radius: 12px; }
+        .rz-act-btn.pulse { background: #ffe4e8 !important; color: #be123c !important; box-shadow: 0 0 0 3px #fb7185; animation: unoBlink .6s ease-in-out infinite; }
+        .mp-chip.peekable { cursor: pointer; } .mp-chip.peekable:hover { background: #ede7ff; } .mp-chip.peeking { background: #ddd2ff; box-shadow: inset 0 0 0 2px #7c5ce0; }
         .rm-tile.sel { transform: translateY(-5px); box-shadow: 0 0 0 3px var(--accent), 0 6px 10px rgba(0,0,0,.3); }
         .rm-rack-wrap { margin-top: 8px; padding: 8px 10px 10px; border-radius: 14px; background: linear-gradient(#a9743f, #8a5a2e); box-shadow: inset 0 0 0 3px #6b4423; }
         .rm-rack-wrap.mine { box-shadow: inset 0 0 0 3px #6b4423, 0 0 0 3px var(--accent); }
@@ -2273,18 +2282,17 @@
                             </div>
                             <div class="rm-actions">
                                 <button id="rm-btn-confirm" onclick="rmConfirm()" class="press-feel rz-act-btn primary" disabled></button>
-                                <button id="rm-btn-undo" onclick="rmUndo()" class="press-feel rz-act-btn" disabled><i class="fa-solid fa-rotate-left mr-1.5"></i>처음으로</button>
+                                <button id="rm-btn-undo" onclick="rmUndo()" class="press-feel rz-act-btn" disabled><i class="fa-solid fa-rotate-left mr-1.5"></i>원상복구</button>
                                 <button id="rm-btn-draw" onclick="rmDrawTile()" class="press-feel rz-act-btn" disabled></button>
                             </div>
                             <div id="rm-admin-row" class="rm-actions hidden">
-                                <button id="rm-btn-jmoon" onclick="rmJokerDraw(104)" class="press-feel rz-act-btn" style="background:#ece4ff;color:#5b3ab8;" disabled><i class="fa-solid fa-moon mr-1.5"></i>달 조커 뽑기</button>
-                                <button id="rm-btn-jsun" onclick="rmJokerDraw(105)" class="press-feel rz-act-btn" style="background:#fff0c4;color:#8a5a00;" disabled><i class="fa-solid fa-sun mr-1.5"></i>태양 조커 뽑기</button>
-                                <button id="rm-btn-peek" onclick="rmTogglePeek()" class="press-feel rz-act-btn"></button>
+                                <button id="rm-btn-jmoon" onclick="rmJokerDraw(104)" class="press-feel rz-act-btn" style="background:#ece4ff;color:#5b3ab8;" disabled><i class="fa-solid fa-moon mr-1.5"></i>달 조커 뽑기 (무제한)</button>
+                                <button id="rm-btn-jsun" onclick="rmJokerDraw(105)" class="press-feel rz-act-btn" style="background:#fff0c4;color:#8a5a00;" disabled><i class="fa-solid fa-sun mr-1.5"></i>태양 조커 뽑기 (무제한)</button>
                             </div>
                             <div class="rz-action-row">
                                 <button onclick="mpLeave('rm')" class="press-feel rz-act-btn"><i class="fa-solid fa-door-open mr-1.5"></i>나가기</button>
                             </div>
-                            <p class="go-info">타일을 눌러 선택(여러 장 가능) → [새 세트] 또는 세트 옆 [+]를 눌러 옮겨요 · 마우스는 끌어다 놓기도 돼요<br>그룹 = 같은 숫자 다른 색 3~4장 · 런 = 같은 색 연속 숫자 3장 이상 · 조커는 무엇이든 대신해요</p>
+                            <p class="go-info">타일을 끌어서 세트 위에 놓으면 그 세트에, 테이블 빈 곳에 놓으면 새 세트가 돼요 (자동 정리) · 눌러서 여러 장 선택 후 끌어도 돼요<br>이미 올라간 세트도 등록 후에는 자유롭게 고칠 수 있어요 — 규칙이 꼬이면 [원상복구]!<br>그룹 = 같은 숫자 다른 색 3~4장 · 런 = 같은 색 연속 숫자 3장 이상 · 조커는 무엇이든 대신해요</p>
                         </div>
                     </div>
 
@@ -4168,7 +4176,7 @@
             for (const s of nextTable) {
                 if (!Array.isArray(s)) return fail('잘못된 데이터예요.');
                 for (const t of s) {
-                    if (!Number.isInteger(t) || t < 0 || t >= RM_TOTAL) return fail('잘못된 타일이에요.');
+                    if (!Number.isInteger(t) || t < 0 || t >= 1000) return fail('잘못된 타일이에요.');
                     if (seen.has(t)) return fail('같은 타일이 두 번 들어갔어요.');
                     seen.add(t);
                     if (!rackSet.has(t) && !prevSet.has(t)) return fail('내 패에 없는 타일이 있어요.');
@@ -4234,8 +4242,8 @@
             let tile = null, passed = false;
             if (opt && opt.joker !== undefined) {
                 const i = S.pool.indexOf(opt.joker);
-                if (i < 0) return { ok: false, reason: '그 조커는 더미에 없어요.' };
-                tile = S.pool.splice(i, 1)[0];
+                if (i >= 0) tile = S.pool.splice(i, 1)[0];
+                else tile = RM_TOTAL + 2 * (S.extraJ = (S.extraJ || 0) + 1) + (opt.joker === RM_JOKER_SUN ? 1 : 0); // 관리자: 조커 무한 생성 (짝수=달, 홀수=태양)
             } else if (S.pool.length > 0) tile = S.pool.shift();
             else passed = true;
             if (tile !== null) { S.racks[pid].push(tile); S.passes = 0; }
@@ -4258,7 +4266,7 @@
         function rmRemovePlayer(S, pid, rand) {
             const idx = S.order.indexOf(pid);
             if (idx < 0 || S.over) return;
-            S.pool = rmShuffle(S.pool.concat(S.racks[pid]), rand || Math.random);
+            S.pool = rmShuffle(S.pool.concat(S.racks[pid].filter(t => t < RM_TOTAL)), rand || Math.random); // 관리자가 만든 여분 조커는 사라진다
             delete S.racks[pid]; delete S.melded[pid];
             S.order.splice(idx, 1);
             if (idx < S.turn) S.turn--;
@@ -4336,7 +4344,7 @@
         function rmHostPublish() {
             const room = mpRooms.rm; if (!room || !room.host) return;
             const H = room.host, S = H.S, names = {}, counts = {};
-            room.players.forEach(p => { names[p.id] = p.name; });
+            room.players.forEach((p, i) => { names[p.id] = '플레이어 ' + (i + 1); }); // 관리자 여부가 드러나지 않게 전원 번호로 표시
             S.order.forEach(id => { counts[id] = S.racks[id].length; });
             const pub = {
                 seq: S.seq, order: S.order, names, table: S.table, counts, poolN: S.pool.length,
@@ -4393,13 +4401,13 @@
             const room = mpRooms.rm; if (!room) return;
             if (p.t === 'play' || p.t === 'draw' || p.t === 'jdraw') { if (room.role === 'host') rmHostAction(p); return; }
             if (p.t === 'st') { if (p.to === room.myId) rmOnState(p); return; }
-            if (p.t === 'reject') { if (rm) rm.pending = false; showToast(p.reason || '낼 수 없어요.', 'error'); rmRender(); return; }
+            if (p.t === 'reject') { if (rm) { rm.pending = false; rmPulseUndo(); } showToast(p.reason || '낼 수 없어요.', 'error'); rmRender(); return; }
             if (p.t === 'draft') {
                 if (rm && rm.st && p.id === rm.st.turn && p.id !== room.myId && p.seq === rm.st.seq) { rm.theirDraft = { seq: p.seq, table: p.table }; rmRenderTable(); }
             }
         }
         function rmCreateView(room) {
-            rm = { room, st: null, rack: [], peek: null, draft: null, draftSeq: -1, origin: new Set(), sel: new Set(), sortMode: 'num', peekOn: false, pending: false, overDone: false, theirDraft: null, draftTimer: null, uiTimer: null, deadline: 0, lastTurn: null };
+            rm = { room, st: null, rack: [], peek: null, draft: null, draftSeq: -1, origin: new Set(), sel: new Set(), sortMode: 'num', peekId: null, noClickUntil: 0, pd: null, tableOrigin: new Set(), origKeys: new Set(), pending: false, overDone: false, theirDraft: null, draftTimer: null, uiTimer: null, deadline: 0, lastTurn: null };
             mpShow('rm', 'game');
             document.getElementById('rm-end').classList.add('hidden');
             rmBindEvents();
@@ -4423,6 +4431,7 @@
         function rmResetDraft() {
             rm.draft = { table: rm.st.table.map(s => s.slice()), rack: rm.rack.slice() };
             rm.origin = new Set(rm.rack); rm.draftSeq = rm.st.seq; rm.sel.clear(); rm.theirDraft = null;
+            rm.tableOrigin = new Set(rm.st.table.flat()); rm.origKeys = new Set(rm.st.table.map(rmSetKey));
         }
         function rmUnrated() { return !!(rm && rm.st && rm.st.admins && rm.st.admins.length > 0); }
         function rmHandleOver() {
@@ -4490,6 +4499,11 @@
             const move = (ids || [...rm.sel]).filter(id => rmFindTile(id));
             if (move.length === 0) return;
             const d = rm.draft;
+            if (!rm.st.melded[rm.room.myId]) { // 최초 등록 전에는 원래 테이블에 있던 타일/세트를 건드릴 수 없다
+                if (move.some(id => rm.tableOrigin.has(id)) || (typeof target === 'number' && d.table[target] && rm.origKeys.has(rmSetKey(d.table[target])))) {
+                    showToast('최초 등록 전에는 테이블에 있던 타일을 옮길 수 없어요. (등록하려면 내 패로 새 세트를 만드세요)', 'info'); return;
+                }
+            }
             if (target === 'rack') {
                 const blocked = move.filter(id => !rm.origin.has(id));
                 if (blocked.length) { showToast('원래 테이블에 있던 타일은 내 패로 가져올 수 없어요.', 'info'); }
@@ -4511,6 +4525,9 @@
             d.table = d.table.map(s => s.filter(t => !set.has(t)));
         }
         function rmAfterEdit() {
+            // 자동 정리: 올바른 세트는 숫자/색 순서대로 가지런히, 아직 덜 된 세트는 색·숫자순으로 모아 둔다
+            const key = (t) => rmIsJoker(t) ? 9999 : rmColor(t) * 100 + rmNum(t);
+            rm.draft.table = rm.draft.table.map(s => { const a = rmAnalyzeSet(s); return a ? a.order.slice() : s.slice().sort((x, y) => key(x) - key(y)); });
             rmRender();
             clearTimeout(rm.draftTimer);
             rm.draftTimer = setTimeout(() => { // 구경하는 사람들에게 내가 정리하는 모습을 보여 준다
@@ -4523,16 +4540,17 @@
             if (rm.sel.has(id)) rm.sel.delete(id); else rm.sel.add(id);
             rmRender();
         }
-        function rmUndo() { if (!rm || !rm.st) return; rmResetDraft(); rmAfterEdit(); }
+        function rmPulseUndo() { const b = document.getElementById('rm-btn-undo'); if (!b) return; b.classList.add('pulse'); setTimeout(() => b.classList.remove('pulse'), 5000); }
+        function rmUndo() {
+            const b = document.getElementById('rm-btn-undo'); if (b) b.classList.remove('pulse'); if (!rm || !rm.st) return; rmResetDraft(); rmAfterEdit(); }
         function rmSort(mode) { rm.sortMode = mode || (rm.sortMode === 'num' ? 'color' : 'num'); rmRender(); }
-        function rmTogglePeek() { if (!rm) return; rm.peekOn = !rm.peekOn; rmRender(); }
-        function rmDraftPlayedCount() { return rm.draft.rack.length === rm.rack.length ? 0 : rm.rack.length - rm.draft.rack.length; }
+                function rmDraftPlayedCount() { return rm.draft.rack.length === rm.rack.length ? 0 : rm.rack.length - rm.draft.rack.length; }
 
         // ---------------- 행동 ----------------
         function rmConfirm() {
             if (!rmMyTurn() || rm.pending) return;
             const res = rmValidateTurn(rm.st.table, rm.rack, rm.draft.table, !!rm.st.melded[rm.room.myId]);
-            if (!res.ok) { showToast(res.reason, 'error'); return; }
+            if (!res.ok) { showToast(res.reason, 'error'); rmPulseUndo(); return; }
             rm.pending = true; rmRender();
             mpToHost('rm', { t: 'play', table: res.table });
             setTimeout(() => { if (rm && rm.pending) { rm.pending = false; rmRender(); } }, 4000);
@@ -4553,9 +4571,9 @@
         // ---------------- 그리기 ----------------
         function rmTileHtml(id, opts) {
             opts = opts || {};
-            const sel = opts.sel ? ' sel' : '', drag = opts.drag ? ' draggable="true"' : '';
+            const sel = opts.sel ? ' sel' : '', drag = '';
             if (rmIsJoker(id)) {
-                const moon = id === RM_JOKER_MOON;
+                const moon = id % 2 === 0;
                 return `<button class="rm-tile joker ${moon ? 'moon' : 'sun'}${sel}" data-id="${id}"${drag} aria-label="${moon ? '달' : '태양'} 조커"><i class="fa-solid ${moon ? 'fa-moon' : 'fa-sun'}"></i></button>`;
             }
             return `<button class="rm-tile c${rmColor(id)}${sel}" data-id="${id}"${drag} aria-label="${RM_COLOR_NAMES[rmColor(id)]} ${rmNum(id)}"><b>${rmNum(id)}</b></button>`;
@@ -4569,13 +4587,14 @@
             rmRenderPlayers(); rmRenderTable(); rmRenderRack(); rmRenderControls(); rmRenderPeek(); rmTickUi();
         }
         function rmRenderPlayers() {
-            const st = rm.st, me = rm.room.myId, hostId = rm.room.hostId;
+            const st = rm.st, me = rm.room.myId, hostId = rm.room.hostId, adm = st.admins.indexOf(me) >= 0;
             document.getElementById('rm-players').innerHTML = st.order.map(id => {
                 const cur = st.turn === id;
-                return `<div class="mp-chip${cur ? ' turn' : ''}${id === me ? ' me' : ''}">
-                    <b>${escapeHtml(st.names[id] || '')}</b>
+                const peekable = adm && id !== me;
+                return `<div class="mp-chip${cur ? ' turn' : ''}${id === me ? ' me' : ''}${peekable ? ' peekable' : ''}${rm.peekId === id ? ' peeking' : ''}"${peekable ? ` data-peek="${id}"` : ''}>
+                    <b>${escapeHtml(st.names[id] || '')}${id === me ? ' (나)' : ''}</b>
                     <span>${st.counts[id]}장${st.melded[id] ? ' · 등록 ✓' : ''}</span>
-                    ${id === hostId ? '<em>방장</em>' : ''}${st.admins.indexOf(id) >= 0 ? '<em class="adm">관리자</em>' : ''}
+                    ${id === hostId ? '<em>방장</em>' : ''}
                     ${cur ? '<i class="mp-chip-clock" data-clock></i>' : ''}
                 </div>`;
             }).join('') + `<div class="mp-chip pool"><b>더미</b><span>${st.poolN}장</span></div>`;
@@ -4631,9 +4650,8 @@
             ['rm-admin-row'].forEach(id => q(id).classList.toggle('hidden', !adm));
             if (adm) {
                 const pj = (rm.peek && rm.peek.poolJokers) || [];
-                q('rm-btn-jmoon').disabled = !my || busy || pj.indexOf(RM_JOKER_MOON) < 0;
-                q('rm-btn-jsun').disabled = !my || busy || pj.indexOf(RM_JOKER_SUN) < 0;
-                q('rm-btn-peek').innerHTML = rm.peekOn ? '<i class="fa-solid fa-eye-slash mr-1.5"></i>패 숨기기' : '<i class="fa-solid fa-eye mr-1.5"></i>다른 사람 패 보기';
+                q('rm-btn-jmoon').disabled = !my || busy;
+                q('rm-btn-jsun').disabled = !my || busy;
             }
             const prog = my ? rmMeldProgress() : null;
             const info = q('rm-meld-info');
@@ -4643,13 +4661,14 @@
         function rmRenderPeek() {
             const box = document.getElementById('rm-peek');
             const adm = rm.st.admins.indexOf(rm.room.myId) >= 0;
-            if (!adm || !rm.peekOn || !rm.peek) { box.classList.add('hidden'); return; }
+            if (!adm || !rm.peek) { box.classList.add('hidden'); return; }
             box.classList.remove('hidden');
-            box.innerHTML = '<p class="rm-peek-title"><i class="fa-solid fa-eye mr-1.5"></i>관리자 시야 — 다른 사람의 패</p>' + rm.st.order.filter(id => id !== rm.room.myId).map(id => {
-                const tiles = (rm.peek.racks[id] || []).slice().sort((a, b) => (rmIsJoker(a) ? 1000 + a : rmNum(a) * 10 + rmColor(a)) - (rmIsJoker(b) ? 1000 + b : rmNum(b) * 10 + rmColor(b)));
-                return `<div class="rm-peek-row"><b>${escapeHtml(rm.st.names[id] || '')}</b><div class="rm-peek-tiles">${tiles.map(t => rmTileHtml(t)).join('')}</div></div>`;
-            }).join('') + `<p class="rm-peek-title" style="margin-top:6px">더미에 남은 조커: ${((rm.peek.poolJokers || []).map(j => j === RM_JOKER_MOON ? '🌙 달' : '☀️ 태양').join(', ')) || '없음'}</p>`;
+            if (!rm.peekId || rm.st.order.indexOf(rm.peekId) < 0) { box.innerHTML = '<p class="rm-peek-title"><i class="fa-solid fa-eye mr-1.5"></i>관리자 시야 — 위에서 플레이어를 누르면 그 사람의 패를 볼 수 있어요</p>'; return; }
+            const id = rm.peekId;
+            const tiles = (rm.peek.racks[id] || []).slice().sort((a, b) => (rmIsJoker(a) ? 1000 + a : rmNum(a) * 10 + rmColor(a)) - (rmIsJoker(b) ? 1000 + b : rmNum(b) * 10 + rmColor(b)));
+            box.innerHTML = `<p class="rm-peek-title"><i class="fa-solid fa-eye mr-1.5"></i>${escapeHtml(rm.st.names[id] || '')}의 패 (${tiles.length}장) · 다시 누르면 닫혀요</p><div class="rm-peek-tiles">${tiles.map(t => rmTileHtml(t)).join('')}</div>`;
         }
+        function rmPeekPlayer(id) { if (!rm) return; rm.peekId = rm.peekId === id ? null : id; rmRender(); }
         function rmTickUi() {
             if (!rm || !rm.st) return;
             const st = rm.st, me = rm.room.myId;
@@ -4667,38 +4686,76 @@
 
         // ---------------- 입력 (눌러서 선택·이동 / 끌어다 놓기) ----------------
         function rmBindEvents() {
-            const tableEl = document.getElementById('rm-table'), rackEl = document.getElementById('rm-rack'), rackWrap = document.getElementById('rm-rack-wrap');
+            const tableEl = document.getElementById('rm-table'), rackEl = document.getElementById('rm-rack'), playersEl = document.getElementById('rm-players');
             if (tableEl._rmBound) return;
             tableEl._rmBound = true;
             const idOf = (el) => { const b = el.closest('.rm-tile'); return b ? parseInt(b.dataset.id, 10) : null; };
+            playersEl.addEventListener('click', (e) => { const c = e.target.closest('[data-peek]'); if (c) rmPeekPlayer(c.dataset.peek); });
             tableEl.addEventListener('click', (e) => {
+                if (rm && Date.now() < rm.noClickUntil) return;
                 const tile = idOf(e.target);
                 if (tile !== null) { rmToggleSel(tile); return; }
                 if (e.target.closest('#rm-newset')) { rmMoveSelected('new'); return; }
                 const add = e.target.closest('[data-add]'); if (add) { rmMoveSelected(parseInt(add.dataset.add, 10)); return; }
             });
             rackEl.addEventListener('click', (e) => {
+                if (rm && Date.now() < rm.noClickUntil) return;
                 const tile = idOf(e.target);
                 if (tile !== null) { rmToggleSel(tile); return; }
                 rmMoveSelected('rack');
             });
-            // 마우스 끌어다 놓기
-            let dragIds = null;
-            const onStart = (e) => {
-                const tile = idOf(e.target); if (tile === null || !rmMyTurn()) { e.preventDefault(); return; }
-                dragIds = rm.sel.has(tile) ? [...rm.sel] : [tile];
-                try { e.dataTransfer.setData('text/plain', String(tile)); e.dataTransfer.effectAllowed = 'move'; } catch (er) {}
+            // 끌어서 옮기기 (마우스·터치 공통): 타일을 끌어 세트 위에 놓으면 그 세트에, 테이블 빈 곳에 놓으면 새 세트, 내 패 위에 놓으면 되돌리기
+            const down = (e) => {
+                if (e.button > 0) return;
+                const id = idOf(e.target); if (id === null || !rm || !rmMyTurn() || rm.pending) return;
+                rm.pd = { id, x: e.clientX, y: e.clientY, active: false };
             };
-            tableEl.addEventListener('dragstart', onStart); rackEl.addEventListener('dragstart', onStart);
-            const over = (e) => { if (dragIds) e.preventDefault(); };
-            tableEl.addEventListener('dragover', over); rackWrap.addEventListener('dragover', over);
-            tableEl.addEventListener('drop', (e) => {
-                if (!dragIds) return; e.preventDefault();
-                const setEl = e.target.closest('.rm-set');
-                rmMoveSelected(setEl ? parseInt(setEl.dataset.set, 10) : 'new', dragIds); dragIds = null;
-            });
-            rackWrap.addEventListener('drop', (e) => { if (!dragIds) return; e.preventDefault(); rmMoveSelected('rack', dragIds); dragIds = null; });
-            document.addEventListener('dragend', () => { dragIds = null; });
+            tableEl.addEventListener('pointerdown', down); rackEl.addEventListener('pointerdown', down);
+            window.addEventListener('pointermove', (e) => {
+                const d = rm && rm.pd; if (!d) return;
+                if (!d.active) { if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 7) return; if (!rmDragStart(d)) { rm.pd = null; return; } }
+                e.preventDefault(); rmDragMove(e);
+            }, { passive: false });
+            window.addEventListener('pointerup', (e) => { const d = rm && rm.pd; if (!d) return; rm.pd = null; if (d.active) { rmDragEnd(e, d); rm.noClickUntil = Date.now() + 250; } });
+            window.addEventListener('pointercancel', () => { const d = rm && rm.pd; if (!d) return; rm.pd = null; if (d.active) rmDragClean(d); });
+        }
+        function rmDragStart(d) {
+            const ids = rm.sel.has(d.id) ? [...rm.sel] : [d.id];
+            if (!rm.sel.has(d.id)) rm.sel.clear();
+            if (!rm.st.melded[rm.room.myId] && ids.some(id => rm.tableOrigin.has(id))) { showToast('최초 등록 전에는 테이블에 있던 타일을 옮길 수 없어요.', 'info'); return false; }
+            d.active = true; d.ids = ids;
+            const g = document.createElement('div'); g.className = 'rm-ghost';
+            g.innerHTML = ids.slice(0, 3).map(t => rmTileHtml(t)).join('') + (ids.length > 3 ? `<span class="rm-ghost-n">+${ids.length - 3}</span>` : '');
+            document.body.appendChild(g); d.ghost = g;
+            document.querySelectorAll('.rm-tile').forEach(el => { if (ids.indexOf(parseInt(el.dataset.id, 10)) >= 0 && !el.closest('.rm-ghost')) el.classList.add('dragging'); });
+            return true;
+        }
+        function rmDropTarget(e, d) {
+            if (d.ghost) d.ghost.style.display = 'none';
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            if (d.ghost) d.ghost.style.display = '';
+            if (!el) return null;
+            const set = el.closest('.rm-set'); if (set) return { el: set, target: parseInt(set.dataset.set, 10) };
+            const rack = el.closest('#rm-rack-wrap'); if (rack) return { el: rack, target: 'rack' };
+            const tb = el.closest('.rm-board'); if (tb) return { el: document.getElementById('rm-table'), target: 'new' };
+            return null;
+        }
+        function rmDragMove(e) {
+            const d = rm.pd; if (!d || !d.ghost) return;
+            d.ghost.style.transform = `translate(${e.clientX - 22}px, ${e.clientY - 34}px)`;
+            document.querySelectorAll('.dropover').forEach(x => x.classList.remove('dropover'));
+            const t = rmDropTarget(e, d); if (t) t.el.classList.add('dropover');
+        }
+        function rmDragClean(d) {
+            if (d.ghost) d.ghost.remove();
+            document.querySelectorAll('.dropover').forEach(x => x.classList.remove('dropover'));
+            document.querySelectorAll('.rm-tile.dragging').forEach(x => x.classList.remove('dragging'));
+        }
+        function rmDragEnd(e, d) {
+            const t = rmDropTarget(e, d);
+            rmDragClean(d);
+            if (t) rmMoveSelected(t.target, d.ids);
+            else rmRender();
         }
 
         // =====================================================================
