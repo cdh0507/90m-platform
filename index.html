@@ -3160,11 +3160,22 @@
         // =====================================================================
         async function loadLandingStats() {
             try {
-                const [{ count: sessionsCount }, { count: mentorsCount }, { count: menteesCount }] = await Promise.all([
-                    supabaseClient.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
-                    supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentor'),
-                    supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentee'),
-                ]);
+                let sessionsCount = null, mentorsCount = null, menteesCount = null;
+                // 1순위: 비로그인(anon)도 읽을 수 있는 집계 함수 (supabase_landing_stats.sql)
+                try {
+                    const { data, error } = await supabaseClient.rpc('landing_stats');
+                    const row = Array.isArray(data) ? data[0] : data;
+                    if (!error && row) { sessionsCount = row.sessions; mentorsCount = row.mentors; menteesCount = row.mentees; }
+                } catch (e) {}
+                // 2순위(함수가 아직 없을 때): 예전처럼 테이블을 직접 집계 — RLS 때문에 비로그인 상태에선 0이 나올 수 있다
+                if (sessionsCount === null) {
+                    const r = await Promise.all([
+                        supabaseClient.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+                        supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentor'),
+                        supabaseClient.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'mentee'),
+                    ]);
+                    sessionsCount = r[0].count; mentorsCount = r[1].count; menteesCount = r[2].count;
+                }
                 animateCountUp(document.getElementById('landing-stat-sessions'), sessionsCount || 0);
                 animateCountUp(document.getElementById('landing-stat-mentors'), mentorsCount || 0);
                 animateCountUp(document.getElementById('landing-stat-mentees'), menteesCount || 0);
@@ -3173,15 +3184,15 @@
             }
         }
         loadLandingStats();
+        const landingVisible = () => { const v = document.getElementById('view-landing'); return v && !v.classList.contains('hidden'); };
         supabaseClient
             .channel('landing-stats-watch')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
-                if (document.getElementById('view-landing') && !document.getElementById('view-landing').classList.contains('hidden')) loadLandingStats();
-            })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
-                if (document.getElementById('view-landing') && !document.getElementById('view-landing').classList.contains('hidden')) loadLandingStats();
-            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => { if (landingVisible()) loadLandingStats(); })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => { if (landingVisible()) loadLandingStats(); })
             .subscribe();
+        // 비로그인 상태에서는 DB 변경 알림(RLS)이 오지 않으므로 30초마다 다시 집계하고, 랜딩이 다시 보일 때도 갱신
+        setInterval(() => { if (landingVisible() && !document.hidden) loadLandingStats(); }, 30000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && landingVisible()) loadLandingStats(); });
 
         // =====================================================================
         // 랜딩페이지 스크롤 등장 — 뷰포트에 들어오는 순간 .is-visible을 붙여서
