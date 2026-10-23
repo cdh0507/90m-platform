@@ -1018,7 +1018,220 @@
 
         /* ---------- 숫자 카운트업 ---------- */
         .count-up { font-variant-numeric: tabular-nums; }
+
+        /* =====================================================================
+           설정 · 다크모드 · 온보딩 · 알림 배너 · 로딩/오류 표시 · 게임 채팅
+           ===================================================================== */
+
+        /* ---------- 다크 모드 ---------- */
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #14130f; --ink: #efece5; --ink-soft: #a8a399; --ring: rgba(179,253,139,.28);
+        }
+        html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+        html[data-theme="dark"] #app-header { background: rgba(20,19,15,.88) !important; }
+        html[data-theme="dark"] .card {
+            background: #1e1d19; border-color: rgba(255,255,255,.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+        }
+        html[data-theme="dark"] .ghost-btn { background: #26241f; color: var(--ink); border-color: #3b3830; }
+        html[data-theme="dark"] .ghost-btn:hover,
+        html[data-theme="dark"] .filter-chip.ghost-btn:hover { color: #14130f; border-color: var(--ink); }
+        html[data-theme="dark"] .bg-slate-50 { background-color: #2a2823 !important; }
+        html[data-theme="dark"] .bg-white { background-color: #1e1d19 !important; }
+        html[data-theme="dark"] .hover\:bg-slate-50:hover,
+        html[data-theme="dark"] .hover\:bg-slate-100:hover { background-color: #2a2823 !important; }
+        html[data-theme="dark"] .border-slate-100,
+        html[data-theme="dark"] .border-slate-200 { border-color: #3a3730 !important; }
+        html[data-theme="dark"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #3a3730 !important; }
+        html[data-theme="dark"] .text-slate-400 { color: #8f8a80 !important; }
+        html[data-theme="dark"] .text-slate-300,
+        html[data-theme="dark"] .text-slate-500 { color: #a8a399 !important; }
+        html[data-theme="dark"] .text-slate-700,
+        html[data-theme="dark"] .text-slate-900,
+        html[data-theme="dark"] .hover\:text-slate-700:hover { color: #efece5 !important; }
+        html[data-theme="dark"] .bg-amber-50 { background-color: #3a2f12 !important; }
+        html[data-theme="dark"] .bg-rose-50 { background-color: #3b1a20 !important; }
+        html[data-theme="dark"] input, html[data-theme="dark"] textarea, html[data-theme="dark"] select { color: var(--ink); }
+        html[data-theme="dark"] ::placeholder { color: #7d786e; }
+        html[data-theme="dark"] .chat-bubble { background: #2e2c26; color: var(--ink); }
+        html[data-theme="dark"] .rest-zone,
+        html[data-theme="dark"] .rest-zone-teaser { background: #1e1d19; }
+        html[data-theme="dark"] .rest-zone-count,
+        html[data-theme="dark"] .pitchgame-stat { background: #2a2823; }
+        html[data-theme="dark"] .rest-zone-reset,
+        html[data-theme="dark"] .cnr-cancel-btn,
+        html[data-theme="dark"] .cnr-leave-btn { background: #2e2c26; color: var(--ink-soft); }
+        html[data-theme="dark"] .restzone-game-card,
+        html[data-theme="dark"] .pitchgame-key,
+        html[data-theme="dark"] .cnr-join-input,
+        html[data-theme="dark"] .cnr-room-code-box,
+        html[data-theme="dark"] .cnr-leaderboard-row { background: #26241f; color: var(--ink); border-color: rgba(255,255,255,.08); }
+        html[data-theme="dark"] .restzone-game-card:hover,
+        html[data-theme="dark"] .pitchgame-key:hover { background: #302e28; }
+        html[data-theme="dark"] .mp-slot { background: #2a2823; }
+        html[data-theme="dark"] .mp-chip { background: #2a2823; }
+        html[data-theme="dark"] .mp-slot-n,
+        html[data-theme="dark"] .mp-slot em,
+        html[data-theme="dark"] .mp-chip em { background: #3a3730; color: var(--ink); }
+        html[data-theme="dark"] .mp-chip em.adm { background: #5a4510; color: #ffe8a8; }
+        html[data-theme="dark"] .toast-item { background: #efece5; color: #14130f; }
+        html[data-theme="dark"] .accent-btn { color: var(--accent-ink); }
+
+        /* ---------- 움직임 줄이기 ---------- */
+        html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
+            animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+            transition-duration: .001ms !important; scroll-behavior: auto !important;
+        }
+
+        /* ---------- 설정 화면 ---------- */
+        .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+        .st-tabs::-webkit-scrollbar { display: none; }
+        .st-tab {
+            flex: 0 0 auto; padding: 8px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 800;
+            background: transparent; color: var(--ink-soft); border: 1px solid transparent; cursor: pointer;
+        }
+        .st-tab:hover { color: var(--ink); }
+        .st-tab.on { background: var(--ink); color: var(--bg); }
+        html[data-theme="dark"] .st-tab.on { background: var(--accent); color: var(--accent-ink); }
+        .st-pane { display: none; }
+        .st-pane.on { display: block; animation: viewFadeIn .2s ease; }
+        .st-row { display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 14px 0; flex-wrap: wrap; }
+        .st-row + .st-row { border-top: 1px solid rgba(120,115,105,.18); }
+        .st-row-text { min-width: 0; flex: 1 1 220px; }
+        .st-row-title { font-weight: 800; font-size: 14.5px; }
+        .st-row-desc { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; line-height: 1.45; }
+        .st-seg { display: inline-flex; background: rgba(120,115,105,.14); border-radius: 999px; padding: 3px; gap: 2px; flex-wrap: nowrap; white-space: nowrap; flex-shrink: 0; }
+        .st-seg button { padding: 6px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 800; color: var(--ink-soft); background: transparent; border: none; cursor: pointer; }
+        .st-seg button.on { background: var(--accent); color: var(--accent-ink); box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+        .st-switch { position: relative; width: 46px; height: 27px; flex-shrink: 0; display: inline-block; }
+        .st-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .st-switch span { position: absolute; inset: 0; background: rgba(120,115,105,.35); border-radius: 999px; cursor: pointer; transition: background .2s ease; }
+        .st-switch span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 21px; height: 21px; border-radius: 50%; background: #fff; transition: transform .2s ease; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+        .st-switch input:checked + span { background: #4cc14a; }
+        .st-switch input:checked + span::after { transform: translateX(19px); }
+        .st-switch input:focus-visible + span { box-shadow: 0 0 0 3px var(--ring); }
+        .st-select { background: rgba(120,115,105,.14); border: none; border-radius: 12px; padding: 8px 10px; font-size: 13px; font-weight: 700; color: var(--ink); outline: none; }
+        .st-danger { border: 1px solid rgba(225,29,72,.35); background: rgba(225,29,72,.05); }
+        .st-danger-btn { background: #e11d48; color: #fff; font-weight: 800; border: none; }
+        .st-danger-btn:hover { filter: brightness(1.08); }
+        .st-danger-btn:disabled { opacity: .55; }
+        .st-preview-font { font-size: 13px; color: var(--ink-soft); }
+
+        /* ---------- 모달 공통 (탈퇴 · 온보딩) ---------- */
+        .ux-modal { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(15,15,12,.55); backdrop-filter: blur(4px); }
+        .ux-modal.hidden { display: none; }
+        .ux-modal .card { width: 100%; max-height: 92vh; overflow-y: auto; }
+
+        /* ---------- 온보딩 ---------- */
+        .onb-card { max-width: 25rem; padding: 0; overflow: hidden !important; }
+        .onb-hero { height: 150px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--accent), #e9ffd9); position: relative; }
+        html[data-theme="dark"] .onb-hero { background: linear-gradient(135deg, #2c4a1c, #1e1d19); }
+        .onb-hero i { font-size: 54px; color: var(--accent-ink); animation: onbPop .5s cubic-bezier(.34,1.56,.64,1); }
+        html[data-theme="dark"] .onb-hero i { color: var(--accent); }
+        @keyframes onbPop { from { transform: scale(.4) rotate(-12deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .onb-body { padding: 22px 24px 8px; text-align: center; min-height: 128px; }
+        .onb-body h3 { font-weight: 900; font-size: 19px; }
+        .onb-body p { font-size: 14px; color: var(--ink-soft); margin-top: 8px; line-height: 1.6; }
+        .onb-dots { display: flex; justify-content: center; gap: 6px; padding: 6px 0 14px; }
+        .onb-dots i { width: 7px; height: 7px; border-radius: 99px; background: rgba(120,115,105,.35); transition: all .2s ease; }
+        .onb-dots i.on { width: 20px; background: var(--ink); }
+        html[data-theme="dark"] .onb-dots i.on { background: var(--accent); }
+        .onb-foot { display: flex; align-items: center; gap: 8px; padding: 0 20px 20px; }
+        .onb-skip { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); background: none; border: none; cursor: pointer; padding: 8px 10px; }
+
+        /* ---------- 상단 배너 (예약 알림 · 오프라인) ---------- */
+        #ux-banners { position: fixed; top: 92px; left: 0; right: 0; z-index: 95; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 12px 0; pointer-events: none; }
+        .ux-banner { pointer-events: auto; max-width: 34rem; width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.2); animation: viewFadeIn .25s ease; }
+        .ux-banner.rem { background: #fff6c9; color: #5a4300; border: 1px solid #f3dd7a; }
+        .ux-banner.off { background: #3b1a20; color: #ffd9e0; }
+        .ux-banner.on { background: #123a1c; color: #c8ffd3; }
+        .ux-banner .b-txt { flex: 1; min-width: 0; line-height: 1.4; }
+        .ux-banner button { border: none; background: rgba(0,0,0,.12); color: inherit; font-weight: 800; font-size: 12.5px; padding: 6px 12px; border-radius: 99px; cursor: pointer; white-space: nowrap; }
+        .ux-banner button.x { background: none; padding: 6px; opacity: .7; }
+
+        /* ---------- 로딩 스켈레톤 · 오류 카드 ---------- */
+        .ui-skel { position: relative; overflow: hidden; }
+        .ui-skel-line { height: 12px; border-radius: 8px; background: rgba(120,115,105,.18); margin: 8px 0; }
+        .ui-skel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.35) 50%, transparent 80%); transform: translateX(-100%); animation: uiShimmer 1.3s infinite; }
+        html[data-theme="dark"] .ui-skel::after { background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.07) 50%, transparent 80%); }
+        @keyframes uiShimmer { to { transform: translateX(100%); } }
+        .ui-err { text-align: center; padding: 26px 18px !important; }
+        .ui-err > i { font-size: 26px; color: #e11d48; }
+        .ui-err .t { font-weight: 800; margin-top: 8px; }
+        .ui-err .s { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+        .ui-fatal { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; background: var(--bg); color: var(--ink); }
+
+        /* ---------- 게임 채팅 ---------- */
+        #gc-fab { position: fixed; right: 12px; top: 38%; z-index: 70; width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer; background: var(--ink); color: var(--bg); font-size: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
+        html[data-theme="dark"] #gc-fab { background: var(--accent); color: var(--accent-ink); }
+        #gc-fab.hidden, #gc-panel.hidden, #gc-peek.hidden { display: none; }
+        #gc-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        #gc-badge.hidden { display: none; }
+        #gc-peek { position: fixed; right: 64px; top: calc(38% + 4px); z-index: 70; max-width: 220px; background: #16181c; color: #fff; font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 14px 14px 4px 14px; box-shadow: 0 6px 18px rgba(0,0,0,.35); pointer-events: none; animation: viewFadeIn .2s ease; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #gc-panel { position: fixed; right: 12px; top: calc(38% + 54px); z-index: 71; width: 288px; height: 330px; max-height: 60vh; display: flex; flex-direction: column; border-radius: 18px; background: #fff; color: #1a1917; box-shadow: 0 14px 40px rgba(0,0,0,.4); overflow: hidden; }
+        html[data-theme="dark"] #gc-panel { background: #1e1d19; color: #efece5; border: 1px solid rgba(255,255,255,.1); }
+        .gc-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; font-weight: 900; font-size: 13.5px; border-bottom: 1px solid rgba(120,115,105,.2); }
+        .gc-head button { background: none; border: none; color: inherit; cursor: pointer; opacity: .6; }
+        #gc-list { flex: 1; overflow-y: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+        .gc-msg { max-width: 86%; font-size: 13px; line-height: 1.4; padding: 6px 10px; border-radius: 12px; background: rgba(120,115,105,.16); align-self: flex-start; word-break: break-word; }
+        .gc-msg b { display: block; font-size: 10.5px; opacity: .65; margin-bottom: 1px; }
+        .gc-msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-ink); }
+        .gc-msg.sys { align-self: center; background: none; font-size: 11.5px; opacity: .6; text-align: center; }
+        .gc-empty { margin: auto; font-size: 12.5px; opacity: .55; text-align: center; }
+        .gc-form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid rgba(120,115,105,.2); }
+        .gc-form input { flex: 1; min-width: 0; border-radius: 99px; border: 1px solid rgba(120,115,105,.35); background: transparent; padding: 8px 12px; font-size: 13px; outline: none; color: inherit; }
+        .gc-form button { border: none; border-radius: 99px; padding: 0 14px; background: var(--accent); color: var(--accent-ink); font-weight: 800; cursor: pointer; }
+        @media (max-width: 640px) {
+            #gc-panel { right: 8px; left: 8px; width: auto; top: auto; bottom: 8px; height: 46vh; }
+            #gc-peek { right: 62px; }
+        }
     </style>
+    <script>
+    /* 설정(다크모드·글자 크기·움직임·효과음)을 화면이 그려지기 전에 먼저 적용해서 깜빡임을 막는다 */
+    (function () {
+        var KEY = 'agl_settings_v1';
+        var s = { theme: 'system', font: 'md', reduceMotion: null, sound: true, gameChat: true, remind: true, remindMin: 10, browserNotif: false };
+        try { var raw = window.localStorage.getItem(KEY); if (raw) { var o = JSON.parse(raw); for (var k in o) s[k] = o[k]; } } catch (e) {}
+        window.aglSettings = s; window.aglSettingsKey = KEY;
+
+        /* 게임 효과음 on/off: 모든 AudioContext 를 등록해 두었다가 꺼져 있으면 일시정지(suspend) 상태로 유지한다 */
+        var A = window.AudioContext || window.webkitAudioContext, ctxs = [];
+        if (A) {
+            try {
+                var AGLCtx = class extends A {
+                    constructor() { super(...arguments); ctxs.push(this); if (window.aglSettings.sound === false) { try { A.prototype.suspend.call(this); } catch (e) {} } }
+                    resume() { if (window.aglSettings.sound === false) return Promise.resolve(); return super.resume(); }
+                };
+                window.AudioContext = AGLCtx; window.webkitAudioContext = AGLCtx;
+            } catch (e) {}
+        }
+        /* 다크모드는 로그인 후 앱 화면에만 적용한다 (랜딩·로그인 화면은 라이트 디자인 고정) — 저장된 세션이 있으면 처음부터 로그인 상태로 본다 */
+        window.aglLoggedIn = false;
+        try {
+            [window.localStorage, window.sessionStorage].forEach(function (st) {
+                for (var i = 0; i < st.length; i++) { if (/^sb-.+-auth-token$/.test(st.key(i) || '')) window.aglLoggedIn = true; }
+            });
+        } catch (e) {}
+        var FONT = { sm: '14px', md: '16px', lg: '18px', xl: '20px' };
+        var mqDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+        window.aglApplySettings = function () {
+            var st = window.aglSettings, root = document.documentElement;
+            var dark = window.aglLoggedIn && (st.theme === 'dark' || (st.theme === 'system' && mqDark && mqDark.matches));
+            root.setAttribute('data-theme', dark ? 'dark' : 'light');
+            root.style.fontSize = FONT[st.font] || '16px';
+            var reduce = st.reduceMotion === null || st.reduceMotion === undefined
+                ? !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) : !!st.reduceMotion;
+            if (reduce) root.setAttribute('data-motion', 'reduce'); else root.removeAttribute('data-motion');
+            ctxs.forEach(function (c) {
+                try { if (st.sound === false) A.prototype.suspend.call(c); else A.prototype.resume.call(c); } catch (e) {}
+            });
+        };
+        if (mqDark && mqDark.addEventListener) mqDark.addEventListener('change', function () { if (window.aglSettings.theme === 'system') window.aglApplySettings(); });
+        document.addEventListener('visibilitychange', function () { if (!document.hidden && window.aglSettings.theme === 'system') window.aglApplySettings(); });
+        window.aglApplySettings();
+    })();
+    </script>
 </head>
 <body class="antialiased min-h-screen">
 
@@ -1382,7 +1595,7 @@
                         </button>
                         <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white z-10" style="background:#f43f5e;">0</span>
                     </span>
-                    <button id="nav-profile" onclick="openProfileModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-user-pen mr-1"></i>내 프로필</button>
+                    <button id="nav-profile" onclick="openSettings()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-gear mr-1"></i>설정</button>
                     <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
                     <button onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                 </div>
@@ -1451,7 +1664,7 @@
                 <section class="card p-6 space-y-3">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <h2 class="font-bold text-lg">내 프로필</h2>
-                        <button onclick="openProfileModal()" class="ghost-btn px-4 py-1.5 rounded-full text-sm"><i class="fa-solid fa-pen mr-1"></i>수정 요청</button>
+                        <button onclick="openSettings('profile')" class="ghost-btn px-4 py-1.5 rounded-full text-sm"><i class="fa-solid fa-pen mr-1"></i>수정 요청</button>
                     </div>
                     <div id="mentor-profile-summary" class="text-sm space-y-1"></div>
                     <p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>멘토 프로필은 관리자가 확인한 뒤 반영돼요. '수정 요청'으로 바꾸고 싶은 내용을 보내주세요.</p>
@@ -1614,6 +1827,142 @@
                     </div>
                     <button type="submit" class="w-full accent-btn py-3 rounded-full text-sm">신청서 제출하기</button>
                 </form>
+            </div>
+
+            <!-- ============================== 설정 ============================== -->
+            <div id="view-settings" class="view space-y-5 max-w-2xl mx-auto">
+                <div>
+                    <h1 class="fluid-title font-extrabold">설정</h1>
+                    <p class="text-sm mt-1" style="color:var(--ink-soft);">내 정보, 화면, 알림, 게임을 내 취향에 맞게 바꿔보세요.</p>
+                </div>
+                <div class="st-tabs" role="tablist">
+                    <button class="st-tab on" data-st-tab="profile" onclick="stShowTab('profile')" role="tab"><i class="fa-solid fa-user mr-1"></i>내 프로필</button>
+                    <button class="st-tab" data-st-tab="display" onclick="stShowTab('display')" role="tab"><i class="fa-solid fa-palette mr-1"></i>화면</button>
+                    <button class="st-tab" data-st-tab="notify" onclick="stShowTab('notify')" role="tab"><i class="fa-solid fa-bell mr-1"></i>알림</button>
+                    <button class="st-tab" data-st-tab="game" onclick="stShowTab('game')" role="tab"><i class="fa-solid fa-gamepad mr-1"></i>게임·소리</button>
+                    <button class="st-tab" data-st-tab="account" onclick="stShowTab('account')" role="tab"><i class="fa-solid fa-shield-halved mr-1"></i>계정</button>
+                </div>
+
+                <!-- 내 프로필 -->
+                <section class="st-pane card p-6 on" data-st-pane="profile">
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span id="pf-role" class="px-2.5 py-0.5 rounded-full text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);"></span>
+                            <span id="pf-email" class="text-xs" style="color:var(--ink-soft);"></span>
+                        </div>
+                        <div id="pf-mentor-banner" class="hidden"></div>
+                        <div>
+                            <label class="text-xs font-bold" style="color:var(--ink-soft);">이름</label>
+                            <input type="text" id="pf-name" maxlength="30" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-title-label">직함 / 하는 일</label>
+                            <input type="text" id="pf-title" maxlength="60" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-sector-label">관심 / 전문 분야</label>
+                            <select id="pf-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
+                                <option value="">선택 안 함</option>
+                                <option value="1">업무 적응 & 실무 커뮤니케이션</option>
+                                <option value="2">조직생활 & 인간관계</option>
+                                <option value="3">커리어 방향 & 이직 고민</option>
+                                <option value="4">포트폴리오 & 성과 피드백</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold" style="color:var(--ink-soft);">소개</label>
+                            <textarea id="pf-intro" rows="3" maxlength="500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm"></textarea>
+                        </div>
+                        <p id="pf-mentor-note" class="hidden text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>멘토 프로필은 관리자 승인 후에 바뀌어요. 아래 버튼으로 요청을 보내면 관리자가 확인합니다.</p>
+                        <button id="pf-save-btn" onclick="saveMyProfile()" class="w-full accent-btn py-2.5 rounded-full text-sm">저장</button>
+                    </div>
+                </section>
+
+                <!-- 화면 -->
+                <section class="st-pane card p-6" data-st-pane="display">
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">테마</p><p class="st-row-desc">눈이 편한 어두운 화면으로 바꿀 수 있어요. '기기 설정'은 휴대폰·컴퓨터의 다크모드를 따라가요.</p></div>
+                        <div class="st-seg" id="st-theme-seg">
+                            <button data-v="light" onclick="setSetting('theme','light')">라이트</button>
+                            <button data-v="dark" onclick="setSetting('theme','dark')">다크</button>
+                            <button data-v="system" onclick="setSetting('theme','system')">기기 설정</button>
+                        </div>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">글자 크기</p><p class="st-row-desc st-preview-font">화면 전체의 글자와 버튼 크기가 함께 바뀌어요.</p></div>
+                        <div class="st-seg" id="st-font-seg">
+                            <button data-v="sm" onclick="setSetting('font','sm')">작게</button>
+                            <button data-v="md" onclick="setSetting('font','md')">보통</button>
+                            <button data-v="lg" onclick="setSetting('font','lg')">크게</button>
+                            <button data-v="xl" onclick="setSetting('font','xl')">아주 크게</button>
+                        </div>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">움직임 줄이기</p><p class="st-row-desc">화면 전환·버튼 효과 같은 애니메이션을 최소화해요. 멀미가 나거나 배터리를 아끼고 싶을 때 좋아요.</p></div>
+                        <label class="st-switch"><input type="checkbox" id="st-motion" onchange="setSetting('reduceMotion', this.checked)"><span></span></label>
+                    </div>
+                </section>
+
+                <!-- 알림 -->
+                <section class="st-pane card p-6" data-st-pane="notify">
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">상담 예약 알림</p><p class="st-row-desc">승인된 상담이 시작되기 전에 화면 위쪽에 알려드려요. (사이트를 열어둔 동안 작동해요)</p></div>
+                        <label class="st-switch"><input type="checkbox" id="st-remind" onchange="setSetting('remind', this.checked)"><span></span></label>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">알림 시점</p><p class="st-row-desc">상담 시작 몇 분 전에 알려드릴까요?</p></div>
+                        <select id="st-remind-min" class="st-select" onchange="setSetting('remindMin', Number(this.value))">
+                            <option value="5">5분 전</option><option value="10">10분 전</option><option value="30">30분 전</option>
+                            <option value="60">1시간 전</option><option value="180">3시간 전</option>
+                        </select>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">브라우저 알림</p><p id="st-notif-desc" class="st-row-desc">다른 탭을 보고 있어도 알림창으로 알려줘요.</p></div>
+                        <button id="st-notif-btn" onclick="stToggleBrowserNotif()" class="ghost-btn px-4 py-1.5 rounded-full text-xs">허용하기</button>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">알림 미리 보기</p><p class="st-row-desc">지금 설정으로 알림이 어떻게 보이는지 확인해요.</p></div>
+                        <button onclick="remTest()" class="ghost-btn px-4 py-1.5 rounded-full text-xs">테스트</button>
+                    </div>
+                </section>
+
+                <!-- 게임·소리 -->
+                <section class="st-pane card p-6" data-st-pane="game">
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">게임 효과음</p><p class="st-row-desc">쉼터 게임의 효과음을 켜고 꺼요. 상담 통화 소리에는 영향이 없어요.</p></div>
+                        <label class="st-switch"><input type="checkbox" id="st-sound" onchange="setSetting('sound', this.checked)"><span></span></label>
+                    </div>
+                    <div class="st-row">
+                        <div class="st-row-text"><p class="st-row-title">게임 중 채팅</p><p class="st-row-desc">함께 하는 온라인 게임에서 채팅 버튼과 새 메시지 미리보기를 보여줘요. 끄면 상대 채팅도 오지 않아요.</p></div>
+                        <label class="st-switch"><input type="checkbox" id="st-gamechat" onchange="setSetting('gameChat', this.checked)"><span></span></label>
+                    </div>
+                </section>
+
+                <!-- 계정 -->
+                <section class="st-pane space-y-4" data-st-pane="account">
+                    <div class="card p-6 space-y-3 text-sm">
+                        <h4 class="font-bold">비밀번호 변경</h4>
+                        <input type="password" id="pf-pw-current" autocomplete="current-password" placeholder="현재 비밀번호" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                        <input type="password" id="pf-pw-new" autocomplete="new-password" placeholder="새 비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                        <input type="password" id="pf-pw-new2" autocomplete="new-password" placeholder="새 비밀번호 확인" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
+                        <button id="pf-pw-btn" onclick="changeMyPassword()" class="w-full ghost-btn py-2.5 rounded-full text-sm">비밀번호 변경</button>
+                    </div>
+                    <div class="card p-6">
+                        <div class="st-row" style="padding-top:0;">
+                            <div class="st-row-text"><p class="st-row-title">사용 방법 다시 보기</p><p class="st-row-desc">가입할 때 보셨던 안내를 다시 볼 수 있어요.</p></div>
+                            <button onclick="startOnboarding(true)" class="ghost-btn px-4 py-1.5 rounded-full text-xs">튜토리얼</button>
+                        </div>
+                        <div class="st-row" style="padding-bottom:0;">
+                            <div class="st-row-text"><p class="st-row-title">로그아웃</p><p class="st-row-desc">이 기기에서 로그아웃해요.</p></div>
+                            <button onclick="handleLogout()" class="ghost-btn px-4 py-1.5 rounded-full text-xs">로그아웃</button>
+                        </div>
+                    </div>
+                    <div class="card st-danger p-6 space-y-3">
+                        <h4 class="font-bold text-rose-600"><i class="fa-solid fa-triangle-exclamation mr-1"></i>회원 탈퇴</h4>
+                        <p class="text-xs" style="color:var(--ink-soft);">탈퇴하면 프로필·예약·메시지·게임 전적이 모두 삭제되고 되돌릴 수 없어요. 진행하려면 비밀번호 확인이 필요해요.</p>
+                        <button id="st-delete-btn" onclick="openDeleteAccount()" class="st-danger-btn w-full py-2.5 rounded-full text-sm">회원 탈퇴</button>
+                    </div>
+                </section>
             </div>
 
             <!-- ============================== 공지사항 ============================== -->
@@ -2677,53 +3026,63 @@
         </div>
     </div>
 
-    <!-- ============================== 내 프로필 모달 ============================== -->
-    <div id="profile-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this)closeProfileModal()">
-        <div class="card max-w-md w-full p-6 space-y-5 overflow-y-auto" style="max-height:92vh;">
-            <div class="flex items-center justify-between">
-                <h3 class="font-extrabold text-lg">내 프로필</h3>
-                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+    <!-- ============================== 회원 탈퇴 (비밀번호 확인 → 최종 확인) ============================== -->
+    <div id="delete-modal" class="ux-modal hidden" role="dialog" aria-modal="true">
+        <div class="card max-w-sm p-6 space-y-4 text-sm">
+            <div id="del-step1" class="space-y-3">
+                <h3 class="font-extrabold text-lg text-rose-600"><i class="fa-solid fa-user-slash mr-1"></i>회원 탈퇴</h3>
+                <p class="text-xs" style="color:var(--ink-soft);">본인 확인을 위해 현재 비밀번호를 입력해주세요.</p>
+                <input type="password" id="del-pw" autocomplete="current-password" placeholder="현재 비밀번호" onkeydown="if(event.key==='Enter')deleteAccountStep1()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
+                <div class="flex gap-2">
+                    <button onclick="closeDeleteAccount()" class="flex-1 ghost-btn py-2.5 rounded-full text-sm">취소</button>
+                    <button id="del-next-btn" onclick="deleteAccountStep1()" class="flex-1 st-danger-btn py-2.5 rounded-full text-sm">다음</button>
+                </div>
             </div>
-            <section class="space-y-3 text-sm">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span id="pf-role" class="px-2.5 py-0.5 rounded-full text-xs font-bold" style="background:var(--accent);color:var(--accent-ink);"></span>
-                    <span id="pf-email" class="text-xs" style="color:var(--ink-soft);"></span>
+            <div id="del-step2" class="space-y-3 hidden">
+                <h3 class="font-extrabold text-lg text-rose-600"><i class="fa-solid fa-triangle-exclamation mr-1"></i>정말 탈퇴하시겠습니까?</h3>
+                <p>탈퇴하면 아래 정보가 <b>모두 삭제</b>되고 <b>되돌릴 수 없어요.</b></p>
+                <ul class="text-xs space-y-1 list-disc pl-5" style="color:var(--ink-soft);">
+                    <li>프로필과 계정 정보</li>
+                    <li>상담 예약과 메시지 내역</li>
+                    <li>게임 전적과 순위 기록</li>
+                </ul>
+                <p id="del-pending" class="text-xs font-bold text-rose-600 hidden"></p>
+                <div class="flex gap-2">
+                    <button onclick="closeDeleteAccount()" class="flex-1 ghost-btn py-2.5 rounded-full text-sm">아니요, 남을게요</button>
+                    <button id="del-final-btn" onclick="deleteAccountFinal()" class="flex-1 st-danger-btn py-2.5 rounded-full text-sm">네, 탈퇴할게요</button>
                 </div>
-                <div id="pf-mentor-banner" class="hidden"></div>
-                <div>
-                    <label class="text-xs font-bold" style="color:var(--ink-soft);">이름</label>
-                    <input type="text" id="pf-name" maxlength="30" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
-                </div>
-                <div>
-                    <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-title-label">직함 / 하는 일</label>
-                    <input type="text" id="pf-title" maxlength="60" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
-                </div>
-                <div>
-                    <label class="text-xs font-bold" style="color:var(--ink-soft);" id="pf-sector-label">관심 / 전문 분야</label>
-                    <select id="pf-sector" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm">
-                        <option value="">선택 안 함</option>
-                        <option value="1">업무 적응 & 실무 커뮤니케이션</option>
-                        <option value="2">조직생활 & 인간관계</option>
-                        <option value="3">커리어 방향 & 이직 고민</option>
-                        <option value="4">포트폴리오 & 성과 피드백</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold" style="color:var(--ink-soft);">소개</label>
-                    <textarea id="pf-intro" rows="3" maxlength="500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 mt-1 outline-none focus:border-slate-400 text-sm"></textarea>
-                </div>
-                <p id="pf-mentor-note" class="hidden text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>멘토 프로필은 관리자 승인 후에 바뀌어요. 아래 버튼으로 요청을 보내면 관리자가 확인합니다.</p>
-                <button id="pf-save-btn" onclick="saveMyProfile()" class="w-full accent-btn py-2.5 rounded-full text-sm">저장</button>
-            </section>
-            <hr class="border-slate-100">
-            <section class="space-y-3 text-sm">
-                <h4 class="font-bold">비밀번호 변경</h4>
-                <input type="password" id="pf-pw-current" autocomplete="current-password" placeholder="현재 비밀번호" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
-                <input type="password" id="pf-pw-new" autocomplete="new-password" placeholder="새 비밀번호 (8자리 이상)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
-                <input type="password" id="pf-pw-new2" autocomplete="new-password" placeholder="새 비밀번호 확인" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-slate-400 text-sm">
-                <button id="pf-pw-btn" onclick="changeMyPassword()" class="w-full ghost-btn py-2.5 rounded-full text-sm">비밀번호 변경</button>
-            </section>
+            </div>
         </div>
+    </div>
+
+    <!-- ============================== 온보딩 (가입 직후 사용법 안내) ============================== -->
+    <div id="onb-modal" class="ux-modal hidden" role="dialog" aria-modal="true">
+        <div class="card onb-card">
+            <div class="onb-hero"><i id="onb-icon" class="fa-solid fa-seedling"></i></div>
+            <div class="onb-body">
+                <h3 id="onb-title"></h3>
+                <p id="onb-text"></p>
+            </div>
+            <div id="onb-dots" class="onb-dots"></div>
+            <div class="onb-foot">
+                <button id="onb-skip" class="onb-skip" onclick="finishOnboarding()">건너뛰기</button>
+                <span class="flex-1"></span>
+                <button id="onb-prev" class="ghost-btn px-4 py-2 rounded-full text-sm" onclick="onbStep(-1)">이전</button>
+                <button id="onb-next" class="accent-btn px-5 py-2 rounded-full text-sm" onclick="onbStep(1)">다음</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 상단 배너 (예약 알림 · 오프라인) -->
+    <div id="ux-banners"></div>
+
+    <!-- ============================== 게임 채팅 ============================== -->
+    <button id="gc-fab" class="hidden" onclick="gcToggle()" aria-label="게임 채팅"><i class="fa-solid fa-comment-dots"></i><span id="gc-badge" class="hidden">0</span></button>
+    <div id="gc-peek" class="hidden"></div>
+    <div id="gc-panel" class="hidden">
+        <div class="gc-head"><span><i class="fa-solid fa-comments mr-1"></i>게임 채팅</span><button onclick="gcToggle(false)" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button></div>
+        <div id="gc-list"></div>
+        <form class="gc-form" onsubmit="gcSubmit(event)"><input id="gc-input" type="text" maxlength="120" autocomplete="off" placeholder="메시지 입력"><button type="submit">전송</button></form>
     </div>
 
     <!-- ============================== 비밀번호 재설정(메일 링크로 들어왔을 때) ============================== -->
@@ -2780,6 +3139,7 @@
             removeItem: (key) => { window.localStorage.removeItem(key); window.sessionStorage.removeItem(key); }
         };
 
+        if (!window.supabase || !window.supabase.createClient) { uxFatal('필수 구성요소를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해주세요.'); throw new Error('supabase-js not loaded'); }
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: { storage: dynamicAuthStorage, persistSession: true, autoRefreshToken: true }
         });
@@ -2835,7 +3195,8 @@
             'view-admin-observe': '상담 관전 중',
             'view-messages-hub': '메시지',
             'view-mentor-application': '멘토 신청',
-            'view-notices': '공지사항'
+            'view-notices': '공지사항',
+            'view-settings': '설정'
         };
         // 뒤로가기 버튼을 눌렀을 때 굳이 되돌아갈 필요 없는(항상 "홈"으로 취급하는) 화면들
         const homeLikeViews = ['view-mentee-home', 'view-mentor-dashboard', 'view-admin-dashboard'];
@@ -2989,6 +3350,7 @@
             if (error) { showToast('회원가입 실패: ' + error.message, 'error'); return; }
             showToast(`${name}님, 환영합니다!`, 'success');
             await loadCurrentUserProfile(data.user);
+            try { window.localStorage.setItem('agl_onb_' + currentUser.id, 'pending'); } catch (e2) {} // 가입 직후 한 번 사용법 안내
             enterApp();
         }
 
@@ -3012,6 +3374,9 @@
             teardownAdminLiveRoomsWatch();
             teardownLobbyChannel();
             teardownRoomChannel();
+            remStop();
+            window.aglLoggedIn = false; window.aglApplySettings && window.aglApplySettings();
+            ['onb-modal', 'delete-modal'].forEach(id => { const m = document.getElementById(id); if (m) m.classList.add('hidden'); });
             if (mentorOwnRoomChannel) { supabaseClient.removeChannel(mentorOwnRoomChannel); mentorOwnRoomChannel = null; }
             if (globalMessageWatchChannel) { supabaseClient.removeChannel(globalMessageWatchChannel); globalMessageWatchChannel = null; }
             if (chatChannel) { supabaseClient.removeChannel(chatChannel); chatChannel = null; }
@@ -3051,7 +3416,10 @@
             if (currentUser.role === 'mentor') setupMentorOwnRoomWatch(); // 대시보드에 들어가지 않아도 입장 대기 알림을 받을 수 있도록 즉시 구독
             setupGlobalMessageWatch(); // 어느 화면에 있든 새 메시지 배지가 실시간으로 갱신되도록
             if (currentUser.role === 'mentor') notifyEditRequestResult(); // 프로필 수정 요청이 처리됐다면 알려준다
+            window.aglLoggedIn = true; window.aglApplySettings && window.aglApplySettings(); // 다크모드는 앱 화면에서만
             goHome();
+            remStart();             // 상담 시작 전 알림
+            maybeShowOnboarding();  // 가입 직후라면 사용법 안내
         }
 
         function hideAppLoadingScreen() {
@@ -5668,6 +6036,7 @@
                 .on('broadcast', { event: 'hello' }, (msg) => cnrHandleHello(msg.payload))
                 .on('broadcast', { event: 'welcome' }, (msg) => cnrHandleWelcome(msg.payload))
                 .on('broadcast', { event: 'msg' }, (msg) => cnrHandleMessage(msg.payload))
+                .on('broadcast', { event: 'chat' }, (msg) => gcIncoming(msg.payload))
                 .subscribe((status) => {
                     if (status !== 'SUBSCRIBED' || !cnr) return;
                     if (cnr.role === 'guest') {
@@ -6355,7 +6724,7 @@
         // 두 사람 컴퓨터의 시계가 조금 어긋나 있어도 거의 같은 순간에 시작한다.
         // =====================================================================
         const RZ_COUNT_MS = 3000;       // 3·2·1 카운트다운 길이
-        const RZ_INTRO_LEAD_MS = 5600;  // VS 소개 2.6초 + 카운트다운 3초
+        const RZ_INTRO_LEAD_MS = 500;  // VS 소개 2.6초 + 카운트다운 3초
         const RZ_MIN_GAMES_FOR_RANK = 3; // 순위표에 정식으로 오르는 최소 판 수 (그 전에는 '배치 중'으로 아래에 표시)
 
         let rzAudioCtx = null;
@@ -6457,6 +6826,7 @@
                 .on('broadcast', { event: 'hello' }, (m) => handlers.onHello(m.payload))
                 .on('broadcast', { event: 'welcome' }, (m) => handlers.onWelcome(m.payload))
                 .on('broadcast', { event: 'msg' }, (m) => handlers.onMsg(m.payload))
+                .on('broadcast', { event: 'chat' }, (m) => gcIncoming(m.payload))
                 .subscribe((status) => { if (status === 'SUBSCRIBED' && handlers.onSubscribed) handlers.onSubscribed(); });
         }
         function rzSend(channel, event, payload) {
@@ -9522,7 +9892,10 @@
         }
 
         async function fetchAndRenderMentors() {
-            const { data: mentors } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
+            const mgrid = document.getElementById('mentor-grid');
+            uiSkeleton(mgrid, 4);
+            const { data: mentors, error: mentorsErr } = await supabaseClient.from('profiles').select('*').eq('role', 'mentor');
+            if (mentorsErr) { uiError(mgrid, '멘토 목록', 'fetchAndRenderMentors()'); return; }
             const { data: ratings } = await supabaseClient.from('mentor_rating_summary').select('*');
             const { data: openRooms } = await supabaseClient.from('live_rooms').select('*').eq('status', 'open').is('booking_id', null).is('mentee_admitted_id', null);
 
@@ -9663,6 +10036,7 @@
             }
             closeBookingModal();
             showToast('예약 신청 완료! 멘토 승인을 기다려주세요.', 'success');
+            remRefreshSoon();
             showView('view-mentee-bookings');
             renderMenteeBookings();
         }
@@ -9677,11 +10051,12 @@
         // 내 예약 목록 (멘티)
         // =====================================================================
         async function renderMenteeBookings() {
-            const { data: bookings } = await supabaseClient.from('bookings')
+            const container = document.getElementById('mentee-bookings-list');
+            uiSkeleton(container, 2);
+            const { data: bookings, error: bkErr } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentee_id', currentUser.id).order('created_at', { ascending: false });
-
-            const container = document.getElementById('mentee-bookings-list');
+            if (bkErr) { uiError(container, '내 예약', 'renderMenteeBookings()'); return; }
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p class="text-sm" style="color:var(--ink-soft);">아직 예약이 없습니다.</p>`;
                 return;
@@ -9740,11 +10115,12 @@
         }
 
         async function renderBookingRequests() {
-            const { data: bookings } = await supabaseClient.from('bookings')
+            const container = document.getElementById('mentor-booking-requests');
+            uiSkeleton(container, 1);
+            const { data: bookings, error: reqErr } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentor_id', currentUser.id).eq('status', 'requested').order('created_at', { ascending: false });
-
-            const container = document.getElementById('mentor-booking-requests');
+            if (reqErr) { uiError(container, '예약 요청', 'renderBookingRequests()'); return; }
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p style="color:var(--ink-soft);">대기 중인 예약 요청이 없습니다.</p>`;
                 return;
@@ -9768,6 +10144,7 @@
             const { error } = await supabaseClient.rpc('respond_to_booking', { p_booking_id: bookingId, p_approve: approve });
             if (error) return showToast('처리 실패', 'error');
             showToast(approve ? '예약을 승인했습니다.' : '예약을 거절했습니다.', 'success');
+            remRefreshSoon();
             renderBookingRequests();
             renderApprovedBookings();
         }
@@ -9777,15 +10154,17 @@
             const { error } = await supabaseClient.rpc('cancel_booking', { p_booking_id: bookingId });
             if (error) return showToast('취소 실패', 'error');
             showToast('예약이 취소되었습니다.', 'info');
+            remRefreshSoon();
             renderApprovedBookings();
         }
 
         async function renderApprovedBookings() {
-            const { data: bookings } = await supabaseClient.from('bookings')
+            const container = document.getElementById('mentor-approved-bookings');
+            uiSkeleton(container, 1);
+            const { data: bookings, error: apprErr } = await supabaseClient.from('bookings')
                 .select('*, availability_slots(start_time,end_time)')
                 .eq('mentor_id', currentUser.id).eq('status', 'approved').order('created_at', { ascending: false });
-
-            const container = document.getElementById('mentor-approved-bookings');
+            if (apprErr) { uiError(container, '예정된 상담', 'renderApprovedBookings()'); return; }
             if (!bookings || bookings.length === 0) {
                 container.innerHTML = `<p style="color:var(--ink-soft);">예정된 상담이 없습니다.</p>`;
                 return;
@@ -10207,9 +10586,12 @@
         }
 
         async function renderMessagesHub() {
-            const { data: msgs } = await supabaseClient.from('messages')
+            const hubList = document.getElementById('messages-hub-list');
+            uiSkeleton(hubList, 3);
+            const { data: msgs, error: hubErr } = await supabaseClient.from('messages')
                 .select('*').or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
                 .order('created_at', { ascending: false });
+            if (hubErr) { uiError(hubList, '메시지', 'renderMessagesHub()'); return; }
 
             document.getElementById('messages-search').value = '';
 
@@ -10524,7 +10906,64 @@
 
         let myLatestEditRequest = null;
 
-        async function openProfileModal() {
+        // =====================================================================
+        // 설정 · 다크모드 · 회원 탈퇴 · 온보딩 · 예약 알림 · 로딩/오류 표시 · 게임 채팅
+        // (설정 값은 <head>의 초기 스크립트가 window.aglSettings 로 먼저 읽어 두어 화면 깜빡임이 없습니다)
+        // =====================================================================
+        const appSettings = window.aglSettings || { theme: 'system', font: 'md', reduceMotion: null, sound: true, gameChat: true, remind: true, remindMin: 10, browserNotif: false };
+
+        function setSetting(key, value) {
+            appSettings[key] = value;
+            try { window.localStorage.setItem(window.aglSettingsKey || 'agl_settings_v1', JSON.stringify(appSettings)); } catch (e) {}
+            if (window.aglApplySettings) window.aglApplySettings();
+            renderSettingsControls();
+            if (key === 'gameChat') gcSync();
+            if (key === 'remind' || key === 'remindMin') remTick();
+        }
+
+        function renderSettingsControls() {
+            const markSeg = (id, val) => document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.toggle('on', b.dataset.v === String(val)));
+            markSeg('st-theme-seg', appSettings.theme);
+            markSeg('st-font-seg', appSettings.font);
+            const motion = appSettings.reduceMotion === null
+                ? !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+                : !!appSettings.reduceMotion;
+            const setChk = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
+            setChk('st-motion', motion);
+            setChk('st-remind', appSettings.remind);
+            setChk('st-sound', appSettings.sound !== false);
+            setChk('st-gamechat', appSettings.gameChat !== false);
+            const sel = document.getElementById('st-remind-min');
+            if (sel) sel.value = String(appSettings.remindMin);
+            // 브라우저 알림 버튼 상태
+            const btn = document.getElementById('st-notif-btn'), desc = document.getElementById('st-notif-desc');
+            if (btn && desc) {
+                if (!('Notification' in window)) { btn.disabled = true; btn.innerText = '지원 안 함'; desc.innerText = '이 브라우저는 알림창을 지원하지 않아요.'; }
+                else if (Notification.permission === 'denied') { btn.disabled = true; btn.innerText = '차단됨'; desc.innerText = '브라우저 설정에서 이 사이트의 알림을 허용해야 사용할 수 있어요.'; }
+                else if (Notification.permission === 'granted' && appSettings.browserNotif) { btn.disabled = false; btn.innerText = '끄기'; desc.innerText = '켜져 있어요. 다른 탭을 보고 있어도 알림창이 떠요.'; }
+                else { btn.disabled = false; btn.innerText = '허용하기'; desc.innerText = '다른 탭을 보고 있어도 알림창으로 알려줘요.'; }
+            }
+        }
+
+        async function stToggleBrowserNotif() {
+            if (!('Notification' in window)) return showToast('이 브라우저는 알림창을 지원하지 않아요.', 'error');
+            if (Notification.permission === 'granted') { setSetting('browserNotif', !appSettings.browserNotif); return; }
+            if (Notification.permission === 'denied') return showToast('브라우저 설정에서 알림을 허용해주세요.', 'error');
+            let res = 'default';
+            try { res = await Notification.requestPermission(); } catch (e) {}
+            if (res === 'granted') { setSetting('browserNotif', true); showToast('브라우저 알림을 켰어요.', 'success'); }
+            else { renderSettingsControls(); showToast('알림이 허용되지 않았어요.', 'info'); }
+        }
+
+        let stLastTab = 'profile';
+        function stShowTab(name) {
+            stLastTab = name;
+            document.querySelectorAll('[data-st-tab]').forEach(b => b.classList.toggle('on', b.dataset.stTab === name));
+            document.querySelectorAll('[data-st-pane]').forEach(p => p.classList.toggle('on', p.dataset.stPane === name));
+        }
+
+        // ---------- 설정 화면 열기 (예전 "내 프로필" 창을 대신함) ----------
+        async function openSettings(tab) {
             if (!currentUser) return;
             const isMentor = currentUser.role === 'mentor';
             const roleLabel = isMentor ? '멘토' : (currentUser.role === 'admin' ? (currentUser.isSuper ? '최고 관리자' : '관리자') : '멘티');
@@ -10540,10 +10979,406 @@
             document.getElementById('pf-save-btn').innerText = isMentor ? '수정 요청 보내기' : '저장';
             ['pf-pw-current', 'pf-pw-new', 'pf-pw-new2'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('pf-mentor-banner').classList.add('hidden');
-            document.getElementById('profile-modal').classList.remove('hidden');
+            document.getElementById('st-delete-btn').classList.toggle('hidden', !!currentUser.isSuper);
+            stShowTab(tab || stLastTab || 'profile');
+            renderSettingsControls();
+            showView('view-settings');
             if (isMentor) await refreshProfileEditBanner();
         }
-        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
+        function openProfileModal() { return openSettings('profile'); } // 예전 이름 호환
+        function closeProfileModal() { const v = document.getElementById('view-settings'); if (v && v.classList.contains('active')) goBack(); }
+
+        // ---------- 회원 탈퇴: ① 비밀번호 확인 → ② "정말 탈퇴하시겠습니까?" ----------
+        function openDeleteAccount() {
+            if (!currentUser) return;
+            if (currentUser.isSuper) return showToast('최고 관리자 계정은 탈퇴할 수 없어요. 다른 분께 권한을 넘긴 뒤에 진행해주세요.', 'error');
+            document.getElementById('del-pw').value = '';
+            document.getElementById('del-step1').classList.remove('hidden');
+            document.getElementById('del-step2').classList.add('hidden');
+            document.getElementById('del-next-btn').disabled = false;
+            document.getElementById('del-final-btn').disabled = false;
+            document.getElementById('delete-modal').classList.remove('hidden');
+            setTimeout(() => { try { document.getElementById('del-pw').focus(); } catch (e) {} }, 50);
+        }
+        function closeDeleteAccount() {
+            document.getElementById('delete-modal').classList.add('hidden');
+            document.getElementById('del-pw').value = '';
+        }
+        async function deleteAccountStep1() {
+            const pw = document.getElementById('del-pw').value;
+            if (!pw) return showToast('비밀번호를 입력해주세요.', 'error');
+            const btn = document.getElementById('del-next-btn');
+            btn.disabled = true;
+            try {
+                const { error } = await supabaseClient.auth.signInWithPassword({ email: currentUser.email, password: pw });
+                if (error) return showToast('비밀번호가 올바르지 않아요.', 'error');
+                // 정리되는 예정 상담 수를 알려준다 (실패해도 탈퇴 절차는 계속)
+                let pendingN = 0;
+                try {
+                    const col = currentUser.role === 'mentor' ? 'mentor_id' : 'mentee_id';
+                    const { count } = await supabaseClient.from('bookings').select('id', { count: 'exact', head: true })
+                        .eq(col, currentUser.id).in('status', ['requested', 'approved']);
+                    pendingN = count || 0;
+                } catch (e) {}
+                const p = document.getElementById('del-pending');
+                p.classList.toggle('hidden', !pendingN);
+                if (pendingN) p.innerText = `예정된 상담 ${pendingN}건도 함께 사라져요.`;
+                document.getElementById('del-pw').value = '';
+                document.getElementById('del-step1').classList.add('hidden');
+                document.getElementById('del-step2').classList.remove('hidden');
+            } finally { btn.disabled = false; }
+        }
+        async function deleteAccountFinal() {
+            const btn = document.getElementById('del-final-btn');
+            btn.disabled = true;
+            const uid = currentUser && currentUser.id;
+            try {
+                const { error } = await supabaseClient.rpc('delete_my_account');
+                if (error) {
+                    const m = String(error.message || '') + ' ' + String(error.code || '');
+                    if (/SUPER_ADMIN_PROTECTED/.test(m)) showToast('최고 관리자 계정은 탈퇴할 수 없어요.', 'error');
+                    else if (/PGRST202|Could not find|not find the function|404/.test(m)) showToast('탈퇴 기능이 아직 서버에 설치되지 않았어요. 관리자에게 문의해주세요.', 'error');
+                    else showToast('탈퇴 처리에 실패했어요: ' + (error.message || '알 수 없는 오류'), 'error');
+                    return;
+                }
+                closeDeleteAccount();
+                try {
+                    const rm = [];
+                    for (let i = 0; i < window.localStorage.length; i++) {
+                        const k = window.localStorage.key(i);
+                        if (k && (k.includes(uid) || k.indexOf('agl_rem_') === 0)) rm.push(k);
+                    }
+                    rm.forEach(k => window.localStorage.removeItem(k));
+                } catch (e) {}
+                await handleLogout();
+                showToast('탈퇴가 완료되었어요. 그동안 이용해주셔서 감사합니다.', 'success');
+            } finally { btn.disabled = false; }
+        }
+
+        // ---------- 온보딩 (가입 직후 사용법 안내) ----------
+        const ONB_STEPS = {
+            mentee: [
+                { icon: 'fa-seedling', title: 'AgeLess Lab에 오신 걸 환영해요!', text: '은퇴한 전문가 멘토와 1:1 화상으로 일·진로·인간관계 고민을 나누는 공간이에요. 1분이면 사용법을 알 수 있어요.' },
+                { icon: 'fa-user-group', title: '멘토 찾기', text: '홈에서 분야별로 멘토를 둘러보고, 카드를 눌러 소개와 후기를 확인하세요. "지금 상담 가능" 표시가 있으면 바로 만날 수도 있어요.' },
+                { icon: 'fa-calendar-check', title: '예약하고 입장하기', text: '멘토의 가능한 시간을 골라 상담 내용을 적어 예약 요청을 보내요. 멘토가 승인하면 "내 예약"에서 시간에 맞춰 입장해요. 시작 전에 알림도 드려요!' },
+                { icon: 'fa-comment-dots', title: '메시지로 미리 이야기하기', text: '예약 전후로 멘토와 메시지를 주고받을 수 있어요. 상담이 끝나면 후기를 남기고, 상담 내용을 정리한 커리어 리포트도 받아보세요.' },
+                { icon: 'fa-mug-hot', title: '쉼터에서 잠깐 쉬어가기', text: '위쪽 "쉼터"에서 체스·바둑·오목·배구·루미큐브·우노 같은 게임을 다른 사람과 즐길 수 있어요. 게임 중 채팅도 가능해요.' },
+                { icon: 'fa-gear', title: '내 취향대로 설정하기', text: '"설정"에서 다크모드, 글자 크기, 알림, 프로필을 바꿀 수 있어요. 이제 시작해볼까요?' }
+            ],
+            mentor: [
+                { icon: 'fa-seedling', title: '멘토가 되신 걸 환영해요!', text: '쌓아온 경험으로 사회초년생의 고민을 들어주세요. 아주 간단한 사용법을 알려드릴게요.' },
+                { icon: 'fa-calendar-plus', title: '가능한 시간 열어두기', text: '"내 대시보드"에서 상담 가능한 시간을 등록하세요. 멘티가 그 시간 중에서 예약 요청을 보내요.' },
+                { icon: 'fa-circle-check', title: '예약 승인하고 상담 시작', text: '들어온 요청을 승인하면 예약이 확정돼요. 시간이 되면 "상담 시작"으로 방을 열고, 멘티가 입장하도록 허락해주세요.' },
+                { icon: 'fa-user-pen', title: '프로필 관리', text: '멘토 프로필은 관리자 확인 후 반영돼요. "설정 → 내 프로필"에서 수정 요청을 보낼 수 있어요.' },
+                { icon: 'fa-gear', title: '알림과 화면 설정', text: '"설정"에서 상담 시작 전 알림 시점과 다크모드, 글자 크기를 바꿀 수 있어요.' }
+            ],
+            admin: [
+                { icon: 'fa-shield-halved', title: '관리자 안내', text: '"관리자 홈"에서 계정·멘토 신청·후기·공지를 관리하고 진행 중인 상담을 관전할 수 있어요.' },
+                { icon: 'fa-gear', title: '설정', text: '"설정"에서 화면과 알림을 내 취향대로 바꿀 수 있어요.' }
+            ]
+        };
+        let onb = { idx: 0, steps: [] };
+        function startOnboarding(force) {
+            if (!currentUser) return;
+            onb = { idx: 0, steps: ONB_STEPS[currentUser.role] || ONB_STEPS.mentee };
+            document.getElementById('onb-modal').classList.remove('hidden');
+            onbRender();
+        }
+        function onbRender() {
+            const s = onb.steps[onb.idx], last = onb.idx === onb.steps.length - 1;
+            const icon = document.getElementById('onb-icon');
+            icon.className = 'fa-solid ' + s.icon;
+            icon.style.animation = 'none'; void icon.offsetWidth; icon.style.animation = '';
+            document.getElementById('onb-title').innerText = s.title;
+            document.getElementById('onb-text').innerText = s.text;
+            document.getElementById('onb-dots').innerHTML = onb.steps.map((_, i) => `<i class="${i === onb.idx ? 'on' : ''}"></i>`).join('');
+            document.getElementById('onb-prev').classList.toggle('hidden', onb.idx === 0);
+            document.getElementById('onb-skip').classList.toggle('hidden', last);
+            document.getElementById('onb-next').innerText = last ? '시작하기' : '다음';
+        }
+        function onbStep(d) {
+            const n = onb.idx + d;
+            if (n >= onb.steps.length) return finishOnboarding();
+            if (n < 0) return;
+            onb.idx = n; onbRender();
+        }
+        function finishOnboarding() {
+            document.getElementById('onb-modal').classList.add('hidden');
+            if (currentUser) { try { window.localStorage.setItem('agl_onb_' + currentUser.id, 'done'); } catch (e) {} }
+        }
+        function maybeShowOnboarding() {
+            if (!currentUser) return;
+            let v = null;
+            try { v = window.localStorage.getItem('agl_onb_' + currentUser.id); } catch (e) {}
+            if (v === 'pending') setTimeout(() => { if (currentUser) startOnboarding(); }, 700);
+        }
+
+        // ---------- 상단 배너 (예약 알림 · 오프라인) ----------
+        const uxBannerTimers = {};
+        function uxBanner(id, cls, text, actionLabel, onAction, ttl) {
+            const box = document.getElementById('ux-banners');
+            if (!box) return;
+            uxBannerClose(id);
+            const el = document.createElement('div');
+            el.className = 'ux-banner ' + cls; el.dataset.id = id;
+            const t = document.createElement('span'); t.className = 'b-txt'; t.textContent = text; el.appendChild(t);
+            if (actionLabel && onAction) {
+                const b = document.createElement('button'); b.textContent = actionLabel;
+                b.onclick = () => { uxBannerClose(id); onAction(); };
+                el.appendChild(b);
+            }
+            const x = document.createElement('button'); x.className = 'x'; x.setAttribute('aria-label', '닫기'); x.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            x.onclick = () => uxBannerClose(id);
+            el.appendChild(x);
+            box.appendChild(el);
+            if (ttl) uxBannerTimers[id] = setTimeout(() => uxBannerClose(id), ttl);
+        }
+        function uxBannerClose(id) {
+            clearTimeout(uxBannerTimers[id]); delete uxBannerTimers[id];
+            document.querySelectorAll('#ux-banners .ux-banner').forEach(e => { if (e.dataset.id === id) e.remove(); });
+        }
+
+        // ---------- 예약 알림 ----------
+        const REM = { list: [], timer: null, lastFetch: 0, firstDone: false };
+        function remSeen(bid, kind) {
+            try { return !!window.localStorage.getItem('agl_rem_' + bid + '_' + kind); } catch (e) { return false; }
+        }
+        function remMark(bid, kind) { try { window.localStorage.setItem('agl_rem_' + bid + '_' + kind, '1'); } catch (e) {} }
+        function remClock(ms) { return new Date(ms).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }); }
+
+        async function remRefresh() {
+            if (!currentUser || currentUser.role === 'admin') return;
+            REM.lastFetch = Date.now();
+            const col = currentUser.role === 'mentor' ? 'mentor_id' : 'mentee_id';
+            const otherCol = col === 'mentor_id' ? 'mentee_id' : 'mentor_id';
+            let res;
+            try {
+                res = await supabaseClient.from('bookings').select('id,mentor_id,mentee_id,status,availability_slots(start_time,end_time)')
+                    .eq(col, currentUser.id).eq('status', 'approved');
+            } catch (e) { return; }
+            if (!res || res.error || !res.data) return;
+            const now = Date.now();
+            const list = res.data.filter(b => b.availability_slots && b.availability_slots.start_time)
+                .map(b => ({ id: b.id, start: new Date(b.availability_slots.start_time).getTime(), end: new Date(b.availability_slots.end_time || b.availability_slots.start_time).getTime(), otherId: b[otherCol], other: '' }))
+                .filter(b => b.end > now - 30 * 60000).sort((a, b) => a.start - b.start);
+            const ids = [...new Set(list.map(b => b.otherId).filter(Boolean))];
+            if (ids.length) {
+                try {
+                    const { data: ps } = await supabaseClient.from('profiles').select('id,name').in('id', ids);
+                    (ps || []).forEach(p => list.forEach(b => { if (b.otherId === p.id) b.other = p.name; }));
+                } catch (e) {}
+            }
+            REM.list = list;
+            if (!REM.firstDone) {
+                REM.firstDone = true;
+                const soon = list.filter(b => b.start > now && b.start - now < 24 * 3600000);
+                let dayKey = 'agl_rem_day_' + currentUser.id, today = new Date().toDateString(), seen = null;
+                try { seen = window.localStorage.getItem(dayKey); } catch (e) {}
+                if (soon.length && seen !== today && appSettings.remind) {
+                    try { window.localStorage.setItem(dayKey, today); } catch (e) {}
+                    showToast(`24시간 안에 예정된 상담이 ${soon.length}건 있어요. 첫 상담은 ${remClock(soon[0].start)}에 시작해요.`, 'info');
+                }
+            }
+            remTick();
+        }
+        function remRefreshSoon() { setTimeout(() => { remRefresh(); }, 400); }
+
+        function remTick() {
+            if (!currentUser) return;
+            if (Date.now() - REM.lastFetch > 5 * 60000) remRefresh();
+            if (!appSettings.remind) return;
+            const lead = (Number(appSettings.remindMin) || 10) * 60000, now = Date.now();
+            REM.list.forEach(b => {
+                const d = b.start - now;
+                if (d <= 0 && d > -20 * 60000) {
+                    if (!remSeen(b.id, 'start')) { remMark(b.id, 'start'); remMark(b.id, 'lead'); remFire(b, d); }
+                } else if (d > 0 && d <= lead) {
+                    if (!remSeen(b.id, 'lead')) { remMark(b.id, 'lead'); remFire(b, d); }
+                }
+            });
+        }
+        function remMessage(b, d) {
+            const who = (b.other || '상대') + (currentUser.role === 'mentor' ? ' 멘티' : ' 멘토');
+            if (d <= 0) return `${who}님과의 상담 시간이에요! (${remClock(b.start)})`;
+            const m = Math.max(1, Math.round(d / 60000));
+            const t = m >= 60 ? `${Math.floor(m / 60)}시간${m % 60 ? ' ' + (m % 60) + '분' : ''}` : `${m}분`;
+            return `${who}님과의 상담이 ${t} 뒤에 시작해요. (${remClock(b.start)})`;
+        }
+        function remGo() {
+            if (!currentUser) return;
+            if (currentUser.role === 'mentor') { showView('view-mentor-dashboard'); renderMentorDashboard(); }
+            else { showView('view-mentee-bookings'); renderMenteeBookings(); }
+        }
+        function remFire(b, d) {
+            const msg = remMessage(b, d);
+            uxBanner('rem-' + b.id, 'rem', '⏰ ' + msg, '바로가기', remGo, 5 * 60000);
+            showToast(msg, 'info');
+            remBrowserNotify('상담 알림', msg, 'rem-' + b.id);
+        }
+        function remBrowserNotify(title, body, tag) {
+            try {
+                if (appSettings.browserNotif && 'Notification' in window && Notification.permission === 'granted') {
+                    const n = new Notification(title, { body, tag });
+                    n.onclick = () => { try { window.focus(); } catch (e) {} n.close(); };
+                }
+            } catch (e) {}
+        }
+        function remTest() {
+            const msg = '멘토 김OO님과의 상담이 10분 뒤에 시작해요. (테스트 알림)';
+            uxBanner('rem-test', 'rem', '⏰ ' + msg, '바로가기', remGo, 8000);
+            showToast('알림이 이렇게 보여요!', 'success');
+            remBrowserNotify('상담 알림', msg, 'rem-test');
+        }
+        function remStart() {
+            REM.firstDone = false; REM.list = []; REM.lastFetch = 0;
+            remRefresh();
+            if (!REM.timer) REM.timer = setInterval(remTick, 20000);
+        }
+        function remStop() {
+            if (REM.timer) { clearInterval(REM.timer); REM.timer = null; }
+            REM.list = [];
+            document.querySelectorAll('#ux-banners .ux-banner').forEach(e => { if (/^rem-/.test(e.dataset.id || '')) e.remove(); });
+        }
+
+        // ---------- 로딩 · 오류 표시 ----------
+        function uiSkeleton(el, n) {
+            if (!el) return;
+            if (el.firstElementChild && !el.querySelector('.ui-err')) return; // 이미 내용이 있으면 깜빡이지 않게 그대로 둔다
+            el.innerHTML = Array.from({ length: n || 3 }).map(() =>
+                '<div class="card p-4 ui-skel"><div class="ui-skel-line" style="width:42%"></div><div class="ui-skel-line" style="width:70%"></div><div class="ui-skel-line" style="width:30%"></div></div>').join('');
+        }
+        function uiError(el, what, retryCode) {
+            if (!el) return;
+            el.innerHTML = `<div class="card ui-err" style="grid-column:1/-1;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p class="t">${escapeHtml(what)}을(를) 불러오지 못했어요</p>
+                <p class="s">네트워크 상태를 확인하고 다시 시도해 주세요.</p>
+                <button onclick="${retryCode}" class="ghost-btn px-4 py-1.5 rounded-full text-xs mt-3"><i class="fa-solid fa-rotate-right mr-1"></i>다시 시도</button>
+            </div>`;
+        }
+        function uxFatal(msg) {
+            const l = document.getElementById('app-loading-screen'); if (l) l.remove();
+            const d = document.createElement('div'); d.className = 'ui-fatal';
+            d.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="font-size:40px;color:#e11d48;"></i><p style="font-weight:900;font-size:18px;">페이지를 불러오지 못했어요</p><p style="font-size:13px;opacity:.7;max-width:22rem;"></p><button class="accent-btn px-6 py-2.5 rounded-full text-sm" onclick="location.reload()">새로고침</button>';
+            d.querySelector('p:nth-of-type(2)').textContent = msg;
+            document.body.appendChild(d);
+        }
+        window.addEventListener('offline', () => uxBanner('net', 'off', '인터넷 연결이 끊겼어요. 연결되면 자동으로 다시 시도해요.'));
+        window.addEventListener('online', () => {
+            uxBannerClose('net'); showToast('다시 연결됐어요.', 'success');
+            if (currentUser) remRefresh();
+        });
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) setTimeout(() => uxBanner('net', 'off', '인터넷 연결이 끊겼어요. 연결되면 자동으로 다시 시도해요.'), 0);
+        let lastRejectToast = 0;
+        window.addEventListener('unhandledrejection', (e) => {
+            const r = e && e.reason, m = String((r && r.message) || r || '');
+            if (/AbortError|ResizeObserver|play\(\)|NotAllowedError|The user aborted/i.test(m)) return;
+            if (Date.now() - lastRejectToast < 8000) return;
+            lastRejectToast = Date.now();
+            if (/Failed to fetch|NetworkError|Load failed|network/i.test(m)) showToast('네트워크 연결이 불안정해요. 잠시 후 다시 시도해주세요.', 'error');
+        });
+
+        // ---------- 게임 중 채팅 ----------
+        const gc = { key: null, msgs: [], unread: 0, open: false, lastSend: 0, seen: new Set(), peekTimer: null };
+        function gcCtx() {
+            try {
+                if (!currentUser) return null;
+                if (typeof cnr !== 'undefined' && cnr && cnr.channel) return { key: 'cnr:' + cnr.roomCode, ch: cnr.channel, id: currentUser.id, name: cnr.myName };
+                if (typeof chess !== 'undefined' && chess && chess.channel) return { key: 'chess:' + chess.roomCode, ch: chess.channel, id: currentUser.id, name: chess.myName };
+                if (typeof go !== 'undefined' && go && go.channel) return { key: 'go:' + go.roomCode, ch: go.channel, id: currentUser.id, name: go.myName };
+                if (typeof omok !== 'undefined' && omok && omok.channel) return { key: 'omok:' + omok.roomCode, ch: omok.channel, id: currentUser.id, name: omok.myName };
+                if (typeof vb !== 'undefined' && vb && vb.channel) return { key: 'vb:' + vb.roomCode, ch: vb.channel, id: currentUser.id, name: vb.myName };
+                for (const g of ['rm', 'un']) {
+                    const r = mpRooms[g];
+                    if (r && r.channel) return { key: g + ':' + r.code, ch: r.channel, id: r.myId, name: r.myName };
+                }
+            } catch (e) {}
+            return null;
+        }
+        function gcSync() {
+            const fab = document.getElementById('gc-fab');
+            if (!fab) return;
+            const rz = document.getElementById('restzone-modal');
+            const ctx = (currentUser && appSettings.gameChat !== false && rz && !rz.classList.contains('hidden')) ? gcCtx() : null;
+            if (!ctx) {
+                fab.classList.add('hidden');
+                document.getElementById('gc-panel').classList.add('hidden');
+                document.getElementById('gc-peek').classList.add('hidden');
+                if (gc.key) { gc.key = null; gc.msgs = []; gc.unread = 0; gc.open = false; gc.seen = new Set(); gcRender(); }
+                return;
+            }
+            if (gc.key !== ctx.key) { gc.key = ctx.key; gc.msgs = []; gc.unread = 0; gc.open = false; gc.seen = new Set(); document.getElementById('gc-panel').classList.add('hidden'); gcRender(); }
+            fab.classList.remove('hidden');
+        }
+        function gcRender() {
+            const list = document.getElementById('gc-list');
+            if (!list) return;
+            list.innerHTML = '';
+            if (!gc.msgs.length) {
+                const e = document.createElement('div'); e.className = 'gc-empty'; e.textContent = '상대에게 인사를 건네보세요 👋'; list.appendChild(e);
+            }
+            gc.msgs.forEach(m => {
+                const d = document.createElement('div'); d.className = 'gc-msg' + (m.me ? ' me' : '');
+                if (!m.me) { const b = document.createElement('b'); b.textContent = m.n; d.appendChild(b); }
+                d.appendChild(document.createTextNode(m.t));
+                list.appendChild(d);
+            });
+            list.scrollTop = list.scrollHeight;
+            const badge = document.getElementById('gc-badge');
+            badge.innerText = gc.unread > 9 ? '9+' : String(gc.unread);
+            badge.classList.toggle('hidden', gc.unread === 0);
+        }
+        function gcToggle(force) {
+            gc.open = typeof force === 'boolean' ? force : !gc.open;
+            document.getElementById('gc-panel').classList.toggle('hidden', !gc.open);
+            document.getElementById('gc-peek').classList.add('hidden');
+            if (gc.open) {
+                gc.unread = 0; gcRender();
+                if (typeof vb !== 'undefined' && vb && vb.keys) vb.keys = { l: false, r: false, u: false, d: false };
+                setTimeout(() => { try { document.getElementById('gc-input').focus(); } catch (e) {} }, 30);
+            }
+        }
+        function gcIncoming(p) {
+            if (appSettings.gameChat === false || !p || typeof p !== 'object') return;
+            gcSync();
+            const ctx = gcCtx();
+            if (!ctx || p.id === ctx.id) return;
+            const mid = String(p.mid || '');
+            if (!mid || gc.seen.has(mid)) return;
+            gc.seen.add(mid);
+            const t = String(p.t || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+            if (!t) return;
+            const n = String(p.n || '상대').slice(0, 20);
+            gc.msgs.push({ n, t, me: false }); if (gc.msgs.length > 80) gc.msgs.shift();
+            if (!gc.open) {
+                gc.unread++;
+                const peek = document.getElementById('gc-peek');
+                peek.textContent = n + ': ' + t; peek.classList.remove('hidden');
+                clearTimeout(gc.peekTimer); gc.peekTimer = setTimeout(() => peek.classList.add('hidden'), 3800);
+            }
+            gcRender();
+        }
+        function gcSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('gc-input');
+            const t = input.value.replace(/\s+/g, ' ').trim().slice(0, 120);
+            if (!t) return;
+            const ctx = gcCtx();
+            if (!ctx) return;
+            if (Date.now() - gc.lastSend < 600) return showToast('조금만 천천히 보내주세요.', 'info');
+            gc.lastSend = Date.now();
+            const mid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+            gc.seen.add(mid);
+            rzSend(ctx.ch, 'chat', { mid, id: ctx.id, n: ctx.name || '나', t });
+            gc.msgs.push({ n: '나', t, me: true }); if (gc.msgs.length > 80) gc.msgs.shift();
+            input.value = '';
+            gcRender();
+        }
+        (function gcInit() {
+            const input = document.getElementById('gc-input');
+            if (input) ['keydown', 'keyup'].forEach(ev => input.addEventListener(ev, (e) => e.stopPropagation())); // 게임 조작 키가 채팅 입력과 섞이지 않게
+            setInterval(gcSync, 1000);
+        })();
 
         async function refreshProfileEditBanner() {
             const box = document.getElementById('pf-mentor-banner');
@@ -11900,8 +12735,10 @@
         async function renderNotices() {
             document.getElementById('notice-write-btn').classList.toggle('hidden', currentUser.role !== 'admin');
 
-            const { data: notices } = await supabaseClient.from('notices').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('notices-list');
+            uiSkeleton(container, 2);
+            const { data: notices, error: noticeErr } = await supabaseClient.from('notices').select('*').order('created_at', { ascending: false });
+            if (noticeErr) { uiError(container, '공지사항', 'renderNotices()'); return; }
             if (!notices || notices.length === 0) {
                 container.innerHTML = `<p class="text-sm text-center py-10" style="color:var(--ink-soft);">등록된 공지가 없습니다.</p>`;
                 return;
