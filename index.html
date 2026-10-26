@@ -2415,7 +2415,7 @@
                         <button onclick="restzoneOpenGame('kkutu')" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#ece6fb;"><i class="fa-solid fa-link" style="color:#7c4dd6;"></i></span>
                             <span class="restzone-game-name">끝말잇기</span>
-                            <span class="restzone-game-desc">끄투 사전 35만 단어 · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
+                            <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
                         </button>
                     </div>
                 </div>
@@ -3083,14 +3083,14 @@
 
                     <div id="kk-state-lobby" class="hidden cnr-center">
                         <i class="fa-solid fa-link text-3xl mb-3" style="color:#7c4dd6;"></i>
-                        <p class="cnr-msg">끝말잇기 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">끄투 사전(35만 단어)과 끄투 규칙 그대로 · 두음법칙 · 라운드마다 시간이 줄어요<br>2~4명이 방 코드로 모이거나, 혼자서 컴퓨터와 연습할 수도 있어요</span></p>
+                        <p class="cnr-msg">끝말잇기 한 판!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">끄투 사전과 규칙 그대로(인명·연예인·애니 이름도 OK, 어인정 기본 켜짐) · 두음법칙 · 라운드마다 시간이 줄어요<br>2~4명이 방 코드로 모이거나, 혼자서 컴퓨터와 연습할 수도 있어요</span></p>
                         <button onclick="mpCreate('kk')" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기 (최대 4명)</button>
                         <div class="cnr-join-row">
                             <input id="kk-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
                             <button onclick="mpJoin('kk')" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
                         </div>
                         <p id="kk-lobby-error" class="cnr-lobby-error hidden"></p>
-                        <p class="kk-credit">단어 사전·규칙 출처: 끄투(KKuTu) 오픈소스 프로젝트 · GPL-3.0 · github.com/JJoriping/KKuTu</p>
+                        <p class="kk-credit">단어 사전·규칙 출처: 끄투(KKuTu) 오픈소스 프로젝트(GPL-3.0, github.com/JJoriping/KKuTu) · 인명·지명 등 고유명사: mecab-ko-dic(Apache-2.0)</p>
                         <button onclick="kkShowLeaderboard()" class="cnr-leaderboard-link press-feel"><i class="fa-solid fa-ranking-star mr-1.5"></i>승률 순위 보기</button>
                     </div>
 
@@ -3110,7 +3110,7 @@
                             </div>
                             <div class="kk-optrow chips">
                                 <label class="kk-chk" title="이어갈 수 없는 '한방 단어'를 못 쓰게 해요"><input type="checkbox" id="kk-o-man" onchange="kkOptChange()"><span>매너</span></label>
-                                <label class="kk-chk" title="끄투가 인정한 단어(어인정)도 쓸 수 있어요"><input type="checkbox" id="kk-o-ext" onchange="kkOptChange()"><span>어인정</span></label>
+                                <label class="kk-chk" title="끄투가 인정한 단어와 인명·지명·작품명 같은 고유명사(어인정)도 쓸 수 있어요"><input type="checkbox" id="kk-o-ext" onchange="kkOptChange()"><span>어인정</span></label>
                                 <label class="kk-chk" title="미션 글자가 들어간 단어는 점수 보너스"><input type="checkbox" id="kk-o-mis" onchange="kkOptChange()"><span>미션</span></label>
                                 <label class="kk-chk" title="외래어는 쓸 수 없어요"><input type="checkbox" id="kk-o-loa" onchange="kkOptChange()"><span>외래어 금지</span></label>
                                 <label class="kk-chk" title="표준 일반 명사만 쓸 수 있어요"><input type="checkbox" id="kk-o-str" onchange="kkOptChange()"><span>엄격</span></label>
@@ -10610,6 +10610,7 @@
             list = list.filter(w => st.chain.indexOf(w) < 0 && w.length <= KK_BOT_LENGTH_LIMIT[level]);
             if (!list.length) return { word: null };
             // 후보가 너무 많으면 무작위로 일부만 본다
+            { const plain = list.filter(w => (kkLookup(dict, w) & 63) !== 2); if (plain.length >= 5) list = plain; } // 인명·지명 같은 보충 단어보다 일반 단어를 우선
             if (list.length > 150) { const pick = []; for (let i = 0; i < 150; i++) pick.push(list[Math.floor(rnd() * list.length)]); list = Array.from(new Set(pick)); }
             const needFollow = st.chain.length < 1 || st.opts.man;
             if (needFollow) { const f = list.filter(w => kkHasFollow(dict, w[w.length - 1], st.opts)); if (!f.length) return { word: null }; list = f; }
@@ -10823,7 +10824,8 @@
             if (!cur || cur.id !== pid) return;
             const text = raw.replace(/\s+/g, '').slice(0, 20);
             if (!text) return;
-            const res = kkValidate(KK_DICT, text, { opts: kkRuleOpts(H.opts), chain: H.chain, char: H.char, subChar: H.subChar });
+            const free = !!(cur.admin && !cur.bot); // 관리자는 사전·글자 규칙 없이 아무 단어나 낼 수 있다
+            const res = free ? { ok: true } : kkValidate(KK_DICT, text, { opts: kkRuleOpts(H.opts), chain: H.chain, char: H.char, subChar: H.subChar });
             if (!res.ok) { if (!cur.bot) mpEmit('kk', { t: 'reject', to: pid, code: res.code }); return; }
             const now = Date.now();
             const sc = kkScore(text, now - H.turnStart, H.tfull, H.chain, H.dic, H.opts.mis ? H.mission : null);
@@ -10831,7 +10833,8 @@
             H.chain.push(text);
             H.last = { type: 'word', pid, word: text, score: sc.score, hits: sc.missionHits };
             if (sc.missionHits > 0 && H.opts.mis) H.mission = KK_MISSIONS[Math.floor(Math.random() * KK_MISSIONS.length)];
-            H.char = text[text.length - 1]; H.subChar = kkSubChar(H.char);
+            const lastCh = text[text.length - 1];
+            if (!free || /[가-힣]/.test(lastCh)) { H.char = lastCh; H.subChar = kkSubChar(lastCh); } // (관리자가 한글이 아닌 글자로 끝내면 글자는 그대로 둔다)
             H.turnIdx = kkNextIdx(H, H.turnIdx);
             kkHostBeginTurn();
         }
@@ -10999,7 +11002,7 @@
             const myTurn = kkMyTurn(), inp = document.getElementById('kk-input');
             const wasDisabled = inp.disabled;
             inp.disabled = !myTurn; document.getElementById('kk-send').disabled = !myTurn;
-            inp.placeholder = myTurn ? `「${pub.char}」${pub.subChar ? `(${pub.subChar})` : ''}(으)로 시작하는 단어` : (pub.over ? '게임이 끝났어요' : '다른 분 차례예요');
+            inp.placeholder = myTurn ? (pub.admins.indexOf(me) >= 0 ? '관리자: 아무 단어나 입력하세요' : `「${pub.char}」${pub.subChar ? `(${pub.subChar})` : ''}(으)로 시작하는 단어`) : (pub.over ? '게임이 끝났어요' : '다른 분 차례예요');
             if (myTurn && (wasDisabled || kk.lastTurn !== me)) { try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); } rzSoundTick(); }
             if (!myTurn) inp.value = '';
             kk.lastTurn = pub.turn;
@@ -11040,8 +11043,9 @@
             if (!text) return;
             if (Date.now() < kk.sendLock) return;
             const err = document.getElementById('kk-err');
-            if (text.length < 2) { err.textContent = '두 글자 이상 입력해주세요.'; return; }
-            if (!kkChainable(text, pub.char, pub.subChar)) { err.textContent = `「${pub.char}」${pub.subChar ? `(${pub.subChar})` : ''}(으)로 시작해야 해요.`; kkShakeStage(); return; }
+            const free = !!(pub.admins && pub.admins.indexOf(kk.room.myId) >= 0);
+            if (!free && text.length < 2) { err.textContent = '두 글자 이상 입력해주세요.'; return; }
+            if (!free && !kkChainable(text, pub.char, pub.subChar)) { err.textContent = `「${pub.char}」${pub.subChar ? `(${pub.subChar})` : ''}(으)로 시작해야 해요.`; kkShakeStage(); return; }
             err.textContent = '';
             kk.sendLock = Date.now() + 350;
             mpToHost('kk', { t: 'word', text });
