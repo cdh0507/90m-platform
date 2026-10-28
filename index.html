@@ -1373,6 +1373,19 @@
         .nd-sp { flex: 1; min-height: 12px; }
         /* 헤더: 오른쪽은 쉼터·메시지만 크게, 나머지는 메뉴 안으로 */
         #app-header .nav-actions .ghost-btn { padding-left: 14px; padding-right: 14px; font-weight: 700; }
+        #nav-me { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(128,128,128,.3); background: var(--accent); color: var(--accent-ink); font-weight: 900; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: transform .15s ease, box-shadow .15s ease; }
+        #nav-me:hover { box-shadow: 0 0 0 4px rgba(179,253,139,.35); }
+        #nav-me:active { transform: scale(.94); }
+        #nav-me-pop { position: absolute; right: 0; top: calc(100% + 10px); z-index: 60; min-width: 200px; padding: 8px; border-radius: 16px; background: var(--surface, #fffdf8); color: var(--ink); border: 1px solid rgba(128,128,128,.22); box-shadow: 0 16px 40px rgba(0,0,0,.22); animation: viewFadeIn .15s ease; }
+        html[data-theme="dark"] #nav-me-pop { background: #1e1d19; border-color: rgba(255,255,255,.1); }
+        #nav-me-pop.hidden { display: none; }
+        .nm-head { padding: 8px 10px 10px; border-bottom: 1px solid rgba(128,128,128,.2); margin-bottom: 6px; }
+        .nm-head b { display: block; font-size: 14px; font-weight: 800; }
+        .nm-head em { font-style: normal; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+        #nav-me-pop button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px; border: none; border-radius: 10px; background: transparent; color: inherit; font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; }
+        #nav-me-pop button:hover { background: rgba(128,128,128,.13); }
+        #nav-me-pop button.danger { color: #c4313f; }
+        html[data-theme="dark"] #nav-me-pop button.danger { color: #ff8b95; }
         /* 쉼터 상단: 카테고리 칩 + 관리자 관전 아이콘 */
         #rz-cats { display: flex; gap: 6px; margin: 0 0 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
         #rz-cats::-webkit-scrollbar { display: none; }
@@ -1891,6 +1904,7 @@
                         <span class="font-extrabold tracking-tight hidden sm:inline">AgeLess Lab</span>
                     </div>
                 </div>
+                <div class="flex items-center gap-2 min-w-0">
                 <div class="nav-actions flex items-center gap-3 text-sm">
                     <button id="nav-rest" onclick="openRestZoneModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-mug-hot mr-1"></i>쉼터</button>
                     <button id="nav-notices" data-drawer="1" onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
@@ -1907,6 +1921,15 @@
                     <button id="nav-profile" data-drawer="1" onclick="openSettings()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-gear mr-1"></i>설정</button>
                     <span id="topbar-user" data-drawer="1" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
                     <button id="nav-logout" data-drawer="1" onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
+                </div>
+                <div class="relative flex-shrink-0" id="nav-me-wrap">
+                    <button id="nav-me" onclick="navMe()" aria-label="내 계정" aria-haspopup="true" aria-expanded="false"><span id="nav-me-ini">?</span></button>
+                    <div id="nav-me-pop" class="hidden" role="menu">
+                        <div class="nm-head"><b id="nm-name">-</b><em id="nm-role"></em></div>
+                        <button role="menuitem" onclick="navMe(false); document.getElementById('nav-profile').click()"><i class="fa-solid fa-gear"></i>내 정보 · 설정</button>
+                        <button role="menuitem" class="danger" onclick="navMe(false); handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i>로그아웃</button>
+                    </div>
+                </div>
                 </div>
             </div>
             <!-- 현재 위치 안내 (뒤로가기 구조 보강) -->
@@ -13472,7 +13495,7 @@
             const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? (currentUser.isSuper ? '최고 관리자' : '관리자') : '멘티');
             const el = document.getElementById('topbar-user');
             el.innerText = `${currentUser.name} · ${roleLabel}`;
-            try { navBuild(); } catch (e) {}
+            try { navBuild(); navMeFill(roleLabel); } catch (e) {}
             el.classList.remove('hidden');
         }
 
@@ -14927,6 +14950,19 @@
             document.getElementById('nd-user-role').textContent = rl;
             navThemeMark();
         }
+        function navMeFill(roleLabel) {
+            const ini = document.getElementById('nav-me-ini'); if (ini) ini.textContent = (currentUser.name || '?').trim().charAt(0).toUpperCase();
+            const n = document.getElementById('nm-name'), r = document.getElementById('nm-role');
+            if (n) n.textContent = currentUser.name || ''; if (r) r.textContent = roleLabel || '';
+        }
+        function navMe(force) {
+            const pop = document.getElementById('nav-me-pop'); if (!pop) return;
+            const open = typeof force === 'boolean' ? force : pop.classList.contains('hidden');
+            pop.classList.toggle('hidden', !open);
+            const b = document.getElementById('nav-me'); if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        document.addEventListener('click', (e) => { const w = document.getElementById('nav-me-wrap'); if (w && !w.contains(e.target)) navMe(false); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') navMe(false); });
         function navThemeMark() { document.querySelectorAll('#nd-theme button').forEach(b => b.classList.toggle('on', b.dataset.v === (appSettings.theme || 'system'))); }
         function navDrawer(open) {
             const d = document.getElementById('nav-drawer'); if (!d) return;
