@@ -1331,6 +1331,66 @@
         @keyframes scHairGrow { to { stroke-dashoffset: 0; } }
         html[data-motion="reduce"] #sc-hair path { animation: none; stroke-dashoffset: 0; }
 
+        /* ---------- 상단 바 정리 + 왼쪽 메뉴(햄버거) ---------- */
+        .nav-actions [data-drawer] { display: none !important; }
+        #nav-burger { width: 40px; height: 40px; border-radius: 12px; border: 1px solid transparent; background: transparent; color: var(--ink); cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 4.5px; transition: background .18s ease, border-color .18s ease, transform .18s ease; margin-right: 4px; }
+        #nav-burger:hover { background: rgba(0,0,0,.05); }
+        #nav-burger:active { transform: scale(.94); }
+        #nav-burger:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+        #nav-burger i { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: width .2s ease; }
+        #nav-burger i:nth-child(2) { width: 13px; }
+        #nav-burger:hover i:nth-child(2) { width: 18px; }
+        html[data-theme="dark"] #nav-burger:hover { background: rgba(255,255,255,.08); }
+        #nav-drawer { position: fixed; inset: 0; z-index: 55; visibility: hidden; pointer-events: none; }
+        #nav-drawer.open { visibility: visible; pointer-events: auto; }
+        #nav-scrim { position: absolute; inset: 0; background: rgba(18,17,13,.42); backdrop-filter: blur(3px); opacity: 0; transition: opacity .25s ease; }
+        #nav-drawer.open #nav-scrim { opacity: 1; }
+        #nav-panel { position: absolute; left: 0; top: 0; bottom: 0; width: min(300px, 86vw); background: var(--surface, #fffdf8); color: var(--ink); display: flex; flex-direction: column; transform: translateX(-102%); transition: transform .28s cubic-bezier(.2,.8,.2,1); box-shadow: 18px 0 48px rgba(0,0,0,.22); border-radius: 0 24px 24px 0; padding: 14px 12px calc(14px + env(safe-area-inset-bottom)); overflow-y: auto; }
+        html[data-theme="dark"] #nav-panel { background: #1b1a16; border-right: 1px solid rgba(255,255,255,.08); }
+        #nav-drawer.open #nav-panel { transform: translateX(0); }
+        .nd-top { display: flex; align-items: center; justify-content: space-between; padding: 2px 6px 12px; }
+        .nd-brand { display: flex; align-items: center; gap: 9px; font-weight: 800; letter-spacing: -.01em; }
+        .nd-brand span { width: 32px; height: 32px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+        .nd-close { width: 34px; height: 34px; border-radius: 50%; border: none; background: transparent; color: inherit; opacity: .55; cursor: pointer; }
+        .nd-close:hover { opacity: 1; background: rgba(128,128,128,.14); }
+        .nd-user { margin: 0 4px 12px; padding: 12px 14px; border-radius: 16px; background: linear-gradient(135deg, rgba(179,253,139,.32), rgba(179,253,139,.1)); border: 1px solid rgba(120,160,90,.25); }
+        html[data-theme="dark"] .nd-user { background: linear-gradient(135deg, rgba(179,253,139,.16), rgba(179,253,139,.05)); border-color: rgba(179,253,139,.18); }
+        .nd-user b { display: block; font-size: 14.5px; font-weight: 800; }
+        .nd-user em { font-style: normal; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+        .nd-label { margin: 10px 10px 4px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; color: var(--ink-soft); text-transform: uppercase; }
+        .nd-list { display: flex; flex-direction: column; gap: 2px; }
+        .nd-item { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border: none; border-radius: 13px; background: transparent; color: inherit; font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; transition: background .15s ease, transform .15s ease; }
+        .nd-item:hover { background: rgba(128,128,128,.12); }
+        .nd-item:active { transform: scale(.985); }
+        .nd-item i.ic { width: 30px; height: 30px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; background: rgba(128,128,128,.13); }
+        .nd-item .nd-badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+        .nd-item.danger { color: #c4313f; }
+        html[data-theme="dark"] .nd-item.danger { color: #ff8b95; }
+        .nd-item.hidden, .nd-item .nd-badge.hidden { display: none; }
+        .nd-theme { margin: 4px 4px 0; display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: rgba(128,128,128,.13); }
+        .nd-theme button { flex: 1; border: none; padding: 7px 4px; border-radius: 9px; background: transparent; color: inherit; font-size: 12px; font-weight: 800; cursor: pointer; opacity: .7; }
+        .nd-theme button.on { background: var(--ink); color: var(--bg); opacity: 1; }
+        .nd-sp { flex: 1; min-height: 12px; }
+        /* 헤더: 오른쪽은 쉼터·메시지만 크게, 나머지는 메뉴 안으로 */
+        #app-header .nav-actions .ghost-btn { padding-left: 14px; padding-right: 14px; font-weight: 700; }
+        /* 쉼터 상단: 카테고리 칩 + 관리자 관전 아이콘 */
+        #rz-cats { display: flex; gap: 6px; margin: 0 0 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+        #rz-cats::-webkit-scrollbar { display: none; }
+        #rz-cats button { flex-shrink: 0; border: 1px solid rgba(128,128,128,.28); background: transparent; color: var(--ink-soft); padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: all .15s ease; }
+        #rz-cats button:hover { border-color: var(--ink); color: var(--ink); }
+        #rz-cats button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+        .rz-cat-off { display: none !important; }
+        #spy-open-btn { display: inline-flex !important; width: 34px; height: 34px; margin: 0 6px 0 0; padding: 0; border-radius: 50%; border: 1px solid rgba(179,18,31,.35); background: rgba(179,18,31,.08); color: #b3121f; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+        #spy-open-btn i { margin: 0 !important; }
+        #spy-open-btn small { display: none; }
+        #spy-open-btn:hover { background: rgba(179,18,31,.16); }
+        #spy-open-btn.hidden { display: none !important; }
+        /* 떠 있는 버튼(채팅 · Sabotage): 같은 크기·같은 결로 */
+        #gc-fab, #sc-fab { width: 44px; height: 44px; font-size: 17px; border: 1px solid rgba(255,255,255,.16); box-shadow: 0 8px 22px rgba(0,0,0,.28); transition: transform .15s ease, box-shadow .15s ease; }
+        #gc-fab:hover, #sc-fab:hover { transform: translateY(-1px) scale(1.04); box-shadow: 0 12px 26px rgba(0,0,0,.34); }
+        #gc-fab:active, #sc-fab:active { transform: scale(.94); }
+        #sc-fab { top: calc(38% - 54px); }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -1824,26 +1884,29 @@
 
         <header id="app-header" class="sticky top-0 z-40 bg-[#f7f4ee]/90 backdrop-blur-md" style="transition: box-shadow .25s ease, border-color .25s ease; border-bottom: 1px solid transparent;">
             <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2 cursor-pointer flex-shrink-0 mr-2" onclick="goHome()">
-                    <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-seedling text-sm" style="color:var(--accent-ink);"></i></span>
-                    <span class="font-extrabold tracking-tight hidden sm:inline">AgeLess Lab</span>
+                <div class="flex items-center flex-shrink-0 mr-2">
+                    <button id="nav-burger" onclick="navDrawer()" aria-label="메뉴 열기" aria-expanded="false"><i></i><i></i><i></i></button>
+                    <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--accent);"><i class="fa-solid fa-seedling text-sm" style="color:var(--accent-ink);"></i></span>
+                        <span class="font-extrabold tracking-tight hidden sm:inline">AgeLess Lab</span>
+                    </div>
                 </div>
                 <div class="nav-actions flex items-center gap-3 text-sm">
                     <button id="nav-rest" onclick="openRestZoneModal()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-mug-hot mr-1"></i>쉼터</button>
-                    <button onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
-                    <button id="nav-mentor-apply" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-user-plus mr-1"></i>멘토 신청</button>
-                    <button id="nav-my-bookings" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-calendar-days mr-1"></i>내 예약</button>
-                    <button id="nav-my-dashboard" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-gauge mr-1"></i>내 대시보드</button>
-                    <button id="nav-admin-home" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-shield-halved mr-1"></i>관리자 홈</button>
+                    <button id="nav-notices" data-drawer="1" onclick="showView('view-notices'); renderNotices();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i>공지</button>
+                    <button id="nav-mentor-apply" data-drawer="1" onclick="showView('view-mentor-application'); renderMentorApplicationView();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-user-plus mr-1"></i>멘토 신청</button>
+                    <button id="nav-my-bookings" data-drawer="1" onclick="showView('view-mentee-bookings'); renderMenteeBookings();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-calendar-days mr-1"></i>내 예약</button>
+                    <button id="nav-my-dashboard" data-drawer="1" onclick="showView('view-mentor-dashboard'); renderMentorDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-gauge mr-1"></i>내 대시보드</button>
+                    <button id="nav-admin-home" data-drawer="1" onclick="showView('view-admin-dashboard'); renderAdminDashboard();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full hidden"><i class="fa-solid fa-shield-halved mr-1"></i>관리자 홈</button>
                     <span class="relative inline-flex">
                         <button id="nav-messages" onclick="showView('view-messages-hub'); renderMessagesHub();" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full">
                             <i class="fa-solid fa-comment-dots mr-1"></i>메시지
                         </button>
                         <span id="nav-messages-badge" class="hidden badge-pulse absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center text-white z-10" style="background:#f43f5e;">0</span>
                     </span>
-                    <button id="nav-profile" onclick="openSettings()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-gear mr-1"></i>설정</button>
-                    <span id="topbar-user" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
-                    <button onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
+                    <button id="nav-profile" data-drawer="1" onclick="openSettings()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-gear mr-1"></i>설정</button>
+                    <span id="topbar-user" data-drawer="1" class="text-sm font-bold hidden sm:inline" style="color:var(--ink-soft);"></span>
+                    <button id="nav-logout" data-drawer="1" onclick="handleLogout()" class="ghost-btn icon-wiggle px-3 py-1.5 rounded-full"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                 </div>
             </div>
             <!-- 현재 위치 안내 (뒤로가기 구조 보강) -->
@@ -2527,61 +2590,69 @@
                     <button id="restzone-back-btn" onclick="restzoneShowHub()" class="hidden press-feel w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-arrow-left text-sm"></i></button>
                     <h3 class="font-extrabold" id="restzone-modal-title"><i class="fa-solid fa-mug-hot mr-1.5" style="color:var(--accent-ink);"></i>쉼터</h3>
                 </div>
-                <button onclick="closeRestZoneModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex items-center">
+                    <button id="spy-open-btn" class="hidden press-feel" onclick="spyOpen()" title="라이브 관전 (관리자 · 상대에게 안 보여요)" aria-label="라이브 관전"><i class="fa-solid fa-eye"></i></button>
+                    <button onclick="closeRestZoneModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+                </div>
             </div>
             <div id="restzone-body" class="flex-1 overflow-y-auto p-5">
 
                 <!-- 허브: 게임 선택 메뉴 -->
                 <div id="restzone-panel-hub">
-                    <button id="spy-open-btn" class="hidden press-feel" onclick="spyOpen()"><i class="fa-solid fa-eye mr-1.5"></i>라이브 관전 <small>(관리자 · 상대에게 안 보여요)</small></button>
-                    <p class="text-sm font-bold mb-4" style="color:var(--ink-soft);">무슨 게임을 하실 건가요?</p>
+                    <p class="text-sm font-bold mb-3" style="color:var(--ink-soft);">무슨 게임을 하실 건가요?</p>
+                    <div id="rz-cats" role="tablist" aria-label="게임 종류">
+                        <button class="on" data-c="all" onclick="rzCat('all')">전체</button>
+                        <button data-c="board" onclick="rzCat('board')">보드·카드</button>
+                        <button data-c="action" onclick="rzCat('action')">실시간 액션</button>
+                        <button data-c="solo" onclick="rzCat('solo')">혼자서</button>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button onclick="restzoneOpenGame('ball')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('ball')" data-cat="solo" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#eafbd8;"><i class="fa-solid fa-circle-dot" style="color:var(--accent-ink);"></i></span>
                             <span class="restzone-game-name">왁스볼</span>
                             <span class="restzone-game-desc">말랑말랑, 눌러서 스트레스 풀기</span>
                         </button>
-                        <button onclick="restzoneOpenGame('chase')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('chase')" data-cat="action" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#e4ecff;"><i class="fa-solid fa-user-secret" style="color:#2d4ed8;"></i></span>
                             <span class="restzone-game-name">경찰과 도둑</span>
                             <span class="restzone-game-desc">2D 온라인 1:1 추격전 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('chess')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('chess')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#e6e8f3;"><i class="fa-solid fa-chess-knight" style="color:#3a3f5c;"></i></span>
                             <span class="restzone-game-name">체스</span>
                             <span class="restzone-game-desc">정식 룰 온라인 1:1 · 각자 10분 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('go')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('go')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#f6ecd2;"><i class="fa-solid fa-circle-half-stroke" style="color:#7a5a1f;"></i></span>
                             <span class="restzone-game-name">바둑</span>
                             <span class="restzone-game-desc">온라인 1:1 · 승률 차이만큼 접바둑 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('vball')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('vball')" data-cat="action" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#e3f6d6;"><i class="fa-solid fa-volleyball" style="color:#3f9a2a;"></i></span>
                             <span class="restzone-game-name">배구</span>
                             <span class="restzone-game-desc">2D 온라인 1:1 · 원작 배구 규칙 그대로 · 15점 선취 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('omok')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('omok')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#f3e6cf;"><i class="fa-solid fa-table-cells" style="color:#8a5a14;"></i></span>
                             <span class="restzone-game-name">오목</span>
                             <span class="restzone-game-desc">렌주 룰(흑 3·3/4·4/장목 금지) 온라인 1:1 · 각자 10분 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('rummikub')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('rummikub')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#fbe9d2;"><i class="fa-solid fa-table-cells-large" style="color:#c2570c;"></i></span>
                             <span class="restzone-game-name">루미큐브</span>
                             <span class="restzone-game-desc">정식 룰 온라인 2~4인 · 방에서 최대 4명 대기 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('uno')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('uno')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#fde1df;"><i class="fa-solid fa-clone" style="color:#d62f2a;"></i></span>
                             <span class="restzone-game-name">우노</span>
                             <span class="restzone-game-desc">공식 룰(+4 도전·우노 잡기) 온라인 2~4인 · 방에서 최대 4명 대기 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('battleship')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('battleship')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#dff0fb;"><i class="fa-solid fa-ship" style="color:#1d6fa5;"></i></span>
                             <span class="restzone-game-name">배틀쉽</span>
                             <span class="restzone-game-desc">함대를 숨기고 번갈아 포격하는 해상 전투 온라인 1:1 · 승률 순위 · 로그인 필요</span>
                         </button>
-                        <button onclick="restzoneOpenGame('kkutu')" class="restzone-game-card press-feel">
+                        <button onclick="restzoneOpenGame('kkutu')" data-cat="board" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:#ece6fb;"><i class="fa-solid fa-link" style="color:#7c4dd6;"></i></span>
                             <span class="restzone-game-name">끝말잇기</span>
                             <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
@@ -3579,6 +3650,28 @@
         <div class="sc-msg-noise" id="sc-msg-noise"></div>
         <div id="sc-msg-wrap"><div id="sc-msg-text"></div></div>
         <button id="sc-msg-close" onclick="scEnd(true)" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- ============================== 왼쪽 메뉴(햄버거) ============================== -->
+    <div id="nav-drawer" aria-hidden="true">
+        <div id="nav-scrim" onclick="navDrawer(false)"></div>
+        <nav id="nav-panel" role="dialog" aria-label="메뉴">
+            <div class="nd-top">
+                <div class="nd-brand"><span><i class="fa-solid fa-seedling"></i></span>AgeLess Lab</div>
+                <button class="nd-close" onclick="navDrawer(false)" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="nd-user"><b id="nd-user-name">-</b><em id="nd-user-role"></em></div>
+            <div class="nd-label">메뉴</div>
+            <div class="nd-list" id="nd-list"></div>
+            <div class="nd-label">화면 모드</div>
+            <div class="nd-theme" id="nd-theme">
+                <button data-v="light" onclick="setSetting('theme','light'); navThemeMark()">라이트</button>
+                <button data-v="dark" onclick="setSetting('theme','dark'); navThemeMark()">다크</button>
+                <button data-v="system" onclick="setSetting('theme','system'); navThemeMark()">시스템</button>
+            </div>
+            <div class="nd-sp"></div>
+            <div class="nd-list"><button class="nd-item danger" onclick="navDrawer(false); handleLogout()"><i class="ic fa-solid fa-arrow-right-from-bracket"></i>로그아웃</button></div>
+        </nav>
     </div>
 
     <!-- ============================== 관리자 전용: 라이브 관전 ============================== -->
@@ -13379,6 +13472,7 @@
             const roleLabel = currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? (currentUser.isSuper ? '최고 관리자' : '관리자') : '멘티');
             const el = document.getElementById('topbar-user');
             el.innerText = `${currentUser.name} · ${roleLabel}`;
+            try { navBuild(); } catch (e) {}
             el.classList.remove('hidden');
         }
 
@@ -13792,6 +13886,7 @@
         function gcSync() {
             try { scSync(); } catch (e) {}
             try { spyReportTick(); } catch (e) {}
+            if (!currentUser) { try { navDrawer(false); } catch (e) {} }
             const fab = document.getElementById('gc-fab');
             if (!fab) return;
             const rz = document.getElementById('restzone-modal');
@@ -14805,6 +14900,47 @@
                 opp: { n: c.oppName, r: c.oppRole, x: c.oppPos.x, z: c.oppPos.z, fx: c.oppFacing.x, fz: c.oppFacing.z, d: !!c.oppDashing, sz: c.oppSize || 1 },
                 fc: !!c.flagCarried, rem,
             });
+        }
+
+        // ---- 왼쪽 메뉴(햄버거) : 위쪽 버튼들을 그대로 눌러 주는 방식이라 기존 기능은 그대로예요 ----
+        const NAV_ITEMS = [
+            ['nav-rest', 'fa-mug-hot', '쉼터'], ['nav-messages', 'fa-comment-dots', '메시지'], ['nav-notices', 'fa-bullhorn', '공지'],
+            ['nav-my-bookings', 'fa-calendar-days', '내 예약'], ['nav-my-dashboard', 'fa-gauge', '내 대시보드'], ['nav-admin-home', 'fa-shield-halved', '관리자 홈'],
+            ['nav-mentor-apply', 'fa-user-plus', '멘토 신청'], ['nav-profile', 'fa-gear', '설정'],
+        ];
+        function navBuild() {
+            const list = document.getElementById('nd-list'); if (!list) return;
+            list.innerHTML = '';
+            NAV_ITEMS.forEach(([src, ic, label]) => {
+                const s = document.getElementById(src); if (!s || s.classList.contains('hidden')) return;
+                const b = document.createElement('button'); b.className = 'nd-item'; b.dataset.src = src;
+                b.innerHTML = '<i class="ic fa-solid ' + ic + '"></i>' + label;
+                if (src === 'nav-messages') {
+                    const bd = document.getElementById('nav-messages-badge');
+                    if (bd && !bd.classList.contains('hidden')) b.insertAdjacentHTML('beforeend', '<span class="nd-badge">' + escapeHtml(bd.textContent) + '</span>');
+                }
+                b.onclick = () => { navDrawer(false); s.click(); };
+                list.appendChild(b);
+            });
+            const rl = currentUser ? (currentUser.role === 'mentor' ? '멘토' : (currentUser.role === 'admin' ? (currentUser.isSuper ? '최고 관리자' : '관리자') : '멘티')) : '';
+            document.getElementById('nd-user-name').textContent = currentUser ? (currentUser.name || '') : '-';
+            document.getElementById('nd-user-role').textContent = rl;
+            navThemeMark();
+        }
+        function navThemeMark() { document.querySelectorAll('#nd-theme button').forEach(b => b.classList.toggle('on', b.dataset.v === (appSettings.theme || 'system'))); }
+        function navDrawer(open) {
+            const d = document.getElementById('nav-drawer'); if (!d) return;
+            if (typeof open !== 'boolean') open = !d.classList.contains('open');
+            if (open && !currentUser) open = false;
+            if (open) navBuild();
+            d.classList.toggle('open', open); d.setAttribute('aria-hidden', open ? 'false' : 'true');
+            document.getElementById('nav-burger') && document.getElementById('nav-burger').setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const d = document.getElementById('nav-drawer'); if (d && d.classList.contains('open')) navDrawer(false); } });
+        // ---- 쉼터 카테고리 ----
+        function rzCat(cat) {
+            document.querySelectorAll('#rz-cats button').forEach(b => b.classList.toggle('on', b.dataset.c === cat));
+            document.querySelectorAll('#restzone-panel-hub .restzone-game-card').forEach(c => c.classList.toggle('rz-cat-off', cat !== 'all' && c.dataset.cat !== cat));
         }
 
         (function gcInit() {
