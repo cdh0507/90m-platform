@@ -1404,6 +1404,10 @@
         #gc-fab:active, #sc-fab:active { transform: scale(.94); }
         #sc-fab { top: calc(38% - 54px); }
 
+        .google-btn { background: #fff; color: #1f1f1f; border: 1px solid #dadce0; transition: background .15s ease, box-shadow .15s ease; }
+        .google-btn:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(60,64,67,.25); }
+        .google-btn:disabled { opacity: .6; cursor: default; }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -1850,6 +1854,7 @@
                 </div>
 
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3 text-sm">
+                    <button type="button" onclick="handleGoogleAuth(this)" class="google-btn w-full font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2.5"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.9-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Google로 계속하기</button>
                     <button type="button" onclick="showToast('카카오 로그인은 추후 지원 예정입니다.', 'info')" class="w-full bg-[#FEE500] text-[#191600] font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                         <i class="fa-solid fa-comment"></i> 카카오로 계속하기
                     </button>
@@ -1875,6 +1880,8 @@
                 </form>
 
                 <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-3 text-sm hidden">
+                    <button type="button" onclick="handleGoogleAuth(this)" class="google-btn w-full font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2.5"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.9-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Google로 계속하기</button>
+                    <div class="flex items-center gap-3 text-slate-300 text-xs py-1"><div class="h-px bg-slate-200 flex-1"></div> 또는 이메일로 가입 <div class="h-px bg-slate-200 flex-1"></div></div>
                     <p class="text-xs" style="color:var(--ink-soft);"><i class="fa-solid fa-circle-info mr-1"></i>가입은 멘티로 시작합니다. 멘토가 되고 싶으시면 가입 후 '멘토 신청' 메뉴에서 지원하실 수 있어요.</p>
                     <input type="text" id="signup-name" required placeholder="이름" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
                     <input type="email" id="signup-email" required placeholder="이메일" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-slate-400">
@@ -3954,6 +3961,15 @@
             switchAuthTab('signup');
         }
 
+        async function handleGoogleAuth(btn) {
+            const signupOpen = !document.getElementById('form-signup').classList.contains('hidden');
+            const keep = document.getElementById(signupOpen ? 'signup-keep-signed-in' : 'login-keep-signed-in');
+            setKeepLoggedInPref(!!(keep && keep.checked));
+            if (btn) btn.disabled = true;
+            const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname, queryParams: { prompt: 'select_account' } } });
+            if (error) { if (btn) btn.disabled = false; showToast('구글 로그인에 실패했어요: ' + error.message, 'error'); }
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -4018,11 +4034,19 @@
         }
 
         async function loadCurrentUserProfile(authUser) {
-            const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).single();
+            let { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+            const meta = authUser.user_metadata || {};
+            const gName = (meta.full_name || meta.name || '').trim();
+            if (!profile) {
+                const fresh = { id: authUser.id, name: gName || (authUser.email || '').split('@')[0], role: 'mentee' };
+                try { await supabaseClient.from('profiles').insert(fresh); } catch (e) {}
+                const again = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+                profile = again.data || fresh;
+            }
             currentUser = {
                 id: authUser.id,
                 email: authUser.email,
-                name: profile?.name || authUser.email.split('@')[0],
+                name: profile?.name || gName || authUser.email.split('@')[0],
                 role: profile?.role || 'mentee',
                 sector_id: profile?.sector_id,
                 title: profile?.title,
@@ -4071,6 +4095,13 @@
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) return; // 로그인 안 된 상태 → 기본값인 랜딩 화면이 그대로 보임
                 await loadCurrentUserProfile(session.user);
+                if (/[?&]code=|access_token=|error_description=/.test(location.search + location.hash) && !recoveryPending) {
+                    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+                }
+                const prov = session.user.app_metadata && session.user.app_metadata.provider;
+                if (prov === 'google' && Date.now() - new Date(session.user.created_at).getTime() < 180000) {
+                    try { window.localStorage.setItem('agl_onb_' + currentUser.id, 'pending'); } catch (e2) {}
+                }
                 if (await blockIfSuspended()) return;
                 enterApp();
             } finally {
@@ -4082,6 +4113,14 @@
 
         restoreSession();
         if (recoveryPending) openRecoveryModal();
+        (function showOAuthError() {
+            const q = new URLSearchParams(location.search + '&' + location.hash.replace(/^#/, ''));
+            const d = q.get('error_description');
+            if (d) {
+                setTimeout(() => showToast('로그인에 실패했어요: ' + d.replace(/\+/g, ' '), 'error'), 600);
+                try { history.replaceState(null, '', location.pathname); } catch (e) {}
+            }
+        })();
 
         // 스크롤 시 헤더에 은은한 음영을 줘서 "떠 있는" 느낌과 공식적인 사이트 느낌을 더함
         window.addEventListener('scroll', () => {
