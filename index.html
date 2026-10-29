@@ -15140,6 +15140,84 @@
             document.querySelectorAll('#restzone-panel-hub .restzone-game-card').forEach(c => c.classList.toggle('rz-cat-off', cat !== 'all' && c.dataset.cat !== cat));
         }
 
+        const NAV_STATEFUL = ['view-mentor-detail', 'view-call-room', 'view-session-end', 'view-review', 'view-ai-summary', 'view-admin-observe'];
+        const NAV_RENDER = {
+            'view-mentee-home': () => renderMenteeHome(), 'view-notices': () => renderNotices(), 'view-mentee-bookings': () => renderMenteeBookings(),
+            'view-mentor-dashboard': () => renderMentorDashboard(), 'view-admin-dashboard': () => renderAdminDashboard(),
+            'view-mentor-application': () => renderMentorApplicationView(), 'view-messages-hub': () => renderMessagesHub(), 'view-settings': () => openSettings(),
+        };
+        const nav = { skip: false, restoring: false };
+        const navState = () => (history.state && typeof history.state === 'object') ? history.state : {};
+        const navActiveView = () => { const a = document.querySelector('.view.active'); return a ? a.id : null; };
+        function navPush(st) { try { history.pushState(st, '', location.href); } catch (e) {} }
+        function navReplace(st) { try { history.replaceState(st, '', location.href); } catch (e) {} }
+        function navBack() { nav.skip = true; try { history.back(); } catch (e) { nav.skip = false; } }
+        const navShowViewBase = showView;
+        showView = function (id) {
+            navShowViewBase(id);
+            if (nav.restoring || !currentUser) return;
+            const cur = navState();
+            if (cur.v === id && !cur.m) return;
+            if (!cur.v || cur.v === 'login' || cur.v === 'signup' || cur.v === 'landing') navReplace({ v: id });
+            else navPush({ v: id });
+        };
+        const navShowLandingLoginBase = showLandingLogin, navShowLandingSignupBase = showLandingSignup, navShowLandingBase = showLanding;
+        showLandingLogin = function () { navShowLandingLoginBase(); if (navState().v !== 'login') navPush({ v: 'login' }); };
+        showLandingSignup = function () { navShowLandingSignupBase(); if (navState().v !== 'signup') navPush({ v: 'signup' }); };
+        showLanding = function () {
+            const v = navState().v;
+            if (v === 'login' || v === 'signup') { navBack(); }
+            navShowLandingBase();
+        };
+        const navLogoutBase = handleLogout;
+        handleLogout = async function () { await navLogoutBase(); navReplace({ v: 'landing' }); };
+        const navOpenRz = openRestZoneModal, navCloseRz = closeRestZoneModal, navOpenChat = openChatWith, navCloseChat = closeChatModal;
+        openRestZoneModal = function () {
+            navOpenRz();
+            if (!document.getElementById('restzone-modal').classList.contains('hidden') && navState().m !== 'rz') navPush({ v: navState().v, m: 'rz' });
+        };
+        closeRestZoneModal = function (force) {
+            navCloseRz(force);
+            if (document.getElementById('restzone-modal').classList.contains('hidden') && navState().m === 'rz') navBack();
+        };
+        openChatWith = function (partnerId, partnerName) {
+            navOpenChat(partnerId, partnerName);
+            if (navState().m !== 'chat') navPush({ v: navState().v, m: 'chat' });
+        };
+        closeChatModal = function () {
+            navCloseChat();
+            if (navState().m === 'chat') navBack();
+        };
+        window.addEventListener('popstate', () => {
+            if (nav.skip) { nav.skip = false; return; }
+            const st = navState(), v = st.v || null;
+            if (!currentUser) {
+                if (v === 'login') { navShowLandingLoginBase(); } else if (v === 'signup') { navShowLandingSignupBase(); } else { navShowLandingBase(); }
+                return;
+            }
+            const rz = document.getElementById('restzone-modal'), chat = document.getElementById('chat-modal');
+            if (rz && !rz.classList.contains('hidden') && st.m !== 'rz') {
+                if (!rzConfirmLeaveLive()) { navPush({ v: v, m: 'rz' }); return; }
+                navCloseRz(true);
+            }
+            if (chat && !chat.classList.contains('hidden') && st.m !== 'chat') navCloseChat();
+            if (st.m) return;
+            if (v === 'login' || v === 'signup') { nav.skip = true; history.go(-1); return; }
+            const act = navActiveView();
+            if (act === 'view-call-room' && currentRoom && v !== 'view-call-room') {
+                navPush({ v: 'view-call-room' });
+                showToast('상담 중이에요. 화면 안의 나가기 버튼을 이용해주세요.', 'info');
+                return;
+            }
+            if (!v) { navReplace({ v: act }); return; }
+            if (v === act) return;
+            nav.restoring = true;
+            try {
+                if (NAV_STATEFUL.indexOf(v) >= 0) { navReplace({ v: 'view-mentee-home' }); goHome(); }
+                else { showView(v); if (NAV_RENDER[v]) NAV_RENDER[v](); }
+            } finally { nav.restoring = false; }
+        });
+
         (function gcInit() {
             const input = document.getElementById('gc-input');
             if (input) ['keydown', 'keyup'].forEach(ev => input.addEventListener(ev, (e) => e.stopPropagation())); // 게임 조작 키가 채팅 입력과 섞이지 않게
