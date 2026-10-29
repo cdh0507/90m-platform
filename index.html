@@ -1330,10 +1330,12 @@
         .sc-pane.hidden { display: none; }
         .sc-send.hair { background: #3a2a1c; }
         #sc-hair { position: fixed; inset: 0; z-index: 9000; pointer-events: none; overflow: hidden; }
-        #sc-hair svg { position: absolute; width: 400px; height: 400px; margin: -200px 0 0 -200px; overflow: visible; pointer-events: none; }
-        #sc-hair path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: var(--len, 600); stroke-dashoffset: var(--len, 600); animation: scHairGrow 1.1s ease-out forwards; filter: drop-shadow(0 1px 1px rgba(0,0,0,.28)); }
-        @keyframes scHairGrow { to { stroke-dashoffset: 0; } }
-        html[data-motion="reduce"] #sc-hair path { animation: none; stroke-dashoffset: 0; }
+        #sc-hair svg { position: absolute; width: 640px; height: 640px; margin: -320px 0 0 -320px; overflow: visible; pointer-events: none; animation: scCrackHit .22s cubic-bezier(.1,.9,.2,1) both; }
+        #sc-hair .scc-flash { position: absolute; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.85), rgba(255,255,255,0) 68%); pointer-events: none; animation: scCrackFlash .35s ease-out forwards; }
+        @keyframes scCrackHit { 0% { opacity: 0; transform: scale(1.22); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes scCrackFlash { 0% { opacity: 1; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.3); } }
+        html[data-motion="reduce"] #sc-hair svg, html[data-motion="reduce"] #sc-hair .scc-flash { animation: none; }
+        html[data-motion="reduce"] #sc-hair .scc-flash { display: none; }
 
         /* ---------- 상단 바 정리 + 왼쪽 메뉴(햄버거) ---------- */
         .nav-actions [data-drawer] { display: none !important; }
@@ -3682,7 +3684,7 @@
         <form class="gc-form" onsubmit="gcSubmit(event)"><input id="gc-input" type="text" maxlength="120" autocomplete="off" placeholder="메시지 입력"><button type="submit">전송</button></form>
     </div>
 
-    <!-- ============================== 관리자 전용: Sabotage (점프스케어 · 피 글씨 · 머리카락) ============================== -->
+    <!-- ============================== 관리자 전용: Sabotage (점프스케어 · 피 글씨 · 화면 깨기) ============================== -->
     <button id="sc-fab" class="hidden" onclick="scToggle()" aria-label="Sabotage (관리자)" title="Sabotage (관리자)"><i class="fa-solid fa-skull-crossbones"></i></button>
     <div id="sc-panel" class="hidden">
         <div class="sc-head"><span><i class="fa-solid fa-skull-crossbones mr-1"></i>Sabotage</span><button onclick="scToggle(false)" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button></div>
@@ -3691,7 +3693,7 @@
         <div class="sc-tabs" id="sc-tabs">
             <button data-t="face" class="on" onclick="scTab('face')">점프스케어</button>
             <button data-t="msg" onclick="scTab('msg')">피 글씨</button>
-            <button data-t="hair" onclick="scTab('hair')">머리카락</button>
+            <button data-t="hair" onclick="scTab('hair')">화면 깨기</button>
         </div>
         <div class="sc-pane" id="sc-pane-face">
             <p class="sc-sub">갑자기 얼굴 사진이 튀어나오고 비명이 터져요.</p>
@@ -3709,10 +3711,10 @@
             </div>
         </div>
         <div class="sc-pane hidden" id="sc-pane-hair">
-            <p class="sc-sub">누를 때마다 머리카락이 한 가닥씩 상대 화면 아무 데나 붙어요. 쿨다운은 없어요.</p>
+            <p class="sc-sub">누를 때마다 상대 화면 아무 데나 금이 가고 무지갯빛으로 깨져요. 쿨다운은 없어요.</p>
             <div class="sc-actions">
-                <button id="sc-send-hair" onclick="scSendHair()" class="sc-send hair">머리카락 한 가닥 붙이기</button>
-                <button id="sc-clear-hair" onclick="scClearHairSend()" class="sc-prev">붙인 머리카락 모두 치우기</button>
+                <button id="sc-send-hair" onclick="scSendHair()" class="sc-send hair">화면 한 번 때리기</button>
+                <button id="sc-clear-hair" onclick="scClearHairSend()" class="sc-prev">깨진 화면 모두 원래대로</button>
             </div>
             <p class="sc-note" id="sc-hair-count"></p>
         </div>
@@ -14153,7 +14155,7 @@
             sc.tab = t;
             document.querySelectorAll('#sc-tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
             ['face', 'msg', 'hair'].forEach(k => document.getElementById('sc-pane-' + k).classList.toggle('hidden', k !== t));
-            document.getElementById('sc-foot-note').textContent = t === 'hair' ? '머리카락은 상대가 게임을 나가면 사라져요 · 받는 사람이 설정에서 끄면 가지 않아요' : '받는 사람이 설정에서 끄면 가지 않아요 · 얼굴·피 글씨는 20초 간격';
+            document.getElementById('sc-foot-note').textContent = t === 'hair' ? '깨진 화면은 상대가 게임을 나가면 사라져요 · 받는 사람이 설정에서 끄면 가지 않아요' : '받는 사람이 설정에서 끄면 가지 않아요 · 얼굴·피 글씨는 20초 간격';
             const c = scEnv(); if (c) scRenderPanel(c);
         }
         function scRenderPanel(ctx) {
@@ -14190,9 +14192,9 @@
                 mb.textContent = left > 0 ? '잠시만요… (' + left + '초)' : (noSel ? '대상을 골라주세요' : (empty ? '할 말을 적어주세요' : '피 글씨로 놀라게 하기!'));
             }
             const hb = document.getElementById('sc-send-hair'), hc = document.getElementById('sc-clear-hair');
-            if (hb) { hb.disabled = noSel; hb.textContent = noSel ? '대상을 골라주세요' : '머리카락 한 가닥 붙이기'; }
+            if (hb) { hb.disabled = noSel; hb.textContent = noSel ? '대상을 골라주세요' : '화면 한 번 때리기'; }
             if (hc) hc.disabled = noSel;
-            const cnt = document.getElementById('sc-hair-count'); if (cnt) cnt.textContent = sc.hairSent ? '지금까지 ' + sc.hairSent + '가닥 붙였어요' : '';
+            const cnt = document.getElementById('sc-hair-count'); if (cnt) cnt.textContent = sc.hairSent ? '지금까지 ' + sc.hairSent + '번 때렸어요' : '';
         }
         function scTargets(ctx) {
             const multi = !!(ctx.peers && ctx.peers.length > 1);
@@ -14225,7 +14227,7 @@
             const sid = now.toString(36) + Math.random().toString(36).slice(2, 8);
             sc.seen.add(sid);
             rzSend(ctx.ch, 'chat', { scare: 3, seed: Math.floor(Math.random() * 1e9), sid, id: ctx.id, n: ctx.name || '관리자', to });
-            const cnt = document.getElementById('sc-hair-count'); if (cnt) cnt.textContent = '지금까지 ' + sc.hairSent + '가닥 붙였어요';
+            const cnt = document.getElementById('sc-hair-count'); if (cnt) cnt.textContent = '지금까지 ' + sc.hairSent + '번 때렸어요';
         }
         function scClearHairSend() {
             const ctx = scEnv(); if (!ctx) return;
@@ -14233,7 +14235,7 @@
             sc.hairSent = 0;
             const sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); sc.seen.add(sid);
             rzSend(ctx.ch, 'chat', { scare: 4, sid, id: ctx.id, n: ctx.name || '관리자', to });
-            showToast('머리카락을 치웠어요.', 'info'); scRenderPanel(ctx);
+            showToast('화면을 원래대로 돌렸어요.', 'info'); scRenderPanel(ctx);
         }
         function scPreview(kind) {
             scToggle(false);
@@ -14241,37 +14243,81 @@
             else scPlay(true);
         }
 
-        // ---- 머리카락 (받는 쪽): 화면 아무 데나 한 가닥씩 쌓인다 ----
-        function scHairRng(seed) { let s = (seed >>> 0) || 1; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
-        function scHairPath(rng) {
-            const len = 120 + rng() * 240, segs = 4 + Math.floor(rng() * 3), curl = (rng() - 0.5) * 1.1;
-            let x = 0, y = 0, ang = rng() * Math.PI * 2, d = 'M0 0', total = 0;
-            for (let i = 0; i < segs; i++) {
-                const step = len / segs, a1 = ang + curl * 0.5 + (rng() - 0.5) * 0.6, a2 = ang + curl + (rng() - 0.5) * 0.6;
-                const c1x = x + Math.cos(a1) * step * 0.42, c1y = y + Math.sin(a1) * step * 0.42;
-                ang += curl * 0.8 + (rng() - 0.5) * 0.8;
-                const ex = x + Math.cos(ang) * step, ey = y + Math.sin(ang) * step;
-                const c2x = ex - Math.cos(a2) * step * 0.42, c2y = ey - Math.sin(a2) * step * 0.42;
-                d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1);
-                x = ex; y = ey; total += step * 1.15;
-            }
-            return { d, len: Math.ceil(total + 30) };
+        // ---- 화면 깨짐 (받는 쪽): 때릴 때마다 아무 데나 금이 늘어난다 ----
+        function scCrackRng(seed) { let s = (seed >>> 0) || 1; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+        function scCrackSound() {
+            try {
+                if (appSettings.sound === false) return;
+                if (!rzAudioCtx) rzAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const ac = rzAudioCtx; if (ac.state === 'suspended') ac.resume();
+                const len = Math.floor(ac.sampleRate * 0.28), buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+                for (let i = 0; i < len; i++) { const e = Math.exp(-i / (ac.sampleRate * 0.05)); d[i] = (Math.random() * 2 - 1) * e * (i % 90 < 6 ? 1 : 0.35); }
+                const src = ac.createBufferSource(); src.buffer = buf;
+                const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2400;
+                const g = ac.createGain(); g.gain.value = 0.5;
+                src.connect(hp); hp.connect(g); g.connect(ac.destination); src.start();
+            } catch (e) {}
         }
-        const SC_HAIR_COLORS = ['#0e0b09', '#17110c', '#241811', '#32221a', '#3d2a1b', '#14100d', '#0b0b0c', '#5a4632', '#8b7a66', '#b9a37a'];
-        function scAddHair(seed) {
+        function scAddCrack(seed) {
             const box = document.getElementById('sc-hair'); if (!box) return;
-            const now = Date.now(); sc.hairWin = (sc.hairWin || []).filter(t => now - t < 1000); if (sc.hairWin.length >= 12) return; sc.hairWin.push(now);
-            const rng = scHairRng(seed), hp = scHairPath(rng);
-            const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'), path = document.createElementNS(ns, 'path');
-            svg.setAttribute('viewBox', '-200 -200 400 400');
-            svg.style.left = (rng() * 100).toFixed(1) + '%'; svg.style.top = (rng() * 100).toFixed(1) + '%';
+            const now = Date.now(); sc.hairWin = (sc.hairWin || []).filter(t => now - t < 1000); if (sc.hairWin.length >= 10) return; sc.hairWin.push(now);
+            const rng = scCrackRng(seed), ns = 'http://www.w3.org/2000/svg', C = 320;
+            const mk = (tag, attrs) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+            const rays = 8 + Math.floor(rng() * 5), arms = [], base = rng() * Math.PI * 2;
+            for (let i = 0; i < rays; i++) {
+                let ang = base + (i / rays) * Math.PI * 2 + (rng() - 0.5) * 0.35, x = 0, y = 0, dist = 0;
+                const total = 130 + rng() * 190, pts = [[0, 0]], rd = [0];
+                while (dist < total) {
+                    const step = 14 + rng() * 34; ang += (rng() - 0.5) * 0.5; dist += step;
+                    x += Math.cos(ang) * step; y += Math.sin(ang) * step; pts.push([x, y]); rd.push(dist);
+                }
+                arms.push({ pts, rd, ang });
+            }
+            let d = '';
+            arms.forEach(a => { d += 'M' + a.pts.map(p => (C + p[0]).toFixed(1) + ' ' + (C + p[1]).toFixed(1)).join('L'); });
+            arms.forEach(a => {
+                if (rng() < 0.7 && a.pts.length > 3) {
+                    const k = 2 + Math.floor(rng() * (a.pts.length - 3)), o = a.pts[k]; let ang = a.ang + (rng() < 0.5 ? -1 : 1) * (0.6 + rng() * 0.6), x = o[0], y = o[1];
+                    d += 'M' + (C + x).toFixed(1) + ' ' + (C + y).toFixed(1);
+                    const n = 2 + Math.floor(rng() * 3);
+                    for (let j = 0; j < n; j++) { const st = 10 + rng() * 22; ang += (rng() - 0.5) * 0.6; x += Math.cos(ang) * st; y += Math.sin(ang) * st; d += 'L' + (C + x).toFixed(1) + ' ' + (C + y).toFixed(1); }
+                }
+            });
+            const rings = [2, 3, 5];
+            rings.forEach((k, ri) => {
+                for (let i = 0; i < rays; i++) {
+                    if (rng() < 0.28) continue;
+                    const A = arms[i], B = arms[(i + 1) % rays], pa = A.pts[Math.min(k, A.pts.length - 1)], pb = B.pts[Math.min(k, B.pts.length - 1)];
+                    const mx = (pa[0] + pb[0]) / 2 + (rng() - 0.5) * 8, my = (pa[1] + pb[1]) / 2 + (rng() - 0.5) * 8;
+                    d += 'M' + (C + pa[0]).toFixed(1) + ' ' + (C + pa[1]).toFixed(1) + 'L' + (C + mx).toFixed(1) + ' ' + (C + my).toFixed(1) + 'L' + (C + pb[0]).toFixed(1) + ' ' + (C + pb[1]).toFixed(1);
+                }
+            });
+            const svg = mk('svg', { viewBox: '0 0 ' + C * 2 + ' ' + C * 2 });
+            const gid = 'scg' + (seed % 100000) + Math.floor(rng() * 1000);
+            const defs = mk('defs', {}), lg = mk('linearGradient', { id: gid, x1: '0', y1: '0', x2: '1', y2: '1', gradientTransform: 'rotate(' + Math.floor(rng() * 360) + ' .5 .5)' });
+            ['#ff3b6b', '#ffb02e', '#f5ff3d', '#35e87a', '#2ec8ff', '#7c5cff', '#ff3bd4'].forEach((c, i, arr) => lg.appendChild(mk('stop', { offset: (i / (arr.length - 1)).toFixed(2), 'stop-color': c })));
+            defs.appendChild(lg); svg.appendChild(defs);
+            for (let i = 0; i < rays; i++) {
+                if (rng() < 0.45) continue;
+                const A = arms[i], B = arms[(i + 1) % rays], k = 3 + Math.floor(rng() * 2);
+                const pa = A.pts[Math.min(k, A.pts.length - 1)], pb = B.pts[Math.min(k, B.pts.length - 1)];
+                svg.appendChild(mk('polygon', { points: [C, C, C + pa[0], C + pa[1], C + pb[0], C + pb[1]].reduce((s, v, j) => s + (j % 2 ? ' ' : (j ? ',' : '')) + (+v).toFixed(1), ''), fill: 'url(#' + gid + ')', opacity: (0.14 + rng() * 0.2).toFixed(2) }));
+            }
+            const line = (dx, stroke, w, extra) => { const g = mk('path', Object.assign({ d, fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', transform: 'translate(' + dx + ' 0)' }, extra || {})); svg.appendChild(g); };
+            line(0, 'rgba(0,0,0,.42)', 3.4);
+            line(-1.8, 'rgba(0,225,255,.75)', 1.5, { style: 'mix-blend-mode:screen' });
+            line(1.8, 'rgba(255,40,110,.75)', 1.5, { style: 'mix-blend-mode:screen' });
+            line(0, 'url(#' + gid + ')', 2.2, { opacity: '.85' });
+            line(0, 'rgba(255,255,255,.95)', 1);
+            svg.appendChild(mk('circle', { cx: C, cy: C, r: 5 + rng() * 4, fill: 'rgba(255,255,255,.92)', stroke: 'rgba(0,0,0,.4)', 'stroke-width': 1.5 }));
+            const px = (6 + rng() * 88).toFixed(1) + '%', py = (8 + rng() * 84).toFixed(1) + '%';
+            svg.style.left = px; svg.style.top = py;
             svg.style.transform = 'rotate(' + Math.floor(rng() * 360) + 'deg)';
-            path.setAttribute('d', hp.d);
-            path.setAttribute('stroke', SC_HAIR_COLORS[Math.floor(Math.pow(rng(), 1.6) * SC_HAIR_COLORS.length)]);
-            path.setAttribute('stroke-width', (0.9 + rng() * 1.5).toFixed(2));
-            path.style.setProperty('--len', hp.len); path.setAttribute('opacity', (0.82 + rng() * 0.16).toFixed(2));
-            svg.appendChild(path); box.appendChild(svg);
-            while (box.childNodes.length > 150) box.removeChild(box.firstChild);
+            const flash = document.createElement('div'); flash.className = 'scc-flash'; flash.style.left = px; flash.style.top = py;
+            box.appendChild(flash); setTimeout(() => flash.remove(), 450);
+            box.appendChild(svg);
+            while (box.querySelectorAll('svg').length > 45) box.removeChild(box.querySelector('svg'));
+            scCrackSound();
         }
         function scClearHair() { const box = document.getElementById('sc-hair'); if (box) box.innerHTML = ''; }
 
@@ -14296,7 +14342,7 @@
             const rz = document.getElementById('restzone-modal');
             if (!rz || rz.classList.contains('hidden')) return; // 쉼터 게임 중일 때만
             if (!(await scVerifyAdmin(p.id))) return;
-            if (p.scare === 3) { scAddHair(+p.seed || Math.floor(Math.random() * 1e9)); return; }
+            if (p.scare === 3) { scAddCrack(+p.seed || Math.floor(Math.random() * 1e9)); return; }
             if (p.scare === 4) { scClearHair(); return; }
             if (sc.showing || Date.now() - sc.lastShown < 15000) return;
             if (p.scare === 2) scPlayMsg(typeof p.text === 'string' ? p.text : '', false); else scPlay(false);
