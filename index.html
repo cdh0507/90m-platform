@@ -1534,6 +1534,7 @@
         var KEY = 'agl_settings_v1';
         var s = { accent: null, theme: 'system', font: 'md', reduceMotion: null, sound: true, gameChat: true, scare: true, remind: true, remindMin: 10, browserNotif: false };
         try { var raw = window.localStorage.getItem(KEY); if (raw) { var o = JSON.parse(raw); for (var k in o) s[k] = o[k]; } } catch (e) {}
+        s.accent = null;
         window.aglSettings = s; window.aglSettingsKey = KEY;
 
         /* 게임 효과음 on/off: 모든 AudioContext 를 등록해 두었다가 꺼져 있으면 일시정지(suspend) 상태로 유지한다 */
@@ -1554,6 +1555,7 @@
                 for (var i = 0; i < st.length; i++) { if (/^sb-.+-auth-token$/.test(st.key(i) || '')) window.aglLoggedIn = true; }
             });
         } catch (e) {}
+        try { if (window.aglLoggedIn) window.aglSettings.accent = window.localStorage.getItem('agl_accent_cache') || null; } catch (e) {}
         var FONT = { sm: '14px', md: '16px', lg: '18px', xl: '20px' };
         var mqDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
         window.aglApplyAccent = function (hex) {
@@ -1582,7 +1584,7 @@
         };
         window.aglApplySettings = function () {
             var st = window.aglSettings, root = document.documentElement;
-            window.aglApplyAccent(st.accent);
+            window.aglApplyAccent(window.aglLoggedIn ? st.accent : null);
             var dark = window.aglLoggedIn && (st.theme === 'dark' || (st.theme === 'system' && mqDark && mqDark.matches));
             root.setAttribute('data-theme', dark ? 'dark' : 'light');
             root.style.fontSize = FONT[st.font] || '16px';
@@ -4072,7 +4074,7 @@
             teardownLobbyChannel();
             teardownRoomChannel();
             remStop();
-            window.aglLoggedIn = false; window.aglApplySettings && window.aglApplySettings();
+            window.aglLoggedIn = false; window.aglSettings.accent = null; try { window.localStorage.removeItem('agl_accent_cache'); } catch (e) {} window.aglApplySettings && window.aglApplySettings();
             ['onb-modal', 'delete-modal'].forEach(id => { const m = document.getElementById(id); if (m) m.classList.add('hidden'); });
             if (mentorOwnRoomChannel) { supabaseClient.removeChannel(mentorOwnRoomChannel); mentorOwnRoomChannel = null; }
             if (globalMessageWatchChannel) { supabaseClient.removeChannel(globalMessageWatchChannel); globalMessageWatchChannel = null; }
@@ -4095,6 +4097,9 @@
                 const again = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
                 profile = again.data || fresh;
             }
+            const savedAccent = /^#[0-9a-f]{6}$/i.test(meta.accent || '') ? meta.accent : null;
+            window.aglSettings.accent = savedAccent;
+            try { if (savedAccent) window.localStorage.setItem('agl_accent_cache', savedAccent); else window.localStorage.removeItem('agl_accent_cache'); } catch (e) {}
             currentUser = {
                 id: authUser.id,
                 email: authUser.email,
@@ -13610,7 +13615,11 @@
 
         function setSetting(key, value) {
             appSettings[key] = value;
-            try { window.localStorage.setItem(window.aglSettingsKey || 'agl_settings_v1', JSON.stringify(appSettings)); } catch (e) {}
+            try { window.localStorage.setItem(window.aglSettingsKey || 'agl_settings_v1', JSON.stringify(Object.assign({}, appSettings, { accent: null }))); } catch (e) {}
+            if (key === 'accent') {
+                try { if (value) window.localStorage.setItem('agl_accent_cache', value); else window.localStorage.removeItem('agl_accent_cache'); } catch (e) {}
+                try { supabaseClient.auth.updateUser({ data: { accent: value || null } }).catch(() => {}); } catch (e) {}
+            }
             if (window.aglApplySettings) window.aglApplySettings();
             renderSettingsControls();
             if (key === 'gameChat') gcSync();
