@@ -4097,7 +4097,10 @@
                 const again = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
                 profile = again.data || fresh;
             }
-            const savedAccent = /^#[0-9a-f]{6}$/i.test(meta.accent || '') ? meta.accent : null;
+            let freshMeta = meta;
+            try { const u = await supabaseClient.auth.getUser(); if (u.data && u.data.user) freshMeta = u.data.user.user_metadata || meta; } catch (e) {}
+            const accCand = (profile && profile.accent) || freshMeta.accent || '';
+            const savedAccent = /^#[0-9a-f]{6}$/i.test(accCand) ? accCand : null;
             window.aglSettings.accent = savedAccent;
             try { if (savedAccent) window.localStorage.setItem('agl_accent_cache', savedAccent); else window.localStorage.removeItem('agl_accent_cache'); } catch (e) {}
             currentUser = {
@@ -13618,7 +13621,7 @@
             try { window.localStorage.setItem(window.aglSettingsKey || 'agl_settings_v1', JSON.stringify(Object.assign({}, appSettings, { accent: null }))); } catch (e) {}
             if (key === 'accent') {
                 try { if (value) window.localStorage.setItem('agl_accent_cache', value); else window.localStorage.removeItem('agl_accent_cache'); } catch (e) {}
-                try { supabaseClient.auth.updateUser({ data: { accent: value || null } }).catch(() => {}); } catch (e) {}
+                saveAccentRemote(value || null);
             }
             if (window.aglApplySettings) window.aglApplySettings();
             renderSettingsControls();
@@ -13630,6 +13633,12 @@
             const b = e.target.closest ? e.target.closest('#st-swatches button') : null;
             if (b) setSetting('accent', b.dataset.c || null);
         });
+        async function saveAccentRemote(value) {
+            let ok = false;
+            try { const r = await supabaseClient.rpc('set_my_accent', { c: value }); ok = !r.error; } catch (e) {}
+            try { const r2 = await supabaseClient.auth.updateUser({ data: { accent: value } }); ok = ok || !r2.error; } catch (e) {}
+            if (!ok) showToast('색상을 계정에 저장하지 못했어요. 잠시 후 다시 시도해주세요.', 'error');
+        }
         function renderSettingsControls() {
             const markSeg = (id, val) => document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.toggle('on', b.dataset.v === String(val)));
             markSeg('st-theme-seg', appSettings.theme);
