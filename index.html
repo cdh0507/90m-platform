@@ -16284,13 +16284,7 @@
             document.getElementById('admin-observe-video-a').srcObject = null;
             document.getElementById('admin-observe-video-b').srcObject = null;
 
-            observePeer = new Peer({
-                config: { iceServers: [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
-                    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' }
-                ]}
-            });
+            observePeer = new Peer({ config: { iceServers: await rtcIceServers() } });
             const silentStream = new MediaStream(); // 관리자는 영상/음성을 아무것도 보내지 않음
 
             observePeer.on('open', () => {
@@ -16449,6 +16443,7 @@
             await initVideoCall(); // peer/카메라가 이미 준비돼 있으면 내부에서 그대로 재사용되고, 없으면 여기서 새로 만들어진다
             await syncMentorPeerId(); // peer가 이전부터 이미 살아있던 경우, 이 방(room_peer_id)에도 그 peer id를 확실히 다시 기록
             setupRoomChannel(currentRoom.id, true);
+            rtc.admittedAt = Date.now(); rtcStartWatch();
         }
 
         // peer 연결이 이미 열려 있는 상태(peer.id 확보됨)라면, 그 id를 현재 방의
@@ -16581,104 +16576,284 @@
             if (callChatTypingRevertTimer) { clearTimeout(callChatTypingRevertTimer); callChatTypingRevertTimer = null; }
         }
 
+        const RTC_TURN = {
+            meteredApp: '',
+            meteredKey: '',
+            servers: [],
+        };
+        const RTC_STUN = [
+            { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] },
+            { urls: 'stun:stun.cloudflare.com:3478' },
+            { urls: 'stun:global.stun.twilio.com:3478' },
+        ];
+        const RTC_FALLBACK_TURN = [
+            { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' },
+        ];
+        const rtc = { ice: null, iceAt: 0, timer: null, watch: null, connected: false, inFlight: false, attempts: 0, lastTry: 0, admittedAt: 0, discT: null, peerFails: 0 };
+        async function rtcIceServers() {
+            if (rtc.ice && Date.now() - rtc.iceAt < 30 * 60 * 1000) return rtc.ice;
+            let turn = [];
+            if (RTC_TURN.meteredApp && RTC_TURN.meteredKey) {
+                try {
+                    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 4000);
+                    const r = await fetch('https://' + RTC_TURN.meteredApp + '.metered.live/api/v1/turn/credentials?apiKey=' + encodeURIComponent(RTC_TURN.meteredKey), { signal: ctl.signal });
+                    clearTimeout(t);
+                    if (r.ok) { const j = await r.json(); if (Array.isArray(j)) turn = turn.concat(j); }
+                } catch (e) {}
+            }
+            try {
+                const { data } = await Promise.race([supabaseClient.functions.invoke('turn-credentials'), new Promise(res => setTimeout(() => res({}), 4000))]);
+                const list = data && (data.iceServers || data);
+                if (Array.isArray(list)) turn = turn.concat(list.filter(s => s && s.urls));
+            } catch (e) {}
+            turn = turn.concat(RTC_TURN.servers || []);
+            rtc.ice = RTC_STUN.concat(turn.length ? turn : RTC_FALLBACK_TURN);
+            rtc.iceAt = Date.now();
+            return rtc.ice;
+        }
+        function rtcPlaceholderStream() {
+            const out = new MediaStream();
+            try {
+                const cv = document.createElement('canvas'); cv.width = 320; cv.height = 240;
+                const c = cv.getContext('2d');
+                const paint = () => { c.fillStyle = '#1b1a16'; c.fillRect(0, 0, 320, 240); c.fillStyle = '#a8a399'; c.font = 'bold 18px sans-serif'; c.textAlign = 'center'; c.fillText('카메라 없이 참여 중', 160, 125); };
+                paint(); setInterval(paint, 1000);
+                const vs = cv.captureStream ? cv.captureStream(2) : null;
+                if (vs) vs.getVideoTracks().forEach(t => out.addTrack(t));
+            } catch (e) {}
+            try {
+                const ac = new (window.AudioContext || window.webkitAudioContext)(), dst = ac.createMediaStreamDestination(), o = ac.createOscillator(), g = ac.createGain();
+                g.gain.value = 0; o.connect(g); g.connect(dst); o.start();
+                dst.stream.getAudioTracks().forEach(t => out.addTrack(t));
+            } catch (e) {}
+            return out;
+        }
+        async function rtcGetMedia() {
+            const tries = [
+                { video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: { echoCancellation: true, noiseSuppression: true } },
+                { video: true, audio: true },
+                { video: false, audio: true },
+                { video: true, audio: false },
+            ];
+            let lastErr = null;
+            for (const c of tries) {
+                try {
+                    const s = await navigator.mediaDevices.getUserMedia(c);
+                    if (!c.video) { const ph = rtcPlaceholderStream(); ph.getVideoTracks().forEach(t => s.addTrack(t)); }
+                    if (!c.audio) { const ph = rtcPlaceholderStream(); ph.getAudioTracks().forEach(t => s.addTrack(t)); }
+                    return { stream: s, partial: !c.video || !c.audio };
+                } catch (e) { lastErr = e; if (e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') && c.video) continue; }
+            }
+            return { stream: rtcPlaceholderStream(), partial: true, failed: true, err: lastErr };
+        }
+        function rtcIsMentor() { return !!(currentRoom && currentUser && currentRoom.mentor_id === currentUser.id); }
+        function rtcInRoom() { const v = document.getElementById('view-call-room'); return !!(!rtc.stopped && currentRoom && currentRoom.status !== 'closed' && ((v && v.classList.contains('active')) || (typeof callWidgetActive !== 'undefined' && callWidgetActive))); }
+        function rtcWaitOpen(ms) {
+            return new Promise((res) => {
+                if (peer && peer.open) return res(true);
+                const t0 = Date.now(), iv = setInterval(() => {
+                    if (peer && peer.open) { clearInterval(iv); res(true); }
+                    else if (Date.now() - t0 > ms) { clearInterval(iv); res(false); }
+                }, 120);
+            });
+        }
+        async function rtcCreatePeer() {
+            const iceServers = await rtcIceServers();
+            if (peer && !peer.destroyed) return peer;
+            peer = new Peer({ config: { iceServers, iceCandidatePoolSize: 4 }, debug: 1 });
+            const me = peer;
+            me.on('open', async (id) => {
+                if (me !== peer) return;
+                rtc.peerFails = 0;
+                const isM = rtcIsMentor();
+                if (!rtc.connected) setStatus(isM ? '준비 완료 — 멘티 입장을 기다리는 중' : '준비 완료 — 승인을 기다리는 중', 'bg-emerald-400');
+                if (!currentRoom) return;
+                const col = isM ? 'room_peer_id' : 'mentee_peer_id';
+                for (let i = 0; i < 3; i++) {
+                    const { data, error } = await supabaseClient.from('live_rooms').update({ [col]: id }).eq('id', currentRoom.id).select().single();
+                    if (!error) { if (data) currentRoom = data; break; }
+                    await new Promise(r => setTimeout(r, 800 * (i + 1)));
+                }
+                rtcKick();
+            });
+            me.on('call', (call) => {
+                if (me !== peer) return;
+                if (call.metadata && call.metadata.role === 'admin_observer') { call.answer(localStream); return; }
+                if (currentCall && currentCall !== call && !rtc.connected) { try { currentCall.close(); } catch (e) {} }
+                setStatus('상대방이 연결을 시도합니다...', 'bg-amber-400');
+                call.answer(localStream);
+                attachCallHandlers(call);
+            });
+            me.on('connection', (conn) => { if (me === peer) bindDataConnection(conn); });
+            me.on('disconnected', () => {
+                if (me !== peer || me.destroyed) return;
+                setTimeout(() => { try { if (me === peer && !me.destroyed && me.disconnected) me.reconnect(); } catch (e) {} }, 800);
+            });
+            me.on('close', () => { if (me === peer) { peer = null; if (rtcInRoom()) setTimeout(rtcRecreatePeer, 1000); } });
+            me.on('error', (err) => {
+                console.error('[통화]', err && err.type, err);
+                if (me !== peer) return;
+                const t = err && err.type;
+                if (t === 'peer-unavailable') { rtcRetry('상대가 아직 준비되지 않았어요'); return; }
+                if (t === 'unavailable-id' || t === 'server-error' || t === 'socket-error' || t === 'socket-closed' || t === 'network' || me.destroyed) {
+                    setStatus('연결 서버에 다시 접속하는 중...', 'bg-amber-400');
+                    rtcRecreatePeer();
+                    return;
+                }
+                if (t === 'webrtc' || t === 'negotiation-failed') { rtcRetry('네트워크 경로를 다시 찾는 중'); return; }
+                setStatus('연결을 다시 시도하는 중...', 'bg-amber-400');
+            });
+            return me;
+        }
+        let rtcRecreating = false;
+        async function rtcRecreatePeer() {
+            if (rtcRecreating) return;
+            rtcRecreating = true;
+            try {
+                rtc.peerFails++;
+                const old = peer; peer = null;
+                if (old) { try { old.destroy(); } catch (e) {} }
+                await new Promise(r => setTimeout(r, Math.min(8000, 700 * rtc.peerFails)));
+                if (rtc.stopped || !currentRoom || !localStream) return;
+                if (rtc.peerFails > 3) rtc.ice = null;
+                await rtcCreatePeer();
+            } finally { rtcRecreating = false; }
+        }
+        async function rtcFreshRoom() {
+            if (!currentRoom) return null;
+            try {
+                const { data } = await supabaseClient.from('live_rooms').select('*').eq('id', currentRoom.id).maybeSingle();
+                if (data) currentRoom = data;
+                return data || null;
+            } catch (e) { return null; }
+        }
+        async function rtcDial(targetId) {
+            if (!targetId || !rtcInRoom() || rtc.inFlight) return;
+            rtc.inFlight = true;
+            try {
+                if (!peer || peer.destroyed) await rtcCreatePeer();
+                const ok = await rtcWaitOpen(10000);
+                if (!ok) { rtc.inFlight = false; rtcRecreatePeer(); rtcRetry('연결 서버 응답이 늦어요'); return; }
+                if (rtc.connected) return;
+                if (currentCall) { try { currentCall.close(); } catch (e) {} currentCall = null; }
+                rtc.attempts++; rtc.lastTry = Date.now();
+                setStatus(rtc.attempts > 1 ? '연결 재시도 중... (' + rtc.attempts + '번째)' : (rtcIsMentor() ? '멘티에게 연결 중...' : '멘토에게 연결 중...'), 'bg-amber-400');
+                const call = peer.call(targetId, localStream);
+                if (!call) { rtcRetry('연결을 만들지 못했어요'); return; }
+                attachCallHandlers(call);
+                if (!dataConn || !dataConn.open) { const conn = peer.connect(targetId, { reliable: true }); if (conn) bindDataConnection(conn); }
+                clearTimeout(rtc.timer);
+                rtc.timer = setTimeout(() => { if (!rtc.connected) rtcRetry('응답이 없어요'); }, 15000);
+            } finally { rtc.inFlight = false; }
+        }
+        function rtcRetry(reason) {
+            clearTimeout(rtc.timer);
+            if (!rtcInRoom() || rtc.connected) return;
+            const delay = Math.min(6000, 1200 + rtc.attempts * 800);
+            setStatus((reason ? reason + ' · ' : '') + '자동으로 다시 연결하는 중...', 'bg-amber-400');
+            if (rtc.attempts >= 4 && rtc.attempts % 4 === 0) {
+                showTroubleshoot('<p class="font-bold">연결이 계속 늦어지고 있어요.</p><p>와이파이·데이터를 바꿔보거나, 상대에게 새로고침 후 다시 들어와 달라고 해주세요. 그동안에도 자동으로 계속 다시 시도해요.</p>');
+                rtc.ice = null;
+            }
+            rtc.timer = setTimeout(rtcKick, delay);
+        }
+        async function rtcKick() {
+            if (!rtcInRoom() || rtc.connected || rtc.inFlight) return;
+            const room = await rtcFreshRoom();
+            if (!room || room.status !== 'in_call') return;
+            if (rtcIsMentor()) {
+                if (!room.mentee_peer_id) return;
+                if (!rtc.admittedAt) rtc.admittedAt = Date.now();
+                if (Date.now() - rtc.admittedAt < 9000 && rtc.attempts === 0) return;
+                rtcDial(room.mentee_peer_id);
+            } else {
+                if (room.mentee_admitted_id !== currentUser.id) return;
+                document.getElementById('mentee-waiting-overlay').classList.add('hidden');
+                document.getElementById('mentee-rejected-overlay').classList.add('hidden');
+                if (!room.room_peer_id) { rtcRetry('멘토가 상담방을 여는 중'); return; }
+                rtcDial(room.room_peer_id);
+            }
+        }
+        function rtcStartWatch() {
+            rtc.stopped = false;
+            clearInterval(rtc.watch);
+            rtc.watch = setInterval(() => {
+                if (!currentRoom) { rtcStopWatch(); return; }
+                if (!rtcInRoom()) return;
+                if (!peer || peer.destroyed) { if (localStream && !rtcRecreating) rtcRecreatePeer(); return; }
+                if (!rtc.connected && !rtc.inFlight && Date.now() - rtc.lastTry > 17000) rtcKick();
+            }, 3500);
+        }
+        function rtcStopWatch() {
+            rtc.stopped = true;
+            clearInterval(rtc.watch); rtc.watch = null; clearTimeout(rtc.timer); clearTimeout(rtc.discT);
+            Object.assign(rtc, { connected: false, inFlight: false, attempts: 0, lastTry: 0, admittedAt: 0 });
+        }
+        function rtcWatchPc(call) {
+            const pc = call.peerConnection; if (!pc) { setTimeout(() => { if (call === currentCall) rtcWatchPc(call); }, 300); return; }
+            const onState = () => {
+                if (call !== currentCall) return;
+                const s = pc.connectionState || pc.iceConnectionState;
+                if (s === 'connected' || s === 'completed') { clearTimeout(rtc.discT); if (!rtc.connected && document.getElementById('remote-video').srcObject) rtcMarkConnected(); }
+                else if (s === 'failed') { rtc.connected = false; try { call.close(); } catch (e) {} rtcRetry('네트워크가 끊겼어요'); }
+                else if (s === 'disconnected') {
+                    clearTimeout(rtc.discT);
+                    rtc.discT = setTimeout(() => { if (call === currentCall && (pc.connectionState === 'disconnected' || pc.iceConnectionState === 'disconnected')) { rtc.connected = false; try { call.close(); } catch (e) {} rtcRetry('연결이 잠시 끊겼어요'); } }, 5000);
+                }
+            };
+            pc.addEventListener('connectionstatechange', onState);
+            pc.addEventListener('iceconnectionstatechange', onState);
+        }
+        function rtcMarkConnected() {
+            rtc.connected = true; rtc.attempts = 0; clearTimeout(rtc.timer); clearTimeout(rtc.discT);
+            hideTroubleshoot();
+            setStatus('연결됨', 'bg-emerald-400');
+        }
+        window.addEventListener('online', () => { if (rtcInRoom()) { if (!peer || peer.destroyed || peer.disconnected) rtcRecreatePeer(); else if (!rtc.connected) rtcKick(); } });
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && rtcInRoom() && !rtc.connected) rtcKick(); });
+
         async function initVideoCall() {
             hideTroubleshoot();
             const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
             if (!isSecure) { setStatus('HTTPS 환경이 아닙니다.', 'bg-rose-500'); return; }
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { setStatus('이 브라우저는 카메라 API를 지원하지 않습니다.', 'bg-rose-500'); return; }
-
             try {
-                setStatus('카메라/마이크 권한 요청 중...', 'bg-amber-400');
                 const needNewStream = !localStream || localStream.getTracks().every(t => t.readyState === 'ended');
                 if (needNewStream) {
-                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    setStatus('카메라/마이크 준비 중...', 'bg-amber-400');
+                    const m = (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ? await rtcGetMedia() : { stream: rtcPlaceholderStream(), failed: true };
+                    localStream = m.stream;
                     const localVideoEl = document.getElementById('local-video');
                     localVideoEl.srcObject = localStream;
-                    localVideoEl.play().catch(()=>{});
+                    localVideoEl.play().catch(() => {});
+                    if (m.failed) {
+                        showTroubleshoot('<p class="font-bold">카메라·마이크를 쓸 수 없어서 화면 없이 연결해요.</p><p>상대의 영상과 소리는 그대로 보이고 들려요. 내 카메라를 쓰려면 주소창 왼쪽 자물쇠 → 사이트 설정에서 허용한 뒤 새로고침하세요.</p>');
+                    } else if (m.partial) showToast('카메라나 마이크 중 하나만 연결됐어요. 그대로 상담은 이어져요.', 'info');
                 }
-                setStatus('카메라/마이크 연결 완료.', 'bg-emerald-400');
-
-                if (!peer) {
-                    peer = new Peer({
-                        config: { iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' },
-                            { urls: 'stun:stun1.l.google.com:19302' },
-                            { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
-                            { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
-                            { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
-                        ]}
-                    });
-
-                    peer.on('open', async (id) => {
-                        // 역할(profiles.role) 값이 아니라, 예약 방 정보(mentor_id) 자체로 "내가 이 방의 멘토인지"를
-                        // 직접 판단한다 — 프로필 읽기에 문제가 있어도 통화 연결만큼은 항상 정확하게 동작하도록.
-                        const isMentorOfThisRoom = currentRoom && currentRoom.mentor_id === currentUser.id;
-                        setStatus(isMentorOfThisRoom ? '준비 완료 — 멘티 입장을 기다리는 중' : '준비 완료 — 승인을 기다리는 중', 'bg-emerald-400');
-                        // 멘토라면 방 정보에 내 peer id를 기록해서 멘티가 연결할 수 있게 한다
-                        if (isMentorOfThisRoom) {
-                            const { data, error } = await supabaseClient.from('live_rooms').update({ room_peer_id: id }).eq('id', currentRoom.id).select().single();
-                            if (error) console.error('room_peer_id 저장 실패:', error);
-                            if (data) currentRoom = data;
-                        }
-                        // 멘토가 아니라면(=멘티) 자신의 peer id를 기록해두면, 관리자가 관전 시 멘티 화면에도 직접 연결할 수 있다
-                        else if (currentRoom) {
-                            const { data, error } = await supabaseClient.from('live_rooms').update({ mentee_peer_id: id }).eq('id', currentRoom.id).select().single();
-                            if (error) console.error('mentee_peer_id 저장 실패:', error);
-                            if (data) currentRoom = data;
-                        }
-                    });
-
-                    // 상대방(멘토/멘티)의 통화든, 관리자의 "조용한 관전" 연결이든 모두 여기로 들어온다.
-                    // 관전 연결은 metadata로 구분해서 화면에 절대 노출되지 않게 별도 처리한다.
-                    peer.on('call', (call) => {
-                        if (call.metadata && call.metadata.role === 'admin_observer') {
-                            // 관리자에게는 내 화면을 보여주되, 내 화면에는 아무것도 표시하지 않는다 (완전히 조용한 참관)
-                            call.answer(localStream);
-                            return;
-                        }
-                        setStatus('상대방이 연결을 시도합니다...', 'bg-amber-400');
-                        call.answer(localStream);
-                        attachCallHandlers(call);
-                    });
-                    peer.on('connection', (conn) => bindDataConnection(conn));
-                    peer.on('disconnected', () => peer.reconnect());
-                    peer.on('error', (err) => { console.error(err); setStatus('연결 오류: ' + err.type, 'bg-rose-500'); });
-                }
+                setStatus('연결 준비 중...', 'bg-amber-400');
+                if (!peer || peer.destroyed) await rtcCreatePeer();
+                rtcStartWatch();
             } catch (err) {
                 console.error(err);
-                setStatus('카메라/마이크 접근 실패: ' + err.name, 'bg-rose-500');
-                showTroubleshoot(`<p class="font-bold">카메라/마이크 권한을 확인해주세요.</p><p>주소창 왼쪽 자물쇠 아이콘 → 사이트 설정에서 허용으로 바꾼 뒤 새로고침하세요.</p>`);
+                setStatus('연결 준비 중 문제가 생겨 다시 시도해요...', 'bg-amber-400');
+                if (!localStream) localStream = rtcPlaceholderStream();
+                try { if (!peer || peer.destroyed) await rtcCreatePeer(); } catch (e) {}
+                rtcStartWatch();
             }
         }
 
         // 멘티가 승인된 순간, 저장해둔 멘토의 peer id로 실제 통화를 건다
         function connectToMentor(mentorPeerId) {
-            console.log('[통화] connectToMentor 호출됨. peer 준비:', !!peer, '/ 로컬영상 준비:', !!localStream, '/ 멘토 peer id:', mentorPeerId);
-            if (!mentorPeerId) {
-                setStatus('멘토의 연결 번호를 아직 받지 못했습니다. 잠시 후 다시 시도해주세요.', 'bg-rose-500');
-                showToast('멘토가 아직 상담방을 완전히 열지 못한 상태예요. 몇 초 후 자동으로 다시 시도합니다.', 'error');
-                // room_peer_id가 아직 안 채워졌을 수 있으니, 최신 방 정보를 다시 읽어서 몇 초 뒤 재시도
-                setTimeout(async () => {
-                    if (!currentRoom) return;
-                    const { data } = await supabaseClient.from('live_rooms').select('*').eq('id', currentRoom.id).maybeSingle();
-                    if (data) { currentRoom = data; if (data.room_peer_id) connectToMentor(data.room_peer_id); }
-                }, 2500);
-                return;
-            }
-            if (!peer || !localStream) {
-                setStatus('내 카메라 연결이 아직 준비되지 않았습니다.', 'bg-rose-500');
-                return;
-            }
-            setStatus('멘토에게 연결 중...', 'bg-amber-400');
-            const call = peer.call(mentorPeerId, localStream);
-            attachCallHandlers(call);
-            const conn = peer.connect(mentorPeerId, { reliable: true });
-            bindDataConnection(conn);
+            rtcStartWatch();
+            if (!mentorPeerId) { rtcRetry('멘토가 상담방을 여는 중'); return; }
+            rtcDial(mentorPeerId);
         }
 
         function attachCallHandlers(call) {
             currentCall = call;
+            rtcWatchPc(call);
             call.on('stream', (remoteStream) => {
+                if (call !== currentCall) return;
+                rtcMarkConnected();
                 const remoteVideoEl = document.getElementById('remote-video');
                 // 음소거 자동재생은 브라우저 정책상 거의 항상 허용되므로, 여러 방식으로 확실히 음소거해둔다
                 remoteVideoEl.muted = true;
@@ -16693,11 +16868,14 @@
                 remoteVideoEl.onloadedmetadata = () => { if (needsManualPlay) attemptRemotePlay(); };
             });
             call.on('close', () => {
+                if (call !== currentCall) return;
+                rtc.connected = false;
                 document.getElementById('remote-video').srcObject = null;
                 document.getElementById('remote-placeholder').classList.remove('hidden');
-                setStatus('통화가 종료되었습니다.', 'bg-slate-400');
+                if (rtcInRoom()) rtcRetry('상대와 연결이 끊겼어요');
+                else setStatus('통화가 종료되었습니다.', 'bg-slate-400');
             });
-            call.on('error', (err) => { console.error(err); setStatus('통화 오류: ' + err, 'bg-rose-500'); });
+            call.on('error', (err) => { console.error(err); if (call === currentCall) rtcRetry('통화 연결 오류'); });
         }
 
         function bindDataConnection(conn) {
@@ -16976,6 +17154,7 @@
         // 통화 종료 — 트랙/연결만 정리하고, 다음 화면 이동은 사용자가 버튼으로 직접 진행
         // 카메라/마이크/PeerJS 연결을 완전히 정리하는 공통 함수 — endCall/로그아웃/원격종료 모두 여기를 거칩니다.
         function stopAllMediaAndPeer() {
+            rtcStopWatch();
             if (currentCall) { currentCall.close(); currentCall = null; }
             if (dataConn) { dataConn.close(); dataConn = null; }
             stopRecordingIfActive();
