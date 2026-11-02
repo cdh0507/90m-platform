@@ -1550,6 +1550,77 @@
         .cm-form input:focus { border-color: var(--ink); }
         .cm-form button { border: none; border-radius: 12px; padding: 0 14px; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
 
+        .cm-slots { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px; width: min(100%, 460px); }
+        .gp-mode-title { margin: 6px 0 6px; font-size: 13px; font-weight: 900; }
+        .gp-modes { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; width: 100%; max-width: 680px; margin-bottom: 12px; }
+        .gp-mode { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; border-radius: 14px; border: 1.5px solid rgba(128,128,128,.25); background: var(--bg); color: var(--ink); text-align: left; cursor: pointer; transition: transform .12s ease, border-color .12s ease; }
+        .gp-mode:not([disabled]):hover { transform: translateY(-2px); border-color: var(--ink); }
+        .gp-mode[disabled] { cursor: default; opacity: .75; }
+        .gp-mode.on { border-color: #7b2cbf; background: rgba(123,44,191,.1); opacity: 1; box-shadow: 0 0 0 2px rgba(123,44,191,.25); }
+        .gp-mode span { font-size: 22px; } .gp-mode b { font-size: 14px; font-weight: 900; } .gp-mode small { font-size: 11px; font-weight: 600; color: var(--ink-soft); line-height: 1.4; }
+        .gp-custom { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; margin: -2px 0 12px; font-size: 12.5px; font-weight: 700; max-width: 640px; }
+        .gp-custom.hidden { display: none; }
+        .gp-custom input[type=number] { width: 58px; border: 1px solid rgba(128,128,128,.35); border-radius: 8px; padding: 3px 6px; background: var(--bg); color: var(--ink); }
+        .gp-custom select { border: 1px solid rgba(128,128,128,.35); border-radius: 8px; padding: 3px 6px; background: var(--bg); color: var(--ink); }
+        .gp-custom p { margin: 0; color: var(--ink-soft); }
+        .gp-wrap { display: flex; flex-direction: column; gap: 10px; }
+        .gp-top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 16px; background: linear-gradient(90deg,#2b1055,#7b2cbf); color: #fff; }
+        .gp-top.hidden { display: none; }
+        .gp-turn { font-size: 12px; font-weight: 800; opacity: .8; white-space: nowrap; }
+        .gp-label { flex: 1; text-align: center; font-size: 15px; font-weight: 900; }
+        .gp-prog { font-size: 11.5px; font-weight: 800; opacity: .8; white-space: nowrap; }
+        .gp-v.hidden { display: none; }
+        .gp-bubble { margin: 0; padding: 10px 14px; border-radius: 14px; background: rgba(128,128,128,.12); font-size: 15px; font-weight: 700; word-break: break-word; }
+        .gp-bubble.big { font-size: 20px; font-weight: 900; text-align: center; background: #fff7d6; color: #3d2c00; }
+        .gp-bubble.hidden { display: none; }
+        .gp-wprev { display: flex; justify-content: center; margin-bottom: 10px; }
+        .gp-wprev.hidden { display: none; }
+        .gp-wprev canvas { width: min(100%, 520px); aspect-ratio: 4/3; border-radius: 14px; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+        .gp-wprev canvas.hidden { display: none; }
+        .gp-wrow input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 2px solid rgba(128,128,128,.35); font-size: 17px; font-weight: 700; background: var(--bg); color: var(--ink); outline: none; }
+        .gp-wrow input:focus { border-color: #7b2cbf; }
+        .gp-wrow input:disabled { opacity: .6; }
+        .gp-censor { -webkit-text-security: disc; }
+        .gp-padwrap { position: relative; width: 100%; max-width: max(320px, calc((88vh - 330px) * 4 / 3)); margin-left: auto; margin-right: auto; aspect-ratio: 4/3; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 6px 22px rgba(0,0,0,.18); margin-top: 8px; }
+        .gp-padwrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+        #gp-pad { cursor: crosshair; }
+        #gp-v-draw .cm-tools { max-width: 720px; margin: 8px auto 0; }
+        #gp-v-draw .gp-bubble.big { max-width: 720px; margin: 0 auto; }
+        .gp-padwrap.gp-blind #gp-pad, .gp-padwrap.gp-blind #gp-under { opacity: 0; }
+        .gp-padwrap.gp-blind::after { content: '🙈 비밀 모드 — 내 그림이 안 보여요'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #8d99ae; pointer-events: none; }
+        .gp-mem { position: absolute; inset: 0; background: #fff; z-index: 2; }
+        .gp-mem.hidden { display: none; }
+        .gp-mem span { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 6px 14px; border-radius: 999px; background: rgba(20,10,40,.85); color: #fff; font-weight: 900; font-size: 14px; }
+        .gp-waitv { display: flex; flex-direction: column; align-items: center; padding: 40px 10px; text-align: center; font-weight: 800; }
+        .gp-spin { font-size: 48px; animation: cmBob 1.6s ease-in-out infinite; }
+        .gp-wc { color: var(--ink-soft); font-size: 13px; }
+        .gp-rvt { margin: 0 0 8px; font-size: 18px; font-weight: 900; text-align: center; }
+        .gp-rvt small { display: block; font-size: 11px; font-weight: 800; color: var(--ink-soft); }
+        .gp-feed { display: flex; flex-direction: column; gap: 12px; max-height: 62vh; overflow-y: auto; padding: 4px 4px 10px; }
+        .gp-entry { position: relative; display: flex; flex-direction: column; gap: 4px; max-width: 520px; animation: cmPop .45s cubic-bezier(.2,1.4,.4,1) both; }
+        .gp-entry.txt { align-self: flex-start; } .gp-entry.drw { align-self: flex-end; width: min(100%, 520px); }
+        .gp-entry canvas { width: 100%; aspect-ratio: 4/3; border-radius: 14px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.15); }
+        .gp-entry .gp-bubble { font-size: 17px; background: #ede7ff; color: #2b1055; }
+        .gp-entry.match .gp-bubble { background: #d8f3dc; color: #1b4332; }
+        .gp-who { font-size: 12px; font-weight: 800; color: var(--ink-soft); } .gp-who b { color: #2b9348; }
+        .gp-save { position: absolute; right: 8px; bottom: 8px; border: none; border-radius: 10px; padding: 6px 9px; background: rgba(0,0,0,.55); color: #fff; cursor: pointer; font-size: 12px; font-weight: 800; }
+        .gp-anim { display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .gp-anim > canvas { width: 100%; max-width: 560px; align-self: center; aspect-ratio: 4/3; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+        .gp-anim-bar { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12px; font-weight: 800; color: var(--ink-soft); flex-wrap: wrap; }
+        .gp-anim-bar .gp-save { position: static; }
+        .gp-strip { display: flex; gap: 4px; overflow-x: auto; padding: 2px; }
+        .gp-strip canvas { width: 72px; height: 54px; border-radius: 6px; background: #fff; border: 2px solid transparent; flex-shrink: 0; }
+        .gp-strip canvas.on { border-color: #7b2cbf; }
+        .gp-rvbar { display: flex; justify-content: center; }
+        .gp-end { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px; text-align: center; }
+        .gp-end h4 { margin: 0; font-size: 16px; font-weight: 900; }
+        .gp-end ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; min-width: 220px; }
+        .gp-end li { display: flex; justify-content: space-between; padding: 6px 12px; border-radius: 10px; background: rgba(128,128,128,.1); font-weight: 800; }
+        .gp-bottom { display: flex; gap: 10px; justify-content: center; align-items: center; }
+        .gp-done { border: none; border-radius: 999px; padding: 12px 34px; font-size: 16px; font-weight: 900; color: #fff; background: linear-gradient(90deg,#7b2cbf,#ff5d8f); cursor: pointer; box-shadow: 0 8px 20px rgba(123,44,191,.35); }
+        .gp-done.undo { background: #8d99ae; box-shadow: none; }
+        #gp-state-game.revealing .gp-done { display: none; }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -2828,6 +2899,11 @@
                         <button data-c="solo" onclick="rzCat('solo')">혼자서</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="restzoneOpenGame('gartic')" data-cat="board" class="restzone-game-card press-feel">
+                            <span class="restzone-game-icon" style="background:linear-gradient(135deg,#e9d5ff,#ffd6e8);"><i class="fa-solid fa-phone-volume" style="color:#7b2cbf;"></i></span>
+                            <span class="restzone-game-name">갈틱폰 <span style="font-size:10px;font-weight:900;color:#fff;background:#ff4d8d;padding:2px 7px;border-radius:99px;vertical-align:2px;">NEW</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~12명</span></span>
+                            <span class="restzone-game-desc">쓰고 → 그리고 → 설명하는 그림 전화기 · 애니메이션·짝퉁·비밀 등 13가지 모드</span>
+                        </button>
                         <button onclick="restzoneOpenGame('catch')" data-cat="board" class="restzone-game-card press-feel cm-card">
                             <span class="restzone-game-icon" style="background:linear-gradient(135deg,#ffd6f5,#fff1c1);"><i class="fa-solid fa-palette" style="color:#e85d04;"></i></span>
                             <span class="restzone-game-name">그림 맞히기 파티 <span style="font-size:10px;font-weight:900;color:#fff;background:#ff4d8d;padding:2px 7px;border-radius:99px;vertical-align:2px;">NEW</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~8명</span></span>
@@ -2893,6 +2969,72 @@
                             <span class="restzone-game-name">끝말잇기</span>
                             <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
                         </button>
+                    </div>
+                </div>
+
+                <div id="restzone-panel-gartic" class="hidden">
+                    <div id="gp-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-phone text-3xl mb-3" style="color:#7b2cbf;"></i>
+                        <p class="cnr-msg">갈틱폰은 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+                    <div id="gp-state-lobby" class="hidden cnr-center">
+                        <div class="cm-logo">📞</div>
+                        <p class="cnr-msg">갈틱폰 — 그림 전화기 게임<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">문장을 쓰면 다음 사람이 그리고, 그 그림을 또 다음 사람이 설명하고…<br>마지막에 다 같이 앨범을 넘겨보며 터지는 게임 · 13가지 모드 · 2~12명</span></p>
+                        <button onclick="mpCreate('gp')" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기 (최대 12명)</button>
+                        <div class="cnr-join-row">
+                            <input id="gp-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="mpJoin('gp')" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="gp-lobby-error" class="cnr-lobby-error hidden"></p>
+                    </div>
+                    <div id="gp-state-waiting" class="hidden cnr-center">
+                        <p class="cnr-msg">참가자를 기다리는 중... <b id="gp-player-count">1 / 12</b></p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="gp-room-code-display">-----</b>
+                            <button onclick="mpCopyCode('gp')" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <ul id="gp-player-list" class="mp-slots cm-slots"></ul>
+                        <p class="gp-mode-title">게임 모드</p>
+                        <div id="gp-modes" class="gp-modes"></div>
+                        <div id="gp-custom" class="gp-custom hidden"></div>
+                        <button id="gp-start-btn" onclick="mpStart('gp')" class="press-feel accent-btn px-6 py-2.5 rounded-full text-sm mb-3" disabled>2명 이상 모이면 시작할 수 있어요</button>
+                        <p id="gp-guest-wait" class="rz-wait-sub hidden" style="margin-top:0;">방장이 모드를 고르고 시작하길 기다리고 있어요…</p>
+                        <button onclick="mpLeave('gp')" class="press-feel cnr-cancel-btn">나가기</button>
+                    </div>
+                    <div id="gp-state-game" class="hidden">
+                        <div class="gp-wrap">
+                            <div class="gp-top" id="gp-top">
+                                <span class="gp-turn" id="gp-turn">1 / 6</span>
+                                <b class="gp-label" id="gp-label"></b>
+                                <span class="gp-prog" id="gp-prog"></span>
+                                <span class="cm-timer" id="gp-timer">60</span>
+                            </div>
+                            <div id="gp-v-write" class="gp-v hidden">
+                                <div id="gp-w-prev" class="gp-wprev hidden"><canvas id="gp-w-prevcv" width="800" height="600"></canvas><p id="gp-w-prevtext" class="gp-bubble big hidden"></p></div>
+                                <div class="gp-wrow"><input id="gp-text" maxlength="140" autocomplete="off" placeholder="여기에 써주세요" onkeydown="if(event.key==='Enter'){event.preventDefault();gpSubmit();}"></div>
+                            </div>
+                            <div id="gp-v-draw" class="gp-v hidden">
+                                <p id="gp-d-prompt" class="gp-bubble big hidden"></p>
+                                <div class="gp-padwrap" id="gp-padwrap">
+                                    <canvas id="gp-under" width="800" height="600"></canvas>
+                                    <canvas id="gp-pad" width="800" height="600"></canvas>
+                                    <div id="gp-mem" class="gp-mem hidden"><canvas id="gp-memcv" width="800" height="600"></canvas><span id="gp-memcount"></span></div>
+                                </div>
+                                <div id="gp-tools" class="cm-tools"></div>
+                            </div>
+                            <div id="gp-v-wait" class="gp-v gp-waitv hidden"><div class="gp-spin">📞</div><p id="gp-waitmsg"></p><p id="gp-waitcount" class="gp-wc"></p></div>
+                            <div id="gp-v-reveal" class="gp-v hidden">
+                                <h3 id="gp-rv-title" class="gp-rvt"></h3>
+                                <div id="gp-feed" class="gp-feed"></div>
+                                <div class="gp-rvbar"><button id="gp-rv-next" class="ng-btn hidden" onclick="gpRevealNext()">다음 ▶</button><p id="gp-rv-wait" class="rz-wait-sub hidden">방장이 넘기는 중이에요…</p></div>
+                            </div>
+                            <div class="gp-bottom">
+                                <button id="gp-done" class="gp-done" onclick="gpSubmit()">완료!</button>
+                                <button onclick="mpLeave('gp')" class="press-feel cnr-cancel-btn">나가기</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -5327,10 +5469,10 @@
         // 방장이 규칙 검증과 진행을 맡고, 각자의 손패는 본인에게만 따로 보낸다.
         // =====================================================================
         const MP_MAX = 4;
-        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch' };
-        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch' };
-        const mpRooms = { rm: null, un: null, kk: null, cm: null };
-        function mpMax(g) { return g === 'cm' ? 8 : MP_MAX; }
+        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic' };
+        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic' };
+        const mpRooms = { rm: null, un: null, kk: null, cm: null, gp: null };
+        function mpMax(g) { return g === 'cm' ? 8 : g === 'gp' ? 12 : MP_MAX; }
         // 컴퓨터 참가자까지 합친 인원 (끝말잇기는 혼자서도 컴퓨터와 할 수 있다)
         function mpTotal(r) { return r.players.length + ((r.opts && r.opts.bots) || 0); }
         // 게임별 훅: onMsg(payload) 게임 메시지 처리 / hostStart() 방장이 시작할 때 / hostLeave(id) 누가 나갔을 때(방장만) / cleanup(room) 정리
@@ -5495,7 +5637,8 @@
             const list = document.getElementById(`${g}-player-list`);
             if (list) {
                 const slots = [];
-                for (let i = 0; i < mpMax(g); i++) {
+                const showN = mpMax(g) > 4 ? Math.min(mpMax(g), r.players.length + 1) : mpMax(g);
+                for (let i = 0; i < showN; i++) {
                     const p = r.players[i];
                     slots.push(p
                         ? `<li class="mp-slot on"><span class="mp-slot-n">${i + 1}</span><b>${escapeHtml(p.name)}</b>${p.id === r.hostId ? '<em>방장</em>' : ''}${p.id === r.myId ? '<em class="me">나</em>' : ''}</li>`
@@ -6727,7 +6870,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
+        const RESTZONE_TITLES = { gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
 
         function openRestZoneModal() {
             if (!hasGameAccess()) { showToast('쉼터는 최고 관리자가 권한을 준 계정만 이용할 수 있어요.', 'error'); return; }
@@ -6754,6 +6897,7 @@
             if (typeof teardownHole === 'function') teardownHole();
             if (typeof teardownSlash === 'function') teardownSlash();
             if (typeof teardownCatch === 'function') teardownCatch();
+            if (typeof teardownGartic === 'function') teardownGartic();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -6775,6 +6919,7 @@
             if (typeof teardownHole === 'function') teardownHole();
             if (typeof teardownSlash === 'function') teardownSlash();
             if (typeof teardownCatch === 'function') teardownCatch();
+            if (typeof teardownGartic === 'function') teardownGartic();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -6783,7 +6928,8 @@
             document.getElementById('restzone-back-btn').classList.remove('hidden');
             document.getElementById('restzone-modal-title').innerText = RESTZONE_TITLES[name] || '쉼터';
 
-            if (name === 'catch') ensureCatchInit();
+            if (name === 'gartic') ensureGarticInit();
+            else if (name === 'catch') ensureCatchInit();
             else if (name === 'hole') ensureHoleInit();
             else if (name === 'slash') ensureSlashInit();
             else if (name === 'merge') ensureMergeInit();
@@ -7710,6 +7856,7 @@
             else if (mpRooms.rm && mpRooms.rm.phase === 'game') name = '루미큐브';
             else if (mpRooms.un && mpRooms.un.phase === 'game') name = '우노';
             else if (mpRooms.cm && mpRooms.cm.phase === 'game') return confirm('진행 중인 그림 맞히기에서 나갈까요?');
+            else if (mpRooms.gp && mpRooms.gp.phase === 'game') return confirm('진행 중인 갈틱폰에서 나갈까요?');
             else if (mpRooms.kk && mpRooms.kk.phase === 'game') { const m = kkLeaveMsg(); return m ? confirm(m) : confirm('진행 중인 끝말잇기에서 나가면 패배로 기록돼요. 정말 나갈까요?'); }
             if (!name) return true;
             return confirm('진행 중인 ' + name + ' 대국에서 나가면 패배로 기록돼요. 정말 나갈까요?');
@@ -14345,7 +14492,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return { key: 'omok:' + omok.roomCode, ch: omok.channel, id: currentUser.id, name: omok.myName };
                 if (typeof bs !== 'undefined' && bs && bs.channel) return { key: 'bs:' + bs.roomCode, ch: bs.channel, id: currentUser.id, name: bs.myName };
                 if (typeof vb !== 'undefined' && vb && vb.channel) return { key: 'vb:' + vb.roomCode, ch: vb.channel, id: currentUser.id, name: vb.myName };
-                for (const g of ['rm', 'un', 'kk', 'cm']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { key: g + ':' + r.code, ch: r.channel, id: r.myId, name: r.myName, peers: r.players.filter(x => x.id !== r.myId).map(x => ({ id: x.id, name: x.name })) };
                 }
@@ -14919,7 +15066,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return mk('omok', omok);
                 if (typeof bs !== 'undefined' && bs && bs.channel) return mk('bs', bs);
                 if (typeof vb !== 'undefined' && vb && vb.channel) return mk('vball', vb);
-                for (const g of ['rm', 'un', 'kk', 'cm']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { g: MP_CHANNEL[g], code: r.code, ph: r.phase || 'waiting' };
                 }
@@ -16788,7 +16935,7 @@
             c.restore();
         }
 
-        const CM_WORDS = "사과 바나나 수박 딸기 포도 파인애플 복숭아 레몬 체리 귤 감 배 토마토 당근 오이 감자 고구마 옥수수 양파 버섯 브로콜리 호박 마늘 고추 피자 햄버거 라면 김밥 떡볶이 치킨 핫도그 도넛 아이스크림 케이크 쿠키 초밥 만두 샌드위치 팝콘 계란후라이 붕어빵 솜사탕 우유 커피 콜라 빵 국수 삼겹살 짜장면 비빔밥 타코야키 와플 마카롱 사탕 강아지 고양이 토끼 호랑이 사자 코끼리 기린 원숭이 판다 펭귄 상어 고래 문어 오징어 거북이 뱀 개구리 닭 돼지 소 말 양 곰 여우 늑대 다람쥐 부엉이 독수리 앵무새 공룡 나비 벌 개미 거미 달팽이 해파리 게 새우 악어 하마 코알라 캥거루 낙타 얼룩말 고슴도치 박쥐 홍학 오리 금붕어 무당벌레 잠자리 자동차 버스 기차 비행기 헬리콥터 자전거 오토바이 로켓 잠수함 트럭 택시 구급차 소방차 경찰차 열기구 스케이트보드 썰매 지하철 우주선 집 학교 병원 교회 성 피라미드 등대 다리 텐트 엘리베이터 에스컬레이터 놀이터 미끄럼틀 그네 회전목마 관람차 수영장 화장실 동물원 공항 편의점 도서관 영화관 의자 책상 침대 소파 냉장고 세탁기 텔레비전 컴퓨터 노트북 스마트폰 시계 안경 우산 가방 모자 신발 양말 장갑 목도리 넥타이 치마 바지 드레스 왕관 반지 목걸이 거울 칫솔 치약 비누 수건 빗 가위 연필 지우개 자 공책 책 풍선 선물 촛불 열쇠 자물쇠 전구 손전등 망치 톱 사다리 휴지 쓰레기통 카메라 헤드폰 마이크 리모컨 배터리 돋보기 나침반 지도 깃발 트로피 메달 돈 지갑 저금통 축구공 농구공 야구 테니스 볼링 골프 스키 수영 태권도 줄넘기 훌라후프 낚시 등산 캠핑 마라톤 권투 체조 양궁 탁구 배드민턴 피아노 기타 드럼 바이올린 트럼펫 하모니카 탬버린 실로폰 리코더 해 달 별 구름 비 눈 번개 무지개 바다 산 화산 섬 사막 폭포 강 호수 동굴 숲 나무 꽃 장미 해바라기 선인장 단풍 눈사람 지구 토성 블랙홀 별똥별 오로라 회오리 파도 모래성 의사 간호사 경찰 소방관 요리사 선생님 가수 화가 우주비행사 해적 닌자 마법사 왕 공주 로봇 외계인 유령 좀비 뱀파이어 천사 악마 산타클로스 인어 기사 광대 미라 슈퍼히어로 탐정 군인 농부 어부 마술사 잠자기 달리기 점프 웃음 울음 재채기 하품 요리하기 춤추기 노래하기 그림그리기 사진찍기 박수 윙크 키스 포옹 셀카 방귀 코골이 양치질 샤워 낮잠 다이어트 운전 쇼핑 결혼식 생일파티 소풍 숨바꼭질 가위바위보 팔씨름 줄다리기 눈물 하트 해골 똥 엉덩이 콧물 이빨 수염 대머리 뿔 날개 꼬리 발자국 손가락 귀 코 입술 혀 배꼽 근육 뼈 심장 뇌 크리스마스 할로윈 추석 설날 불꽃놀이 보름달 세뱃돈 떡국 송편 한복 태극기 김치 탈춤 제기차기 연날리기 윷놀이 와이파이 충전기 유튜브 게임기 이모티콘 알람 비밀번호 택배 로또 자판기 신호등 횡단보도 소화기 우체통 분수 동전 영수증 바코드".split(" ");
+        const CM_WORDS = "사과 바나나 수박 딸기 포도 파인애플 복숭아 레몬 체리 귤 감 배 토마토 당근 오이 감자 고구마 옥수수 양파 버섯 브로콜리 호박 마늘 고추 피자 햄버거 라면 김밥 떡볶이 치킨 핫도그 도넛 아이스크림 케이크 쿠키 초밥 만두 샌드위치 팝콘 계란후라이 붕어빵 솜사탕 우유 커피 콜라 빵 국수 삼겹살 짜장면 비빔밥 타코야키 와플 마카롱 사탕 강아지 고양이 토끼 호랑이 사자 코끼리 기린 원숭이 판다 펭귄 상어 고래 문어 오징어 거북이 뱀 개구리 닭 돼지 소 말 양 곰 여우 늑대 다람쥐 부엉이 독수리 앵무새 공룡 나비 벌 개미 거미 달팽이 해파리 게 새우 악어 하마 코알라 캥거루 낙타 얼룩말 고슴도치 박쥐 홍학 오리 금붕어 무당벌레 잠자리 자동차 버스 기차 비행기 헬리콥터 자전거 오토바이 로켓 잠수함 트럭 택시 구급차 소방차 경찰차 열기구 스케이트보드 썰매 지하철 우주선 집 학교 병원 교회 성 피라미드 등대 다리 텐트 엘리베이터 에스컬레이터 놀이터 미끄럼틀 그네 회전목마 관람차 수영장 화장실 동물원 공항 편의점 도서관 영화관 의자 책상 침대 소파 냉장고 세탁기 텔레비전 컴퓨터 노트북 스마트폰 시계 안경 우산 가방 모자 신발 양말 장갑 목도리 넥타이 치마 바지 드레스 왕관 반지 목걸이 거울 칫솔 치약 비누 수건 빗 가위 연필 지우개 자 공책 책 풍선 선물 촛불 열쇠 자물쇠 전구 손전등 망치 톱 사다리 휴지 쓰레기통 카메라 헤드폰 마이크 리모컨 배터리 돋보기 나침반 지도 깃발 트로피 메달 돈 지갑 저금통 축구공 농구공 야구 테니스 볼링 골프 스키 수영 태권도 줄넘기 훌라후프 낚시 등산 캠핑 마라톤 권투 체조 양궁 탁구 배드민턴 피아노 기타 드럼 바이올린 트럼펫 하모니카 탬버린 실로폰 리코더 해 달 별 구름 비 눈 번개 무지개 바다 산 화산 섬 사막 폭포 강 호수 동굴 숲 나무 꽃 장미 해바라기 선인장 단풍 눈사람 지구 토성 블랙홀 별똥별 오로라 회오리 파도 모래성 의사 간호사 경찰 소방관 요리사 선생님 가수 화가 우주비행사 해적 닌자 마법사 왕 공주 로봇 외계인 유령 좀비 뱀파이어 천사 악마 산타클로스 인어 기사 광대 미라 슈퍼히어로 탐정 군인 농부 어부 마술사 잠자기 달리기 점프 웃음 울음 재채기 하품 요리하기 춤추기 노래하기 그림그리기 사진찍기 박수 윙크 키스 포옹 셀카 방귀 코골이 양치질 샤워 낮잠 다이어트 운전 쇼핑 결혼식 생일파티 소풍 숨바꼭질 가위바위보 팔씨름 줄다리기 눈물 하트 해골 똥 엉덩이 콧물 이빨 수염 대머리 뿔 날개 꼬리 발자국 손가락 귀 코 입술 혀 배꼽 근육 뼈 심장 뇌 크리스마스 할로윈 추석 설날 불꽃놀이 보름달 세뱃돈 떡국 송편 한복 태극기 김치 탈춤 제기차기 연날리기 윷놀이 와이파이 충전기 유튜브 게임기 이모티콘 알람 비밀번호 택배 로또 자판기 신호등 횡단보도 소화기 우체통 분수 동전 영수증 바코드 자두 망고 키위 블루베리 코코넛 석류 무화과 아보카도 라임 멜론 참외 대추 밤 도토리 땅콩 호두 잣 고사리 가지 시금치 상추 배추 무 파 생강 연근 우엉 콩나물 두부 김 미역 새우튀김 돈가스 카레 우동 냉면 칼국수 짬뽕 탕수육 볶음밥 김치찌개 된장찌개 부대찌개 삼계탕 불고기 갈비 순대 어묵 튀김 핫케이크 팬케이크 크루아상 베이글 프레첼 바게트 초콜릿 젤리 껌 아이스티 레모네이드 주스 버블티 컵라면 도시락 주먹밥 유부초밥 회 스테이크 소시지 베이컨 치즈 버터 꿀 잼 시리얼 요거트 푸딩 빙수 호떡 계란빵 군고구마 꼬치 감자튀김 나초 부리또 파스타 리조또 수프 샐러드 케밥 딤섬 마라탕 훠궈 치타 표범 하이에나 들소 순록 사슴 노루 염소 당나귀 라마 알파카 수달 해달 비버 너구리 스컹크 오소리 두더지 햄스터 기니피그 친칠라 페럿 고릴라 침팬지 오랑우탄 나무늘보 개미핥기 아르마딜로 코뿔소 물개 바다사자 바다코끼리 돌고래 범고래 상괭이 가오리 장어 연어 참치 고등어 복어 해마 불가사리 성게 조개 굴 전복 소라 랍스터 꽃게 갈매기 비둘기 참새 까치 까마귀 제비 매 올빼미 백조 두루미 공작 타조 칠면조 키위새 펠리컨 벌새 딱따구리 메뚜기 귀뚜라미 매미 사마귀 반딧불이 모기 파리 바퀴벌레 지렁이 애벌레 번데기 전갈 지네 도마뱀 카멜레온 이구아나 코브라 두꺼비 올챙이 도롱뇽 티라노사우루스 트리케라톱스 매머드 유니콘 드래곤 피닉스 구미호 해태 도깨비 늑대인간 예티 인어공주 요정 거인 난쟁이 마녀 킥보드 트랙터 포클레인 불도저 크레인 레미콘 경운기 캠핑카 오픈카 리무진 스포츠카 마차 인력거 곤돌라 케이블카 요트 카누 뗏목 잠수부 낙하산 패러글라이딩 행글라이더 드론 인공위성 UFO 비행선 전투기 탱크 군함 항공모함 세그웨이 롤러스케이트 인라인스케이트 유모차 휠체어 쇼핑카트 주차장 주유소 톨게이트 터널 고속도로 육교 정류장 기찻길 활주로 등대지기 궁전 성당 절 탑 오두막 이글루 텐트촌 기와집 초가집 아파트 빌딩 마천루 은행 우체국 경찰서 소방서 시청 법원 감옥 박물관 미술관 수족관 식물원 놀이공원 워터파크 스키장 골프장 축구장 야구장 체육관 볼링장 노래방 피시방 찜질방 목욕탕 세탁소 미용실 빵집 카페 식당 포장마차 시장 마트 백화점 약국 치과 동물병원 유치원 대학교 기숙사 공장 농장 목장 과수원 논 밭 온실 풍차 댐 발전소 다리미 성벽 분화구 오아시스 정글 빙하 북극 남극 무인도 해변 계곡 언덕 절벽 협곡 늪 초원 사바나 동굴탐험 선풍기 에어컨 히터 전자레인지 오븐 토스터 믹서기 밥솥 주전자 냄비 프라이팬 국자 뒤집개 도마 칼 포크 숟가락 젓가락 접시 그릇 머그컵 와인잔 빨대 병따개 깡통 보온병 도시락통 앞치마 고무장갑 청소기 빗자루 쓰레받기 걸레 양동이 대야 빨래집게 옷걸이 다리미판 세제 스펀지 수세미 휴지통 화분 물뿌리개 삽 호미 갈퀴 손수레 공구함 드라이버 스패너 렌치 펜치 못 나사 테이프 풀 스테이플러 클립 압정 포스트잇 형광펜 크레파스 물감 붓 팔레트 이젤 캔버스 지구본 계산기 줄자 각도기 컴퍼스 현미경 망원경 비커 시험관 자석 전선 콘센트 멀티탭 스위치 형광등 촛대 랜턴 성냥 라이터 모닥불 장작 도끼 침낭 배낭 등산화 쌍안경 무전기 손목시계 탁상시계 뻐꾸기시계 모래시계 달력 액자 앨범 일기장 편지 엽서 우표 봉투 소포 택배상자 야구모자 털모자 밀짚모자 헬멧 왕관모자 마스크 안대 귀마개 이어폰 머리띠 머리핀 고무줄 가발 립스틱 매니큐어 향수 로션 선크림 면도기 드라이기 고데기 손거울 화장품 귀걸이 팔찌 브로치 시계줄 반바지 청바지 원피스 정장 한복치마 잠옷 수영복 비키니 우비 장화 슬리퍼 샌들 하이힐 운동화 구두 부츠 조끼 패딩 코트 후드티 스웨터 셔츠 넥타이핀 멜빵 벨트 지퍼 단추 주머니 손수건 스카프 숄 농구 배구 핸드볼 럭비 미식축구 하키 아이스하키 컬링 스노보드 썰매타기 스케이트 피겨스케이팅 서핑 요트경기 카약 다이빙 수구 펜싱 유도 레슬링 씨름 역도 철봉 평균대 트램펄린 클라이밍 번지점프 스카이다이빙 승마 사이클 마라톤결승선 계주 허들 높이뛰기 멀리뛰기 투포환 창던지기 당구 다트 체스 바둑 장기 오목 카드게임 퍼즐 큐브 요요 팽이 딱지 구슬치기 비석치기 공기놀이 줄넘기대회 술래잡기 얼음땡 무궁화꽃이피었습니다 보물찾기 물총싸움 눈싸움 베개싸움 첼로 콘트라베이스 플루트 클라리넷 색소폰 트롬본 튜바 하프 오카리나 아코디언 우쿨렐레 신디사이저 마라카스 캐스터네츠 트라이앵글 심벌즈 장구 북 꽹과리 징 가야금 거문고 해금 단소 피리 오르골 메트로놈 악보 지휘봉 스피커 레코드판 카세트테이프 일출 일몰 노을 은하수 초승달 반달 일식 월식 혜성 행성 화성 목성 우주정거장 우주인 외계행성 소행성 지진 홍수 가뭄 산불 눈보라 우박 안개 서리 고드름 이슬 물웅덩이 진흙 바위 자갈 조약돌 모래 소금 다이아몬드 금괴 보석 수정 화석 용암 마그마 간헐천 온천 빙산 해일 소용돌이 토네이도 태풍 소방관모자 우체부 택배기사 버스기사 조종사 승무원 선장 해녀 광부 목수 미용사 바리스타 제빵사 웨이터 셰프 판사 변호사 검사 기자 아나운서 기상캐스터 유튜버 프로게이머 축구선수 야구선수 발레리나 피아니스트 지휘자 래퍼 아이돌 배우 코미디언 마술사모자 서커스 곡예사 피에로 조련사 사육사 수의사 약사 과학자 발명가 고고학자 탐험가 등산가 카우보이 해적선장 바이킹 사무라이 기사단 왕자 여왕 황제 대통령 경호원 스파이 탐정모자 로봇청소기 인공지능 해커 사이보그 하이파이브 손뼉치기 엄지척 브이 하트손 손키스 손흔들기 악수 절하기 큰절 물구나무서기 옆구리찌르기 간지럼 꿀밤 딱밤 박치기 발차기 업어치기 무릎꿇기 기지개 스트레칭 요가 명상 조깅 산책 등산하기 수영하기 낚시하기 빨래하기 설거지 청소하기 다림질 바느질 뜨개질 화분가꾸기 장보기 계산하기 택배받기 공부하기 시험보기 숙제하기 발표하기 졸기 지각 야근 출근 퇴근 월급날 회식 면접 이사 집들이 소개팅 고백 이별 짝사랑 질투 깜짝파티 생일케이크 촛불끄기 소원빌기 선물포장 풍선불기 캠프파이어 바비큐 피크닉 드라이브 여행가방 비행기표 여권 기념사진 관광객 셀카봉 분노 기쁨 슬픔 공포 놀람 혐오 사랑 행복 외로움 피곤 배고픔 배부름 졸림 심심함 부끄러움 자신감 긴장 설렘 감동 후회 산타썰매 루돌프 크리스마스트리 양말선물 호박등 마녀모자 사탕바구니 부활절달걀 토끼귀 할로윈분장 새해일출 떡국한그릇 복주머니 세배 차례상 성묘 강강술래 쥐불놀이 풍등 팥죽 수박화채 부채 모기장 피서 해수욕장 튜브 파라솔 선글라스 아이스박스 눈썰매장 눈오리 붕어빵가게 어묵꼬치 군밤 털장갑 핫팩 귤껍질 비상구 소화전 방범창 초인종 현관문 열쇠구멍 우편함 베란다 다락방 지하실 굴뚝 벽난로 계단 난간 창문 커튼 블라인드 카펫 쿠션 이불 베개 매트리스 옷장 서랍장 화장대 책장 신발장 식탁 흔들의자 해먹 욕조 변기 세면대 샤워기 거품목욕 고무오리 칫솔컵 체중계 스마트워치 태블릿 키보드 마우스 모니터 프린터 복사기 공유기 USB 메모리카드 블루투스 영상통화 단톡방 좋아요 구독 알림 이모지 해시태그 밈 짤 로딩 버퍼링 오류 업데이트 배터리부족 와이파이끊김 비밀번호오류 스팸 광고 쇼핑몰 장바구니 결제 택배추적 배달앱 배달오토바이 키오스크 무인점포 QR코드 지문인식 얼굴인식 가상현실 메타버스 코딩 로봇팔 자율주행 전기차 충전소 태양광 풍력발전 재활용 분리수거 텀블러 장바구니가방".split(" ");
         const CM_W = 800, CM_H = 600;
         const CM_COLORS = ['#1b1b1f', '#ffffff', '#8d99ae', '#e63946', '#ff8fab', '#f77f00', '#ffd60a', '#80b918', '#2a9d8f', '#4cc9f0', '#3a86ff', '#7b2cbf', '#8d5524', '#ffcdb2'];
         const CM_SIZES = [4, 10, 22, 40];
@@ -17202,6 +17349,435 @@
             const ops = cm.ops.map(o => o.k === 's' ? (cm.strokes[o.id] ? { k: 's', c: cm.strokes[o.id].c, w: cm.strokes[o.id].w, pts: cm.strokes[o.id].pts } : null) : o).filter(Boolean);
             return { ch: r.channel, snap: { ops, st: null, word: r.H.word } };
         };
+
+        const GP_W = 800, GP_H = 600, GP_MAX = 12;
+        const GP_COLORS = ['#1b1b1f', '#ffffff', '#8d99ae', '#e63946', '#ff8fab', '#f77f00', '#ffd60a', '#80b918', '#2a9d8f', '#4cc9f0', '#3a86ff', '#7b2cbf', '#8d5524', '#ffcdb2'];
+        const GP_SIZES = [4, 10, 22, 44];
+        const GP_MODES = {
+            normal: { n: '기본', ic: '✏️', d: '문장 쓰기 → 그리기 → 그림 설명 → 그리기… 전화기 게임', tw: 60, td: 120 },
+            speedrun: { n: '스피드런', ic: '⚡', d: '기본과 같지만 시간이 아주 짧아요', tw: 20, td: 45 },
+            secret: { n: '비밀', ic: '🙈', d: '쓸 때는 글자가 가려지고, 그릴 때는 화면이 안 보여요', tw: 30, td: 70, secret: true },
+            knockoff: { n: '짝퉁', ic: '🧠', d: '그림을 잠깐 보고 기억만으로 똑같이 따라 그리기 · 갈수록 시간이 줄어요', td: 90 },
+            sandwich: { n: '샌드위치', ic: '🥪', d: '처음은 문장, 중간은 기억해서 그리기, 마지막은 문장으로 맞히기', tw: 60, td: 90 },
+            animation: { n: '애니메이션', ic: '🎞️', d: '앞 사람의 그림이 흐리게 보여요. 이어서 다음 장면을 그려 움짤 만들기', td: 90 },
+            background: { n: '배경', ic: '🏞️', d: '처음에 배경을 그리고, 그 위에 장면을 이어 그려 긴 움짤 만들기', td: 110 },
+            solo: { n: '솔로', ic: '🎬', d: '각자 혼자서 5장짜리 애니메이션 만들기', td: 70 },
+            complement: { n: '보완', ic: '〰️', d: '10초 동안 아무 선이나 긋고, 다른 사람의 선으로 그림 완성하기', td: 100 },
+            icebreaker: { n: '아이스브레이커', ic: '🧊', d: '각자 질문을 쓰고, 모두가 모든 질문에 대한 답을 그려요', tw: 50, td: 80 },
+            crowd: { n: '군중', ic: '👥', d: '사람이 많을 때! 턴 수는 적고 시간은 짧게', tw: 30, td: 60 },
+            score: { n: '점수', ic: '🏆', d: '기본 방식 + 앞 사람의 문장을 정확히 맞히면 점수', tw: 60, td: 110, score: true },
+            custom: { n: '커스텀', ic: '⚙️', d: '턴 수·시간·순서·기억/비밀 옵션을 직접 정해요' },
+        };
+        const GP_PROMPTS = ['우주에서 라면 끓이는 고양이', '회사에서 몰래 자는 상사', '하늘을 나는 돼지', '시험 망친 학생', '춤추는 브로콜리', '엘리베이터에 갇힌 공룡', '비 오는 날 우산 쓴 문어', '헬스장의 펭귄', '로봇과 결혼하는 할머니', '편의점 알바하는 외계인', '치킨을 훔치는 비둘기', '산타가 된 경찰', '불타는 피자', '거꾸로 매달린 박쥐 선생님', '바다에서 서핑하는 소'];
+        const GP_QUESTIONS = ['가장 좋아하는 음식은?', '어렸을 때 꿈은?', '무인도에 가져갈 한 가지는?', '최악의 여행 기억은?', '지금 가장 갖고 싶은 것은?', '내가 동물이라면?', '주말에 주로 하는 일은?', '가장 무서워하는 것은?', '복권 1등이 되면?', '나의 숨은 특기는?'];
+        let gp = null;
+        function gpL() { if (!gp) gp = { task: null, pad: null, done: false, show: null, feed: [], fps: 6, playT: 0 }; return gp; }
+        function gpRand(a) { return a[Math.floor(Math.random() * a.length)]; }
+        function gpDrawStroke(ctx, s, from) {
+            ctx.save();
+            ctx.globalCompositeOperation = s.e ? 'destination-out' : 'source-over';
+            ctx.strokeStyle = s.c; ctx.fillStyle = s.c; ctx.lineWidth = s.w; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            const P = s.p;
+            if (P.length <= 2) { ctx.beginPath(); ctx.arc(P[0], P[1], s.w / 2, 0, 6.283); ctx.fill(); ctx.restore(); return; }
+            const i0 = Math.max(0, (from || 0) - 2); ctx.beginPath(); ctx.moveTo(P[i0], P[i0 + 1]);
+            for (let i = i0 + 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]);
+            ctx.stroke(); ctx.restore();
+        }
+        function gpFill(ctx, x, y, hex) {
+            const img = ctx.getImageData(0, 0, GP_W, GP_H), d = img.data, i0 = (y * GP_W + x) * 4;
+            const tr = d[i0], tg = d[i0 + 1], tb = d[i0 + 2], ta = d[i0 + 3];
+            const n = parseInt(hex.slice(1), 16), fr = n >> 16 & 255, fg = n >> 8 & 255, fb = n & 255;
+            if (ta > 250 && Math.abs(tr - fr) + Math.abs(tg - fg) + Math.abs(tb - fb) < 8) return;
+            const seen = new Uint8Array(GP_W * GP_H), stack = [x, y];
+            const match = (p) => { const k = p * 4; const da = Math.abs(d[k + 3] - ta); if (ta < 20) return d[k + 3] < 110; return da < 110 && Math.abs(d[k] - tr) + Math.abs(d[k + 1] - tg) + Math.abs(d[k + 2] - tb) <= 110; };
+            while (stack.length) {
+                const py = stack.pop(), px = stack.pop(); let lx = px;
+                while (lx >= 0 && !seen[py * GP_W + lx] && match(py * GP_W + lx)) lx--;
+                lx++; let up = false, dn = false;
+                for (let cx = lx; cx < GP_W; cx++) {
+                    const p = py * GP_W + cx; if (seen[p] || !match(p)) break;
+                    seen[p] = 1; const k = p * 4; d[k] = fr; d[k + 1] = fg; d[k + 2] = fb; d[k + 3] = 255;
+                    if (py > 0) { const q = p - GP_W; if (!seen[q] && match(q)) { if (!up) { stack.push(cx, py - 1); up = true; } } else up = false; }
+                    if (py < GP_H - 1) { const q = p + GP_W; if (!seen[q] && match(q)) { if (!dn) { stack.push(cx, py + 1); dn = true; } } else dn = false; }
+                }
+            }
+            ctx.putImageData(img, 0, 0);
+        }
+        function gpDrawOps(ctx, ops) {
+            ctx.clearRect(0, 0, GP_W, GP_H);
+            for (const o of ops || []) { if (o.f) gpFill(ctx, Math.max(0, Math.min(GP_W - 1, o.x | 0)), Math.max(0, Math.min(GP_H - 1, o.y | 0)), o.c); else if (o.p && o.p.length) gpDrawStroke(ctx, o, 0); }
+        }
+        function gpLayerCanvas(ops) { const c = document.createElement('canvas'); c.width = GP_W; c.height = GP_H; gpDrawOps(c.getContext('2d', { willReadFrequently: true }), ops); return c; }
+        function gpRenderTo(canvas, layers, white) {
+            const ctx = canvas.getContext('2d');
+            ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (white !== false) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+            for (const L of layers || []) { if (!L || !L.length) continue; const lc = L._cv || (L._cv = gpLayerCanvas(L)); ctx.drawImage(lc, 0, 0, canvas.width, canvas.height); }
+            ctx.restore();
+        }
+        function gpMakePad() {
+            const wrap = document.getElementById('gp-padwrap'), cv = document.getElementById('gp-pad');
+            const pad = { cv, ctx: cv.getContext('2d', { willReadFrequently: true }), ops: [], color: '#1b1b1f', size: 10, tool: 'pen', cur: null, enabled: true, oneStroke: false };
+            const pos = (e) => { const r = cv.getBoundingClientRect(); return [Math.round(Math.max(0, Math.min(GP_W, (e.clientX - r.left) / r.width * GP_W))), Math.round(Math.max(0, Math.min(GP_H, (e.clientY - r.top) / r.height * GP_H)))]; };
+            cv.onpointerdown = (e) => {
+                if (!pad.enabled || gp.done) return;
+                const [x, y] = pos(e);
+                if (pad.tool === 'fill') { pad.ops.push({ f: 1, c: pad.color, x, y }); gpFill(pad.ctx, x, y, pad.color); return; }
+                pad.cur = { c: pad.color, w: pad.tool === 'eraser' ? Math.max(pad.size, 20) : pad.size, e: pad.tool === 'eraser' ? 1 : 0, p: [x, y] };
+                pad.ops.push(pad.cur); gpDrawStroke(pad.ctx, pad.cur, 0);
+                try { cv.setPointerCapture(e.pointerId); } catch (x2) {}
+                e.preventDefault();
+            };
+            cv.onpointermove = (e) => {
+                if (!pad.cur) return; const [x, y] = pos(e), P = pad.cur.p, lx = P[P.length - 2], ly = P[P.length - 1];
+                if ((x - lx) ** 2 + (y - ly) ** 2 < 6) return;
+                P.push(x, y); gpDrawStroke(pad.ctx, pad.cur, P.length - 2);
+            };
+            cv.onpointerup = cv.onpointercancel = () => { pad.cur = null; };
+            return pad;
+        }
+        function gpToolsUI() {
+            const box = document.getElementById('gp-tools');
+            if (!box.dataset.built) {
+                box.dataset.built = '1';
+                box.innerHTML = '<div class="cm-cols">' + GP_COLORS.map(c => '<button class="cm-col" data-c="' + c + '" style="background:' + c + '"></button>').join('') + '</div><div class="cm-tool-row">' +
+                    GP_SIZES.map((s, i) => '<button class="cm-size" data-s="' + s + '"><i style="width:' + (5 + i * 5) + 'px;height:' + (5 + i * 5) + 'px"></i></button>').join('') +
+                    '<button class="cm-tb" data-t="pen" title="펜"><i class="fa-solid fa-pen"></i></button><button class="cm-tb" data-t="fill" title="채우기"><i class="fa-solid fa-fill-drip"></i></button><button class="cm-tb" data-t="eraser" title="지우개"><i class="fa-solid fa-eraser"></i></button>' +
+                    '<button class="cm-tb" data-a="undo" title="되돌리기"><i class="fa-solid fa-rotate-left"></i></button><button class="cm-tb danger" data-a="clear" title="모두 지우기"><i class="fa-solid fa-trash"></i></button></div>';
+                box.addEventListener('click', (e) => {
+                    const b = e.target.closest('button'), pad = gp.pad; if (!b || !pad || gp.done) return;
+                    if (b.dataset.c) { pad.color = b.dataset.c; if (pad.tool === 'eraser') pad.tool = 'pen'; }
+                    else if (b.dataset.s) pad.size = +b.dataset.s;
+                    else if (b.dataset.t) pad.tool = b.dataset.t;
+                    else if (b.dataset.a === 'undo') { pad.ops.pop(); gpDrawOps(pad.ctx, pad.ops); }
+                    else if (b.dataset.a === 'clear') { pad.ops = []; gpDrawOps(pad.ctx, pad.ops); }
+                    gpToolsUI();
+                });
+            }
+            const pad = gp.pad; if (!pad) return;
+            box.querySelectorAll('.cm-col').forEach(b => b.classList.toggle('on', b.dataset.c === pad.color && pad.tool !== 'eraser'));
+            box.querySelectorAll('.cm-size').forEach(b => b.classList.toggle('on', +b.dataset.s === pad.size));
+            box.querySelectorAll('[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === pad.tool));
+        }
+
+        function ensureGarticInit() { gpL(); mpEnsureInit('gp'); }
+        function teardownGartic() { mpTeardown('gp'); }
+
+        function gpTurnsFor(mode, N, cfg) {
+            if (mode === 'custom') return Math.max(2, Math.min(20, +cfg.turns || N));
+            if (mode === 'crowd') return Math.max(3, Math.min(N, 6));
+            if (mode === 'solo') return 5;
+            if (mode === 'complement') return 2;
+            if (mode === 'icebreaker') return N + 1;
+            if (mode === 'background') return Math.min(16, Math.max(6, N * 2));
+            if (mode === 'animation') return Math.max(4, N);
+            return Math.max(3, N);
+        }
+        function gpSpec(G, t) {
+            const m = G.mode, M = GP_MODES[m], T = G.T, cfg = G.cfg || {};
+            const S = { kind: 'draw', time: (M.td || 90) * 1000, memory: 0, onion: false, bg: false, base: false, blind: false, censor: false, label: '', prev: 'chain', own: false };
+            if (m === 'normal' || m === 'speedrun' || m === 'secret' || m === 'crowd' || m === 'score') {
+                S.kind = t % 2 === 0 ? 'write' : 'draw'; S.time = (S.kind === 'write' ? M.tw : M.td) * 1000;
+                if (m === 'secret') { S.blind = S.kind === 'draw'; S.censor = S.kind === 'write'; }
+                S.label = t === 0 ? '재밌는 문장을 써주세요' : S.kind === 'draw' ? '이 문장을 그려주세요' : '이 그림을 문장으로 설명해주세요';
+                if (t === 0) S.prev = 'none';
+            } else if (m === 'knockoff') {
+                S.kind = 'draw'; S.time = Math.max(30, 90 - 15 * t) * 1000; S.memory = t === 0 ? 0 : Math.max(4, 8 - t);
+                S.label = t === 0 ? '아무 그림이나 그려주세요' : '방금 본 그림을 기억해서 똑같이 그려주세요'; if (t === 0) S.prev = 'none';
+            } else if (m === 'sandwich') {
+                S.kind = t === 0 || t === T - 1 ? 'write' : 'draw'; S.time = (S.kind === 'write' ? M.tw : M.td) * 1000; S.memory = S.kind === 'draw' && t >= 2 ? 6 : 0;
+                S.label = t === 0 ? '재밌는 문장을 써주세요' : t === T - 1 ? '이 그림이 원래 무슨 문장이었을지 맞혀보세요' : t === 1 ? '이 문장을 그려주세요' : '방금 본 그림을 기억해서 그려주세요';
+                if (t === 0) S.prev = 'none';
+            } else if (m === 'animation') {
+                S.kind = 'draw'; S.onion = t > 0; S.label = t === 0 ? '애니메이션의 첫 장면을 그려주세요' : '흐리게 보이는 앞 장면에 이어서 다음 장면을 그려주세요'; S.prev = t === 0 ? 'none' : 'onion';
+            } else if (m === 'background') {
+                S.kind = 'draw'; S.bg = t > 0; S.onion = t > 1; S.label = t === 0 ? '애니메이션의 배경을 그려주세요 (계속 깔려 있어요)' : t === 1 ? '배경 위에 첫 장면을 그려주세요' : '앞 장면에 이어서 다음 장면을 그려주세요'; S.prev = t === 0 ? 'none' : 'onion';
+            } else if (m === 'solo') {
+                S.kind = 'draw'; S.own = true; S.onion = t > 0; S.label = (t + 1) + ' / 5 장면 · ' + (t === 0 ? '내 애니메이션의 첫 장면' : '흐린 앞 장면에 이어 그리기'); S.prev = t === 0 ? 'none' : 'onion';
+            } else if (m === 'complement') {
+                if (t === 0) { S.time = 10000; S.label = '10초! 아무 선이나 마구 그어주세요'; S.prev = 'none'; S.own = true; }
+                else { S.base = true; S.label = '이 선들을 살려서 멋진 그림을 완성해주세요'; S.prev = 'base'; }
+            } else if (m === 'icebreaker') {
+                if (t === 0) { S.kind = 'write'; S.time = M.tw * 1000; S.label = '모두에게 할 질문을 써주세요 (예: ' + gpRand(GP_QUESTIONS) + ')'; S.prev = 'none'; S.own = true; }
+                else { S.kind = 'draw'; S.label = '이 질문에 대한 나의 답을 그려주세요'; S.prev = 'question'; }
+            } else if (m === 'custom') {
+                const flow = cfg.flow || 'alt';
+                if (flow === 'alt') { S.kind = (t + (cfg.first === 'draw' ? 1 : 0)) % 2 === 0 ? 'write' : 'draw'; }
+                else S.kind = (flow === 'draw' || flow === 'anim') ? 'draw' : 'write';
+                S.time = (S.kind === 'write' ? (+cfg.tw || 60) : (+cfg.td || 120)) * 1000;
+                S.onion = flow === 'anim' && t > 0; S.memory = cfg.memory && S.kind === 'draw' && t > 0 && flow !== 'anim' ? 6 : 0;
+                if (cfg.secret) { S.blind = S.kind === 'draw'; S.censor = S.kind === 'write'; }
+                S.prev = t === 0 ? 'none' : (S.onion ? 'onion' : 'chain');
+                S.label = t === 0 ? (S.kind === 'write' ? '재밌는 문장을 써주세요' : '아무 그림이나 그려주세요') : S.onion ? '앞 장면에 이어서 다음 장면을 그려주세요' : S.memory ? '방금 본 그림을 기억해서 그려주세요' : S.kind === 'draw' ? (G.lastKind === 'write' ? '이 문장을 그려주세요' : '이 그림을 따라 그려주세요') : '이 그림을 문장으로 설명해주세요';
+            }
+            return S;
+        }
+        function gpIsAnim(G) { return G.mode === 'animation' || G.mode === 'background' || G.mode === 'solo' || (G.mode === 'custom' && (G.cfg || {}).flow === 'anim'); }
+        function gpChainOf(G, pi, t, S) { const N = G.N; if (S.own || G.mode === 'solo') return pi; return ((pi - t) % N + N) % N; }
+        function gpEntryLayers(e) { return e ? (e.layers || (e.ops ? [e.ops] : [])) : []; }
+        function gpWire(e) { return e.kind === 'text' ? { kind: 'text', text: e.text, by: e.by } : { kind: 'draw', layers: gpEntryLayers(e), by: e.by }; }
+
+        function gpHostStart() {
+            const r = mpRooms.gp, o = r.opts || {}, mode = GP_MODES[o.mode] ? o.mode : 'normal';
+            const order = r.players.map(p => p.id).sort(() => Math.random() - 0.5), N = order.length;
+            const G = r.G = { mode, cfg: o.custom || {}, order, N, t: -1, chains: order.map(() => []), names: {}, scores: {}, subs: {}, matches: [] };
+            r.players.forEach(p => { G.names[p.id] = p.name; G.scores[p.id] = 0; });
+            G.T = gpTurnsFor(mode, N, G.cfg);
+            if (mode === 'icebreaker') G.ice = order.map(() => ({ q: '', by: '', answers: [] }));
+            clearInterval(r.gpTick); r.gpTick = setInterval(gpHostTick, 400);
+            mpEmit('gp', { t: 'gp-start', mode, T: G.T, names: G.names });
+            gpHostNext();
+        }
+        function gpHostNext() {
+            const r = mpRooms.gp, G = r && r.G; if (!G) return;
+            G.t++; G.subs = {};
+            if (G.t >= G.T) { gpHostRevealStart(); return; }
+            const S = G.S = gpSpec(G, G.t);
+            G.deadline = Date.now() + S.time + (S.memory ? S.memory * 1000 : 0);
+            G.order.forEach((pid, pi) => {
+                const task = { t: 'gp-task', to: pid, turn: G.t, T: G.T, kind: S.kind, label: S.label, time: S.time, memory: S.memory, blind: S.blind, censor: S.censor };
+                if (G.mode === 'icebreaker' && G.t > 0) { const q = G.ice[G.t - 1]; task.prev = { kind: 'text', text: q.q || '(질문 없음)' }; task.label = (q.by ? G.names[q.by] + '님의 질문 · ' : '') + S.label; }
+                else {
+                    const ch = G.chains[gpChainOf(G, pi, G.t, S)], last = ch[ch.length - 1];
+                    if (S.prev === 'chain' && last) task.prev = gpWire(last);
+                    if (S.prev === 'onion' && last) task.onion = last.ops || [];
+                    if (S.bg && ch[0]) task.bg = ch[0].ops || [];
+                    if (S.prev === 'base' && ch[0]) task.base = ch[0].ops || [];
+                }
+                mpEmit('gp', task);
+            });
+            gpHostProgress();
+        }
+        function gpHostProgress() { const r = mpRooms.gp, G = r.G; const live = G.order.filter(id => r.players.some(p => p.id === id)); mpEmit('gp', { t: 'gp-prog', done: live.filter(id => G.subs[id]).length, total: live.length, left: Math.max(0, G.deadline - Date.now()) }); }
+        function gpHostTick() {
+            const r = mpRooms.gp, G = r && r.G; if (!G || G.phase === 'reveal') return;
+            if (G.t < 0 || G.t >= G.T) return;
+            const live = G.order.filter(id => r.players.some(p => p.id === id));
+            const all = live.every(id => G.subs[id]);
+            if ((all && Date.now() - (G.lastSub || 0) > 700) || Date.now() > G.deadline + 3500) gpHostCommit();
+        }
+        function gpHostCommit() {
+            const r = mpRooms.gp, G = r.G, S = G.S;
+            G.order.forEach((pid, pi) => {
+                let sub = G.subs[pid];
+                if (!sub) sub = S.kind === 'write' ? { text: '(시간 초과)' } : { ops: [] };
+                if (G.mode === 'icebreaker') {
+                    if (G.t === 0) { G.ice[pi].q = String(sub.text || '').slice(0, 120) || gpRand(GP_QUESTIONS); G.ice[pi].by = pid; }
+                    else G.ice[G.t - 1].answers.push({ kind: 'draw', ops: sub.ops || [], by: pid });
+                    return;
+                }
+                const ci = gpChainOf(G, pi, G.t, S), ch = G.chains[ci];
+                const e = S.kind === 'write' ? { kind: 'text', text: String(sub.text || '').slice(0, 140) || '(빈칸)', by: pid } : { kind: 'draw', ops: sub.ops || [], by: pid };
+                if (S.kind === 'draw') {
+                    if (S.bg && ch[0]) e.layers = [ch[0].ops || [], e.ops];
+                    if (S.prev === 'base' && ch[0]) e.layers = [ch[0].ops || [], e.ops];
+                }
+                if (G.mode === 'score' && e.kind === 'text' && ch.length >= 2) {
+                    const orig = ch[ch.length - 2]; if (orig.kind === 'text' && gpSimilar(orig.text, e.text)) { G.scores[pid] = (G.scores[pid] || 0) + 1; const dr = ch[ch.length - 1].by; G.scores[dr] = (G.scores[dr] || 0) + 1; e.match = 1; }
+                }
+                ch.push(e);
+            });
+            G.lastKind = S.kind;
+            gpHostNext();
+        }
+        function gpSimilar(a, b) {
+            const n = (s) => String(s || '').replace(/[\s.,!?~'"]/g, '').toLowerCase();
+            a = n(a); b = n(b); if (!a || !b) return false; if (a === b) return true;
+            const bg = (s) => { const o = new Map(); for (let i = 0; i < s.length - 1; i++) { const k = s.slice(i, i + 2); o.set(k, (o.get(k) || 0) + 1); } return o; };
+            const A = bg(a), B = bg(b); let inter = 0, sa = 0, sb = 0;
+            A.forEach(v => sa += v); B.forEach(v => sb += v); A.forEach((v, k) => { inter += Math.min(v, B.get(k) || 0); });
+            return sa + sb > 0 && (2 * inter) / (sa + sb) >= 0.6;
+        }
+        function gpHostAction(p) {
+            const r = mpRooms.gp, G = r && r.G; if (!G) return;
+            if (p.t === 'gp-sub') {
+                if (p.turn !== G.t || !G.order.includes(p.from)) return;
+                const S = G.S; if (S.kind === 'write') G.subs[p.from] = { text: String(p.text || '') }; else G.subs[p.from] = { ops: Array.isArray(p.ops) ? p.ops : [] };
+                G.lastSub = Date.now(); gpHostProgress();
+            } else if (p.t === 'gp-unsub') { if (p.turn === G.t) { delete G.subs[p.from]; gpHostProgress(); } }
+        }
+        function gpHostLeave(id) {
+            const r = mpRooms.gp; if (!r) return;
+            r.players = r.players.filter(p => p.id !== id);
+            if (r.players.length < 2 && r.G && r.G.phase !== 'reveal') { mpEmit('gp', { t: 'gp-msg', text: '사람이 부족해서 지금까지의 결과를 보여드릴게요.' }); gpHostRevealStart(); return; }
+            if (r.G) gpHostProgress();
+        }
+        function gpHostAlbums(G) {
+            if (G.mode === 'icebreaker') return G.ice.map((q, i) => ({ title: '❓ ' + (q.q || ''), type: 'ice', entries: [{ kind: 'text', text: q.q, by: q.by }].concat(q.answers) }));
+            return G.chains.map((ch, i) => ({ title: G.names[G.order[i]] + '님의 ' + (gpIsAnim(G) ? '애니메이션' : '앨범'), type: gpIsAnim(G) ? 'anim' : G.mode === 'complement' ? 'comp' : 'chain', entries: G.mode === 'background' ? ch.slice(1) : ch }));
+        }
+        function gpHostRevealStart() {
+            const r = mpRooms.gp, G = r.G; G.phase = 'reveal'; clearInterval(r.gpTick);
+            G.albums = gpHostAlbums(G); G.ai = 0; G.si = -1;
+            mpEmit('gp', { t: 'gp-rv0', A: G.albums.length, mode: G.mode, scores: G.mode === 'score' ? G.scores : null });
+            gpHostStep();
+        }
+        function gpHostStep() {
+            const r = mpRooms.gp, G = r && r.G; if (!G || G.phase !== 'reveal') return;
+            const al = G.albums[G.ai]; if (!al) { gpHostEnd(); return; }
+            if (al.type === 'anim') {
+                mpEmit('gp', { t: 'gp-rva', ai: G.ai, A: G.albums.length, title: al.title, type: al.type, frames: al.entries.map(gpWire) });
+                G.si = al.entries.length - 1; return;
+            }
+            G.si++;
+            if (G.si >= al.entries.length) { G.ai++; G.si = -1; gpHostStep(); return; }
+            const e = al.entries[G.si];
+            mpEmit('gp', { t: 'gp-rv', ai: G.ai, A: G.albums.length, si: G.si, n: al.entries.length, title: al.title, type: al.type, e: Object.assign(gpWire(e), { match: e.match ? 1 : 0 }) });
+        }
+        function gpHostNextAlbum() { const r = mpRooms.gp, G = r && r.G; if (!G || G.phase !== 'reveal') return; G.ai++; G.si = -1; if (G.ai >= G.albums.length) gpHostEnd(); else gpHostStep(); }
+        function gpHostEnd() { const r = mpRooms.gp, G = r.G; G.phase = 'end'; mpEmit('gp', { t: 'gp-end', scores: G.mode === 'score' ? G.scores : null, names: G.names }); }
+        function gpAgain() { const r = mpRooms.gp; if (!r || r.role !== 'host') return; clearInterval(r.gpTick); r.G = null; mpEmit('gp', { t: 'gp-again' }); r.phase = 'waiting'; mpShow('gp', 'waiting'); mpBroadcastLobby('gp'); }
+        function gpRevealNext() { const r = mpRooms.gp; if (!r || r.role !== 'host' || !r.G) return; const G = r.G, al = G.albums && G.albums[G.ai]; if (al && al.type === 'anim') gpHostNextAlbum(); else gpHostStep(); }
+
+        function gpOnMsg(p) {
+            const r = mpRooms.gp; if (!r) return; gpL();
+            if (p.from && !p.id) { if (r.role === 'host') gpHostAction(p); return; }
+            if (r.role === 'guest' && p.id !== r.hostId) return;
+            switch (p.t) {
+                case 'gp-start': r.phase = 'game'; gp.mode = p.mode; gp.T = p.T; gp.names = p.names; gp.show = null; mpShow('gp', 'game'); gpView('wait', '곧 시작해요…'); return;
+                case 'gp-task': gpTask(p); return;
+                case 'gp-prog': { const el = document.getElementById('gp-prog'); if (el) el.textContent = p.done + ' / ' + p.total + ' 완료'; const w = document.getElementById('gp-waitcount'); if (w) w.textContent = p.done + ' / ' + p.total + '명 완료'; return; }
+                case 'gp-msg': showToast(p.text, 'info'); return;
+                case 'gp-rv0': r.phase = 'game'; mpShow('gp', 'game'); gp.task = null; gp.show = { A: p.A, ai: -1, feed: [], scores: p.scores, mode: p.mode }; gpView('reveal'); rzSoundWin(); return;
+                case 'gp-rv': case 'gp-rva': gpShowEntry(p); return;
+                case 'gp-end': gpShowEnd(p); r.phase = 'ended'; return;
+                case 'gp-again': if (r.role === 'guest') { r.phase = 'waiting'; mpShow('gp', 'waiting'); mpRenderWaiting('gp'); } gp.show = null; return;
+            }
+        }
+        function gpView(which, msg) {
+            ['gp-v-write', 'gp-v-draw', 'gp-v-wait', 'gp-v-reveal'].forEach(id => document.getElementById(id).classList.toggle('hidden', id !== 'gp-v-' + which));
+            document.getElementById('gp-top').classList.toggle('hidden', which === 'reveal');
+            document.getElementById('gp-done').classList.toggle('hidden', which === 'reveal' || which === 'wait');
+            if (which === 'wait') document.getElementById('gp-waitmsg').textContent = msg || '다른 사람들을 기다리는 중…';
+        }
+        function gpTask(p) {
+            const r = mpRooms.gp; r.phase = 'game'; mpShow('gp', 'game');
+            gp.task = p; gp.done = false; gp.deadline = Date.now() + p.time + (p.memory ? p.memory * 1000 : 0); gp.memEnd = p.memory ? Date.now() + p.memory * 1000 : 0;
+            document.getElementById('gp-turn').textContent = (p.turn + 1) + ' / ' + p.T;
+            document.getElementById('gp-label').textContent = p.label;
+            document.getElementById('gp-prog').textContent = '';
+            const doneBtn = document.getElementById('gp-done'); doneBtn.textContent = '완료!'; doneBtn.classList.remove('undo');
+            if (p.kind === 'write') {
+                gpView('write');
+                const pv = document.getElementById('gp-w-prev'), cv = document.getElementById('gp-w-prevcv');
+                pv.classList.toggle('hidden', !p.prev);
+                if (p.prev && p.prev.kind === 'draw') { cv.classList.remove('hidden'); document.getElementById('gp-w-prevtext').classList.add('hidden'); gpRenderTo(cv, p.prev.layers); }
+                else if (p.prev) { cv.classList.add('hidden'); const t = document.getElementById('gp-w-prevtext'); t.classList.remove('hidden'); t.textContent = p.prev.text; }
+                const inp = document.getElementById('gp-text'); inp.value = ''; inp.disabled = false; inp.classList.toggle('gp-censor', !!p.censor);
+                inp.placeholder = p.turn === 0 && gp.mode !== 'icebreaker' ? '예) ' + gpRand(GP_PROMPTS) : '여기에 써주세요';
+                setTimeout(() => { try { inp.focus(); } catch (e) {} }, 50);
+            } else {
+                gpView('draw');
+                if (!gp.pad) gp.pad = gpMakePad();
+                const pad = gp.pad; pad.ops = []; pad.tool = 'pen'; pad.enabled = !p.memory; gpDrawOps(pad.ctx, []);
+                gpToolsUI();
+                const prompt = document.getElementById('gp-d-prompt');
+                if (p.prev && p.prev.kind === 'text') { prompt.classList.remove('hidden'); prompt.textContent = '“' + p.prev.text + '”'; } else prompt.classList.add('hidden');
+                const under = document.getElementById('gp-under'), uctx = under.getContext('2d');
+                uctx.clearRect(0, 0, GP_W, GP_H); uctx.fillStyle = '#fff'; uctx.fillRect(0, 0, GP_W, GP_H);
+                if (p.bg) { const c = gpLayerCanvas(p.bg); uctx.drawImage(c, 0, 0); }
+                if (p.base) { const c = gpLayerCanvas(p.base); uctx.drawImage(c, 0, 0); }
+                if (p.onion) { const c = gpLayerCanvas(p.onion); uctx.globalAlpha = 0.28; uctx.drawImage(c, 0, 0); uctx.globalAlpha = 1; }
+                const mem = document.getElementById('gp-mem');
+                if (p.memory && p.prev && p.prev.kind === 'draw') { mem.classList.remove('hidden'); gpRenderTo(document.getElementById('gp-memcv'), p.prev.layers); }
+                else mem.classList.add('hidden');
+                document.getElementById('gp-padwrap').classList.toggle('gp-blind', !!p.blind);
+            }
+        }
+        function gpSubmit(auto) {
+            const r = mpRooms.gp, p = gp.task; if (!r || !p) return;
+            const btn = document.getElementById('gp-done');
+            if (gp.done && !auto) { gp.done = false; mpToHost('gp', { t: 'gp-unsub', turn: p.turn }); btn.textContent = '완료!'; btn.classList.remove('undo'); document.getElementById('gp-text').disabled = false; return; }
+            if (gp.done) return;
+            if (p.kind === 'write') {
+                const text = document.getElementById('gp-text').value.trim();
+                if (!text && !auto) { showToast('한 글자라도 써주세요!', 'info'); return; }
+                mpToHost('gp', { t: 'gp-sub', turn: p.turn, text: text || (auto ? '(시간 초과)' : '') });
+                document.getElementById('gp-text').disabled = true;
+            } else {
+                const ops = (gp.pad ? gp.pad.ops : []).map(o => o.f ? { f: 1, c: o.c, x: o.x, y: o.y } : { c: o.c, w: o.w, e: o.e, p: o.p });
+                mpToHost('gp', { t: 'gp-sub', turn: p.turn, ops });
+            }
+            gp.done = true; btn.textContent = '수정하기'; btn.classList.add('undo');
+            if (auto) { gpView('wait', '시간이 끝났어요! 다음 차례를 준비하는 중…'); } else rzTone(880, 0.08, 'triangle', 0.08);
+        }
+        setInterval(() => {
+            if (!gp || !gp.task || !mpRooms.gp || mpRooms.gp.phase !== 'game' || (gp.show)) return;
+            const now = Date.now(), el = document.getElementById('gp-timer');
+            if (gp.memEnd && now < gp.memEnd) { el.textContent = '👀 ' + Math.ceil((gp.memEnd - now) / 1000); document.getElementById('gp-memcount').textContent = Math.ceil((gp.memEnd - now) / 1000) + '초 뒤에 사라져요!'; return; }
+            if (gp.memEnd && now >= gp.memEnd) { gp.memEnd = 0; document.getElementById('gp-mem').classList.add('hidden'); if (gp.pad) gp.pad.enabled = true; rzTone(600, 0.1, 'sine', 0.08); }
+            const left = Math.max(0, Math.ceil((gp.deadline - now) / 1000));
+            el.textContent = left; el.classList.toggle('urgent', left <= 10);
+            if (left <= 0 && !gp.done) gpSubmit(true);
+        }, 200);
+        function gpShowEntry(p) {
+            const sh = gp.show; if (!sh) return;
+            gpView('reveal');
+            const feed = document.getElementById('gp-feed'), head = document.getElementById('gp-rv-title');
+            if (sh.ai !== p.ai) { sh.ai = p.ai; feed.innerHTML = ''; head.innerHTML = '<small>' + (p.ai + 1) + ' / ' + p.A + '</small>' + escapeHtml(p.title); cancelAnimationFrame(sh.raf); }
+            const host = mpRooms.gp && mpRooms.gp.role === 'host';
+            const nb = document.getElementById('gp-rv-next'); nb.classList.toggle('hidden', !host);
+            document.getElementById('gp-rv-wait').classList.toggle('hidden', host);
+            const nm = (id) => escapeHtml((gp.names && gp.names[id]) || '?');
+            if (p.t === 'gp-rva') {
+                nb.textContent = p.ai + 1 >= p.A ? '결과 끝내기' : '다음 애니메이션 ▶';
+                const wrap = document.createElement('div'); wrap.className = 'gp-anim';
+                wrap.innerHTML = '<canvas width="800" height="600"></canvas><div class="gp-anim-bar"><span>' + p.frames.length + '장 · ' + [...new Set(p.frames.map(f => f.by))].map(nm).join(', ') + '</span><label>속도 <input type="range" min="2" max="14" value="' + gp.fps + '"></label><button class="gp-save">저장</button></div><div class="gp-strip"></div>';
+                feed.appendChild(wrap);
+                const cv = wrap.querySelector('canvas'), strip = wrap.querySelector('.gp-strip');
+                const frames = p.frames.map(f => { const c = document.createElement('canvas'); c.width = 800; c.height = 600; gpRenderTo(c, f.layers); return c; });
+                frames.forEach((f, i) => { const s = document.createElement('canvas'); s.width = 160; s.height = 120; s.getContext('2d').drawImage(f, 0, 0, 160, 120); s.title = (i + 1) + ' · ' + ((gp.names && gp.names[p.frames[i].by]) || ''); strip.appendChild(s); });
+                wrap.querySelector('input').oninput = (e) => { gp.fps = +e.target.value; };
+                wrap.querySelector('.gp-save').onclick = () => { const a = document.createElement('a'); a.download = 'frame.png'; a.href = cv.toDataURL('image/png'); a.click(); };
+                let i = 0, last = 0; const loop = (now) => { sh.raf = requestAnimationFrame(loop); if (!frames.length) return; if (now - last > 1000 / gp.fps) { last = now; const ctx = cv.getContext('2d'); ctx.drawImage(frames[i % frames.length], 0, 0); [...strip.children].forEach((s, k) => s.classList.toggle('on', k === i % frames.length)); i++; } };
+                sh.raf = requestAnimationFrame(loop);
+                rzSoundWin(); return;
+            }
+            const last = p.si + 1 >= p.n;
+            nb.textContent = last ? (p.ai + 1 >= p.A ? '결과 끝내기' : '다음 앨범 ▶') : '다음 ▶';
+            const e = p.e, row = document.createElement('div');
+            row.className = 'gp-entry ' + (e.kind === 'text' ? 'txt' : 'drw') + (e.match ? ' match' : '');
+            const who = '<div class="gp-who">' + nm(e.by) + (p.type === 'ice' && p.si === 0 ? ' · 질문' : '') + (e.match ? ' <b>정답! +1</b>' : '') + '</div>';
+            if (e.kind === 'text') row.innerHTML = who + '<div class="gp-bubble">' + escapeHtml(e.text) + '</div>';
+            else { row.innerHTML = who + '<canvas width="800" height="600"></canvas><button class="gp-save" title="이미지 저장"><i class="fa-solid fa-download"></i></button>'; const cv = row.querySelector('canvas'); gpRenderTo(cv, e.layers); row.querySelector('.gp-save').onclick = () => { const a = document.createElement('a'); a.download = 'gartic.png'; a.href = cv.toDataURL('image/png'); a.click(); }; }
+            feed.appendChild(row);
+            setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'end' }), 30);
+            rzTone(e.kind === 'text' ? 660 : 520, 0.08, 'triangle', 0.07);
+        }
+        function gpShowEnd(p) {
+            const sh = gp.show || (gp.show = {}); cancelAnimationFrame(sh.raf);
+            gpView('reveal');
+            const feed = document.getElementById('gp-feed'), host = mpRooms.gp && mpRooms.gp.role === 'host';
+            document.getElementById('gp-rv-title').innerHTML = '🎉 모든 앨범을 다 봤어요!';
+            let html = '<div class="gp-end">';
+            if (p.scores) { const rk = Object.entries(p.scores).sort((a, b) => b[1] - a[1]); html += '<h4>점수</h4><ol>' + rk.map(([id, s]) => '<li><b>' + escapeHtml(p.names[id] || '?') + '</b><span>' + s + '점</span></li>').join('') + '</ol>'; }
+            html += host ? '<button class="ng-btn" onclick="gpAgain()">한 판 더!</button>' : '<p>방장이 한 판 더를 누르면 다시 시작해요</p>';
+            feed.innerHTML = html + '</div>';
+            document.getElementById('gp-rv-next').classList.add('hidden'); document.getElementById('gp-rv-wait').classList.add('hidden');
+            rzSoundWin();
+        }
+        function gpWaitingRender(r) {
+            const host = r.role === 'host', o = r.opts || (r.opts = { mode: 'normal', custom: { turns: 6, tw: 60, td: 120, first: 'write', flow: 'alt', memory: false, secret: false } });
+            const box = document.getElementById('gp-modes'); if (!box) return;
+            box.innerHTML = Object.entries(GP_MODES).map(([k, m]) => '<button class="gp-mode' + (o.mode === k ? ' on' : '') + '" data-m="' + k + '"' + (host ? '' : ' disabled') + '><span>' + m.ic + '</span><b>' + m.n + '</b><small>' + m.d + '</small></button>').join('');
+            if (host) box.querySelectorAll('.gp-mode').forEach(b => b.onclick = () => { o.mode = b.dataset.m; mpBroadcastLobby('gp'); });
+            const cu = document.getElementById('gp-custom'), c = o.custom || (o.custom = {});
+            cu.classList.toggle('hidden', o.mode !== 'custom');
+            if (o.mode === 'custom') {
+                if (host) {
+                    cu.innerHTML = '<label>턴 수 <input type="number" min="2" max="20" id="gpc-turns" value="' + (c.turns || 6) + '"></label><label>쓰기 시간 <input type="number" min="10" max="300" id="gpc-tw" value="' + (c.tw || 60) + '">초</label><label>그리기 시간 <input type="number" min="10" max="600" id="gpc-td" value="' + (c.td || 120) + '">초</label>' +
+                        '<label>진행 <select id="gpc-flow"><option value="alt"' + (c.flow === 'alt' ? ' selected' : '') + '>쓰기·그리기 번갈아</option><option value="draw"' + (c.flow === 'draw' ? ' selected' : '') + '>그리기만</option><option value="write"' + (c.flow === 'write' ? ' selected' : '') + '>쓰기만 (이야기 잇기)</option><option value="anim"' + (c.flow === 'anim' ? ' selected' : '') + '>애니메이션</option></select></label>' +
+                        '<label>첫 턴 <select id="gpc-first"><option value="write"' + (c.first !== 'draw' ? ' selected' : '') + '>쓰기</option><option value="draw"' + (c.first === 'draw' ? ' selected' : '') + '>그리기</option></select></label>' +
+                        '<label><input type="checkbox" id="gpc-memory"' + (c.memory ? ' checked' : '') + '> 기억해서 그리기</label><label><input type="checkbox" id="gpc-secret"' + (c.secret ? ' checked' : '') + '> 비밀 (가리고 쓰기·그리기)</label>';
+                    cu.querySelectorAll('input,select').forEach(el => el.onchange = () => {
+                        o.custom = { turns: +document.getElementById('gpc-turns').value || 6, tw: +document.getElementById('gpc-tw').value || 60, td: +document.getElementById('gpc-td').value || 120, flow: document.getElementById('gpc-flow').value, first: document.getElementById('gpc-first').value, memory: document.getElementById('gpc-memory').checked, secret: document.getElementById('gpc-secret').checked };
+                        mpBroadcastLobby('gp');
+                    });
+                } else cu.innerHTML = '<p>' + (c.turns || 6) + '턴 · 쓰기 ' + (c.tw || 60) + '초 · 그리기 ' + (c.td || 120) + '초 · ' + ({ alt: '번갈아', draw: '그리기만', write: '쓰기만', anim: '애니메이션' }[c.flow || 'alt']) + (c.memory ? ' · 기억' : '') + (c.secret ? ' · 비밀' : '') + '</p>';
+            }
+        }
+        function gpCleanup(r) { clearInterval(r.gpTick); if (gp) { if (gp.show) cancelAnimationFrame(gp.show.raf); gp.task = null; gp.show = null; gp.done = false; } }
+        MP_HOOKS.gp = { onMsg: gpOnMsg, hostStart: gpHostStart, hostAction: gpHostAction, hostLeave: gpHostLeave, cleanup: gpCleanup, onWaitingRender: gpWaitingRender, leaveMsg: () => '진행 중인 갈틱폰에서 나갈까요? 내 차례는 빈칸으로 넘어가요.' };
 
         (function gcInit() {
             const input = document.getElementById('gc-input');
