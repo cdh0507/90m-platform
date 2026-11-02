@@ -1443,6 +1443,113 @@
         @keyframes ngIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes ngCard { from { opacity: 0; transform: translateY(14px) scale(.92); } to { opacity: 1; transform: none; } }
 
+        .cm-logo { font-size: 44px; margin-bottom: 6px; animation: cmBob 2s ease-in-out infinite; }
+        @keyframes cmBob { 50% { transform: translateY(-6px) rotate(-6deg); } }
+        .cm-opts { display: flex; flex-direction: column; gap: 8px; align-items: center; margin: 4px 0 14px; font-size: 13px; font-weight: 700; color: var(--ink); }
+        .cm-opts label { display: inline-flex; align-items: center; gap: 8px; }
+        .cm-opts select { border: 1px solid rgba(128,128,128,.35); border-radius: 10px; padding: 4px 8px; background: var(--bg); color: var(--ink); font-weight: 800; }
+        .cm-opts small { font-weight: 600; color: var(--ink-soft); }
+        .cm-opts p { margin: 0; color: var(--ink-soft); }
+        .cm-wrap { display: flex; flex-direction: column; gap: 8px; }
+        .cm-top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 16px; background: #17151f; color: #fff; }
+        .cm-round { font-size: 12px; font-weight: 800; opacity: .75; white-space: nowrap; }
+        .cm-hint { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 6px; min-height: 30px; flex-wrap: wrap; font-size: 22px; font-weight: 900; letter-spacing: .02em; }
+        .cm-hint i { display: inline-block; width: 22px; height: 3px; margin-bottom: 4px; background: #fff; border-radius: 2px; }
+        .cm-hint s { display: inline-block; width: 10px; }
+        .cm-hint b { color: #feca57; }
+        .cm-hint em { font-style: normal; font-size: 11px; font-weight: 800; opacity: .55; margin: 0 0 4px 6px; }
+        .cm-hint .cm-myword { color: #b3fd8b; }
+        .cm-hint .cm-wait { font-size: 14px; opacity: .8; }
+        .cm-timer { min-width: 42px; height: 42px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 17px; background: rgba(255,255,255,.1); font-variant-numeric: tabular-nums; }
+        .cm-timer.urgent { background: #ff2d55; animation: cmPulse .5s ease-in-out infinite alternate; }
+        @keyframes cmPulse { to { transform: scale(1.12); } }
+        .cm-tbar { height: 4px; border-radius: 2px; background: rgba(128,128,128,.2); overflow: hidden; margin-top: -4px; }
+        .cm-tbar i { display: block; height: 100%; background: linear-gradient(90deg,#ff5d8f,#feca57,#7bed9f); transition: width .2s linear; }
+        .cm-event { padding: 7px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 700; color: #3a0a4a; background: linear-gradient(90deg,#ffd6f5,#fff1c1); text-align: center; animation: ngIn .3s ease; }
+        .cm-event.hidden { display: none; }
+        .cm-main { display: grid; grid-template-columns: 1fr 230px; gap: 10px; }
+        .rz-compact .cm-main { grid-template-columns: 1fr; }
+        .cm-board { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .cm-cwrap { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 6px 22px rgba(0,0,0,.18), inset 0 0 0 1px rgba(0,0,0,.06); transition: transform .4s ease; }
+        .cm-cwrap canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+        .cm-board.drawer canvas { cursor: crosshair; }
+        .cm-cwrap.cm-mirror canvas { transform: scaleX(-1); }
+        .cm-cwrap.cm-spin canvas { animation: cmSpin 7s linear infinite; }
+        @keyframes cmSpin { to { transform: rotate(360deg) scale(.86); } }
+        .cm-cwrap.cm-blind canvas { opacity: 0; }
+        .cm-cwrap.cm-blind::after { content: '🙈 눈 감고 그리는 중… 내 그림은 안 보여요'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #8d99ae; pointer-events: none; background: repeating-linear-gradient(45deg, rgba(0,0,0,.02) 0 10px, rgba(0,0,0,.05) 10px 20px); }
+        .cm-fog { position: absolute; inset: 0; background: rgba(30,30,40,.97); pointer-events: none; transition: background .25s; }
+        .cm-fog.hidden { display: none; }
+        .cm-ov { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(14,12,24,.82); backdrop-filter: blur(3px); color: #fff; text-align: center; padding: 14px; animation: ngIn .25s ease; }
+        .cm-ov.hidden { display: none; }
+        .cm-rev p { margin: 0 0 4px; font-size: 13px; font-weight: 700; opacity: .8; }
+        .cm-rev h3 { margin: 0 0 10px; font-size: 40px; font-weight: 900; background: linear-gradient(90deg,#ff5d8f,#feca57,#7bed9f,#4cc9f0); -webkit-background-clip: text; background-clip: text; color: transparent; animation: cmPop .5s cubic-bezier(.2,1.6,.4,1) both; }
+        @keyframes cmPop { from { transform: scale(.3); opacity: 0; } }
+        .cm-rev ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; min-width: 200px; }
+        .cm-rev li { display: flex; justify-content: space-between; gap: 18px; font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 9px; background: rgba(255,255,255,.08); }
+        .cm-rev li span { color: #7bed9f; }
+        .cm-nobody { font-size: 15px !important; }
+        .cm-choices { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+        .cm-choices button { border: none; border-radius: 14px; padding: 12px 18px; font-size: 18px; font-weight: 900; color: #1b1530; background: #fff; cursor: pointer; transition: transform .12s ease; }
+        .cm-choices button:hover { transform: translateY(-2px) scale(1.05); background: #feca57; }
+        .cm-evbig { margin: 8px auto; display: inline-flex; flex-direction: column; gap: 2px; padding: 8px 16px; border-radius: 14px; background: linear-gradient(90deg,#7b2cbf,#ff5d8f); font-size: 17px; font-weight: 900; animation: cmPop .45s cubic-bezier(.2,1.6,.4,1) both; }
+        .cm-evbig small { font-size: 11.5px; font-weight: 700; opacity: .9; }
+        .cm-rest { font-size: 12px !important; opacity: .7; margin-top: 8px !important; }
+        .cm-podium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; margin: 8px 0 6px; }
+        .cm-pod { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 92px; animation: cmPop .6s cubic-bezier(.2,1.6,.4,1) both; }
+        .cm-pod span { font-size: 28px; } .cm-pod b { font-size: 14px; font-weight: 900; max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cm-pod em { font-style: normal; font-size: 12px; font-weight: 800; opacity: .8; }
+        .cm-pod i { display: block; width: 100%; border-radius: 10px 10px 0 0; background: linear-gradient(180deg,#feca57,#f0932b); }
+        .cm-pod.p1 { order: 2; animation-delay: .3s; } .cm-pod.p1 i { height: 70px; }
+        .cm-pod.p2 { order: 1; animation-delay: .15s; } .cm-pod.p2 i { height: 48px; background: linear-gradient(180deg,#dfe6e9,#a4b0be); }
+        .cm-pod.p3 { order: 3; } .cm-pod.p3 i { height: 32px; background: linear-gradient(180deg,#e1b382,#c08552); }
+        .cm-emojis { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 3; }
+        .cm-emo { position: absolute; bottom: 6px; display: flex; flex-direction: column; align-items: center; animation: cmFloat 2.2s ease-out forwards; }
+        .cm-emo span { font-size: 34px; filter: drop-shadow(0 3px 4px rgba(0,0,0,.25)); }
+        .cm-emo small { font-size: 10px; font-weight: 800; color: #fff; background: rgba(0,0,0,.45); padding: 1px 6px; border-radius: 6px; }
+        @keyframes cmFloat { 0% { transform: translateY(0) scale(.5); opacity: 0; } 15% { transform: translateY(-20px) scale(1.15); opacity: 1; } 100% { transform: translateY(-260px) scale(1); opacity: 0; } }
+        .cm-conf { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation: cmConf 2.4s ease-in forwards; }
+        @keyframes cmConf { to { top: 110%; transform: rotate(720deg) translateX(40px); } }
+        .cm-banner { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); max-width: 92%; padding: 7px 14px; border-radius: 999px; background: rgba(20,16,32,.85); color: #fff; font-size: 12.5px; font-weight: 800; opacity: 0; pointer-events: none; z-index: 4; text-align: center; }
+        .cm-banner.show { animation: cmBan 3.4s ease forwards; }
+        @keyframes cmBan { 0% { opacity: 0; transform: translate(-50%, -10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
+        .cm-tools { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 14px; background: rgba(128,128,128,.12); }
+        .cm-tools.hidden { display: none; }
+        .cm-cols { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+        .cm-col { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(0,0,0,.12); cursor: pointer; transition: transform .1s ease; }
+        .cm-col.on { transform: scale(1.18); box-shadow: 0 0 0 2.5px var(--ink); }
+        .cm-tool-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
+        .cm-size, .cm-tb { width: 36px; height: 34px; border-radius: 10px; border: none; background: var(--bg); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .cm-size i { display: block; border-radius: 50%; background: var(--ink); }
+        .cm-size.on, .cm-tb.on { background: var(--ink); color: var(--bg); } .cm-size.on i { background: var(--bg); }
+        .cm-tb.danger { color: #e63946; }
+        .cm-react { display: flex; gap: 4px; justify-content: center; }
+        .cm-react button { border: none; background: rgba(128,128,128,.12); border-radius: 12px; font-size: 20px; padding: 3px 9px; cursor: pointer; transition: transform .1s ease; }
+        .cm-react button:active { transform: scale(.85); }
+        .cm-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .cm-players { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+        .rz-compact .cm-players { flex-direction: row; flex-wrap: wrap; }
+        .cm-players li { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 11px; background: rgba(128,128,128,.1); font-size: 13px; font-weight: 700; position: relative; }
+        .cm-players li.me { box-shadow: inset 0 0 0 2px var(--accent); }
+        .cm-players li.drawing { background: rgba(254,202,87,.25); }
+        .cm-players li.ok { background: rgba(123,237,159,.28); }
+        .cm-players .cm-rank { font-size: 11px; font-weight: 900; opacity: .55; }
+        .cm-players b { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cm-players em { font-style: normal; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .cm-players small { position: absolute; right: 8px; top: -8px; font-size: 11px; font-weight: 900; color: #2b9348; background: #d8f3dc; padding: 0 6px; border-radius: 6px; animation: cmPop .4s ease both; }
+        .cm-players .fa-check { color: #2b9348; } .cm-players .fa-pencil { color: #f0932b; }
+        .cm-chat { flex: 1; min-height: 140px; max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding: 8px; border-radius: 12px; background: rgba(128,128,128,.08); font-size: 13px; }
+        .rz-compact .cm-chat { max-height: 150px; min-height: 100px; }
+        .cm-msg { line-height: 1.4; word-break: break-all; }
+        .cm-msg b { font-weight: 800; }
+        .cm-msg.ok { color: #2b9348; font-weight: 900; }
+        .cm-msg.close { color: #f0932b; font-weight: 800; }
+        .cm-msg.sys { color: var(--ink-soft); font-size: 12px; }
+        .cm-msg.secret { color: #2b9348; opacity: .85; }
+        .cm-form { display: flex; gap: 6px; }
+        .cm-form input { flex: 1; min-width: 0; border: 1px solid rgba(128,128,128,.35); border-radius: 12px; padding: 9px 12px; font-size: 14px; background: var(--bg); color: var(--ink); outline: none; }
+        .cm-form input:focus { border-color: var(--ink); }
+        .cm-form button { border: none; border-radius: 12px; padding: 0 14px; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -2721,6 +2828,11 @@
                         <button data-c="solo" onclick="rzCat('solo')">혼자서</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="restzoneOpenGame('catch')" data-cat="board" class="restzone-game-card press-feel cm-card">
+                            <span class="restzone-game-icon" style="background:linear-gradient(135deg,#ffd6f5,#fff1c1);"><i class="fa-solid fa-palette" style="color:#e85d04;"></i></span>
+                            <span class="restzone-game-name">그림 맞히기 파티 <span style="font-size:10px;font-weight:900;color:#fff;background:#ff4d8d;padding:2px 7px;border-radius:99px;vertical-align:2px;">NEW</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~8명</span></span>
+                            <span class="restzone-game-desc">한 명이 그리고 모두가 맞히는 실시간 파티 · 카오스 모드(거울·안개·회전·눈 감고 그리기)</span>
+                        </button>
                         <button onclick="restzoneOpenGame('hole')" data-cat="solo" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:linear-gradient(135deg,#1b1b2f,#3d3d5c);"><i class="fa-solid fa-circle" style="color:#0b0b12;text-shadow:0 0 0 #b3fd8b;box-shadow:0 0 0 3px #b3fd8b;border-radius:50%;"></i></span>
                             <span class="restzone-game-name">블랙홀 시티 <span style="font-size:10px;font-weight:900;color:#fff;background:#ff4d8d;padding:2px 7px;border-radius:99px;vertical-align:2px;">NEW</span></span>
@@ -2781,6 +2893,67 @@
                             <span class="restzone-game-name">끝말잇기</span>
                             <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
                         </button>
+                    </div>
+                </div>
+
+                <div id="restzone-panel-catch" class="hidden">
+                    <div id="cm-state-loggedout" class="hidden cnr-center">
+                        <i class="fa-solid fa-palette text-3xl mb-3" style="color:#e85d04;"></i>
+                        <p class="cnr-msg">그림 맞히기는 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+                    <div id="cm-state-lobby" class="hidden cnr-center">
+                        <div class="cm-logo">🎨</div>
+                        <p class="cnr-msg">그림 맞히기 파티!<br><span style="font-size:11.5px; color:var(--ink-soft); font-weight:600;">한 명이 그리고 나머지가 맞혀요 · 빨리 맞힐수록 고득점<br>카오스 모드: 거울·안개·회전·눈 감고 그리기·한붓그리기가 랜덤으로 터져요<br>2~8명</span></p>
+                        <button onclick="mpCreate('cm')" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm mb-4"><i class="fa-solid fa-plus mr-1.5"></i>방 만들기 (최대 8명)</button>
+                        <div class="cnr-join-row">
+                            <input id="cm-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                            <button onclick="mpJoin('cm')" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                        </div>
+                        <p id="cm-lobby-error" class="cnr-lobby-error hidden"></p>
+                    </div>
+                    <div id="cm-state-waiting" class="hidden cnr-center">
+                        <p class="cnr-msg">참가자를 기다리는 중... <b id="cm-player-count">1 / 8</b></p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="cm-room-code-display">-----</b>
+                            <button onclick="mpCopyCode('cm')" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <ul id="cm-player-list" class="mp-slots cm-slots"></ul>
+                        <div id="cm-opts" class="cm-opts"></div>
+                        <button id="cm-start-btn" onclick="mpStart('cm')" class="press-feel accent-btn px-6 py-2.5 rounded-full text-sm mb-3" disabled>2명 이상 모이면 시작할 수 있어요</button>
+                        <p id="cm-guest-wait" class="rz-wait-sub hidden" style="margin-top:0;">방장이 시작하길 기다리고 있어요…</p>
+                        <button onclick="mpLeave('cm')" class="press-feel cnr-cancel-btn">나가기</button>
+                    </div>
+                    <div id="cm-state-game" class="hidden">
+                        <div class="cm-wrap">
+                            <div class="cm-top">
+                                <span id="cm-round" class="cm-round">1 / 3 라운드</span>
+                                <div id="cm-hint" class="cm-hint"></div>
+                                <span id="cm-timer" class="cm-timer">80</span>
+                            </div>
+                            <div class="cm-tbar"><i id="cm-tbar"></i></div>
+                            <div id="cm-event" class="cm-event hidden"></div>
+                            <div class="cm-main">
+                                <div class="cm-board" id="cm-board">
+                                    <div class="cm-cwrap" id="cm-cwrap">
+                                        <canvas id="cm-canvas" width="800" height="600"></canvas>
+                                        <div id="cm-fog" class="cm-fog hidden"></div>
+                                        <div id="cm-emojis" class="cm-emojis"></div>
+                                        <div id="cm-banner" class="cm-banner"></div>
+                                        <div id="cm-overlay" class="cm-ov hidden"></div>
+                                    </div>
+                                    <div id="cm-tools" class="cm-tools hidden"></div>
+                                    <div id="cm-react" class="cm-react"></div>
+                                </div>
+                                <div class="cm-side">
+                                    <ul id="cm-players" class="cm-players"></ul>
+                                    <div id="cm-chat" class="cm-chat"></div>
+                                    <form class="cm-form" onsubmit="cmSend(event)"><input id="cm-input" maxlength="60" autocomplete="off" placeholder="정답을 입력하세요"><button type="submit"><i class="fa-solid fa-paper-plane"></i></button></form>
+                                </div>
+                            </div>
+                            <button onclick="mpLeave('cm')" class="press-feel cnr-cancel-btn" style="margin-top:8px">나가기</button>
+                        </div>
                     </div>
                 </div>
 
@@ -5154,9 +5327,10 @@
         // 방장이 규칙 검증과 진행을 맡고, 각자의 손패는 본인에게만 따로 보낸다.
         // =====================================================================
         const MP_MAX = 4;
-        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu' };
-        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu' };
-        const mpRooms = { rm: null, un: null, kk: null };
+        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch' };
+        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch' };
+        const mpRooms = { rm: null, un: null, kk: null, cm: null };
+        function mpMax(g) { return g === 'cm' ? 8 : MP_MAX; }
         // 컴퓨터 참가자까지 합친 인원 (끝말잇기는 혼자서도 컴퓨터와 할 수 있다)
         function mpTotal(r) { return r.players.length + ((r.opts && r.opts.bots) || 0); }
         // 게임별 훅: onMsg(payload) 게임 메시지 처리 / hostStart() 방장이 시작할 때 / hostLeave(id) 누가 나갔을 때(방장만) / cleanup(room) 정리
@@ -5249,7 +5423,7 @@
             if (!r || r.role !== 'host' || !p || !p.id) return;
             if (r.phase !== 'waiting') { rzSend(r.channel, 'msg', { t: 'busy', to: p.id }); return; }
             const exist = r.players.find(x => x.id === p.id);
-            if (!exist && r.players.length >= MP_MAX) { rzSend(r.channel, 'msg', { t: 'full', to: p.id }); return; }
+            if (!exist && r.players.length >= mpMax(g)) { rzSend(r.channel, 'msg', { t: 'full', to: p.id }); return; }
             if (exist) { exist.name = p.name || exist.name; }
             else { const np = { id: p.id, name: p.name || '참가자', admin: false }; r.players.push(np); mpVerifyAdmin(g, np, !!p.admin); }
             r.lastSeen[p.id] = Date.now();
@@ -5285,7 +5459,7 @@
                     if (!p.players || !p.players.some(x => x.id === r.myId)) return;
                     r.players = p.players; r.hostId = p.hostId; r.joined = true; clearTimeout(r.joinTimer); if (p.opts) r.opts = p.opts;
                     mpRenderWaiting(g); return;
-                case 'full': if (r.role === 'guest' && !r.joined) { mpTeardown(g); mpShow(g, 'lobby'); mpLobbyError(g, '방이 가득 찼어요. (최대 4명)'); } return;
+                case 'full': if (r.role === 'guest' && !r.joined) { mpTeardown(g); mpShow(g, 'lobby'); mpLobbyError(g, '방이 가득 찼어요. (최대 ' + mpMax(g) + '명)'); } return;
                 case 'busy': if (r.role === 'guest' && !r.joined) { mpTeardown(g); mpShow(g, 'lobby'); mpLobbyError(g, '이미 게임이 시작된 방이에요.'); } return;
                 case 'close':
                     if (r.role === 'guest' && r.phase !== 'ended') { r.phase = 'closed'; mpTeardown(g); mpShow(g, 'lobby'); showToast('방장이 방을 닫았어요.', 'info'); } // 방장이 나간 건 내 패배가 아니다
@@ -5321,7 +5495,7 @@
             const list = document.getElementById(`${g}-player-list`);
             if (list) {
                 const slots = [];
-                for (let i = 0; i < MP_MAX; i++) {
+                for (let i = 0; i < mpMax(g); i++) {
                     const p = r.players[i];
                     slots.push(p
                         ? `<li class="mp-slot on"><span class="mp-slot-n">${i + 1}</span><b>${escapeHtml(p.name)}</b>${p.id === r.hostId ? '<em>방장</em>' : ''}${p.id === r.myId ? '<em class="me">나</em>' : ''}</li>`
@@ -5329,7 +5503,7 @@
                 }
                 list.innerHTML = slots.join('');
             }
-            const cnt = document.getElementById(`${g}-player-count`); if (cnt) cnt.innerText = `${r.players.length} / ${MP_MAX}`;
+            const cnt = document.getElementById(`${g}-player-count`); if (cnt) cnt.innerText = `${r.players.length} / ${mpMax(g)}`;
             const startBtn = document.getElementById(`${g}-start-btn`);
             if (startBtn) {
                 startBtn.classList.toggle('hidden', r.role !== 'host');
@@ -6553,7 +6727,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
+        const RESTZONE_TITLES = { catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
 
         function openRestZoneModal() {
             if (!hasGameAccess()) { showToast('쉼터는 최고 관리자가 권한을 준 계정만 이용할 수 있어요.', 'error'); return; }
@@ -6579,6 +6753,7 @@
             if (typeof teardownSurv === 'function') teardownSurv();
             if (typeof teardownHole === 'function') teardownHole();
             if (typeof teardownSlash === 'function') teardownSlash();
+            if (typeof teardownCatch === 'function') teardownCatch();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -6599,6 +6774,7 @@
             if (typeof teardownSurv === 'function') teardownSurv();
             if (typeof teardownHole === 'function') teardownHole();
             if (typeof teardownSlash === 'function') teardownSlash();
+            if (typeof teardownCatch === 'function') teardownCatch();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -6607,7 +6783,8 @@
             document.getElementById('restzone-back-btn').classList.remove('hidden');
             document.getElementById('restzone-modal-title').innerText = RESTZONE_TITLES[name] || '쉼터';
 
-            if (name === 'hole') ensureHoleInit();
+            if (name === 'catch') ensureCatchInit();
+            else if (name === 'hole') ensureHoleInit();
             else if (name === 'slash') ensureSlashInit();
             else if (name === 'merge') ensureMergeInit();
             else if (name === 'surv') ensureSurvInit();
@@ -7532,6 +7709,7 @@
             else if (typeof vb !== 'undefined' && vb && vb.phase === 'game') name = '배구';
             else if (mpRooms.rm && mpRooms.rm.phase === 'game') name = '루미큐브';
             else if (mpRooms.un && mpRooms.un.phase === 'game') name = '우노';
+            else if (mpRooms.cm && mpRooms.cm.phase === 'game') return confirm('진행 중인 그림 맞히기에서 나갈까요?');
             else if (mpRooms.kk && mpRooms.kk.phase === 'game') { const m = kkLeaveMsg(); return m ? confirm(m) : confirm('진행 중인 끝말잇기에서 나가면 패배로 기록돼요. 정말 나갈까요?'); }
             if (!name) return true;
             return confirm('진행 중인 ' + name + ' 대국에서 나가면 패배로 기록돼요. 정말 나갈까요?');
@@ -14167,7 +14345,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return { key: 'omok:' + omok.roomCode, ch: omok.channel, id: currentUser.id, name: omok.myName };
                 if (typeof bs !== 'undefined' && bs && bs.channel) return { key: 'bs:' + bs.roomCode, ch: bs.channel, id: currentUser.id, name: bs.myName };
                 if (typeof vb !== 'undefined' && vb && vb.channel) return { key: 'vb:' + vb.roomCode, ch: vb.channel, id: currentUser.id, name: vb.myName };
-                for (const g of ['rm', 'un', 'kk']) {
+                for (const g of ['rm', 'un', 'kk', 'cm']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { key: g + ':' + r.code, ch: r.channel, id: r.myId, name: r.myName, peers: r.players.filter(x => x.id !== r.myId).map(x => ({ id: x.id, name: x.name })) };
                 }
@@ -14181,7 +14359,8 @@
             const fab = document.getElementById('gc-fab');
             if (!fab) return;
             const rz = document.getElementById('restzone-modal');
-            const ctx = (currentUser && appSettings.gameChat !== false && rz && !rz.classList.contains('hidden')) ? gcCtx() : null;
+            let ctx = (currentUser && appSettings.gameChat !== false && rz && !rz.classList.contains('hidden')) ? gcCtx() : null;
+            if (ctx && ctx.key.indexOf('cm:') === 0) ctx = null;
             if (!ctx) {
                 fab.classList.add('hidden');
                 document.getElementById('gc-panel').classList.add('hidden');
@@ -14740,7 +14919,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return mk('omok', omok);
                 if (typeof bs !== 'undefined' && bs && bs.channel) return mk('bs', bs);
                 if (typeof vb !== 'undefined' && vb && vb.channel) return mk('vball', vb);
-                for (const g of ['rm', 'un', 'kk']) {
+                for (const g of ['rm', 'un', 'kk', 'cm']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { g: MP_CHANNEL[g], code: r.code, ph: r.phase || 'waiting' };
                 }
@@ -16608,6 +16787,421 @@
             if (sl.flash > 0) { c.fillStyle = 'rgba(255,255,255,' + sl.flash + ')'; c.fillRect(0, 0, SL_W, SL_H); sl.flash = Math.max(0, sl.flash - dt * 1.6); }
             c.restore();
         }
+
+        const CM_WORDS = "사과 바나나 수박 딸기 포도 파인애플 복숭아 레몬 체리 귤 감 배 토마토 당근 오이 감자 고구마 옥수수 양파 버섯 브로콜리 호박 마늘 고추 피자 햄버거 라면 김밥 떡볶이 치킨 핫도그 도넛 아이스크림 케이크 쿠키 초밥 만두 샌드위치 팝콘 계란후라이 붕어빵 솜사탕 우유 커피 콜라 빵 국수 삼겹살 짜장면 비빔밥 타코야키 와플 마카롱 사탕 강아지 고양이 토끼 호랑이 사자 코끼리 기린 원숭이 판다 펭귄 상어 고래 문어 오징어 거북이 뱀 개구리 닭 돼지 소 말 양 곰 여우 늑대 다람쥐 부엉이 독수리 앵무새 공룡 나비 벌 개미 거미 달팽이 해파리 게 새우 악어 하마 코알라 캥거루 낙타 얼룩말 고슴도치 박쥐 홍학 오리 금붕어 무당벌레 잠자리 자동차 버스 기차 비행기 헬리콥터 자전거 오토바이 로켓 잠수함 트럭 택시 구급차 소방차 경찰차 열기구 스케이트보드 썰매 지하철 우주선 집 학교 병원 교회 성 피라미드 등대 다리 텐트 엘리베이터 에스컬레이터 놀이터 미끄럼틀 그네 회전목마 관람차 수영장 화장실 동물원 공항 편의점 도서관 영화관 의자 책상 침대 소파 냉장고 세탁기 텔레비전 컴퓨터 노트북 스마트폰 시계 안경 우산 가방 모자 신발 양말 장갑 목도리 넥타이 치마 바지 드레스 왕관 반지 목걸이 거울 칫솔 치약 비누 수건 빗 가위 연필 지우개 자 공책 책 풍선 선물 촛불 열쇠 자물쇠 전구 손전등 망치 톱 사다리 휴지 쓰레기통 카메라 헤드폰 마이크 리모컨 배터리 돋보기 나침반 지도 깃발 트로피 메달 돈 지갑 저금통 축구공 농구공 야구 테니스 볼링 골프 스키 수영 태권도 줄넘기 훌라후프 낚시 등산 캠핑 마라톤 권투 체조 양궁 탁구 배드민턴 피아노 기타 드럼 바이올린 트럼펫 하모니카 탬버린 실로폰 리코더 해 달 별 구름 비 눈 번개 무지개 바다 산 화산 섬 사막 폭포 강 호수 동굴 숲 나무 꽃 장미 해바라기 선인장 단풍 눈사람 지구 토성 블랙홀 별똥별 오로라 회오리 파도 모래성 의사 간호사 경찰 소방관 요리사 선생님 가수 화가 우주비행사 해적 닌자 마법사 왕 공주 로봇 외계인 유령 좀비 뱀파이어 천사 악마 산타클로스 인어 기사 광대 미라 슈퍼히어로 탐정 군인 농부 어부 마술사 잠자기 달리기 점프 웃음 울음 재채기 하품 요리하기 춤추기 노래하기 그림그리기 사진찍기 박수 윙크 키스 포옹 셀카 방귀 코골이 양치질 샤워 낮잠 다이어트 운전 쇼핑 결혼식 생일파티 소풍 숨바꼭질 가위바위보 팔씨름 줄다리기 눈물 하트 해골 똥 엉덩이 콧물 이빨 수염 대머리 뿔 날개 꼬리 발자국 손가락 귀 코 입술 혀 배꼽 근육 뼈 심장 뇌 크리스마스 할로윈 추석 설날 불꽃놀이 보름달 세뱃돈 떡국 송편 한복 태극기 김치 탈춤 제기차기 연날리기 윷놀이 와이파이 충전기 유튜브 게임기 이모티콘 알람 비밀번호 택배 로또 자판기 신호등 횡단보도 소화기 우체통 분수 동전 영수증 바코드".split(" ");
+        const CM_W = 800, CM_H = 600;
+        const CM_COLORS = ['#1b1b1f', '#ffffff', '#8d99ae', '#e63946', '#ff8fab', '#f77f00', '#ffd60a', '#80b918', '#2a9d8f', '#4cc9f0', '#3a86ff', '#7b2cbf', '#8d5524', '#ffcdb2'];
+        const CM_SIZES = [4, 10, 22, 40];
+        const CM_EVENTS = {
+            mirror: { n: '거울 모드', d: '맞히는 사람에게는 그림이 좌우로 뒤집혀 보여요', ic: '🪞' },
+            fog: { n: '안개 모드', d: '맞히는 사람은 펜이 지나가는 곳만 잠깐 보여요', ic: '🌫️' },
+            spin: { n: '회전 모드', d: '맞히는 사람의 화면이 빙글빙글 돌아요', ic: '🌀' },
+            blind: { n: '눈 감고 그리기', d: '그리는 사람은 자기 그림을 볼 수 없어요', ic: '🙈' },
+            oneline: { n: '한붓그리기', d: '펜을 떼면 끝! 딱 한 번에 그려야 해요', ic: '✍️' },
+            tiny: { n: '개미 붓', d: '붓이 아주 가늘어지고 채우기를 못 써요', ic: '🐜' },
+            giant: { n: '거인 붓', d: '붓이 엄청 굵어져요', ic: '🖌️' },
+        };
+        const CM_EMOS = ['😂', '👍', '😮', '🔥', '🤔', '💩'];
+        let cm = null;
+        function cmLocal() {
+            if (!cm) cm = { st: null, ops: [], strokes: {}, word: null, color: '#1b1b1f', size: 10, tool: 'pen', drawing: null, outQ: [], outT: 0, lastEmo: 0, endsLocal: 0, lastTick: -1, cv: null, ctx: null, H: null, strokeN: 0, lastPt: null, usedStroke: false };
+            return cm;
+        }
+        function ensureCatchInit() {
+            cmLocal();
+            if (!cm.cv) {
+                cm.cv = document.getElementById('cm-canvas'); cm.ctx = cm.cv.getContext('2d', { willReadFrequently: true });
+                cmClearCanvas();
+                const tools = document.getElementById('cm-tools');
+                tools.innerHTML = '<div class="cm-cols">' + CM_COLORS.map(c => '<button class="cm-col" data-c="' + c + '" style="background:' + c + '" aria-label="색"></button>').join('') + '</div>' +
+                    '<div class="cm-tool-row">' + CM_SIZES.map((s, i) => '<button class="cm-size" data-s="' + s + '" aria-label="굵기"><i style="width:' + (5 + i * 5) + 'px;height:' + (5 + i * 5) + 'px"></i></button>').join('') +
+                    '<button class="cm-tb" data-t="pen" title="펜"><i class="fa-solid fa-pen"></i></button><button class="cm-tb" data-t="fill" title="채우기"><i class="fa-solid fa-fill-drip"></i></button><button class="cm-tb" data-t="eraser" title="지우개"><i class="fa-solid fa-eraser"></i></button>' +
+                    '<button class="cm-tb" data-a="undo" title="되돌리기"><i class="fa-solid fa-rotate-left"></i></button><button class="cm-tb danger" data-a="clear" title="모두 지우기"><i class="fa-solid fa-trash"></i></button></div>';
+                tools.addEventListener('click', (e) => {
+                    const b = e.target.closest('button'); if (!b) return;
+                    if (b.dataset.c) { cm.color = b.dataset.c; if (cm.tool === 'eraser') cm.tool = 'pen'; }
+                    else if (b.dataset.s) cm.size = +b.dataset.s;
+                    else if (b.dataset.t) cm.tool = b.dataset.t;
+                    else if (b.dataset.a === 'undo') { if (cmCanDraw() && !(cm.st.event === 'oneline')) mpEmit('cm', { t: 'cm-undo' }); }
+                    else if (b.dataset.a === 'clear') { if (cmCanDraw() && cm.st.event !== 'oneline') mpEmit('cm', { t: 'cm-clear' }); }
+                    cmToolUI();
+                });
+                document.getElementById('cm-react').innerHTML = CM_EMOS.map(e => '<button data-e="' + e + '">' + e + '</button>').join('');
+                document.getElementById('cm-react').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b || !mpRooms.cm || mpRooms.cm.phase !== 'game') return; const now = Date.now(); if (now - cm.lastEmo < 600) return; cm.lastEmo = now; mpEmit('cm', { t: 'cm-emo', e: b.dataset.e, n: mpRooms.cm.myName }); });
+                const cv = cm.cv;
+                const pos = (e) => { const r = cv.getBoundingClientRect(); let x = (e.clientX - r.left) / r.width * CM_W, y = (e.clientY - r.top) / r.height * CM_H; return [Math.round(Math.max(0, Math.min(CM_W, x))), Math.round(Math.max(0, Math.min(CM_H, y)))]; };
+                cv.addEventListener('pointerdown', (e) => {
+                    if (!cmCanDraw()) return;
+                    if (cm.st.event === 'oneline' && cm.usedStroke) { cmToast('한붓그리기 모드라 더 그릴 수 없어요!'); return; }
+                    const [x, y] = pos(e);
+                    if (cm.tool === 'fill') { if (cm.st.event === 'tiny') return; mpEmit('cm', { t: 'cm-fill', x, y, c: cm.color }); return; }
+                    const w = cm.st.event === 'tiny' ? 2 : cm.st.event === 'giant' ? 56 : cm.size;
+                    const c = cm.tool === 'eraser' ? '#ffffff' : cm.color;
+                    cm.drawing = { s: (mpRooms.cm.myId.slice(0, 4)) + (++cm.strokeN) + '_' + Date.now() % 100000 };
+                    try { cv.setPointerCapture(e.pointerId); } catch (x2) {}
+                    mpEmit('cm', { t: 'cm-d', s: cm.drawing.s, c, w: cm.tool === 'eraser' ? Math.max(w, 18) : w, p: [x, y], n: 1 });
+                    e.preventDefault();
+                });
+                cv.addEventListener('pointermove', (e) => {
+                    if (!cm.drawing || !cmCanDraw()) return;
+                    const [x, y] = pos(e); cm.outQ.push(x, y);
+                    const now = performance.now(); if (now - cm.outT > 45) cmFlush();
+                });
+                const end = () => { if (!cm.drawing) return; cmFlush(); cm.drawing = null; if (cm.st && cm.st.event === 'oneline') cm.usedStroke = true; };
+                cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+                document.getElementById('cm-input').addEventListener('keydown', (e) => e.stopPropagation());
+            }
+            mpEnsureInit('cm');
+            cmToolUI();
+        }
+        function cmFlush() { if (!cm.drawing || !cm.outQ.length) return; cm.outT = performance.now(); mpEmit('cm', { t: 'cm-d', s: cm.drawing.s, p: cm.outQ.splice(0) }); }
+        function cmCanDraw() { const r = mpRooms.cm; return !!(r && r.phase === 'game' && cm && cm.st && cm.st.phase === 'draw' && cm.st.drawer === r.myId); }
+        function cmToast(t) { const el = document.getElementById('cm-banner'); el.textContent = t; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); }
+        function cmToolUI() {
+            document.querySelectorAll('#cm-tools .cm-col').forEach(b => b.classList.toggle('on', b.dataset.c === cm.color && cm.tool !== 'eraser'));
+            document.querySelectorAll('#cm-tools .cm-size').forEach(b => b.classList.toggle('on', +b.dataset.s === cm.size));
+            document.querySelectorAll('#cm-tools [data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === cm.tool));
+        }
+        function cmClearCanvas(ctx) { ctx = ctx || cm.ctx; ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, CM_W, CM_H); }
+        function cmDrawSeg(ctx, s, from) {
+            ctx.strokeStyle = s.c; ctx.fillStyle = s.c; ctx.lineWidth = s.w; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            const P = s.pts;
+            if (P.length === 2) { ctx.beginPath(); ctx.arc(P[0], P[1], s.w / 2, 0, 6.283); ctx.fill(); return; }
+            ctx.beginPath(); const i0 = Math.max(0, from - 2); ctx.moveTo(P[i0], P[i0 + 1]);
+            for (let i = i0 + 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]);
+            ctx.stroke();
+        }
+        function cmFill(ctx, x, y, hex) {
+            const img = ctx.getImageData(0, 0, CM_W, CM_H), d = img.data, i0 = (y * CM_W + x) * 4;
+            const tr = d[i0], tg = d[i0 + 1], tb = d[i0 + 2];
+            const n = parseInt(hex.slice(1), 16), fr = n >> 16 & 255, fg = n >> 8 & 255, fb = n & 255;
+            if (Math.abs(tr - fr) + Math.abs(tg - fg) + Math.abs(tb - fb) < 8) return;
+            const tol = 110, seen = new Uint8Array(CM_W * CM_H), stack = [x, y];
+            const match = (p) => { const k = p * 4; return Math.abs(d[k] - tr) + Math.abs(d[k + 1] - tg) + Math.abs(d[k + 2] - tb) <= tol; };
+            while (stack.length) {
+                const py = stack.pop(), px = stack.pop(); let lx = px;
+                while (lx >= 0 && !seen[py * CM_W + lx] && match(py * CM_W + lx)) lx--;
+                lx++; let up = false, dn = false;
+                for (let cx = lx; cx < CM_W; cx++) {
+                    const p = py * CM_W + cx; if (seen[p] || !match(p)) break;
+                    seen[p] = 1; const k = p * 4; d[k] = fr; d[k + 1] = fg; d[k + 2] = fb; d[k + 3] = 255;
+                    if (py > 0) { const q = p - CM_W; if (!seen[q] && match(q)) { if (!up) { stack.push(cx, py - 1); up = true; } } else up = false; }
+                    if (py < CM_H - 1) { const q = p + CM_W; if (!seen[q] && match(q)) { if (!dn) { stack.push(cx, py + 1); dn = true; } } else dn = false; }
+                }
+            }
+            ctx.putImageData(img, 0, 0);
+        }
+        function cmBoardApply(B, op) {
+            if (op.t === 'cm-clear') { B.ops = []; B.strokes = {}; cmClearCanvas(B.ctx); return; }
+            if (op.t === 'cm-undo') { B.ops.pop(); cmRedraw(B); return; }
+            if (op.t === 'cm-fill') { const x = Math.max(0, Math.min(CM_W - 1, op.x | 0)), y = Math.max(0, Math.min(CM_H - 1, op.y | 0)); B.ops.push({ k: 'f', x, y, c: op.c }); cmFill(B.ctx, x, y, op.c); return; }
+            if (op.t === 'cm-d') {
+                let s = B.strokes[op.s];
+                if (!s) { if (!op.n) return; s = B.strokes[op.s] = { c: op.c, w: op.w, pts: [] }; B.ops.push({ k: 's', id: op.s }); }
+                const from = s.pts.length; for (let i = 0; i + 1 < op.p.length; i += 2) s.pts.push(op.p[i], op.p[i + 1]);
+                cmDrawSeg(B.ctx, s, from);
+                B.lastPt = [op.p[op.p.length - 2], op.p[op.p.length - 1]];
+            }
+        }
+        function cmRedraw(B) {
+            cmClearCanvas(B.ctx);
+            for (const o of B.ops) { if (o.k === 's') { const s = B.strokes[o.id]; if (s) cmDrawSeg(B.ctx, s, 0); } else if (o.k === 'f') cmFill(B.ctx, o.x, o.y, o.c); }
+        }
+        function cmNorm(s) { return String(s || '').replace(/\s+/g, '').toLowerCase(); }
+        function cmLev1(a, b) {
+            if (Math.abs(a.length - b.length) > 1) return false;
+            let i = 0, j = 0, diff = 0;
+            while (i < a.length && j < b.length) { if (a[i] === b[j]) { i++; j++; continue; } if (++diff > 1) return false; if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; } }
+            return diff + (a.length - i) + (b.length - j) <= 1;
+        }
+        function cmHostPick(n, used) { const pool = CM_WORDS.filter(w => !used.has(w)); const out = []; while (out.length < n && pool.length) out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]); return out; }
+        function cmHostStart() {
+            const r = mpRooms.cm, o = r.opts || {};
+            const order = r.players.map(p => p.id).sort(() => Math.random() - 0.5);
+            r.H = { order, turn: 0, round: 1, rounds: +o.rounds || 3, time: +o.time || 80, chaos: o.chaos !== false, phase: 'choose', scores: {}, guessed: [], used: new Set(), lastEvent: null, gains: {} };
+            r.players.forEach(p => r.H.scores[p.id] = 0);
+            clearInterval(r.cmTick); r.cmTick = setInterval(cmHostTick, 250);
+            cmHostTurn(true);
+        }
+        function cmHostTurn(first) {
+            const r = mpRooms.cm; if (!r || !r.H) return; const H = r.H;
+            if (!first) H.turn++;
+            while (true) {
+                if (H.turn >= H.order.length) { H.turn = 0; H.round++; }
+                if (H.round > H.rounds) { cmHostOver(); return; }
+                if (r.players.some(p => p.id === H.order[H.turn])) break;
+                H.turn++;
+            }
+            H.drawer = H.order[H.turn]; H.phase = 'choose'; H.word = null; H.guessed = []; H.gains = {}; H.revealed = [];
+            H.choices = cmHostPick(3, H.used); H.choices.forEach(w => H.used.add(w));
+            H.endsAt = Date.now() + 12000;
+            let ev = null; if (H.chaos && Math.random() < 0.65) { const ks = Object.keys(CM_EVENTS).filter(k => k !== H.lastEvent); ev = ks[Math.floor(Math.random() * ks.length)]; }
+            H.event = ev; H.lastEvent = ev;
+            mpEmit('cm', { t: 'cm-clear', sys: 1 });
+            cmHostPublish();
+            mpEmit('cm', { t: 'cm-choose', to: H.drawer, opts: H.choices });
+        }
+        function cmHostPickWord(i) {
+            const r = mpRooms.cm, H = r && r.H; if (!H || H.phase !== 'choose') return;
+            H.word = H.choices[Math.max(0, Math.min(H.choices.length - 1, i | 0))];
+            H.phase = 'draw'; H.startAt = Date.now(); H.endsAt = Date.now() + H.time * 1000; H.revealed = [];
+            mpEmit('cm', { t: 'cm-word', to: H.drawer, w: H.word });
+            cmHostPublish();
+        }
+        function cmHostHint(H) {
+            const chars = [...H.word];
+            return chars.map((ch, i) => ch === ' ' ? ' ' : (H.revealed.includes(i) ? ch : '_')).join('');
+        }
+        function cmHostPublish() {
+            const r = mpRooms.cm, H = r && r.H; if (!H) return;
+            const st = {
+                phase: H.phase, round: H.round, rounds: H.rounds, drawer: H.drawer, event: H.event, left: Math.max(0, H.endsAt - Date.now()), total: H.phase === 'draw' ? H.time * 1000 : 0,
+                hint: H.phase === 'draw' ? cmHostHint(H) : (H.phase === 'reveal' || H.phase === 'over') ? (H.word || '') : '',
+                word: (H.phase === 'reveal' || H.phase === 'over') ? H.word : null, scores: H.scores, guessed: H.guessed, gains: H.gains, order: H.order,
+                players: r.players.map(p => ({ id: p.id, name: p.name })), seq: (H.seq = (H.seq || 0) + 1),
+            };
+            mpEmit('cm', { t: 'cm-st', st });
+        }
+        function cmHostTick() {
+            const r = mpRooms.cm, H = r && r.H; if (!H || r.phase !== 'game') return;
+            const now = Date.now();
+            if (H.phase === 'choose' && now > H.endsAt) cmHostPickWord(Math.floor(Math.random() * 3));
+            else if (H.phase === 'draw') {
+                const k = (now - H.startAt) / (H.time * 1000), chars = [...H.word], need = chars.length >= 2 ? (k > 0.75 ? 2 : k > 0.5 ? 1 : 0) : 0;
+                const maxRev = Math.max(0, chars.filter(c => c !== ' ').length - 1);
+                if (H.revealed.length < Math.min(need, maxRev)) {
+                    const idx = chars.map((c, i) => i).filter(i => chars[i] !== ' ' && !H.revealed.includes(i));
+                    H.revealed.push(idx[Math.floor(Math.random() * idx.length)]); cmHostPublish();
+                }
+                const guessers = r.players.filter(p => p.id !== H.drawer);
+                if (now > H.endsAt || (guessers.length && guessers.every(p => H.guessed.includes(p.id)) && now - (H.lastOk || 0) > 1200)) cmHostReveal();
+                if (now - (H.lastPub || 0) > 3000) { H.lastPub = now; cmHostPublish(); }
+            } else if (H.phase === 'reveal' && now > H.endsAt) cmHostTurn(false);
+        }
+        function cmHostReveal() {
+            const r = mpRooms.cm, H = r.H;
+            H.phase = 'reveal'; H.endsAt = Date.now() + 5500;
+            if (H.guessed.length) { const g = Math.min(400, 50 + H.guessed.length * 70); H.scores[H.drawer] = (H.scores[H.drawer] || 0) + g; H.gains[H.drawer] = g; }
+            cmHostPublish();
+        }
+        function cmHostOver() {
+            const r = mpRooms.cm, H = r.H; H.phase = 'over'; H.endsAt = Date.now(); H.guessed = []; H.gains = {};
+            clearInterval(r.cmTick); cmHostPublish();
+        }
+        function cmHostAction(p) {
+            const r = mpRooms.cm, H = r && r.H; if (!H) return;
+            const who = r.players.find(x => x.id === p.from); if (!who) return;
+            if (p.t === 'cm-pick') { if (p.from === H.drawer) cmHostPickWord(p.i); return; }
+            if (p.t !== 'cm-g') return;
+            const text = String(p.text || '').slice(0, 60).trim(); if (!text) return;
+            if (H.phase === 'draw') {
+                const ok = cmNorm(text) === cmNorm(H.word);
+                if (p.from === H.drawer) { if (cmNorm(text).includes(cmNorm(H.word))) { mpEmit('cm', { t: 'cm-chat', to: p.from, kind: 'sys', text: '정답이 들어간 말은 보낼 수 없어요.' }); return; } }
+                else if (!H.guessed.includes(p.from)) {
+                    if (ok) {
+                        const left = Math.max(0, H.endsAt - Date.now()) / (H.time * 1000), first = H.guessed.length === 0;
+                        const g = Math.round(100 + 300 * left) + (first ? 80 : 0);
+                        H.guessed.push(p.from); H.scores[p.from] = (H.scores[p.from] || 0) + g; H.gains[p.from] = g; H.lastOk = Date.now();
+                        mpEmit('cm', { t: 'cm-chat', kind: 'ok', name: who.name, pid: p.from, text: who.name + '님 정답! +' + g + (first ? ' (1등 보너스)' : '') });
+                        cmHostPublish(); return;
+                    }
+                    if (cmNorm(H.word).length >= 2 && cmLev1(cmNorm(text), cmNorm(H.word))) mpEmit('cm', { t: 'cm-chat', to: p.from, kind: 'close', text: '"' + text + '" 거의 맞았어요! 🔥' });
+                } else { mpEmit('cm', { t: 'cm-chat', kind: 'msg', secret: 1, name: who.name, pid: p.from, text }); return; }
+            }
+            mpEmit('cm', { t: 'cm-chat', kind: 'msg', name: who.name, pid: p.from, text });
+        }
+        function cmHostLeave(id) {
+            const r = mpRooms.cm; if (!r) return;
+            r.players = r.players.filter(p => p.id !== id);
+            const H = r.H; if (!H) return;
+            mpEmit('cm', { t: 'cm-chat', kind: 'sys', text: '한 명이 나갔어요.' });
+            if (r.players.length < 2) { cmHostOver(); return; }
+            if (H.drawer === id && (H.phase === 'draw' || H.phase === 'choose')) { H.phase = 'reveal'; H.endsAt = Date.now() + 2500; }
+            cmHostPublish();
+        }
+        function cmAgain() {
+            const r = mpRooms.cm; if (!r || r.role !== 'host') return;
+            clearInterval(r.cmTick); r.H = null;
+            mpEmit('cm', { t: 'cm-again' });
+            r.phase = 'waiting'; mpShow('cm', 'waiting'); mpBroadcastLobby('cm');
+        }
+        function cmOnMsg(p) {
+            const r = mpRooms.cm; if (!r) return; cmLocal();
+            if (p.from && !p.id) { if (r.role === 'host') cmHostAction(p); return; }
+            const B = cm;
+            switch (p.t) {
+                case 'cm-st': {
+                    if (r.role === 'guest' && p.id !== r.hostId) return;
+                    const prev = cm.st; cm.st = p.st;
+                    r.phase = p.st.phase === 'over' ? 'ended' : 'game';
+                    mpShow('cm', 'game');
+                    cm.endsLocal = Date.now() + p.st.left;
+                    if (!prev || prev.drawer !== p.st.drawer || prev.phase !== p.st.phase) { if (p.st.phase === 'choose') { cm.word = null; cm.usedStroke = false; cm.tool = 'pen'; cmToolUI(); } cmPhaseFx(prev, p.st); }
+                    cmRender(); return;
+                }
+                case 'cm-choose': cmShowChoices(p.opts); return;
+                case 'cm-word': cm.word = p.w; cmRender(); return;
+                case 'cm-chat': cmChat(p); return;
+                case 'cm-again': if (r.role === 'guest') { r.phase = 'waiting'; cm.st = null; mpShow('cm', 'waiting'); mpRenderWaiting('cm'); } return;
+                case 'cm-emo': cmEmo(p.e, p.n); return;
+                case 'cm-d': case 'cm-undo': case 'cm-clear': case 'cm-fill': {
+                    if (!p.sys && (!cm.st || p.id !== cm.st.drawer || cm.st.phase !== 'draw')) return;
+                    if (p.sys && r.role === 'guest' && p.id !== r.hostId) return;
+                    cmBoardApply(B, p);
+                    if (p.t === 'cm-d' && cm.lastPt) cmFog();
+                    return;
+                }
+            }
+        }
+        function cmPhaseFx(prev, st) {
+            const r = mpRooms.cm, me = r.myId, ev = st.event && CM_EVENTS[st.event];
+            if (st.phase === 'draw') {
+                rzSoundGo();
+                if (ev) cmToast(ev.ic + ' ' + ev.n + ' — ' + ev.d); else cmToast(st.drawer === me ? '그려주세요! 말로 설명하면 안 돼요 🤫' : '그림을 보고 정답을 입력하세요!');
+            }
+            if (st.phase === 'reveal') { (st.guessed.includes(me) || st.drawer === me ? rzSoundWin : rzSoundLose)(); }
+            if (st.phase === 'over') { const top = Object.entries(st.scores).sort((a, b) => b[1] - a[1])[0]; (top && top[0] === me ? rzSoundWin : rzSoundLose)(); }
+        }
+        function cmName(id) { const st = cm.st; const p = st && st.players.find(x => x.id === id); return p ? p.name : '?'; }
+        function cmRender() {
+            const r = mpRooms.cm, st = cm.st; if (!r || !st) return;
+            const me = r.myId, drawer = st.drawer === me, ev = st.event;
+            document.getElementById('cm-round').textContent = st.phase === 'over' ? '게임 끝' : st.round + ' / ' + st.rounds + ' 라운드';
+            const hintEl = document.getElementById('cm-hint');
+            if (st.phase === 'draw') hintEl.innerHTML = drawer && cm.word ? '<span class="cm-myword">' + escapeHtml(cm.word) + '</span>' : [...st.hint].map(c => c === '_' ? '<i></i>' : c === ' ' ? '<s></s>' : '<b>' + escapeHtml(c) + '</b>').join('') + '<em>' + [...st.hint].filter(c => c !== ' ').length + '글자</em>';
+            else if (st.phase === 'choose') hintEl.innerHTML = '<span class="cm-wait">' + escapeHtml(cmName(st.drawer)) + '님이 단어를 고르는 중…</span>';
+            else if (st.phase === 'over') hintEl.innerHTML = '<span class="cm-myword">🏆 최종 결과</span>';
+            else hintEl.innerHTML = '<span class="cm-myword">' + escapeHtml(st.word || '') + '</span>';
+            const evEl = document.getElementById('cm-event');
+            evEl.classList.toggle('hidden', !ev || st.phase === 'over'); if (ev) evEl.innerHTML = CM_EVENTS[ev].ic + ' <b>' + CM_EVENTS[ev].n + '</b> · ' + CM_EVENTS[ev].d;
+            const wrap = document.getElementById('cm-cwrap'), guesserFx = st.phase === 'draw' && !drawer;
+            wrap.classList.toggle('cm-mirror', guesserFx && ev === 'mirror');
+            wrap.classList.toggle('cm-spin', guesserFx && ev === 'spin');
+            wrap.classList.toggle('cm-blind', st.phase === 'draw' && drawer && ev === 'blind');
+            const fog = document.getElementById('cm-fog'); fog.classList.toggle('hidden', !(guesserFx && ev === 'fog'));
+            document.getElementById('cm-tools').classList.toggle('hidden', !(st.phase === 'draw' && drawer));
+            document.getElementById('cm-board').classList.toggle('drawer', st.phase === 'draw' && drawer);
+            const inp = document.getElementById('cm-input');
+            inp.placeholder = st.phase === 'draw' ? (drawer ? '그리는 중이에요 (정답 말하기 금지)' : st.guessed.includes(me) ? '정답! 맞힌 사람끼리만 보여요' : '정답을 입력하세요') : '채팅';
+            const order = (st.order || []).filter(id => st.players.some(p => p.id === id));
+            const ranked = order.slice().sort((a, b) => (st.scores[b] || 0) - (st.scores[a] || 0));
+            document.getElementById('cm-players').innerHTML = order.map(id => {
+                const rank = ranked.indexOf(id) + 1, g = st.gains && st.gains[id];
+                return '<li class="' + (id === st.drawer ? 'drawing ' : '') + (st.guessed.includes(id) ? 'ok ' : '') + (id === me ? 'me' : '') + '"><span class="cm-rank">' + rank + '</span><b>' + escapeHtml(cmName(id)) + '</b>' + (id === st.drawer && st.phase !== 'over' ? '<i class="fa-solid fa-pencil"></i>' : '') + (st.guessed.includes(id) ? '<i class="fa-solid fa-check"></i>' : '') + '<em>' + (st.scores[id] || 0) + '</em>' + (g && st.phase === 'reveal' ? '<small>+' + g + '</small>' : '') + '</li>';
+            }).join('');
+            const ov = document.getElementById('cm-overlay');
+            if (st.phase === 'reveal') {
+                const lines = order.filter(id => st.gains && st.gains[id]).sort((a, b) => st.gains[b] - st.gains[a]).map(id => '<li><b>' + escapeHtml(cmName(id)) + '</b><span>+' + st.gains[id] + '</span></li>').join('');
+                ov.innerHTML = '<div class="cm-rev"><p>정답은</p><h3>' + escapeHtml(st.word || '') + '</h3>' + (st.guessed.length ? '<ul>' + lines + '</ul>' : '<p class="cm-nobody">아무도 못 맞혔어요 😭</p>') + '</div>';
+                ov.classList.remove('hidden');
+            } else if (st.phase === 'over') {
+                const pod = ranked.slice(0, 3), medal = ['🥇', '🥈', '🥉'];
+                ov.innerHTML = '<div class="cm-rev cm-final"><p>최종 결과</p><div class="cm-podium">' + pod.map((id, i) => '<div class="cm-pod p' + (i + 1) + '"><span>' + medal[i] + '</span><b>' + escapeHtml(cmName(id)) + '</b><em>' + (st.scores[id] || 0) + '점</em><i></i></div>').join('') + '</div>' +
+                    (ranked.length > 3 ? '<p class="cm-rest">' + ranked.slice(3).map((id, i) => (i + 4) + '. ' + escapeHtml(cmName(id)) + ' ' + (st.scores[id] || 0)).join(' · ') + '</p>' : '') +
+                    (r.role === 'host' ? '<button class="ng-btn" onclick="cmAgain()">한 판 더!</button>' : '<p class="cm-rest">방장이 한 판 더를 누르면 다시 시작해요</p>') + '</div>';
+                ov.classList.remove('hidden');
+                if (!cm.confetti) { cm.confetti = true; cmConfetti(); }
+            } else if (st.phase === 'choose') {
+                if (!drawer) { ov.innerHTML = '<div class="cm-rev"><p>' + st.round + '라운드</p><h3 style="font-size:24px">' + escapeHtml(cmName(st.drawer)) + '님 차례</h3><p>단어를 고르는 중이에요…</p>' + (ev ? '<div class="cm-evbig">' + CM_EVENTS[ev].ic + ' ' + CM_EVENTS[ev].n + '<small>' + CM_EVENTS[ev].d + '</small></div>' : '') + '</div>'; ov.classList.remove('hidden'); }
+                cm.confetti = false;
+            } else ov.classList.add('hidden');
+        }
+        function cmShowChoices(opts) {
+            const st = cm.st, ev = st && st.event, ov = document.getElementById('cm-overlay');
+            ov.innerHTML = '<div class="cm-rev"><p>내 차례! 그릴 단어를 고르세요</p>' + (ev ? '<div class="cm-evbig">' + CM_EVENTS[ev].ic + ' ' + CM_EVENTS[ev].n + '<small>' + CM_EVENTS[ev].d + '</small></div>' : '') + '<div class="cm-choices">' + opts.map((w, i) => '<button data-i="' + i + '">' + escapeHtml(w) + '</button>').join('') + '</div><p class="cm-rest">12초 안에 안 고르면 아무거나 골라져요</p></div>';
+            ov.classList.remove('hidden');
+            ov.querySelectorAll('.cm-choices button').forEach(b => b.onclick = () => { mpToHost('cm', { t: 'cm-pick', i: +b.dataset.i }); ov.innerHTML = '<div class="cm-rev"><p>준비…</p></div>'; });
+        }
+        function cmSend(e) {
+            e.preventDefault();
+            const inp = document.getElementById('cm-input'), text = inp.value.trim(); if (!text || !mpRooms.cm) return;
+            inp.value = ''; mpToHost('cm', { t: 'cm-g', text });
+        }
+        function cmChat(p) {
+            const r = mpRooms.cm, st = cm.st, me = r.myId;
+            if (p.secret && st && !(st.guessed.includes(me) || st.drawer === me)) return;
+            const box = document.getElementById('cm-chat'), d = document.createElement('div');
+            d.className = 'cm-msg ' + p.kind + (p.secret ? ' secret' : '');
+            if (p.kind === 'msg') d.innerHTML = '<b>' + escapeHtml(p.name) + '</b> ' + escapeHtml(p.text);
+            else d.textContent = p.text;
+            box.appendChild(d); while (box.children.length > 80) box.removeChild(box.firstChild);
+            box.scrollTop = box.scrollHeight;
+            if (p.kind === 'ok') { rzTone(880, 0.1, 'triangle', 0.1); setTimeout(() => rzTone(1320, 0.18, 'triangle', 0.1), 90); if (p.pid === me) { cmToast('정답!! 🎉'); cmConfetti(18); } }
+            if (p.kind === 'close') rzTone(660, 0.12, 'sine', 0.08);
+        }
+        function cmEmo(e, n) {
+            const box = document.getElementById('cm-emojis'); if (!box) return;
+            const el = document.createElement('div'); el.className = 'cm-emo';
+            el.innerHTML = '<span>' + escapeHtml(e) + '</span><small>' + escapeHtml(n || '') + '</small>';
+            el.style.left = (8 + Math.random() * 80) + '%'; box.appendChild(el); setTimeout(() => el.remove(), 2200);
+        }
+        function cmConfetti(n) {
+            const box = document.getElementById('cm-emojis'); if (!box) return;
+            for (let i = 0; i < (n || 40); i++) { const el = document.createElement('i'); el.className = 'cm-conf'; el.style.left = Math.random() * 100 + '%'; el.style.background = CM_COLORS[3 + Math.floor(Math.random() * 9)]; el.style.animationDelay = Math.random() * 0.6 + 's'; el.style.transform = 'rotate(' + Math.random() * 360 + 'deg)'; box.appendChild(el); setTimeout(() => el.remove(), 2600); }
+        }
+        function cmFog() {
+            const st = cm.st, fog = document.getElementById('cm-fog'); if (!st || st.event !== 'fog' || fog.classList.contains('hidden') || !cm.lastPt) return;
+            const x = cm.lastPt[0] / CM_W * 100, y = cm.lastPt[1] / CM_H * 100;
+            fog.style.background = 'radial-gradient(circle at ' + x + '% ' + y + '%, rgba(30,30,40,0) 0, rgba(30,30,40,0) 9%, rgba(30,30,40,.97) 17%)';
+        }
+        setInterval(() => {
+            if (!cm || !cm.st || !mpRooms.cm) return;
+            const left = Math.max(0, Math.ceil((cm.endsLocal - Date.now()) / 1000)), el = document.getElementById('cm-timer');
+            if (!el) return;
+            el.textContent = cm.st.phase === 'draw' || cm.st.phase === 'choose' ? left : '';
+            el.classList.toggle('urgent', cm.st.phase === 'draw' && left <= 10);
+            if (cm.st.phase === 'draw' && left <= 10 && left > 0 && left !== cm.lastTick) { cm.lastTick = left; rzTone(left <= 3 ? 990 : 740, 0.06, 'sine', 0.05); }
+            const bar = document.getElementById('cm-tbar'); if (bar) bar.style.width = (cm.st.total ? Math.max(0, (cm.endsLocal - Date.now()) / cm.st.total * 100) : 0) + '%';
+        }, 200);
+        function cmWaitingRender(r) {
+            const host = r.role === 'host', o = r.opts || (r.opts = { rounds: 3, time: 80, chaos: true });
+            const box = document.getElementById('cm-opts'); if (!box) return;
+            if (host) {
+                box.innerHTML = '<label>라운드 <select id="cm-o-rounds">' + [2, 3, 4, 5].map(n => '<option' + (n === +o.rounds ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
+                    '<label>그리는 시간 <select id="cm-o-time">' + [60, 80, 100, 120].map(n => '<option value="' + n + '"' + (n === +o.time ? ' selected' : '') + '>' + n + '초</option>').join('') + '</select></label>' +
+                    '<label class="cm-chaos"><input type="checkbox" id="cm-o-chaos"' + (o.chaos !== false ? ' checked' : '') + '> 카오스 모드 <small>(거울·안개·회전·눈 감고 그리기·한붓그리기…)</small></label>';
+                box.querySelectorAll('select,input').forEach(el => el.onchange = () => { r.opts = { rounds: +document.getElementById('cm-o-rounds').value, time: +document.getElementById('cm-o-time').value, chaos: document.getElementById('cm-o-chaos').checked }; mpBroadcastLobby('cm'); });
+            } else box.innerHTML = '<p>' + o.rounds + '라운드 · 그리는 시간 ' + o.time + '초 · 카오스 모드 ' + (o.chaos !== false ? '켜짐 🌀' : '꺼짐') + '</p>';
+        }
+        function cmCleanup(r) { clearInterval(r.cmTick); if (cm) { cm.st = null; cm.word = null; cm.drawing = null; cm.ops = []; cm.strokes = {}; if (cm.ctx) cmClearCanvas(); const ch = document.getElementById('cm-chat'); if (ch) ch.innerHTML = ''; const ov = document.getElementById('cm-overlay'); if (ov) ov.classList.add('hidden'); } }
+        function teardownCatch() { mpTeardown('cm'); }
+        MP_HOOKS.cm = { onMsg: cmOnMsg, hostStart: cmHostStart, hostAction: cmHostAction, hostLeave: cmHostLeave, cleanup: cmCleanup, onWaitingRender: cmWaitingRender, leaveMsg: () => '진행 중인 그림 맞히기에서 나갈까요?' };
+
+        SPY_GAMES.catch = { name: '그림 맞히기', icon: 'fa-palette' };
+        SPY_OBS.catch = {
+            mount(el, s) {
+                el.innerHTML = '<div class="spy-cm"><div class="spy-cm-top" id="spc-top">게임 상태를 기다리는 중…</div><canvas id="spc-cv" width="800" height="600" style="width:100%;border-radius:12px;background:#fff;display:block"></canvas><div class="spy-cm-pl" id="spc-pl" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12.5px;font-weight:700"></div></div>';
+                const cv = document.getElementById('spc-cv'); s.data.B = { ctx: cv.getContext('2d', { willReadFrequently: true }), ops: [], strokes: {} }; cmClearCanvas(s.data.B.ctx);
+            },
+            onMsg(p, s) {
+                const B = s.data.B;
+                if (p.t === 'cm-st') { s.data.st = p.st; return; }
+                if (p.t === 'cm-word') { s.data.word = p.w; return; }
+                if (!B) return;
+                if (p.t === 'cm-d' || p.t === 'cm-undo' || p.t === 'cm-clear' || p.t === 'cm-fill') { if (p.t === 'cm-clear' && p.sys) s.data.word = null; cmBoardApply(B, p); }
+            },
+            onSnap(snap, s) {
+                const B = s.data.B; if (!B || !snap.ops) return;
+                if (snap.st) s.data.st = snap.st; if (snap.word) s.data.word = snap.word;
+                if (B.synced && B.ops.length >= snap.ops.length) return;
+                B.ops = []; B.strokes = {};
+                snap.ops.forEach((o, i) => { if (o.k === 's') { const id = 'snap' + i; B.strokes[id] = { c: o.c, w: o.w, pts: o.pts }; B.ops.push({ k: 's', id }); } else B.ops.push(o); });
+                cmRedraw(B); B.synced = true;
+            },
+            update(el, s) {
+                const st = s.data.st, top = spyQ('spc-top'), pl = spyQ('spc-pl'); if (!st || !top) return;
+                const nm = (id) => { const p = st.players.find(x => x.id === id); return p ? escapeHtml(p.name) : '?'; };
+                const word = s.data.word || st.word;
+                top.innerHTML = '<b>' + st.round + ' / ' + st.rounds + ' 라운드</b> · ' + (st.phase === 'over' ? '게임 끝' : nm(st.drawer) + ' 그리는 중') + (word ? ' · 정답 <b style="color:#e85d04">' + escapeHtml(word) + '</b>' : '') + (st.event && CM_EVENTS[st.event] ? ' · ' + CM_EVENTS[st.event].ic + ' ' + CM_EVENTS[st.event].n : '');
+                pl.innerHTML = (st.order || []).map(id => '<span style="padding:3px 9px;border-radius:9px;background:' + (st.guessed.includes(id) ? 'rgba(123,237,159,.35)' : 'rgba(128,128,128,.15)') + '">' + nm(id) + ' ' + (st.scores[id] || 0) + '</span>').join('');
+            },
+        };
+        SPY_RESP.catch = () => {
+            const r = mpRooms.cm; if (!r || r.role !== 'host' || !r.H || !cm) return null;
+            cmHostPublish();
+            const ops = cm.ops.map(o => o.k === 's' ? (cm.strokes[o.id] ? { k: 's', c: cm.strokes[o.id].c, w: cm.strokes[o.id].w, pts: cm.strokes[o.id].pts } : null) : o).filter(Boolean);
+            return { ch: r.channel, snap: { ops, st: null, word: r.H.word } };
+        };
 
         (function gcInit() {
             const input = document.getElementById('gc-input');
