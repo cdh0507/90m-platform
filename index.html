@@ -1765,6 +1765,55 @@
         .rz-touch .mq-k.stab { min-width: 78px; }
         @media (max-width: 560px) { .mq-rules { grid-template-columns: 1fr; } .mq-title { font-size: 28px; } }
 
+        .rz-net-badge { margin-left: 10px; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 99px; white-space: nowrap; vertical-align: middle; }
+        .rz-net-badge.p2p { background: rgba(46,204,113,.14); color: #1e9e57; border: 1px solid rgba(46,204,113,.35); }
+        .rz-net-badge.srv { background: rgba(255,159,28,.13); color: #c46a00; border: 1px solid rgba(255,159,28,.35); }
+        .dark .rz-net-badge.p2p, [data-theme="dark"] .rz-net-badge.p2p { color: #6ee7a0; }
+        .jb-lobby { max-width: 640px; margin: 0 auto; padding: 4px 2px 10px; }
+        .jb-hero { position: relative; overflow: hidden; border-radius: 24px; padding: 22px 16px 20px; text-align: center; background: radial-gradient(120% 120% at 50% 0%, #ff8fc0 0%, #8a4bd6 45%, #2a1250 100%); box-shadow: 0 18px 40px rgba(90,40,160,.35), inset 0 0 0 1px rgba(255,255,255,.25); }
+        .jb-hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.5) 1.5px, transparent 2px); background-size: 26px 26px; opacity: .25; animation: mqDrift 10s linear infinite; }
+        .jb-hero-row { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 14px; height: 86px; }
+        .jb-blob { position: relative; width: 52px; height: 52px; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 35% 30%, #ffd6e6, #ff6b9d 55%, #c2185b); box-shadow: inset -6px -8px 0 rgba(0,0,0,.12), 0 8px 18px rgba(0,0,0,.25); animation: jbBounce 1.1s cubic-bezier(.3,.6,.4,1) infinite; display: inline-block; }
+        .jb-blob.big { width: 74px; height: 70px; animation-delay: -.35s; }
+        .jb-blob.sm { width: 46px; height: 44px; margin-bottom: 8px; }
+        .jb-blob.c1 { background: radial-gradient(circle at 35% 30%, #d6f6ff, #4cc9f0 55%, #1769aa); animation-delay: -.2s; }
+        .jb-blob.c2 { background: radial-gradient(circle at 35% 30%, #fff6c4, #ffd23f 55%, #c99700); animation-delay: -.6s; }
+        .jb-blob.c3 { background: radial-gradient(circle at 35% 30%, #d6ffe4, #5ee08a 55%, #1f8a4c); }
+        .jb-blob i { position: absolute; top: 38%; width: 18%; height: 22%; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 30px #fff; }
+        .jb-blob i::after { content: ''; position: absolute; left: 30%; top: 30%; width: 55%; height: 55%; border-radius: 50%; background: #2b1b2e; }
+        .jb-blob i:first-child { left: 26%; } .jb-blob i:last-child { right: 26%; }
+        @keyframes jbBounce { 0%,100% { transform: translateY(0) scale(1.06,.94); } 45% { transform: translateY(-22px) scale(.94,1.06); } 60% { transform: translateY(-24px) scale(.96,1.04); } }
+        .jb-kicker { position: relative; margin: 8px 0 0; font: italic 900 11px Pretendard, sans-serif; letter-spacing: .35em; color: #ffe1f0; }
+        .jb-title { position: relative; margin: 0 0 4px; font-size: 36px; font-weight: 900; font-style: italic; letter-spacing: -.02em; color: #fff; text-shadow: 0 4px 0 #6a2bb5, 0 8px 18px rgba(0,0,0,.35); }
+        .jb-sub { position: relative; margin: 0; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,.92); }
+        .jb-rules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0 10px; }
+        .jb-rules div { border-radius: 16px; padding: 10px 9px; background: linear-gradient(180deg, rgba(179,136,255,.12), rgba(255,107,157,.1)); border: 1px solid rgba(179,136,255,.4); display: flex; flex-direction: column; gap: 2px; }
+        .jb-rules span { font-size: 20px; } .jb-rules b { font-size: 13px; font-weight: 900; color: var(--ink); } .jb-rules em { font-style: normal; font-size: 11px; line-height: 1.4; color: var(--ink-soft); font-weight: 600; }
+        .jb-stages { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 14px; }
+        .jb-stages span { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: rgba(138,75,214,.1); color: #6a3fc7; border: 1px solid rgba(106,63,199,.2); }
+        .jb-actions { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .jb-btn-main { border: none; padding: 12px 26px; border-radius: 99px; font-size: 14px; font-weight: 900; color: #fff; background: linear-gradient(180deg, #ff8fc0, #e0407f); box-shadow: 0 6px 0 #9c1f56, 0 12px 24px rgba(224,64,127,.35); }
+        .jb-btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #9c1f56; }
+        .jb-note { font-size: 11px; color: var(--ink-soft); font-weight: 600; margin: 0; }
+        .jb-game { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .jb-wrap { position: relative; width: min(100%, 1180px, calc((100vh - 230px) * 960 / 540)); min-width: 300px; border-radius: 18px; overflow: hidden; background: #120a33; box-shadow: 0 0 0 1px rgba(179,136,255,.5), 0 20px 50px rgba(40,10,80,.45); touch-action: none; }
+        .jb-wrap canvas { display: block; width: 100%; }
+        .jb-mute { position: absolute; top: 10px; right: 10px; border: none; width: 34px; height: 34px; border-radius: 50%; background: rgba(20,10,30,.6); color: #fff; font-size: 15px; }
+        .jb-end { border-radius: 18px; background: radial-gradient(120% 100% at 50% 0%, rgba(138,75,214,.96), rgba(30,12,60,.97)); }
+        .jb-end .rz-end-title { color: #fff; } .jb-end .rz-end-detail { color: rgba(255,255,255,.92); line-height: 1.9; }
+        .jb-end-crest { font-size: 40px; margin: 0; animation: jbBounce 1.1s infinite; }
+        .jb-pad { display: none; width: min(100%, 1180px); justify-content: space-between; align-items: center; flex-wrap: wrap; row-gap: 8px; user-select: none; -webkit-user-select: none; }
+        .rz-touch .jb-pad { display: flex; } .rz-touch .jb-help { display: none; }
+        .jb-pad-l, .jb-pad-r { display: flex; gap: 7px; align-items: center; }
+        .jb-pad button { touch-action: none; border: none; border-radius: 16px; min-width: 54px; height: 54px; font-size: 18px; font-weight: 900; color: #fff; background: rgba(42,18,80,.9); box-shadow: 0 4px 0 rgba(0,0,0,.35); }
+        .jb-pad button:active { transform: translateY(3px); box-shadow: none; }
+        .jb-pad .punch { min-width: 72px; height: 66px; font-size: 26px; background: linear-gradient(180deg, #ff8fc0, #e0407f); border-radius: 50%; }
+        .jb-pad .jump { background: linear-gradient(180deg, #7fd3ff, #1f7fc9); font-size: 14px; }
+        .jb-pad .grab { background: linear-gradient(180deg, #ffd27a, #e08a00); }
+        .jb-pad .dash { background: linear-gradient(180deg, #b388ff, #6a3fc7); }
+        .jb-help { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; text-align: center; margin: 0; line-height: 1.8; }
+        @media (max-width: 560px) { .jb-rules { grid-template-columns: 1fr 1fr; } .jb-title { font-size: 30px; } .jb-pad-l, .jb-pad-r { gap: 5px; } .jb-pad button { min-width: 44px; height: 48px; font-size: 16px; border-radius: 14px; } .jb-pad .punch { min-width: 58px; height: 58px; font-size: 22px; } .jb-pad .jump { font-size: 12px; } }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -3043,6 +3092,11 @@
                         <button data-c="solo" onclick="rzCat('solo')">혼자서</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="restzoneOpenGame('jelly')" data-cat="action" class="restzone-game-card press-feel jb-card">
+                            <span class="restzone-game-icon" style="background:radial-gradient(circle at 35% 30%,#ffd6e6,#ff6b9d 55%,#8a4bd6);"><span style="font-size:22px;">🍮</span></span>
+                            <span class="restzone-game-name">말랑 대난투 <span style="font-size:10px;font-weight:900;color:#fff;background:linear-gradient(90deg,#ff6b9d,#8a4bd6);padding:2px 7px;border-radius:99px;vertical-align:2px;">최신작 🔥</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~6명</span></span>
+                            <span class="restzone-game-desc">말랑 젤리 물리 난투 · 펀치·잡기·던지기·박치기 · 맞을수록 멀리 날아가요 · 스테이지 4종·아이템</span>
+                        </button>
                         <button onclick="restzoneOpenGame('masq')" data-cat="board" class="restzone-game-card press-feel mq-card">
                             <span class="restzone-game-icon" style="background:radial-gradient(circle at 35% 30%,#ff9fb8,#7a0f2a 70%,#2a0a1c);box-shadow:0 0 0 1.5px #e8b04a inset;"><span style="font-size:22px;">🎭</span></span>
                             <span class="restzone-game-name">가면무도회 <span style="font-size:10px;font-weight:900;color:#2a0a1c;background:linear-gradient(90deg,#ffe7a8,#e8b04a);padding:2px 7px;border-radius:99px;vertical-align:2px;">신작 ✨</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~6명</span></span>
@@ -3133,6 +3187,89 @@
                             <span class="restzone-game-name">끝말잇기</span>
                             <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
                         </button>
+                    </div>
+                </div>
+
+                <div id="restzone-panel-jelly" class="hidden">
+                    <div id="jb-state-loggedout" class="hidden cnr-center">
+                        <div class="jb-blob sm"><i></i><i></i></div>
+                        <p class="cnr-msg">말랑 대난투는 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+                    <div id="jb-state-lobby" class="hidden">
+                        <div class="jb-lobby">
+                            <div class="jb-hero">
+                                <div class="jb-hero-row">
+                                    <div class="jb-blob c0"><i></i><i></i></div>
+                                    <div class="jb-blob c1 big"><i></i><i></i></div>
+                                    <div class="jb-blob c2"><i></i><i></i></div>
+                                </div>
+                                <p class="jb-kicker">JELLY BRAWL</p>
+                                <h3 class="jb-title">말랑 대난투</h3>
+                                <p class="jb-sub">때리고, 잡고, 던져서 무대 밖으로! 맞을수록 % 가 올라 더 멀리 날아가요</p>
+                            </div>
+                            <div class="jb-rules">
+                                <div><span>👊</span><b>펀치</b><em>J — ↑ 누르고 치면 어퍼컷</em></div>
+                                <div><span>🤲</span><b>잡기·던지기</b><em>K 누르고 있다가 떼면 던지기 · 절벽 매달리기</em></div>
+                                <div><span>💨</span><b>박치기 대시</b><em>L / Shift — 공중 복귀에도 사용</em></div>
+                                <div><span>🦘</span><b>2단 점프</b><em>Space / W — 떨어질 땐 2단 점프로 살아남기</em></div>
+                            </div>
+                            <div class="jb-stages"><span>🌃 네온 옥상 · 돌풍</span><span>🚂 폭주 기차 · 표지판</span><span>🏴‍☠️ 해적선 시소</span><span>🌋 용암 공장 · 컨베이어</span><span>🥊💣🍄 아이템</span></div>
+                            <div class="jb-actions">
+                                <button onclick="mpCreate('jb')" class="press-feel jb-btn-main"><i class="fa-solid fa-plus mr-1.5"></i>난투장 열기 (최대 6명)</button>
+                                <div class="cnr-join-row">
+                                    <input id="jb-join-code-input" maxlength="5" placeholder="방 코드 입력" class="cnr-join-input">
+                                    <button onclick="mpJoin('jb')" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                                </div>
+                                <p id="jb-lobby-error" class="cnr-lobby-error hidden"></p>
+                                <p class="jb-note">혼자라면 방을 열고 컴퓨터를 추가해 바로 연습할 수 있어요</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="jb-state-waiting" class="hidden cnr-center">
+                        <div class="jb-blob sm c3"><i></i><i></i></div>
+                        <p class="cnr-msg">도전자를 기다리는 중... <b id="jb-player-count">1 / 6</b></p>
+                        <div class="cnr-room-code-box">
+                            <span>방 코드</span>
+                            <b id="jb-room-code-display">-----</b>
+                            <button onclick="mpCopyCode('jb')" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <ul id="jb-player-list" class="mp-slots cm-slots"></ul>
+                        <div id="jb-opts" class="mq-opts"></div>
+                        <button id="jb-start-btn" onclick="mpStart('jb')" class="press-feel accent-btn px-6 py-2.5 rounded-full text-sm mb-3" disabled>2명 이상 모이면 시작할 수 있어요</button>
+                        <p id="jb-guest-wait" class="rz-wait-sub hidden" style="margin-top:0;">방장이 시작하길 기다리고 있어요…</p>
+                        <button onclick="mpLeave('jb')" class="press-feel cnr-cancel-btn">나가기</button>
+                    </div>
+                    <div id="jb-state-game" class="hidden">
+                        <div class="jb-game">
+                            <div id="jb-wrap" class="jb-wrap">
+                                <canvas id="jb-canvas"></canvas>
+                                <div id="jb-disc" class="mq-disc hidden">방장과 연결이 불안정해요…</div>
+                                <button id="jb-mute" class="jb-mute" onclick="jbToggleMute()">🔊</button>
+                                <div id="jb-end" class="rz-end jb-end hidden">
+                                    <p class="jb-end-crest">🏆</p>
+                                    <p id="jb-end-title" class="rz-end-title"></p>
+                                    <p id="jb-end-detail" class="rz-end-detail"></p>
+                                    <div class="rz-end-actions"><button onclick="mpLeave('jb', true)" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">나가기</button></div>
+                                    <button onclick="document.getElementById('jb-end').classList.add('hidden')" class="rz-end-peek">경기장 다시 보기</button>
+                                </div>
+                            </div>
+                            <div class="jb-pad">
+                                <div class="jb-pad-l">
+                                    <button onpointerdown="jbPad('left',true)" onpointerup="jbPad('left',false)" onpointerleave="jbPad('left',false)" onpointercancel="jbPad('left',false)">◀</button>
+                                    <button onpointerdown="jbPad('down',true)" onpointerup="jbPad('down',false)" onpointerleave="jbPad('down',false)" onpointercancel="jbPad('down',false)">▼</button>
+                                    <button onpointerdown="jbPad('right',true)" onpointerup="jbPad('right',false)" onpointerleave="jbPad('right',false)" onpointercancel="jbPad('right',false)">▶</button>
+                                </div>
+                                <div class="jb-pad-r">
+                                    <button class="dash" onpointerdown="jbEvent('dash')">💨</button>
+                                    <button class="grab" onpointerdown="jbPad('grab',true)" onpointerup="jbPad('grab',false)" onpointerleave="jbPad('grab',false)" onpointercancel="jbPad('grab',false)">🤲</button>
+                                    <button class="jump" onpointerdown="jbPad('up',true);jbEvent('jump')" onpointerup="jbPad('up',false)" onpointerleave="jbPad('up',false)" onpointercancel="jbPad('up',false)">점프</button>
+                                    <button class="punch" onpointerdown="jbEvent('punch')">👊</button>
+                                </div>
+                            </div>
+                            <p class="jb-help"><span class="rz-kbd">A D</span>/<span class="rz-kbd">← →</span> 이동 · <span class="rz-kbd">Space</span>/<span class="rz-kbd">W</span> 점프(2단) · <span class="rz-kbd">S</span> 숙이기 · <span class="rz-kbd">J</span> 펀치(↑와 함께 어퍼컷) · <span class="rz-kbd">K</span> 잡기(떼면 던지기) · <span class="rz-kbd">L</span>/<span class="rz-kbd">Shift</span> 박치기</p>
+                            <button onclick="mpLeave('jb')" class="press-feel cnr-cancel-btn">나가기</button>
+                        </div>
                     </div>
                 </div>
 
@@ -5874,10 +6011,10 @@
         // 방장이 규칙 검증과 진행을 맡고, 각자의 손패는 본인에게만 따로 보낸다.
         // =====================================================================
         const MP_MAX = 4;
-        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'water', mq: 'masq' };
-        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'wbomb', mq: 'masq' };
-        const mpRooms = { rm: null, un: null, kk: null, cm: null, gp: null, hg: null, wb: null, mq: null };
-        function mpMax(g) { return g === 'cm' ? 8 : g === 'gp' ? 12 : g === 'hg' || g === 'mq' ? 6 : MP_MAX; }
+        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'water', mq: 'masq', jb: 'jelly' };
+        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'wbomb', mq: 'masq', jb: 'jelly' };
+        const mpRooms = { rm: null, un: null, kk: null, cm: null, gp: null, hg: null, wb: null, mq: null, jb: null };
+        function mpMax(g) { return g === 'cm' ? 8 : g === 'gp' ? 12 : g === 'hg' || g === 'mq' || g === 'jb' ? 6 : MP_MAX; }
         // 컴퓨터 참가자까지 합친 인원 (끝말잇기는 혼자서도 컴퓨터와 할 수 있다)
         function mpTotal(r) { return r.players.length + ((r.opts && r.opts.bots) || 0); }
         // 게임별 훅: onMsg(payload) 게임 메시지 처리 / hostStart() 방장이 시작할 때 / hostLeave(id) 누가 나갔을 때(방장만) / cleanup(room) 정리
@@ -7276,7 +7413,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { masq: '가면무도회', water: '물풍선 대작전', bball: '스트리트 농구 1:1', halli: '할리갈리', gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
+        const RESTZONE_TITLES = { jelly: '말랑 대난투', masq: '가면무도회', water: '물풍선 대작전', bball: '스트리트 농구 1:1', halli: '할리갈리', gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
 
         function openRestZoneModal() {
             if (!hasGameAccess()) { showToast('쉼터는 최고 관리자가 권한을 준 계정만 이용할 수 있어요.', 'error'); return; }
@@ -7308,6 +7445,7 @@
             if (typeof teardownBball === 'function') teardownBball();
             if (typeof teardownWater === 'function') teardownWater();
             if (typeof teardownMasq === 'function') teardownMasq();
+            if (typeof teardownJelly === 'function') teardownJelly();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -7334,6 +7472,7 @@
             if (typeof teardownBball === 'function') teardownBball();
             if (typeof teardownWater === 'function') teardownWater();
             if (typeof teardownMasq === 'function') teardownMasq();
+            if (typeof teardownJelly === 'function') teardownJelly();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -7342,7 +7481,8 @@
             document.getElementById('restzone-back-btn').classList.remove('hidden');
             document.getElementById('restzone-modal-title').innerText = RESTZONE_TITLES[name] || '쉼터';
 
-            if (name === 'masq') ensureMasqInit();
+            if (name === 'jelly') ensureJellyInit();
+            else if (name === 'masq') ensureMasqInit();
             else if (name === 'water') ensureWaterInit();
             else if (name === 'bball') ensureBballInit();
             else if (name === 'halli') ensureHalliInit();
@@ -8234,25 +8374,174 @@
             return { cancel() { clearInterval(timer); timeouts.forEach(clearTimeout); el.remove(); } };
         }
 
-        // ---- 온라인 방 (체스/바둑용) ----
+        const RZN = { key: Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-5), n: 0, gen: 0, peer: null, peerP: null, chans: new Map(), failAt: 0 };
+        function rznGetPeer() {
+            if (RZN.peer && !RZN.peer.destroyed) { if (RZN.peer.disconnected) { try { RZN.peer.reconnect(); } catch (e) {} } return Promise.resolve(RZN.peer); }
+            if (RZN.peerP) return RZN.peerP;
+            if (typeof Peer === 'undefined' || Date.now() - RZN.failAt < 20000) return Promise.reject(new Error('p2p-unavailable'));
+            RZN.peerP = (async () => {
+                let ice = null; try { ice = await rtcIceServers(); } catch (e) { ice = null; }
+                return await new Promise((res, rej) => {
+                    const opts = Object.assign({ config: { iceServers: ice || [{ urls: 'stun:stun.l.google.com:19302' }], iceCandidatePoolSize: 2 }, debug: 0 }, window.RZN_PEER_OPTS || {});
+                    const p = new Peer('aglg' + RZN.key + (RZN.gen++), opts);
+                    const to = setTimeout(() => { try { p.destroy(); } catch (e) {} rej(new Error('timeout')); }, 10000);
+                    p.on('open', () => { clearTimeout(to); RZN.peer = p; res(p); });
+                    p.on('error', (e) => { if (!RZN.peer) { clearTimeout(to); try { p.destroy(); } catch (x) {} rej(e); } });
+                    p.on('connection', (conn) => rznIncoming(conn));
+                    p.on('disconnected', () => { setTimeout(() => { try { if (!p.destroyed) p.reconnect(); } catch (e) {} }, 1000); });
+                    p.on('close', () => { if (RZN.peer === p) RZN.peer = null; });
+                });
+            })().catch((e) => { RZN.failAt = Date.now(); throw e; }).finally(() => { RZN.peerP = null; });
+            return RZN.peerP;
+        }
+        function rznMake(topic) { return { topic, h: {}, links: new Map(), known: new Map(), seen: new Map(), got: new Map(), lastSrv: 0, closed: false, annAt: 0, timer: null, pid: null }; }
+        function rznDeliver(info, ev, p, viaP2P) {
+            if (info.closed) return;
+            if (p && typeof p._m === 'string') {
+                if (info.got.has(p._m)) return;
+                const now = Date.now(); info.got.set(p._m, now);
+                if (info.got.size > 4000) { for (const [k, t] of info.got) { if (now - t > 20000) info.got.delete(k); else break; } }
+                const k = p._m.slice(0, p._m.indexOf(':'));
+                if (!viaP2P) { info.seen.set(k, now); const L = info.links.get(k); if (!L && info.known.has(k)) rznMaybeDial(info, k); }
+                else info.seen.set(k, now);
+            }
+            const f = info.h[ev]; if (f) { try { f(p); } catch (e) { console.error(e); } }
+        }
+        function rznAllLinked(info, now) {
+            let ok = true, any = false;
+            const keys = new Set([...info.seen.keys(), ...info.known.keys()]);
+            keys.forEach(k => {
+                if (k === RZN.key) return;
+                const L = info.links.get(k);
+                if (L && L.open) { any = true; return; }
+                const t = Math.max(info.seen.get(k) || 0, (info.known.get(k) || {}).at || 0);
+                if (now - t < 45000) ok = false;
+            });
+            return ok && any;
+        }
+        function rznFast(channel) { const info = channel && channel.__rzn; return !!(info && !info.closed && rznAllLinked(info, Date.now())); }
+        function rznAnnounce(info) {
+            if (info.closed || !info.pid || !info.ch) return; info.annAt = Date.now();
+            try { info.ch.send({ type: 'broadcast', event: '__p2p', payload: { s: RZN.key, pid: info.pid } }); } catch (e) {}
+        }
+        function rznSignal(info, p) {
+            if (!p || !p.s || p.s === RZN.key || info.closed) return;
+            const now = Date.now(); info.known.set(p.s, { pid: p.pid, at: now }); info.seen.set(p.s, now);
+            const L = info.links.get(p.s);
+            if (L && (L.open || now - L.at < 8000)) return;
+            if (RZN.key > p.s) rznMaybeDial(info, p.s);
+            else if (now - info.annAt > 700) rznAnnounce(info);
+        }
+        function rznMaybeDial(info, k) {
+            if (!(RZN.key > k) || !RZN.peer || RZN.peer.destroyed || info.closed) return;
+            const kn = info.known.get(k); if (!kn || !kn.pid) return;
+            const L = info.links.get(k), now = Date.now(); if (L && (L.open || now - L.at < 8000)) return;
+            try { const conn = RZN.peer.connect(kn.pid, { reliable: true, serialization: 'json', metadata: { c: info.topic, s: RZN.key } }); if (conn) rznAttach(info, k, conn); } catch (e) {}
+        }
+        function rznIncoming(conn) {
+            const md = conn.metadata || {}, info = RZN.chans.get(md.c);
+            if (!info || info.closed || !md.s) { setTimeout(() => { try { conn.close(); } catch (e) {} }, 300); return; }
+            rznAttach(info, md.s, conn);
+        }
+        function rznAttach(info, k, conn) {
+            const old = info.links.get(k); if (old && old.conn !== conn && old.open) { try { conn.close(); } catch (e) {} return; }
+            const L = { conn, open: false, rtt: 0, at: Date.now() }; info.links.set(k, L);
+            const drop = () => { if (info.links.get(k) === L) info.links.delete(k); };
+            conn.on('open', () => { L.open = true; try { conn.send({ ping: performance.now() }); } catch (e) {} });
+            conn.on('data', (d) => {
+                if (!d || typeof d !== 'object') return;
+                if (d.ping) { try { conn.send({ pong: d.ping }); } catch (e) {} return; }
+                if (d.pong) { const r = performance.now() - d.pong; L.rtt = L.rtt ? L.rtt * 0.7 + r * 0.3 : r; return; }
+                if (d.c === info.topic && d.e) rznDeliver(info, d.e, d.p, true);
+            });
+            conn.on('close', drop); conn.on('error', drop);
+            setTimeout(() => { if (!L.open) { drop(); try { conn.close(); } catch (e) {} } }, 9000);
+        }
+        function rznJoin(info) {
+            rznGetPeer().then((p) => {
+                if (info.closed) return; info.pid = p.id; rznAnnounce(info);
+                clearInterval(info.timer);
+                info.timer = setInterval(() => {
+                    if (info.closed) { clearInterval(info.timer); return; }
+                    const now = Date.now();
+                    if (!rznAllLinked(info, now) || now - info.annAt > 15000) rznAnnounce(info);
+                    info.links.forEach(L => { if (L.open) { try { L.conn.send({ ping: performance.now() }); } catch (e) {} } });
+                }, 2500);
+            }).catch(() => {});
+        }
+        function rznClose(info) {
+            if (!info || info.closed) return; info.closed = true; clearInterval(info.timer);
+            info.links.forEach(L => { try { L.conn.close(); } catch (e) {} }); info.links.clear();
+            if (RZN.chans.get(info.topic) === info) RZN.chans.delete(info.topic);
+        }
+        function rznStatus() {
+            let best = null;
+            RZN.chans.forEach(info => {
+                if (info.closed) return; const open = [...info.links.values()].filter(L => L.open), now = Date.now();
+                const peers = [...new Set([...info.seen.keys(), ...info.known.keys()])].filter(k => k !== RZN.key && now - Math.max(info.seen.get(k) || 0, (info.known.get(k) || {}).at || 0) < 45000 || (info.links.get(k) || {}).open);
+                if (!peers.length && !open.length) return;
+                const rtt = open.length ? Math.round(open.reduce((a, L) => a + (L.rtt || 0), 0) / open.length) : 0;
+                const st = { p2p: open.length > 0, all: rznAllLinked(info, now), rtt, n: peers.length, open: open.length };
+                if (!best || st.n > best.n) best = st;
+            });
+            return best;
+        }
+        function rznBadge() {
+            const t = document.getElementById('restzone-modal-title'); if (!t) return;
+            let b = document.getElementById('rz-net-badge');
+            if (!b) { b = document.createElement('span'); b.id = 'rz-net-badge'; b.className = 'rz-net-badge hidden'; t.parentNode.insertBefore(b, t.nextSibling); }
+            const st = rznStatus();
+            if (!st) { b.classList.add('hidden'); return; }
+            b.classList.remove('hidden');
+            b.classList.toggle('p2p', st.p2p); b.classList.toggle('srv', !st.p2p);
+            b.textContent = st.p2p ? '⚡ 직접 연결' + (st.rtt ? ' · ' + st.rtt + 'ms' : '') + (st.all ? '' : ' (일부)') : '☁️ 서버 경유';
+            b.title = st.p2p ? '같은 방 사람과 기기끼리 직접 연결돼 지연이 가장 적어요' : '직접 연결을 시도하는 중이거나 네트워크 환경상 서버를 거쳐요';
+        }
+        setInterval(() => { try { rznBadge(); } catch (e) {} }, 1000);
+        function rzInterpDelay(obj, snaps) {
+            const n = snaps.length; let target = 100;
+            if (n >= 4) { let s = 0, s2 = 0, c = 0; for (let i = Math.max(1, n - 14); i < n; i++) { const d = snaps[i].at - snaps[i - 1].at; s += d; s2 += d * d; c++; } const m = s / c, sd = Math.sqrt(Math.max(0, s2 / c - m * m)); target = Math.max(28, Math.min(170, m * 1.2 + sd * 2.2 + 6)); }
+            obj._idl = obj._idl ? obj._idl + (target - obj._idl) * 0.04 : target;
+            return obj._idl;
+        }
+        function rzTicker(fn, ms) {
+            let w = null, iv = null;
+            try { const url = URL.createObjectURL(new Blob(['setInterval(function(){postMessage(0)},' + (ms || 16) + ')'], { type: 'text/javascript' })); w = new Worker(url); URL.revokeObjectURL(url); w.onmessage = () => { try { fn(); } catch (e) { console.error(e); } }; } catch (e) { w = null; iv = setInterval(fn, ms || 16); }
+            return { stop() { if (w) { w.terminate(); w = null; } if (iv) { clearInterval(iv); iv = null; } } };
+        }
         function rzRoomChannel(game, code, handlers) {
-            return supabaseClient
-                .channel(game + '-room-' + code)
-                .on('broadcast', { event: 'hello' }, (m) => handlers.onHello(m.payload))
-                .on('broadcast', { event: 'welcome' }, (m) => handlers.onWelcome(m.payload))
-                .on('broadcast', { event: 'msg' }, (m) => { if (m.payload && m.payload.t === 'rematch') { rzRematchMsg(game); return; } handlers.onMsg(m.payload); })
-                .on('broadcast', { event: 'chat' }, (m) => gcIncoming(m.payload))
-                .on('broadcast', { event: 'spy' }, (m) => spyOnRequest(game, m.payload))
-                .subscribe((status) => { if (status === 'SUBSCRIBED' && handlers.onSubscribed) handlers.onSubscribed(); });
+            const topic = game + '-room-' + code, info = rznMake(topic);
+            const old = RZN.chans.get(topic); if (old) rznClose(old);
+            info.h = {
+                hello: (p) => handlers.onHello(p),
+                welcome: (p) => handlers.onWelcome(p),
+                msg: (p) => { if (p && p.t === 'rematch') { rzRematchMsg(game); return; } handlers.onMsg(p); },
+                chat: (p) => gcIncoming(p),
+                spy: (p) => spyOnRequest(game, p),
+            };
+            const ch = supabaseClient.channel(topic);
+            Object.keys(info.h).forEach(ev => ch.on('broadcast', { event: ev }, (m) => rznDeliver(info, ev, m.payload, false)));
+            ch.on('broadcast', { event: '__p2p' }, (m) => rznSignal(info, m.payload));
+            ch.__rzn = info; info.ch = ch; RZN.chans.set(topic, info);
+            ch.subscribe((status) => { if (status === 'SUBSCRIBED') { rznJoin(info); if (handlers.onSubscribed) handlers.onSubscribed(); } });
+            return ch;
         }
         function rzSend(channel, event, payload) {
             if (!channel) return;
+            const info = channel.__rzn;
+            if (info && !info.closed && payload && typeof payload === 'object') {
+                payload._m = RZN.key + ':' + (++RZN.n);
+                let open = 0;
+                if (info.links.size) { const pkt = { c: info.topic, e: event, p: payload }; info.links.forEach(L => { if (L.open) { try { L.conn.send(pkt); open++; } catch (e) {} } }); }
+                const now = Date.now();
+                if (open && event === 'msg' && now - info.lastSrv < 250 && rznAllLinked(info, now)) return;
+                info.lastSrv = now;
+            }
             try { channel.send({ type: 'broadcast', event, payload }); } catch (e) {}
         }
-        // 나가기 직전에 보낸 메시지(기권 등)가 전송될 시간을 조금 주고 채널을 닫는다
         function rzCloseChannelSoon(channel) {
             if (!channel) return;
-            setTimeout(() => { try { supabaseClient.removeChannel(channel); } catch (e) {} }, 450);
+            setTimeout(() => { if (channel.__rzn) rznClose(channel.__rzn); try { supabaseClient.removeChannel(channel); } catch (e) {} }, 450);
         }
         function rzCopyRoomCode(code) {
             try {
@@ -8278,6 +8567,7 @@
             else if (mpRooms.hg && mpRooms.hg.phase === 'game') return confirm('진행 중인 할리갈리에서 나갈까요?');
             else if (mpRooms.wb && mpRooms.wb.phase === 'game') return confirm('진행 중인 물풍선 대작전에서 나갈까요?');
             else if (mpRooms.mq && mpRooms.mq.phase === 'game') return confirm('진행 중인 가면무도회에서 나갈까요?');
+            else if (mpRooms.jb && mpRooms.jb.phase === 'game') return confirm('진행 중인 말랑 대난투에서 나갈까요?');
             else if (typeof bbk !== 'undefined' && bbk && bbk.phase === 'game') return confirm('진행 중인 농구 경기에서 나갈까요?');
             else if (mpRooms.kk && mpRooms.kk.phase === 'game') { const m = kkLeaveMsg(); return m ? confirm(m) : confirm('진행 중인 끝말잇기에서 나가면 패배로 기록돼요. 정말 나갈까요?'); }
             if (!name) return true;
@@ -14914,7 +15204,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return { key: 'omok:' + omok.roomCode, ch: omok.channel, id: currentUser.id, name: omok.myName };
                 if (typeof bs !== 'undefined' && bs && bs.channel) return { key: 'bs:' + bs.roomCode, ch: bs.channel, id: currentUser.id, name: bs.myName };
                 if (typeof vb !== 'undefined' && vb && vb.channel) return { key: 'vb:' + vb.roomCode, ch: vb.channel, id: currentUser.id, name: vb.myName };
-                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq', 'jb']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { key: g + ':' + r.code, ch: r.channel, id: r.myId, name: r.myName, peers: r.players.filter(x => x.id !== r.myId).map(x => ({ id: x.id, name: x.name })) };
                 }
@@ -15488,7 +15778,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return mk('omok', omok);
                 if (typeof bs !== 'undefined' && bs && bs.channel) return mk('bs', bs);
                 if (typeof vb !== 'undefined' && vb && vb.channel) return mk('vball', vb);
-                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq', 'jb']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { g: MP_CHANNEL[g], code: r.code, ph: r.phase || 'waiting' };
                 }
@@ -18900,7 +19190,7 @@
         }
         function bbInterp() {
             const k = bbk, S = k.snaps; if (!S.length) return null;
-            const rt = performance.now() - 95;
+            const rt = performance.now() - rzInterpDelay(k, S);
             let a = S[0], b = S[S.length - 1];
             for (let i = 0; i < S.length - 1; i++) if (S[i].at <= rt && S[i + 1].at >= rt) { a = S[i]; b = S[i + 1]; break; }
             if (rt >= b.at) a = b;
@@ -18924,7 +19214,7 @@
                 if (k.S.over) break;
             }
             k.S.p.forEach(p => { if (p.anim > 1e6) p.anim = 0; });
-            if (k.channel && now - k.lastSend > 50) { k.S.evOut = k.outEv || []; rzSend(k.channel, 'msg', bbSnapOf(k.S)); k.outEv = []; k.lastSend = now; }
+            if (k.channel && now - k.lastSend > (rznFast(k.channel) ? 33 : 50)) { k.S.evOut = k.outEv || []; rzSend(k.channel, 'msg', bbSnapOf(k.S)); k.outEv = []; k.lastSend = now; }
             if (k.S.over && !k.endShown) { if (k.channel) { k.S.evOut = k.outEv || []; rzSend(k.channel, 'msg', bbSnapOf(k.S)); } bbFinishView(k.S); }
         }
         function bbFrame(now) {
@@ -19335,7 +19625,7 @@
             r.H = { S: wbNew(list), inp: {}, mem: {}, startAt: Date.now() + 3200, last: 0, acc: 0, lastT: 0 };
             list.forEach(p => { r.H.inp[p.id] = { d: -1, ev: [], seen: new Set() }; r.H.mem[p.id] = {}; });
             mpEmit('wb', { t: 'wb-start', ids: list.map(p => p.id), names: list.map(p => p.name), bots: list.map(p => !!p.bot), startIn: 3200 });
-            clearInterval(r.wbTick); r.wbTick = setInterval(wbHostStep, 16);
+            if (r.wbTick) r.wbTick.stop(); r.wbTick = rzTicker(wbHostStep, 16);
         }
         function wbHostStep() {
             const r = mpRooms.wb, H = r && r.H; if (!H) return;
@@ -19354,7 +19644,7 @@
                 if (S.ev.length) { S.ev.forEach(e => wbFx(e, S)); H.out = (H.out || []).concat(S.ev); S.ev = []; }
                 if (S.over) break;
             }
-            if (now - H.last > 50) { H.last = now; wbPub(false); }
+            if (now - H.last > (rznFast(r.channel) ? 33 : 50)) { H.last = now; wbPub(false); }
         }
         function wbPub(final) {
             const r = mpRooms.wb, H = r.H, S = H.S;
@@ -19397,11 +19687,12 @@
             const r = mpRooms.wb;
             if (r.role === 'host' && r.H) { const S = r.H.S; return { g: S.g, it: S.items, b: S.balls.map(b => ({ x: b.fx, y: b.fy, t: b.t, power: b.power })), f: S.flames.map(f => ({ t: f.t, cells: f.cells })), p: S.p, clock: S.clock, over: S.over, w: S.winner, sd: S.sd || 0 }; }
             const A = wbx.snaps; if (!A.length) return null;
-            const rt = performance.now() - 90; let a = A[0], b = A[A.length - 1];
+            const rt = performance.now() - rzInterpDelay(wbx, A); let a = A[0], b = A[A.length - 1];
             for (let i = 0; i < A.length - 1; i++) if (A[i].at <= rt && A[i + 1].at >= rt) { a = A[i]; b = A[i + 1]; break; }
             if (rt >= b.at) a = b;
             const k = a === b ? 0 : Math.max(0, Math.min(1, (rt - a.at) / (b.at - a.at))), s = b.s;
             const P = s.p.map((q, i) => { const pa = a.s.p[i] || q; return { id: wbx.ids[i], name: wbx.names[i], bot: wbx.bots[i], ci: i % 4, x: pa[0] + (q[0] - pa[0]) * k, y: pa[1] + (q[1] - pa[1]) * k, dir: q[2], mv: q[3], alive: !!q[4], trap: q[5], inv: q[6], bombs: q[7], power: q[8], speed: q[9], needles: q[10], kick: !!q[11], kills: q[12], anim: performance.now() / 1000 }; });
+            if (wbx.me >= 0 && P[wbx.me]) { const L = A[A.length - 1].s.p[wbx.me], o = wbx.own; if (L) { if (!o || Math.abs(o.x - L[0]) + Math.abs(o.y - L[1]) > 3) wbx.own = { x: L[0], y: L[1] }; else { o.x += (L[0] - o.x) * 0.4; o.y += (L[1] - o.y) * 0.4; } P[wbx.me].x = wbx.own.x; P[wbx.me].y = wbx.own.y; P[wbx.me].dir = L[2]; P[wbx.me].mv = L[3]; } }
             return { g: [...s.g].map(Number), it: [...s.it].map(Number), b: s.b.map(x => ({ x: x[1], y: x[2], t: x[3], power: x[4] })), f: s.f.map(x => ({ t: x[0], cells: x[1] ? x[1].split(';').map(c => { const z = c.split(','); return [+z[0], +z[1], z[2]]; }) : [] })), p: P, clock: s.c, over: !!s.ov, w: s.w, sd: s.sd || 0 };
         }
         const WB_KEYDIR = { ArrowDown: 0, KeyS: 0, ArrowUp: 1, KeyW: 1, ArrowLeft: 2, KeyA: 2, ArrowRight: 3, KeyD: 3 };
@@ -19615,7 +19906,7 @@
             const sb = document.getElementById('wb-start-btn');
             if (sb && r.role === 'host') { const tot = r.players.length + Math.min(+o.bots || 0, max); sb.disabled = tot < 2; sb.innerText = tot < 2 ? '2명 이상(컴퓨터 포함) 모이면 시작' : tot + '명으로 시작하기'; }
         }
-        function wbCleanup(r) { clearInterval(r.wbTick); r.H = null; if (wbx) { cancelAnimationFrame(wbx.raf); wbx.snaps = []; wbx.endShown = false; } const e = document.getElementById('wb-end'); if (e) e.classList.add('hidden'); }
+        function wbCleanup(r) { if (r.wbTick) { r.wbTick.stop(); r.wbTick = null; } r.H = null; if (wbx) { cancelAnimationFrame(wbx.raf); wbx.snaps = []; wbx.endShown = false; } const e = document.getElementById('wb-end'); if (e) e.classList.add('hidden'); }
         MP_HOOKS.wb = { onMsg: wbOnMsg, hostStart: wbHostStart, hostAction: wbHostAction, hostLeave: wbHostLeave, cleanup: wbCleanup, onWaitingRender: wbWaitingRender, canStart: (r) => r.players.length + Math.min(+((r.opts || {}).bots) || 0, 4 - r.players.length) >= 2, leaveMsg: () => '진행 중인 물풍선 대작전에서 나갈까요?' };
 
         const MQ = { W: 960, H: 580, R: 12, WALK: 56, RUN: 118, REACH: 44, STAB_CD: 1.1, EXPOSE: 3.2, NO_STAB: 4, HOLD: 1.8, LETTERS: 3, ROUND: 150, NPC: 26, INTRO: 3.6, REVEAL: 8, PANIC: 1.7 };
@@ -20336,7 +20627,7 @@
             list.forEach(p => { r.H.inp[p.id] = { mx: 0, my: 0, tx: -1, ty: -1, tk: 0, run: 0, act: 0, ev: [], seen: new Set() }; });
             mpEmit('mq', { t: 'mq-start', ids: list.map(p => p.id), names: list.map(p => p.name), bots: list.map(p => !!p.bot), target: S.target });
             mqSendYou();
-            clearInterval(r.mqTick); r.mqTick = setInterval(mqHostStep, 16);
+            if (r.mqTick) r.mqTick.stop(); r.mqTick = rzTicker(mqHostStep, 16);
         }
         function mqSendYou() {
             const r = mpRooms.mq, H = r && r.H; if (!H) return; const S = H.S;
@@ -20363,7 +20654,7 @@
                 if (S.over) break;
             }
             if (Date.now() - H.youAt > 2500) mqSendYou();
-            if (now - H.last > 66) { H.last = now; mqPub(); }
+            if (now - H.last > (rznFast(r.channel) ? 40 : 66)) { H.last = now; mqPub(); }
         }
         function mqSnap() {
             const r = mpRooms.mq, H = r.H, S = H.S, e = [];
@@ -20432,12 +20723,14 @@
             if (r.role === 'host' && r.H) { const s = mqSnap(); V = mqDecode(s, s, 0); mqx.me = r.H.S.plays[mqx.myIdx] ? r.H.S.plays[mqx.myIdx].eid : -1; if (s.rv) { mqx.rv = s.rv; mqx.rvRd = s.rd; } }
             else {
                 const A = mqx.snaps; if (!A.length) return null;
-                const rt = performance.now() - 110; let a = A[0], b = A[A.length - 1];
+                const rt = performance.now() - rzInterpDelay(mqx, A); let a = A[0], b = A[A.length - 1];
                 for (let i = 0; i < A.length - 1; i++) if (A[i].at <= rt && A[i + 1].at >= rt) { a = A[i]; b = A[i + 1]; break; }
                 if (rt >= b.at) a = b;
                 const k = a === b ? 0 : Math.max(0, Math.min(1, (rt - a.at) / (b.at - a.at)));
                 V = mqDecode(a.s, b.s, k);
                 mqx.me = mqx.you && mqx.you.rd === V.rd ? mqx.you.eid : -1;
+                const Ls = A[A.length - 1].s, j6 = mqx.me * 6;
+                if (mqx.me >= 0 && Ls.rd === V.rd && Ls.e.length > j6 + 5 && V.ents[mqx.me]) { const tx = Ls.e[j6], ty = Ls.e[j6 + 1], o = mqx.own; if (!o || o.rd !== V.rd || Math.hypot(o.x - tx, o.y - ty) > 80) mqx.own = { x: tx, y: ty, rd: V.rd }; else { o.x += (tx - o.x) * 0.35; o.y += (ty - o.y) * 0.35; } const E = V.ents[mqx.me]; E.x = mqx.own.x; E.y = mqx.own.y; E.h = Ls.e[j6 + 2] / 64 * 6.283; E.st = Ls.e[j6 + 3]; E.fl = Ls.e[j6 + 5]; }
             }
             V.me = mqx.me; V.myIdx = mqx.myIdx; const mp = V.pl[mqx.myIdx]; V.myAlive = !!(mp && mp.alive && V.me >= 0);
             V.rv = mqx.rvRd === V.rd ? mqx.rv : null;
@@ -20577,8 +20870,844 @@
             const sb = document.getElementById('mq-start-btn');
             if (sb && r.role === 'host') { const tot = r.players.length + nb; sb.disabled = tot < 2; sb.innerText = tot < 2 ? '2명 이상(컴퓨터 포함) 모이면 시작' : tot + '명으로 무도회 시작'; }
         }
-        function mqCleanup(r) { clearInterval(r.mqTick); r.H = null; if (mqx) { cancelAnimationFrame(mqx.raf); mqx.snaps = []; mqx.endShown = false; mqx.keys.clear(); mqx.act = 0; mqx.run = 0; } const e = document.getElementById('mq-end'); if (e) e.classList.add('hidden'); mqMusicStop(); }
+        function mqCleanup(r) { if (r.mqTick) { r.mqTick.stop(); r.mqTick = null; } r.H = null; if (mqx) { cancelAnimationFrame(mqx.raf); mqx.snaps = []; mqx.endShown = false; mqx.keys.clear(); mqx.act = 0; mqx.run = 0; } const e = document.getElementById('mq-end'); if (e) e.classList.add('hidden'); mqMusicStop(); }
         MP_HOOKS.mq = { onMsg: mqOnMsg, hostStart: mqHostStart, hostAction: mqHostAction, hostLeave: mqHostLeave, cleanup: mqCleanup, onWaitingRender: mqWaitingRender, canStart: (r) => r.players.length + Math.min(+((r.opts || {}).bots) || 0, 6 - r.players.length) >= 2, leaveMsg: () => '진행 중인 가면무도회에서 나갈까요?' };
+
+        const JB = { G: 1900, WALK: 340, JUMP: 780, JUMP2: 650, PUNCH_CD: 0.3, DASH_CD: 1.05, ROUND: 90, SD_AT: 45, INTRO: 3.2, RESULT: 3.4, KO_SLOW: 1.5 };
+        const JB_PR = [15, 13, 12, 7, 7, 7, 7], JB_PM = [1, 1.5, 1.5, 0.4, 0.4, 0.5, 0.5];
+        const JB_STAGES = ['roof', 'train', 'ship', 'lava'];
+        const JB_STAGE_NAME = { roof: '네온 옥상', train: '폭주 기차', ship: '해적선 시소', lava: '용암 공장' };
+        function jbRnd(a, b) { return a + Math.random() * (b - a); }
+        function jbStage(kind) {
+            const P = (x, y, w, h, o) => Object.assign({ x, y, w, h, ang: 0, vx: 0, vy: 0, w0: 0, belt: 0, cx: x + w / 2, cy: y + h / 2 }, o || {});
+            if (kind === 'roof') return { kind, plats: [P(200, 600, 520, 420, { deco: 'roofA' }), P(880, 640, 400, 380, { deco: 'roofB' }), P(0, 0, 190, 18, { deco: 'board', swing: { px: 790, py: 250, L: 230 } })], spawn: [[300, 520], [1150, 560], [520, 520], [960, 560], [420, 520], [1060, 560]], kill: 'flood', base: 1060, cam: [120, 200, 1360, 760] };
+            if (kind === 'train') return { kind, plats: [P(160, 610, 370, 120, { deco: 'car' }), P(560, 610, 370, 120, { deco: 'car' }), P(960, 610, 370, 120, { deco: 'car' })], bars: [], barT: 6, spawn: [[260, 540], [1230, 540], [660, 540], [860, 540], [440, 540], [1060, 540]], kill: 'none', base: 1100, cam: [100, 220, 1400, 780] };
+            if (kind === 'ship') return { kind, plats: [P(260, 607, 900, 26, { deco: 'plank', pivot: { x: 710, y: 620 }, th: 0, om: 0 }), P(640, 633, 140, 260, { deco: 'rock' })], spawn: [[360, 540], [1060, 540], [540, 540], [880, 540], [450, 540], [970, 540]], kill: 'sea', base: 880, cam: [150, 220, 1270, 800] };
+            return { kind: 'lava', plats: [P(430, 620, 560, 60, { deco: 'belt', beltL: -42, beltR: 42 }), P(210, 500, 150, 26, { deco: 'ledge' }), P(1060, 500, 150, 26, { deco: 'ledge' }), P(640, 430, 140, 22, { deco: 'piston', bob: { y0: 430, amp: 70, sp: 1.3 } })], spawn: [[520, 540], [900, 540], [280, 430], [1130, 430], [640, 540], [780, 540]], kill: 'lava', base: 820, cam: [140, 220, 1280, 780] };
+        }
+        function jbNewPlayer(S, pi, x, y) {
+            const off = [[0, -40], [0, -20], [0, 0], [-14, -18], [14, -18], [-8, 26], [8, 26]];
+            const P = S.pl[pi];
+            P.pt = off.map(([dx, dy], i) => ({ x: x + dx, y: y + dy, px: x + dx, py: y + dy, r: JB_PR[i], m: JB_PM[i], gnd: 0 }));
+            Object.assign(P, { alive: true, dmg: 0, face: x < 700 ? 1 : -1, ctrl: 1, stun: 0, pcd: 0, dcd: 0, dash: 0, punch: 0, ph: 3, hitSet: null, grab: null, grabT: 0, held: null, esc: 0, item: null, itemT: 0, s: 1, phase: 0, air: 1, gt: 0, last: -1, lastT: 0, flash: 0, crouch: 0, ledge: null });
+        }
+        function jbNew(players, opts) {
+            const order = JB_STAGES.slice().sort(() => Math.random() - 0.5);
+            const S = { pl: players.map((p, i) => ({ id: p.id, name: p.name, bot: !!p.bot, ci: i, wins: 0, kos: 0, gone: false })), round: 0, target: (opts && opts.wins) || 3, order, ev: [], seq: 0, t: 0, phase: 'intro', pt: 0, ts: 1, over: false, champ: -1, items: [], bombs: [], itemT: 6 };
+            jbStartRound(S);
+            return S;
+        }
+        function jbEv(S, e) { S.ev.push(e); }
+        function jbStartRound(S) {
+            S.round++; S.stage = jbStage(S.order[(S.round - 1) % S.order.length]); S.phase = 'intro'; S.pt = JB.INTRO; S.rt = JB.ROUND; S.ts = 1; S.items = []; S.bombs = []; S.itemT = 7; S.level = S.stage.base; S.wind = 0; S.windT = 8; S.windW = 0; S.winner = -1; S.sd = false; S.lastKO = null;
+            const sp = S.stage.spawn.slice(); let k = 0;
+            S.pl.forEach((P, i) => { if (P.gone) { P.alive = false; P.pt = null; return; } const [x, y] = sp[k++ % sp.length]; jbNewPlayer(S, i, x, y); });
+            jbEv(S, { k: 'round', n: S.round, st: S.stage.kind });
+        }
+        function jbPlatUpdate(S, dt) {
+            const st = S.stage;
+            for (const p of st.plats) {
+                const ox = p.cx, oy = p.cy, oa = p.ang;
+                if (p.swing) { const a = Math.sin(S.t * 1.15) * 0.75; const nx = p.swing.px + Math.sin(a) * p.swing.L, ny = p.swing.py + Math.cos(a) * p.swing.L; p.cx = nx; p.cy = ny; p.ang = -a * 0.25; }
+                if (p.bob) { p.cy = p.bob.y0 + p.h / 2 + Math.sin(S.t * p.bob.sp) * p.bob.amp; }
+                if (p.pivot) {
+                    let tq = 0; S.pl.forEach(P => { if (!P.alive || !P.pt) return; P.pt.forEach(q => { if (q.on === p) tq += (q.x - p.pivot.x) * q.m; }); });
+                    p.om += (tq * 0.0021 - p.th * 1.6) * dt; p.om *= Math.pow(0.55, dt); p.th += p.om * dt;
+                    if (S.sd) p.th += Math.sin(S.t * 0.9) * 0.18 * dt;
+                    if (Math.abs(p.th) > 0.42) { p.th = Math.sign(p.th) * 0.42; p.om *= -0.3; }
+                    p.ang = p.th; p.cx = p.pivot.x + Math.sin(-p.th) * 0; p.cy = p.pivot.y - 0;
+                }
+                p.vx = (p.cx - ox) / dt; p.vy = (p.cy - oy) / dt; p.w0 = (p.ang - oa) / dt;
+                p.x = p.cx - p.w / 2; p.y = p.cy - p.h / 2;
+            }
+            if (st.kind === 'train') {
+                st.barT -= dt;
+                if (st.barT <= 0) { st.barT = S.sd ? jbRnd(2.4, 3.4) : jbRnd(5.5, 8); st.bars.push({ x: 1750, y: 516, w: 26, h: 32, warn: 1.3, hit: new Set() }); jbEv(S, { k: 'barw' }); }
+                st.bars.forEach(b => { if (b.warn > 0) b.warn -= dt; else b.x -= 1250 * dt; }); st.bars = st.bars.filter(b => b.x > -400);
+            }
+        }
+        function jbClosest(p, q) {
+            const c = Math.cos(-p.ang), s = Math.sin(-p.ang), dx = q.x - p.cx, dy = q.y - p.cy, lx = dx * c - dy * s, ly = dx * s + dy * c;
+            const hw = p.w / 2, hh = p.h / 2, cx = Math.max(-hw, Math.min(hw, lx)), cy = Math.max(-hh, Math.min(hh, ly));
+            return { lx, ly, cx, cy, inside: Math.abs(lx) <= hw && Math.abs(ly) <= hh, hw, hh, c, s };
+        }
+        function jbCollidePlat(S, q, p, dt, isFoot) {
+            const k = jbClosest(p, q); let nx, ny, pen;
+            if (k.inside) { const dl = k.hw + k.lx, dr = k.hw - k.lx, dtp = k.hh + k.ly, db = k.hh - k.ly, m = Math.min(dl, dr, dtp, db); if (m === dtp) { nx = 0; ny = -1; pen = dtp + q.r; } else if (m === db) { nx = 0; ny = 1; pen = db + q.r; } else if (m === dl) { nx = -1; ny = 0; pen = dl + q.r; } else { nx = 1; ny = 0; pen = dr + q.r; } }
+            else { const ex = k.lx - k.cx, ey = k.ly - k.cy, d = Math.hypot(ex, ey); if (d >= q.r) return false; nx = ex / (d || 1); ny = ey / (d || 1); pen = q.r - d; }
+            const c = Math.cos(p.ang), s = Math.sin(p.ang), wnx = nx * c - ny * s, wny = nx * s + ny * c;
+            q.x += wnx * pen; q.y += wny * pen;
+            const rx = q.x - p.cx, ry = q.y - p.cy, svx = p.vx - p.w0 * ry, svy = p.vy + p.w0 * rx;
+            let belt = 0; if (p.beltL && ny < -0.5 && S.phase === 'play') belt = (k.lx < 0 ? p.beltL : p.beltR) * (S.sd ? 1.5 : 1);
+            const vx = (q.x - q.px) / dt - svx - belt * c, vy = (q.y - q.py) / dt - svy - belt * s;
+            const vn = vx * wnx + vy * wny, tx = -wny, ty = wnx, vt = vx * tx + vy * ty;
+            const fr = isFoot ? 0.38 : 0.14, nvt = vt * (1 - fr), nvn = vn < 0 ? -vn * 0.05 : vn;
+            const fvx = svx + belt * c + tx * nvt + wnx * nvn, fvy = svy + belt * s + ty * nvt + wny * nvn;
+            q.px = q.x - fvx * dt; q.py = q.y - fvy * dt;
+            if (wny < -0.55) { q.gnd = 1; q.on = p; }
+            return true;
+        }
+        function jbCons(a, b, min, max, k) {
+            const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.001; let t = 0;
+            if (d > max) t = d - max; else if (d < min) t = d - min; else return;
+            const wa = 1 / a.m, wb = 1 / b.m, f = t / d / (wa + wb) * k;
+            a.x += dx * f * wa; a.y += dy * f * wa; b.x -= dx * f * wb; b.y -= dy * f * wb;
+        }
+        function jbPull(q, tx, ty, k) { q.x += (tx - q.x) * k; q.y += (ty - q.y) * k; }
+        function jbImpulse(P, vx, vy, dt) { P.pt.forEach(q => { q.px -= vx * dt; q.py -= vy * dt; }); }
+        function jbHit(S, A, V, dir, base, dmg, mult, kind, dt) {
+            if (!V.alive) return;
+            const mass = V.s > 1.05 ? 1.45 : 1, kb = (base + V.dmg * 6.2) * mult / mass;
+            V.dmg = Math.min(999, V.dmg + dmg);
+            const n = Math.hypot(dir[0], dir[1]) || 1, ux = dir[0] / n, uy = dir[1] / n - 0.38, m = Math.hypot(ux, uy);
+            jbImpulse(V, ux / m * kb, uy / m * kb, dt);
+            V.stun = Math.max(V.stun, Math.min(1.2, 0.22 + V.dmg * 0.0045 * mult)); V.ctrl = 0; V.flash = 0.25;
+            if (V.grab) V.grab = null;
+            S.pl.forEach(o => { if (o.grab && o.grab.v === V) { o.grab = null; } });
+            V.last = A ? S.pl.indexOf(A) : -1; V.lastT = 4;
+            const hq = V.pt[1];
+            jbEv(S, { k: 'hit', p: S.pl.indexOf(V), x: Math.round(hq.x), y: Math.round(hq.y), pw: Math.round(kb), kind });
+        }
+        function jbPlayerTick(S, P, inp, dt) {
+            const pt = P.pt, [hd, ch, hp, h1, h2, f1, f2] = pt, s = P.s, play = S.phase === 'play';
+            P.pcd -= dt; P.dcd -= dt; P.flash -= dt; if (P.stun > 0) P.stun -= dt; if (P.lastT > 0) P.lastT -= dt;
+            if (P.item) { P.itemT -= dt; if (P.itemT <= 0 && P.item !== 'bomb') { P.item = null; } }
+            const ts = P.item === 'giant' ? 1.35 : 1; P.s += (ts - P.s) * Math.min(1, dt * 6);
+            P.ctrl = P.stun > 0 ? 0 : Math.min(1, P.ctrl + dt * 4);
+            if (P.grabbedBy) P.ctrl = Math.min(P.ctrl, 0.15);
+            const gnd = f1.g0 || f2.g0 || hp.g0; if (gnd) { P.gt = 0.1; P.air = 1; } else P.gt -= dt;
+            const mx = play && P.stun <= 0 ? (inp.mx || 0) : 0, crouch = play && inp.dn && P.gt > 0, c = P.ctrl;
+            if (mx) P.face = mx > 0 ? 1 : -1;
+            for (const e of (play ? inp.ev || [] : [])) {
+                if (P.grabbedBy && (e.e === 'jump' || e.e === 'punch')) { P.esc++; if (P.esc >= 5) { const G = P.grabbedBy; if (G.grab) G.grab = null; P.grabbedBy = null; P.esc = 0; jbImpulse(P, -G.face * 300, -300, dt); jbEv(S, { k: 'escape', p: S.pl.indexOf(P) }); } continue; }
+                if (P.stun > 0) continue;
+                if (e.e === 'jump') {
+                    if (P.ledge) { P.ledge = null; jbImpulse(P, P.face * 120, -JB.JUMP * 0.95, dt); jbEv(S, { k: 'jump', p: S.pl.indexOf(P) }); }
+                    else if (P.gt > 0) { pt.forEach(q => { q.py = q.y + JB.JUMP * dt * (q === f1 || q === f2 ? 0.9 : 1); }); P.gt = 0; jbEv(S, { k: 'jump', p: S.pl.indexOf(P) }); }
+                    else if (P.air > 0) { P.air--; pt.forEach(q => { const vy = Math.min((q.y - q.py) / dt, 0); q.py = q.y + Math.max(JB.JUMP2, -vy * 0.3 + JB.JUMP2) * dt; }); jbEv(S, { k: 'jump2', p: S.pl.indexOf(P) }); }
+                } else if (e.e === 'punch' && P.pcd <= 0) {
+                    if (P.item === 'bomb') { P.item = null; S.bombs.push({ x: ch.x + P.face * 20, y: ch.y - 10, px: ch.x + P.face * 20 - (P.face * 720 + (ch.x - ch.px) / dt * 0.5) * dt, py: ch.y - 10 + 380 * dt, t: 1.7, own: S.pl.indexOf(P), arm: 0.15 }); P.pcd = 0.4; jbEv(S, { k: 'throwb' }); continue; }
+                    P.ph = P.ph === 3 ? 4 : 3; P.punch = 0.17; P.pcd = JB.PUNCH_CD; P.hitSet = new Set(); P.aim = inp.up ? -0.75 : inp.dn && P.gt <= 0 ? 0.8 : -0.05;
+                    jbEv(S, { k: 'swing', p: S.pl.indexOf(P) });
+                } else if (e.e === 'dash' && P.dcd <= 0) {
+                    P.dcd = JB.DASH_CD; P.dash = 0.24; P.hitSet = new Set(); const dy = inp.up ? -0.55 : inp.dn ? 0.4 : -0.12;
+                    pt.forEach(q => { const vx = (q.x - q.px) / dt, vy = (q.y - q.py) / dt; q.px = q.x - (vx * 0.2 + P.face * 980) * dt; q.py = q.y - (vy * 0.3 + dy * 820) * dt; });
+                    jbEv(S, { k: 'dash', p: S.pl.indexOf(P) });
+                }
+            }
+            const wantGrab = play && inp.grab && P.stun <= 0 && !P.grabbedBy;
+            if (!wantGrab && P.grab) {
+                const V = P.grab.v; P.grab = null; V.grabbedBy = null;
+                const dir = inp.up ? [0.15 * P.face, -1.3] : inp.dn ? [P.face * 0.6, 0.9] : [P.face, -0.25];
+                jbHit(S, P, V, dir, 540, 11, 1, 'throw', dt);
+                jbEv(S, { k: 'throw', p: S.pl.indexOf(P) });
+            }
+            if (!wantGrab && P.ledge) P.ledge = null;
+            P.crouch = crouch ? 1 : 0;
+            if (c > 0.05) {
+                let feetY = null; if (f1.g0 && f2.g0) feetY = (f1.y + f2.y) / 2; else if (f1.g0) feetY = f1.y; else if (f2.g0) feetY = f2.y;
+                const lean = mx * 0.35 + (P.dash > 0 ? P.face * 0.9 : 0);
+                if (feetY != null && !P.ledge) jbPull(hp, hp.x, feetY - (crouch ? 16 : 27) * s, 0.22 * c);
+                const hy = crouch ? 25 : 38;
+                jbPull(ch, hp.x + lean * 7, hp.y - (crouch ? 13 : 19) * s, 0.26 * c);
+                jbPull(hd, hp.x + lean * 12 + P.face * 2, hp.y - hy * s, 0.24 * c);
+                const desire = mx * JB.WALK * (P.grab ? 0.6 : 1) * (crouch ? 0.35 : 1), acc = P.gt > 0 ? 0.2 : 0.07;
+                if (mx || P.gt > 0) [hd, ch, hp].forEach(q => { const vx = (q.x - q.px) / dt; q.px = q.x - (vx + (desire - vx) * acc * c) * dt; });
+                if (feetY != null && mx) {
+                    P.phase += dt * 12;
+                    const sw = Math.sin(P.phase) * 15 * s, l1 = Math.max(0, Math.cos(P.phase)) * 9, l2 = Math.max(0, -Math.cos(P.phase)) * 9;
+                    jbPull(f1, hp.x + sw, f1.y - l1, 0.25 * c); jbPull(f2, hp.x - sw, f2.y - l2, 0.25 * c);
+                } else if (P.gt > 0) { f1.x += (hp.x - 7 * s - f1.x) * 0.12 * c; f2.x += (hp.x + 7 * s - f2.x) * 0.12 * c; }
+                else { jbPull(f1, hp.x - 6 - P.face * 4, hp.y + 22 * s, 0.08 * c); jbPull(f2, hp.x + 8 + P.face * 4, hp.y + 20 * s, 0.08 * c); }
+            }
+            const front = P.face > 0 ? h2 : h1, back = P.face > 0 ? h1 : h2;
+            if (P.punch > 0) {
+                P.punch -= dt; const hand = pt[P.ph], k = P.punch > 0.06 ? 0.55 : 0.2;
+                const dx = P.face, dy = P.aim, n = Math.hypot(dx, dy);
+                jbPull(hand, ch.x + dx / n * 36 * s, ch.y + dy / n * 36 * s, k);
+                if (P.punch > 0.04) for (const V of S.pl) {
+                    if (V === P || !V.alive || !V.pt || P.hitSet.has(V)) continue;
+                    if (V.pt.some(q => Math.hypot(q.x - hand.x, q.y - hand.y) < q.r + hand.r + 5)) { P.hitSet.add(V); const mult = (P.item === 'glove' ? 1.75 : 1) * (P.s > 1.05 ? 1.25 : 1); jbHit(S, P, V, [dx, dy], 230, P.item === 'glove' ? 13 : 8, mult, P.item === 'glove' ? 'glove' : 'punch', dt); }
+                }
+            } else if (wantGrab) {
+                if (P.grab) { const V = P.grab.v, q = V.pt[P.grab.i]; jbPull(front, ch.x + P.face * 24 * s, ch.y - 4, 0.3); const wa = 1 / front.m, wb = 1 / (q.m * 0.6); const mx2 = (front.x - q.x), my2 = (front.y - q.y); q.x += mx2 * wb / (wa + wb); q.y += my2 * wb / (wa + wb); front.x -= mx2 * wa / (wa + wb) * 0.4; front.y -= my2 * wa / (wa + wb) * 0.4; P.grabT -= dt; if (P.grabT <= 0 || !V.alive) { P.grab = null; V.grabbedBy = null; } }
+                else if (P.ledge) { jbPull(front, P.ledge.x, P.ledge.y, 0.9); jbPull(back, P.ledge.x - P.face * 6, P.ledge.y, 0.5); P.ledgeT -= dt; if (P.ledgeT <= 0) P.ledge = null; }
+                else {
+                    jbPull(front, ch.x + P.face * 30 * s, ch.y - 2, 0.3);
+                    for (const V of S.pl) {
+                        if (V === P || !V.alive || !V.pt || V.grabbedBy) continue;
+                        const i = V.pt.findIndex(q => Math.hypot(q.x - front.x, q.y - front.y) < q.r + front.r + 4);
+                        if (i >= 0) { P.grab = { v: V, i: i === 0 || i === 1 || i === 2 ? i : 1 }; P.grabT = 2.2; V.grabbedBy = P; V.esc = 0; jbEv(S, { k: 'grab', p: S.pl.indexOf(P) }); break; }
+                    }
+                    if (!P.grab && P.gt <= 0) for (const p of S.stage.plats) {
+                        const cs = Math.cos(p.ang), sn = Math.sin(p.ang);
+                        for (const sx of [-1, 1]) { const lx = sx * p.w / 2, ly = -p.h / 2, wx = p.cx + lx * cs - ly * sn, wy = p.cy + lx * sn + ly * cs; if (Math.hypot(wx - front.x, wy - front.y) < 26 && Math.sign(front.x - p.cx) === sx) { P.ledge = { x: wx, y: wy, p }; P.ledgeT = 3; P.air = 1; break; } }
+                        if (P.ledge) break;
+                    }
+                }
+            }
+            if (P.ledge && P.ledge.p) { const p = P.ledge.p, sx = Math.sign(P.ledge.x - p.cx), cs = Math.cos(p.ang), sn = Math.sin(p.ang), lx = sx * p.w / 2, ly = -p.h / 2; P.ledge.x = p.cx + lx * cs - ly * sn; P.ledge.y = p.cy + lx * sn + ly * cs; }
+            if (P.punch <= 0 && !(wantGrab && (P.grab || P.ledge))) { jbPull(front, ch.x + P.face * 11 * s, ch.y + 9 * s, 0.14 * Math.max(c, 0.2)); }
+            if (P.punch <= 0 || back !== pt[P.ph]) jbPull(back, ch.x - P.face * 7 * s, ch.y + 11 * s, 0.12 * Math.max(c, 0.2));
+            if (P.dash > 0) {
+                P.dash -= dt;
+                for (const V of S.pl) { if (V === P || !V.alive || !V.pt || P.hitSet.has(V)) continue; if (V.pt.some(q => Math.hypot(q.x - hd.x, q.y - hd.y) < q.r + hd.r + 4 || Math.hypot(q.x - ch.x, q.y - ch.y) < q.r + ch.r + 2)) { P.hitSet.add(V); jbHit(S, P, V, [P.face, -0.1], 300, 10, (P.s > 1.05 ? 1.3 : 1) * 1.15, 'dash', dt); } }
+            }
+        }
+        function jbSolve(S, P, dt) {
+            const pt = P.pt, [hd, ch, hp, h1, h2, f1, f2] = pt, s = P.s;
+            pt.forEach((q, i) => { q.r = JB_PR[i] * s; q.m = JB_PM[i] * (s > 1.05 ? 1.6 : 1); });
+            for (let it = 0; it < 5; it++) {
+                jbCons(hd, ch, 19 * s, 22 * s, 1); jbCons(ch, hp, 17 * s, 21 * s, 1); jbCons(hd, hp, 28 * s, 41 * s, 0.6);
+                jbCons(ch, h1, 6 * s, 30 * s, 1); jbCons(ch, h2, 6 * s, 30 * s, 1);
+                jbCons(hp, f1, 10 * s, 30 * s, 1); jbCons(hp, f2, 10 * s, 30 * s, 1); jbCons(f1, f2, 7 * s, 40 * s, 0.5); jbCons(h1, h2, 6, 80, 0.5); jbCons(hd, f1, 20 * s, 90 * s, 0.4); jbCons(hd, f2, 20 * s, 90 * s, 0.4);
+                for (const q of pt) for (const p of S.stage.plats) jbCollidePlat(S, q, p, dt, q === f1 || q === f2);
+            }
+        }
+        function jbKO(S, P, why) {
+            if (!P.alive) return; P.alive = false; const hq = P.pt[1];
+            const by = P.lastT > 0 ? P.last : -1; if (by >= 0) S.pl[by].kos++;
+            jbEv(S, { k: 'ko', p: S.pl.indexOf(P), by, x: Math.round(Math.max(-300, Math.min(1700, hq.x))), y: Math.round(Math.max(-300, Math.min(1100, hq.y))), why });
+            S.pl.forEach(o => { if (o.grab && o.grab.v === P) o.grab = null; }); P.grabbedBy = null;
+            const alive = S.pl.filter(o => o.alive);
+            if (alive.length <= 1 && S.phase === 'play') { S.phase = 'ko'; S.pt = JB.KO_SLOW; S.winner = alive.length ? S.pl.indexOf(alive[0]) : -1; S.lastKO = { x: hq.x, y: hq.y }; }
+        }
+        function jbTick(S, inputs, rdt) {
+            if (S.over) return;
+            S.seq++;
+            if (S.phase === 'result') { S.pt -= rdt; if (S.pt <= 0) { const ch = S.pl.findIndex(P => P.wins >= S.target); if (ch >= 0 || S.pl.filter(P => !P.gone).length < 2) { S.over = true; S.phase = 'over'; S.champ = ch >= 0 ? ch : S.pl.findIndex(P => !P.gone); jbEv(S, { k: 'champ', p: S.champ }); } else jbStartRound(S); } return; }
+            if (S.phase === 'ko') { S.pt -= rdt; S.ts = S.pt > 0.4 ? 0.25 : 0.25 + (0.4 - S.pt) / 0.4 * 0.75; if (S.pt <= 0) { S.ts = 1; S.phase = 'result'; S.pt = JB.RESULT; if (S.winner >= 0) S.pl[S.winner].wins++; jbEv(S, { k: 'roundwin', p: S.winner }); } }
+            const dt = rdt * S.ts; S.t += dt;
+            if (S.phase === 'intro') { S.pt -= rdt; if (S.pt <= 0) { S.phase = 'play'; jbEv(S, { k: 'go' }); } }
+            if (S.phase === 'play') {
+                S.rt -= dt;
+                if (!S.sd && S.rt <= JB.ROUND - JB.SD_AT) { S.sd = true; jbEv(S, { k: 'sd' }); }
+                if (S.rt <= 0) { const alive = S.pl.filter(P => P.alive); const best = alive.slice().sort((a, b) => a.dmg - b.dmg); S.phase = 'ko'; S.pt = 0.8; S.winner = best.length && (best.length === 1 || best[0].dmg < best[1].dmg) ? S.pl.indexOf(best[0]) : -1; jbEv(S, { k: 'timeup' }); }
+                S.itemT -= dt;
+                if (S.itemT <= 0 && S.items.length < 3) { S.itemT = jbRnd(6, 10); const [x0, , x1] = S.stage.cam; const ty = ['glove', 'bomb', 'giant'][Math.floor(Math.random() * 3)]; const x = jbRnd(x0 + 200, x1 - 200); S.items.push({ ty, x, y: -60, px: x, py: -60, id: S.seq }); jbEv(S, { k: 'item', ty }); }
+                if (S.stage.kind === 'roof' || S.sd && S.stage.kind === 'train') {
+                    S.windT -= dt;
+                    if (S.windT <= 0 && S.wind === 0) { S.windW = 1.2; S.windT = 99; S.windDir = S.stage.kind === 'train' ? -1 : Math.random() < 0.5 ? -1 : 1; jbEv(S, { k: 'windw', d: S.windDir }); }
+                    if (S.windW > 0) { S.windW -= dt; if (S.windW <= 0) { S.wind = S.windDir; S.windDur = S.sd ? 3.2 : 2.6; } }
+                    if (S.wind) { S.windDur -= dt; if (S.windDur <= 0) { S.wind = 0; S.windT = S.sd ? jbRnd(2.5, 4) : jbRnd(7, 11); } }
+                }
+                if (S.sd && S.stage.kill !== 'none') { const top = S.stage.kind === 'roof' ? 600 : S.stage.kind === 'ship' ? 600 : 625; S.level = Math.max(top - 30, S.level - dt * (S.stage.base - top) / 38); }
+            }
+            jbPlatUpdate(S, dt);
+            const G = JB.G * dt * dt;
+            S.pl.forEach((P, i) => {
+                if (!P.alive || !P.pt) return;
+                const inp = inputs[i] || {};
+                P.pt.forEach(q => { const vx = (q.x - q.px) * 0.996, vy = (q.y - q.py) * 0.996; q.px = q.x; q.py = q.y; q.x += vx; q.y += vy + G; if (S.wind) q.x += S.wind * 620 * dt * dt * (q.gnd ? 0.75 : 1.2); q.g0 = q.gnd; q.gnd = 0; q.on = null; });
+                jbPlayerTick(S, P, inp, dt);
+            });
+            for (let a = 0; a < S.pl.length; a++) for (let b = a + 1; b < S.pl.length; b++) {
+                const A = S.pl[a], B = S.pl[b]; if (!A.alive || !B.alive || !A.pt || !B.pt) continue;
+                for (const p of A.pt) for (const q of B.pt) { const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy), m = p.r + q.r; if (d < m && d > 0.01) { const f = (m - d) / d * 0.5, wa = 1 / p.m, wb = 1 / q.m, w = wa + wb; p.x -= dx * f * wa / w * 2 * 0.5; p.y -= dy * f * wa / w; q.x += dx * f * wb / w; q.y += dy * f * wb / w; } }
+            }
+            S.pl.forEach(P => { if (P.alive && P.pt) jbSolve(S, P, dt); });
+            if (S.stage.kind === 'train') for (const b of S.stage.bars) { if (b.warn > 0) continue; S.pl.forEach(P => { if (!P.alive || b.hit.has(P)) return; if (P.pt.some(q => q.x + q.r > b.x && q.x - q.r < b.x + b.w && q.y + q.r > b.y && q.y - q.r < b.y + b.h)) { b.hit.add(P); P.lastT = 0; jbHit(S, null, P, [-1, -0.2], 760, 15, 1, 'bar', dt); } }); }
+            for (const it of S.items) {
+                const vx = (it.x - it.px) * 0.99, vy = (it.y - it.py) * 0.99; it.px = it.x; it.py = it.y; it.x += vx; it.y += vy + G * 0.6;
+                const q = { x: it.x, y: it.y, px: it.px, py: it.py, r: 14, m: 1 }; for (const p of S.stage.plats) jbCollidePlat(S, q, p, dt, true); it.x = q.x; it.y = q.y; it.px = q.px; it.py = q.py;
+                for (const P of S.pl) { if (!P.alive || !P.pt || S.phase !== 'play') continue; if (P.pt.some(r => Math.hypot(r.x - it.x, r.y - it.y) < r.r + 16)) { P.item = it.ty; P.itemT = it.ty === 'bomb' ? 99 : 8; it.dead = true; jbEv(S, { k: 'pick', p: S.pl.indexOf(P), ty: it.ty }); break; } }
+                if (it.y > 1400) it.dead = true;
+            }
+            S.items = S.items.filter(i => !i.dead);
+            for (const b of S.bombs) {
+                const vx = (b.x - b.px) * 0.995, vy = (b.y - b.py) * 0.995; b.px = b.x; b.py = b.y; b.x += vx; b.y += vy + G * 0.8;
+                const q = { x: b.x, y: b.y, px: b.px, py: b.py, r: 11, m: 1 }; for (const p of S.stage.plats) jbCollidePlat(S, q, p, dt, false); b.x = q.x; b.y = q.y; b.px = q.px; b.py = q.py;
+                b.t -= dt; b.arm -= dt;
+                const touch = b.arm <= 0 && S.pl.some((P, i) => P.alive && P.pt && i !== b.own && P.pt.some(r => Math.hypot(r.x - b.x, r.y - b.y) < r.r + 13));
+                if (b.t <= 0 || touch || b.y > 1300) {
+                    b.dead = true; jbEv(S, { k: 'boom', x: Math.round(b.x), y: Math.round(b.y) });
+                    S.pl.forEach(P => { if (!P.alive || !P.pt) return; const c = P.pt[1], d = Math.hypot(c.x - b.x, c.y - b.y); if (d < 190) jbHit(S, S.pl[b.own] || null, P, [c.x - b.x, c.y - b.y - 20], 520, 17, 1.25 * (1 - d / 260), 'boom', dt); });
+                }
+            }
+            S.bombs = S.bombs.filter(b => !b.dead);
+            S.pl.forEach(P => {
+                if (!P.alive || !P.pt) return; const c = P.pt[1];
+                if (c.y > 1250 || c.x < -500 || c.x > 1900 || c.y < -1000) jbKO(S, P, 'out');
+                else if (S.stage.kill !== 'none' && c.y > S.level) jbKO(S, P, S.stage.kill);
+                else if (P.pt.some(q => !isFinite(q.x) || !isFinite(q.y))) jbKO(S, P, 'out');
+            });
+        }
+
+        function jbGroundBelow(S, x, y) { let best = null; for (const p of S.stage.plats) { const c = Math.cos(-p.ang), s = Math.sin(-p.ang), lx = (x - p.cx) * c - (y - p.cy) * s; if (Math.abs(lx) < p.w / 2 - 4) { const top = p.cy + (-p.h / 2) * Math.cos(p.ang) + lx * Math.sin(p.ang); if (top > y - 10 && (best == null || top < best)) best = top; } } return best; }
+        function jbBot(S, i, mem, dt) {
+            const P = S.pl[i], out = { mx: 0, up: 0, dn: 0, grab: 0, ev: [] };
+            if (!P.alive || !P.pt || S.phase !== 'play') return out;
+            if (mem.react == null) { mem.react = jbRnd(0.08, 0.2); mem.t = 0; mem.aggro = jbRnd(0.7, 1); mem.jcd = 0; }
+            mem.t -= dt; mem.jcd -= dt;
+            const hp = P.pt[2], ch = P.pt[1], vx = (hp.x - hp.px) / dt, vy = (hp.y - hp.py) / dt;
+            const [cx0, , cx1] = S.stage.cam, mid = (cx0 + cx1) / 2;
+            const ground = jbGroundBelow(S, hp.x, hp.y);
+            if (P.grabbedBy) { if (Math.random() < dt * 9) out.ev.push({ e: 'punch' }); return out; }
+            mem.cross = (mem.cross || 0) - dt;
+            if (mem.cross > 0 && hp.y < (mem.crossY || 0) + 30) { out.mx = mem.crossDir; return out; }
+            if (ground == null || hp.y > ground + 5) {
+                let best = null, bs = 1e9;
+                for (const p of S.stage.plats) { const top = p.cy - p.h / 2, dx = hp.x < p.x ? p.x - hp.x : hp.x > p.x + p.w ? hp.x - p.x - p.w : 0, sc = dx + (top < hp.y - 140 ? 500 : 0) + (p.deco === 'board' ? 150 : 0); if (sc < bs) { bs = sc; best = p; } }
+                const tx = best ? Math.max(best.x + 30, Math.min(best.x + best.w - 30, hp.x)) : mid, top = best ? best.cy - best.h / 2 : 600;
+                out.mx = Math.abs(tx - hp.x) > 8 ? Math.sign(tx - hp.x) : 0;
+                if ((vy > 60 && hp.y > top - 40 || hp.y > top + 30) && mem.jcd <= 0) { out.ev.push({ e: 'jump' }); mem.jcd = 0.3; }
+                if (Math.abs(tx - hp.x) > 150 && P.dcd <= 0 && hp.y > top - 20) out.ev.push({ e: 'dash' });
+                out.grab = hp.y > top - 10 ? 1 : 0; return out;
+            }
+            const edgeAhead = (dir) => jbGroundBelow(S, hp.x + dir * 60, hp.y) == null;
+            const across = (dir) => { for (const p of S.stage.plats) { const top = p.cy - p.h / 2, near = dir > 0 ? p.x - hp.x : hp.x - (p.x + p.w); if (near > 20 && near < 240 && top > hp.y - 120) return p; } return null; };
+            if (S.stage.kind === 'train') { const bar = S.stage.bars.find(b => b.warn <= 0 && b.x > hp.x - 40 && b.x - hp.x < 260); if (bar) { out.dn = 1; return out; } }
+            if (S.level < 2000 && S.stage.kill !== 'none' && hp.y > S.level - 90) { out.mx = Math.sign(mid - hp.x); if (mem.jcd <= 0) { out.ev.push({ e: 'jump' }); mem.jcd = 0.6; } }
+            const it = S.items.find(it => Math.abs(it.x - hp.x) < 260 && Math.abs(it.y - hp.y) < 140);
+            let tgt = null, bd = 1e9; S.pl.forEach(o => { if (o === P || !o.alive || !o.pt) return; const d = Math.hypot(o.pt[2].x - hp.x, o.pt[2].y - hp.y); if (d < bd) { bd = d; tgt = o; } });
+            if (it && !P.item && (!tgt || bd > 140) && !edgeAhead(Math.sign(it.x - hp.x) || 1)) { out.mx = Math.sign(it.x - hp.x); if (it.y < hp.y - 60 && mem.jcd <= 0) { out.ev.push({ e: 'jump' }); mem.jcd = 0.8; } return out; }
+            if (!tgt) return out;
+            const tc = tgt.pt[2], dx = tc.x - hp.x, dy = tc.y - hp.y;
+            if (P.grab) { const edge = hp.x < mid ? -1 : 1; out.grab = mem.hold > 0 ? 1 : 0; out.mx = edge; mem.hold = (mem.hold || 0.45) - dt; if (mem.hold <= 0) { out.grab = 0; mem.hold = 0; } return out; }
+            if (Math.abs(dx) > 46) {
+                const dir = Math.sign(dx); out.mx = dir;
+                if (edgeAhead(dir)) { const p = across(dir); if (p && Math.abs(dx) > 90 && mem.jcd <= 0 && P.gt > 0) { out.ev.push({ e: 'jump' }); mem.jcd = 0.7; mem.cross = 0.75; mem.crossDir = dir; mem.crossY = p.cy - p.h / 2; } else if (!p) out.mx = 0; }
+            }
+            else if (Math.random() < dt * 2) out.mx = -Math.sign(dx) * 0.0;
+            if (dy < -70 && Math.abs(dx) < 200 && mem.jcd <= 0 && P.gt > 0) { out.ev.push({ e: 'jump' }); mem.jcd = 0.9; }
+            if (mem.t <= 0 && bd < 70) {
+                mem.t = mem.react + jbRnd(0.05, 0.25) / mem.aggro;
+                const nearEdge = jbGroundBelow(S, tc.x + Math.sign(dx) * 80, tc.y) == null || Math.abs(tc.x - mid) > (cx1 - cx0) * 0.3;
+                if ((tgt.stun > 0 || nearEdge && tgt.dmg > 40) && Math.random() < 0.55) { out.grab = 1; mem.hold = jbRnd(0.3, 0.6); }
+                else { if (dy < -30) out.up = 1; out.ev.push({ e: 'punch' }); }
+                if (Math.random() < 0.08 && P.dcd <= 0) out.ev.push({ e: 'dash' });
+            }
+            if (bd > 220 && bd < 420 && P.dcd <= 0 && Math.random() < dt * 0.6 && !edgeAhead(P.face) && jbGroundBelow(S, hp.x + P.face * 200, hp.y) != null) out.ev.push({ e: 'dash' });
+            if (P.item === 'bomb' && bd < 330 && bd > 90 && Math.random() < dt * 2) out.ev.push({ e: 'punch' });
+            return out;
+        }
+
+        const JB_VW = 960, JB_VH = 540;
+        const JB_COL = [['#ff6b9d', '#c2185b', '#ffc2d8'], ['#4cc9f0', '#1769aa', '#c8f1ff'], ['#ffd23f', '#c99700', '#fff3b8'], ['#5ee08a', '#1f8a4c', '#c9f7d9'], ['#b388ff', '#6a3fc7', '#e4d6ff'], ['#ff9f43', '#c25e00', '#ffe0bf']];
+        function jbSeed(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+        function jbW2S(cam, x, y) { return [(x - cam.x) * cam.z + JB_VW / 2, (y - cam.y) * cam.z + JB_VH / 2]; }
+        function jbCamUpdate(V, dt) {
+            const st = V.stage, [x0, y0, x1, y1] = JB_STAGE_CAM[st];
+            let mnx = 1e9, mny = 1e9, mxx = -1e9, mxy = -1e9, n = 0;
+            V.pl.forEach(P => { if (!P.alive || !P.pt) return; const c = P.pt[1]; if (c.y > 1150 || c.x < -400 || c.x > 1800) return; mnx = Math.min(mnx, c.x); mxx = Math.max(mxx, c.x); mny = Math.min(mny, c.y); mxy = Math.max(mxy, c.y); n++; });
+            if (!n) { mnx = x0; mxx = x1; mny = y0; mxy = y1; }
+            const scx = (x0 + x1) / 2, scy = (y0 + y1) / 2;
+            let cx = (mnx + mxx) / 2 * 0.72 + scx * 0.28, cy = (mny + mxy) / 2 * 0.65 + scy * 0.35;
+            const need = Math.max(mxx - mnx + 400, (mxy - mny + 280) * 16 / 9, 680);
+            let z = Math.max(0.5, Math.min(1.3, JB_VW / need));
+            if (V.ph === 'ko' && V.ko) { cx = V.ko.x * 0.6 + cx * 0.4; cy = V.ko.y * 0.6 + cy * 0.4; z = Math.min(1.35, z * 1.3); }
+            const c = jbx.cam || (jbx.cam = { x: cx, y: cy, z });
+            const k = 1 - Math.exp(-dt * (V.ph === 'ko' ? 5 : 3.2));
+            c.x += (cx - c.x) * k; c.y += (cy - c.y) * k; c.z += (z - c.z) * k;
+            return c;
+        }
+        const JB_STAGE_CAM = { roof: [120, 200, 1360, 760], train: [100, 220, 1400, 780], ship: [150, 220, 1270, 800], lava: [140, 220, 1280, 780] };
+        function jbSky(c, stops) { const g = c.createLinearGradient(0, 0, 0, JB_VH); stops.forEach(([o, col]) => g.addColorStop(o, col)); c.fillStyle = g; c.fillRect(0, 0, JB_VW, JB_VH); }
+        function jbBg(c, V, cam, now) {
+            const st = V.stage, t = V.t;
+            if (st === 'roof') {
+                jbSky(c, [[0, '#120a33'], [0.55, '#3d1561'], [0.85, '#a3307a'], [1, '#ff7aa8']]);
+                for (let i = 0; i < 70; i++) { const x = (jbSeed(i) * 1400 - cam.x * 0.03) % 1000, y = jbSeed(i + 7) * 260; c.globalAlpha = 0.4 + 0.6 * Math.abs(Math.sin(now / 900 + i)); c.fillStyle = '#fff'; c.fillRect(x, y, 1.6, 1.6); }
+                c.globalAlpha = 1;
+                const mx = 760 - cam.x * 0.04, my = 110 - cam.y * 0.03, mg = c.createRadialGradient(mx, my, 10, mx, my, 120); mg.addColorStop(0, 'rgba(255,240,220,.6)'); mg.addColorStop(1, 'rgba(255,200,220,0)'); c.fillStyle = mg; c.fillRect(mx - 130, my - 130, 260, 260); c.fillStyle = '#fff4e6'; c.beginPath(); c.arc(mx, my, 36, 0, 6.283); c.fill(); c.fillStyle = 'rgba(230,210,200,.5)'; c.beginPath(); c.arc(mx - 10, my - 6, 7, 0, 6.283); c.arc(mx + 12, my + 10, 5, 0, 6.283); c.fill();
+                [[0.12, '#2a1450', 150, 0.7], [0.25, '#1d0d3a', 210, 0.85], [0.42, '#130827', 280, 1]].forEach(([par, col, base, sc], L) => {
+                    const off = -cam.x * par * cam.z;
+                    for (let i = -2; i < 26; i++) {
+                        const w = 50 + jbSeed(i * 3 + L * 50) * 70, x = ((i * 74 + off) % 1900 + 1900) % 1900 - 200, h = base + jbSeed(i + L * 99) * 160 * sc, y = JB_VH - h + (cam.y - 470) * par * cam.z * 0.4;
+                        c.fillStyle = col; c.fillRect(x, y, w, h + 200);
+                        for (let wy = y + 10; wy < JB_VH; wy += 14) for (let wx = x + 6; wx < x + w - 6; wx += 11) { const sd = jbSeed(wx * 0.37 + wy * 0.91 + L); if (sd > 0.72) { c.fillStyle = sd > 0.93 ? 'rgba(120,230,255,.75)' : 'rgba(255,214,140,.7)'; c.fillRect(wx, wy, 5, 7); } }
+                        if (L === 2 && jbSeed(i * 9) > 0.7) { const nc = ['#ff4fa3', '#36e2ff', '#ffe066', '#8cff6b'][i % 4], tx = ['노래방', 'PC방', '치킨', '분식', '24시'][i % 5]; c.save(); c.shadowColor = nc; c.shadowBlur = 14; c.strokeStyle = nc; c.lineWidth = 2; const flick = Math.sin(now / 90 + i * 3) > -0.95 ? 1 : 0.2; c.globalAlpha = flick; c.strokeRect(x + 6, y + 14, w - 12, 24); c.fillStyle = nc; c.font = '900 13px Pretendard, sans-serif'; c.textAlign = 'center'; c.fillText(tx, x + w / 2, y + 31); c.restore(); }
+                    }
+                });
+                c.strokeStyle = 'rgba(180,200,255,.25)'; c.lineWidth = 1; for (let i = 0; i < 40; i++) { const x = (jbSeed(i) * 1100 + now * 0.35 + (V.wind || 0) * now * 0.3) % 1100 - 70, y = (jbSeed(i + 3) * 600 + now * 0.9) % 600 - 30; c.beginPath(); c.moveTo(x, y); c.lineTo(x - 4 - (V.wind || 0) * 10, y + 14); c.stroke(); }
+            } else if (st === 'train') {
+                jbSky(c, [[0, '#ff9a5a'], [0.45, '#ffb574'], [0.75, '#ffd39b'], [1, '#ffe7c2']]);
+                const sx = 700 - cam.x * 0.02, sy = 160; const sg = c.createRadialGradient(sx, sy, 10, sx, sy, 140); sg.addColorStop(0, 'rgba(255,255,230,.95)'); sg.addColorStop(0.3, 'rgba(255,220,150,.6)'); sg.addColorStop(1, 'rgba(255,170,90,0)'); c.fillStyle = sg; c.fillRect(sx - 150, sy - 150, 300, 300);
+                const layer = (sp, col, base, amp, freq, seed) => { c.fillStyle = col; c.beginPath(); c.moveTo(0, JB_VH); for (let x = 0; x <= JB_VW; x += 12) { const wx = x + t * sp; c.lineTo(x, base + Math.sin(wx * freq + seed) * amp + Math.sin(wx * freq * 2.7 + seed * 2) * amp * 0.4 + (cam.y - 480) * 0.1); } c.lineTo(JB_VW, JB_VH); c.fill(); };
+                layer(30, '#d9846a', 300, 40, 0.006, 1); layer(90, '#b8605a', 350, 30, 0.01, 4); layer(300, '#7b3f4f', 420, 18, 0.02, 7);
+                c.fillStyle = '#4a2a35'; c.fillRect(0, 470 + (cam.y - 480) * 0.3 * cam.z, JB_VW, 200);
+                for (let i = 0; i < 6; i++) { const x = ((-t * 1400 + i * 260) % 1560 + 1560) % 1560 - 200; c.fillStyle = '#2a1820'; c.fillRect(x, 250, 8, 260); c.fillRect(x - 20, 262, 48, 5); }
+                c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 2; for (let i = 0; i < 18; i++) { const y = 470 + jbSeed(i) * 80, x = ((-t * 2400 + jbSeed(i + 5) * 2000) % 1200 + 1200) % 1200 - 100; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 80, y); c.stroke(); }
+            } else if (st === 'ship') {
+                jbSky(c, [[0, '#2b4a8c'], [0.45, '#7b6bb0'], [0.75, '#ff9e7a'], [1, '#ffcf8a']]);
+                const sx = 300 - cam.x * 0.02, sy = 280; const sg = c.createRadialGradient(sx, sy, 10, sx, sy, 160); sg.addColorStop(0, 'rgba(255,240,200,.95)'); sg.addColorStop(1, 'rgba(255,170,120,0)'); c.fillStyle = sg; c.fillRect(sx - 170, sy - 170, 340, 340);
+                for (let i = 0; i < 5; i++) { const x = ((i * 260 - cam.x * 0.05 + now * 0.01) % 1300 + 1300) % 1300 - 150, y = 80 + jbSeed(i) * 120; c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(x, y, 60, 16, 0, 0, 6.283); c.ellipse(x + 30, y - 10, 36, 14, 0, 0, 6.283); c.fill(); }
+                const [, hy] = jbW2S(cam, 0, 860); c.fillStyle = '#3d5a9e'; c.fillRect(0, Math.min(hy, JB_VH - 40) - 40, JB_VW, 300);
+                c.fillStyle = '#2b3f7a'; const shipX = ((-cam.x * 0.15) % 1400 + 1400) % 1400 - 200; c.beginPath(); c.moveTo(shipX, hy - 40); c.lineTo(shipX + 90, hy - 40); c.lineTo(shipX + 75, hy - 22); c.lineTo(shipX + 12, hy - 22); c.fill(); c.fillRect(shipX + 42, hy - 95, 3, 55); c.beginPath(); c.moveTo(shipX + 45, hy - 92); c.lineTo(shipX + 80, hy - 60); c.lineTo(shipX + 45, hy - 50); c.fill();
+            } else {
+                jbSky(c, [[0, '#1a1214'], [0.6, '#3a1a12'], [1, '#7a2a0c']]);
+                const off = -cam.x * 0.2 * cam.z;
+                c.strokeStyle = '#2a1e1e'; c.lineWidth = 10; for (let i = -1; i < 8; i++) { const x = ((i * 180 + off) % 1260 + 1260) % 1260 - 150; c.beginPath(); c.moveTo(x, 0); c.lineTo(x, JB_VH); c.stroke(); c.lineWidth = 4; c.beginPath(); c.moveTo(x, 80); c.lineTo(x + 180, 180); c.moveTo(x + 180, 80); c.lineTo(x, 180); c.stroke(); c.lineWidth = 10; }
+                c.fillStyle = '#2f2424'; for (let i = 0; i < 5; i++) { const x = ((i * 260 + off * 1.4) % 1300 + 1300) % 1300 - 150; c.fillRect(x, 120, 60, 220); c.fillStyle = 'rgba(255,120,40,' + (0.3 + 0.2 * Math.sin(now / 300 + i)) + ')'; c.fillRect(x + 10, 140, 40, 8); c.fillStyle = '#2f2424'; }
+                for (let i = 0; i < 4; i++) { const x = ((i * 330 + off * 0.6) % 1300 + 1300) % 1300 - 150, y = 120 - ((now / 30 + i * 70) % 160); c.fillStyle = 'rgba(80,70,70,.35)'; c.beginPath(); c.arc(x + 30, y, 24 + (now / 30 % 160) * 0.1, 0, 6.283); c.fill(); }
+                const hg = c.createLinearGradient(0, JB_VH * 0.5, 0, JB_VH); hg.addColorStop(0, 'rgba(255,90,20,0)'); hg.addColorStop(1, 'rgba(255,90,20,.35)'); c.fillStyle = hg; c.fillRect(0, 0, JB_VW, JB_VH);
+            }
+        }
+        function jbRRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+        function jbDrawPlats(c, V, now) {
+            const st = V.stage, t = V.t;
+            V.plats.forEach((p, i) => {
+                c.save(); c.translate(p.cx, p.cy); c.rotate(p.ang);
+                const w = p.w, h = p.h, d = p.deco;
+                if (d === 'roofA' || d === 'roofB') {
+                    c.fillStyle = '#241838'; c.fillRect(-w / 2 + 10, -h / 2, w - 20, h + 400);
+                    for (let yy = -h / 2 + 40; yy < h / 2 + 400; yy += 46) for (let xx = -w / 2 + 30; xx < w / 2 - 30; xx += 44) { const sd = jbSeed(xx + yy * 3 + i); c.fillStyle = sd > 0.55 ? 'rgba(255,214,140,.55)' : 'rgba(40,30,70,.9)'; c.fillRect(xx, yy, 24, 28); }
+                    const g = c.createLinearGradient(0, -h / 2, 0, -h / 2 + 26); g.addColorStop(0, '#8d86a8'); g.addColorStop(1, '#4b4466'); c.fillStyle = g; c.fillRect(-w / 2, -h / 2, w, 26);
+                    c.fillStyle = '#b8b2d4'; c.fillRect(-w / 2, -h / 2, w, 4);
+                    if (d === 'roofA') { c.fillStyle = '#5c5578'; c.fillRect(-w / 2 + 60, -h / 2 - 46, 70, 46); c.fillStyle = '#423c5c'; c.beginPath(); c.arc(-w / 2 + 95, -h / 2 - 23, 15, 0, 6.283); c.fill(); c.strokeStyle = '#2c2840'; c.lineWidth = 2; for (let k = 0; k < 4; k++) { const a = now / 120 + k * 1.57; c.beginPath(); c.moveTo(-w / 2 + 95, -h / 2 - 23); c.lineTo(-w / 2 + 95 + Math.cos(a) * 13, -h / 2 - 23 + Math.sin(a) * 13); c.stroke(); } }
+                    else { c.fillStyle = '#6b4f3a'; c.fillRect(w / 2 - 120, -h / 2 - 90, 70, 70); c.fillStyle = '#54402f'; c.fillRect(w / 2 - 112, -h / 2 - 20, 6, 20); c.fillRect(w / 2 - 64, -h / 2 - 20, 6, 20); c.fillStyle = '#7d604a'; c.beginPath(); c.ellipse(w / 2 - 85, -h / 2 - 90, 35, 9, 0, 0, 6.283); c.fill(); }
+                    c.strokeStyle = 'rgba(200,190,230,.6)'; c.lineWidth = 2; c.beginPath(); for (let xx = -w / 2 + 8; xx < w / 2; xx += 26) { c.moveTo(xx, -h / 2); c.lineTo(xx, -h / 2 - 18); } c.moveTo(-w / 2 + 8, -h / 2 - 18); c.lineTo(-w / 2 + 160, -h / 2 - 18); c.stroke();
+                } else if (d === 'board') {
+                    c.restore(); c.save();
+                    c.strokeStyle = '#2a2a3a'; c.lineWidth = 3; c.beginPath(); c.moveTo(p.swing.px - 40, p.swing.py); c.lineTo(p.cx - Math.cos(p.ang) * w * 0.4, p.cy - Math.sin(p.ang) * w * 0.4); c.moveTo(p.swing.px + 40, p.swing.py); c.lineTo(p.cx + Math.cos(p.ang) * w * 0.4, p.cy + Math.sin(p.ang) * w * 0.4); c.stroke();
+                    c.fillStyle = '#3a3a50'; c.fillRect(p.swing.px - 60, p.swing.py - 8, 120, 10);
+                    c.translate(p.cx, p.cy); c.rotate(p.ang);
+                    c.fillStyle = '#1b1030'; jbRRect(c, -w / 2, -h / 2 - 64, w, 64, 8); c.fill();
+                    c.save(); c.shadowColor = '#ff4fa3'; c.shadowBlur = 16; c.strokeStyle = '#ff4fa3'; c.lineWidth = 3; jbRRect(c, -w / 2 + 4, -h / 2 - 60, w - 8, 56, 7); c.stroke(); c.fillStyle = '#ffd6ec'; c.font = '900 30px Pretendard, sans-serif'; c.textAlign = 'center'; c.fillText('말랑 🍮', 0, -h / 2 - 20); c.restore();
+                    c.fillStyle = '#6d6a80'; c.fillRect(-w / 2, -h / 2, w, h); c.fillStyle = '#a7a4bd'; c.fillRect(-w / 2, -h / 2, w, 4);
+                } else if (d === 'car') {
+                    c.fillStyle = '#c0392b'; jbRRect(c, -w / 2, -h / 2, w, h, 12); c.fill();
+                    c.fillStyle = '#f5e6c8'; c.fillRect(-w / 2, -h / 2 + 34, w, 34);
+                    for (let xx = -w / 2 + 22; xx < w / 2 - 30; xx += 48) { c.fillStyle = '#2c3e50'; jbRRect(c, xx, -h / 2 + 38, 34, 26, 5); c.fill(); c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(xx + 4, -h / 2 + 41, 10, 20); }
+                    c.fillStyle = '#922b21'; c.fillRect(-w / 2, -h / 2, w, 8); c.fillStyle = '#e74c3c'; c.fillRect(-w / 2, -h / 2, w, 3);
+                    c.fillStyle = '#7f8c8d'; c.fillRect(-w / 2 + 70, -h / 2 - 8, 60, 8); c.fillRect(w / 2 - 130, -h / 2 - 8, 60, 8);
+                    for (const wx of [-w / 2 + 60, -w / 2 + 110, w / 2 - 110, w / 2 - 60]) { c.fillStyle = '#222'; c.beginPath(); c.arc(wx, h / 2 + 4, 17, 0, 6.283); c.fill(); c.strokeStyle = '#888'; c.lineWidth = 2; c.beginPath(); const a = t * 40; c.moveTo(wx + Math.cos(a) * 13, h / 2 + 4 + Math.sin(a) * 13); c.lineTo(wx - Math.cos(a) * 13, h / 2 + 4 - Math.sin(a) * 13); c.stroke(); }
+                    c.fillStyle = '#333'; c.fillRect(w / 2, 10, 30, 8);
+                } else if (d === 'plank') {
+                    const g = c.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, '#c58b4f'); g.addColorStop(1, '#7a4f26'); c.fillStyle = g; jbRRect(c, -w / 2, -h / 2, w, h, 6); c.fill();
+                    c.strokeStyle = 'rgba(60,30,10,.5)'; c.lineWidth = 1.5; for (let xx = -w / 2 + 60; xx < w / 2; xx += 60) { c.beginPath(); c.moveTo(xx, -h / 2); c.lineTo(xx, h / 2); c.stroke(); }
+                    c.fillStyle = '#3b2a1a'; for (let xx = -w / 2 + 30; xx < w / 2; xx += 60) { c.beginPath(); c.arc(xx, 0, 2.2, 0, 6.283); c.fill(); }
+                    c.fillStyle = '#e8d9b0'; c.fillRect(w / 2 - 50, -h / 2 - 70, 4, 70); c.fillStyle = '#1a1a1a'; c.beginPath(); c.moveTo(w / 2 - 46, -h / 2 - 70); c.lineTo(w / 2 - 10 + Math.sin(now / 200) * 3, -h / 2 - 60); c.lineTo(w / 2 - 46, -h / 2 - 48); c.fill(); c.fillStyle = '#fff'; c.font = '12px sans-serif'; c.fillText('☠', w / 2 - 38, -h / 2 - 54);
+                } else if (d === 'rock') {
+                    c.fillStyle = '#5d6470'; c.beginPath(); c.moveTo(-w / 2 - 20, h / 2); c.lineTo(-w / 2 + 20, -h / 2 + 30); c.lineTo(-10, -h / 2); c.lineTo(20, -h / 2); c.lineTo(w / 2 - 10, -h / 2 + 40); c.lineTo(w / 2 + 30, h / 2); c.fill();
+                    c.fillStyle = 'rgba(255,255,255,.12)'; c.beginPath(); c.moveTo(-w / 2 + 20, -h / 2 + 30); c.lineTo(-10, -h / 2); c.lineTo(0, -h / 2 + 50); c.fill();
+                } else if (d === 'belt') {
+                    c.fillStyle = '#3a3a42'; c.fillRect(-w / 2, -h / 2, w, h); c.fillStyle = '#1e1e24'; c.fillRect(-w / 2, -h / 2, w, 14);
+                    c.fillStyle = '#ffb703'; const sh = (t * 42) % 30; for (let xx = -w / 2; xx < w / 2; xx += 30) { const left = xx < 0, ox = left ? xx - sh : xx + sh; if (ox < -w / 2 || ox > w / 2 - 12) continue; c.beginPath(); if (left) { c.moveTo(ox + 12, -h / 2 + 2); c.lineTo(ox, -h / 2 + 7); c.lineTo(ox + 12, -h / 2 + 12); } else { c.moveTo(ox, -h / 2 + 2); c.lineTo(ox + 12, -h / 2 + 7); c.lineTo(ox, -h / 2 + 12); } c.fill(); }
+                    for (let xx = -w / 2 + 20; xx < w / 2; xx += 40) { c.fillStyle = '#55555f'; c.beginPath(); c.arc(xx, h / 2 - 14, 9, 0, 6.283); c.fill(); }
+                    c.fillStyle = '#ffb703'; for (let xx = -w / 2; xx < w / 2; xx += 40) c.fillRect(xx, h / 2 - 4, 20, 4);
+                } else if (d === 'ledge' || d === 'piston') {
+                    c.fillStyle = '#4a4a55'; c.fillRect(-w / 2, -h / 2, w, h); c.strokeStyle = '#6a6a78'; c.lineWidth = 2; for (let xx = -w / 2 + 8; xx < w / 2; xx += 12) { c.beginPath(); c.moveTo(xx, -h / 2 + 3); c.lineTo(xx, h / 2 - 3); c.stroke(); }
+                    c.fillStyle = '#8a8a98'; c.fillRect(-w / 2, -h / 2, w, 3);
+                    if (d === 'piston') { c.fillStyle = '#777'; c.fillRect(-10, h / 2, 20, 600); c.fillStyle = '#999'; c.fillRect(-4, h / 2, 4, 600); }
+                    else { c.fillStyle = '#3a3a44'; c.fillRect(-6, h / 2, 12, 400); }
+                } else { c.fillStyle = '#555'; c.fillRect(-w / 2, -h / 2, w, h); }
+                c.restore();
+            });
+            if (st === 'train') V.bars.forEach(b => { if (b.warn) return; c.fillStyle = '#333'; c.fillRect(b.x + 9, -200, 8, b.y + 200); c.save(); c.beginPath(); c.rect(b.x - 40, b.y, b.w + 80, b.h); c.clip(); for (let k = -6; k < 8; k++) { c.fillStyle = k % 2 ? '#111' : '#ffcc00'; c.beginPath(); c.moveTo(b.x - 40 + k * 16, b.y + b.h); c.lineTo(b.x - 40 + k * 16 + 16, b.y + b.h); c.lineTo(b.x - 40 + k * 16 + 32, b.y); c.lineTo(b.x - 40 + k * 16 + 16, b.y); c.fill(); } c.restore(); c.strokeStyle = '#000'; c.lineWidth = 2; c.strokeRect(b.x - 40, b.y, b.w + 80, b.h); });
+        }
+        function jbDrawLiquid(c, V, now, front) {
+            const st = V.stage; if (st === 'train') return;
+            const lv = V.level, kind = st === 'lava' ? 'lava' : st === 'ship' ? 'sea' : 'flood';
+            const col = kind === 'lava' ? ['rgba(255,140,30,.95)', '#ff5a00', '#b31b00'] : kind === 'sea' ? ['rgba(120,200,255,.85)', '#2f6fc0', '#163a7a'] : ['rgba(120,255,240,.75)', '#1fb5c9', '#0c4a6e'];
+            c.save(); c.globalAlpha = front ? 0.55 : 1;
+            const g = c.createLinearGradient(0, lv, 0, lv + 500); g.addColorStop(0, col[1]); g.addColorStop(1, col[2]); c.fillStyle = g;
+            c.beginPath(); c.moveTo(-800, lv + 800); for (let x = -800; x <= 2300; x += 24) c.lineTo(x, lv + Math.sin(x * 0.012 + now / (front ? 380 : 520)) * (kind === 'lava' ? 5 : 8) + Math.sin(x * 0.031 + now / 300) * 3); c.lineTo(2300, lv + 800); c.closePath(); c.fill();
+            c.strokeStyle = col[0]; c.lineWidth = 3; c.stroke();
+            if (kind === 'lava' && !front) { for (let i = 0; i < 14; i++) { const x = jbSeed(i) * 1400, ph = (now / 1000 * (0.5 + jbSeed(i + 4)) + jbSeed(i + 9)) % 1; c.fillStyle = 'rgba(255,220,120,' + (1 - ph) + ')'; c.beginPath(); c.arc(x, lv + 10 - ph * 20, 3 + ph * 6, 0, 6.283); c.fill(); } const hg = c.createLinearGradient(0, lv - 120, 0, lv); hg.addColorStop(0, 'rgba(255,100,20,0)'); hg.addColorStop(1, 'rgba(255,120,30,.35)'); c.fillStyle = hg; c.fillRect(-800, lv - 120, 3100, 120); }
+            if (kind === 'sea' && !front) { for (let i = 0; i < 3; i++) { const x = ((now / 12 * (i % 2 ? 1 : -1) + i * 500) % 1800 + 1800) % 1800 - 200, y = lv + 22; c.fillStyle = '#4b5563'; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 14, y - 30); c.lineTo(x + 30, y); c.fill(); } }
+            c.restore();
+        }
+        function jbDrawJelly(c, P, i, now, me) {
+            const pt = P.pt; if (!pt) return; const [hd, ch, hp, h1, h2, f1, f2] = pt, s = P.s || 1, col = JB_COL[P.ci % 6], face = P.face || 1;
+            const front = face > 0 ? h2 : h1, back = face > 0 ? h1 : h2, ff = face > 0 ? f2 : f1, bf = face > 0 ? f1 : f2;
+            const flash = P.fl & 64, stun = P.fl & 1;
+            c.lineCap = 'round';
+            const limb = (a, b, w, colr) => { c.strokeStyle = colr; c.lineWidth = w; c.beginPath(); c.moveTo(a.x, a.y); c.quadraticCurveTo((a.x + b.x) / 2 + (b.y - a.y) * 0.08, (a.y + b.y) / 2 - (b.x - a.x) * 0.08, b.x, b.y); c.stroke(); };
+            limb(hp, bf, 10 * s, col[1]); c.fillStyle = col[1]; c.beginPath(); c.ellipse(bf.x + face * 2, bf.y + 1, 8 * s, 6 * s, 0, 0, 6.283); c.fill();
+            limb(ch, back, 8 * s, col[1]); c.fillStyle = col[1]; c.beginPath(); c.arc(back.x, back.y, 6.5 * s, 0, 6.283); c.fill();
+            c.save(); c.shadowColor = 'rgba(0,0,0,.25)'; c.shadowBlur = 8; c.shadowOffsetY = 3;
+            const bg = c.createLinearGradient(ch.x - 14 * s, ch.y - 14 * s, hp.x + 14 * s, hp.y + 14 * s); bg.addColorStop(0, col[2]); bg.addColorStop(0.35, col[0]); bg.addColorStop(1, col[1]);
+            c.strokeStyle = bg; c.lineWidth = 29 * s; c.beginPath(); c.moveTo(ch.x, ch.y); c.lineTo(hp.x, hp.y); c.stroke(); c.restore();
+            c.fillStyle = 'rgba(255,255,255,.28)'; c.beginPath(); c.ellipse((ch.x + hp.x) / 2 + face * 3, (ch.y + hp.y) / 2 + 2, 7 * s, 10 * s, Math.atan2(hp.y - ch.y, hp.x - ch.x) - 1.57, 0, 6.283); c.fill();
+            limb(hp, ff, 10 * s, col[1]); c.fillStyle = col[1]; c.beginPath(); c.ellipse(ff.x + face * 2, ff.y + 1, 8 * s, 6 * s, 0, 0, 6.283); c.fill();
+            const hr = 17 * s;
+            const hg = c.createRadialGradient(hd.x - hr * 0.35, hd.y - hr * 0.4, hr * 0.15, hd.x, hd.y, hr * 1.05); hg.addColorStop(0, col[2]); hg.addColorStop(0.45, col[0]); hg.addColorStop(1, col[1]);
+            const acc = P.ci % 6;
+            c.fillStyle = col[0];
+            if (acc === 0) { [-1, 1].forEach(k => { c.save(); c.translate(hd.x + k * 7 * s, hd.y - hr * 0.8); c.rotate(k * 0.25 + Math.sin(now / 300 + k) * 0.08); c.fillStyle = col[0]; c.beginPath(); c.ellipse(0, -12 * s, 5.5 * s, 13 * s, 0, 0, 6.283); c.fill(); c.fillStyle = col[2]; c.beginPath(); c.ellipse(0, -12 * s, 2.6 * s, 9 * s, 0, 0, 6.283); c.fill(); c.restore(); }); }
+            if (acc === 1) { [-1, 1].forEach(k => { c.fillStyle = col[0]; c.beginPath(); c.moveTo(hd.x + k * 4 * s, hd.y - hr * 0.85); c.lineTo(hd.x + k * 15 * s, hd.y - hr * 1.45); c.lineTo(hd.x + k * 15 * s, hd.y - hr * 0.55); c.fill(); }); }
+            if (acc === 4) { [-1, 1].forEach(k => { c.fillStyle = '#fff3d6'; c.beginPath(); c.moveTo(hd.x + k * 5 * s, hd.y - hr * 0.8); c.quadraticCurveTo(hd.x + k * 12 * s, hd.y - hr * 1.5, hd.x + k * 15 * s, hd.y - hr * 1.3); c.lineTo(hd.x + k * 11 * s, hd.y - hr * 0.7); c.fill(); }); }
+            c.fillStyle = hg; c.beginPath(); c.arc(hd.x, hd.y, hr, 0, 6.283); c.fill();
+            c.strokeStyle = col[1]; c.lineWidth = 1.5; c.stroke();
+            c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(hd.x - hr * 0.38, hd.y - hr * 0.48, hr * 0.28, hr * 0.17, -0.6, 0, 6.283); c.fill();
+            if (acc === 2) { c.strokeStyle = '#3c9a3c'; c.lineWidth = 2.5 * s; c.beginPath(); c.moveTo(hd.x, hd.y - hr); c.quadraticCurveTo(hd.x + 2, hd.y - hr - 10 * s, hd.x + 1, hd.y - hr - 14 * s); c.stroke(); c.fillStyle = '#5ee08a'; c.beginPath(); c.ellipse(hd.x - 6 * s, hd.y - hr - 12 * s, 7 * s, 3.5 * s, -0.5, 0, 6.283); c.ellipse(hd.x + 7 * s, hd.y - hr - 14 * s, 7 * s, 3.5 * s, 0.5, 0, 6.283); c.fill(); }
+            if (acc === 3) { c.fillStyle = '#fff'; c.beginPath(); c.arc(hd.x - 7 * s, hd.y - hr * 0.95, 6 * s, 0, 6.283); c.arc(hd.x + 7 * s, hd.y - hr * 0.95, 6 * s, 0, 6.283); c.fill(); }
+            if (acc === 5) { c.fillStyle = '#ffd23f'; c.beginPath(); const by = hd.y - hr * 0.85; c.moveTo(hd.x - 11 * s, by); c.lineTo(hd.x - 12 * s, by - 13 * s); c.lineTo(hd.x - 5 * s, by - 6 * s); c.lineTo(hd.x, by - 15 * s); c.lineTo(hd.x + 5 * s, by - 6 * s); c.lineTo(hd.x + 12 * s, by - 13 * s); c.lineTo(hd.x + 11 * s, by); c.closePath(); c.fill(); c.strokeStyle = '#c99700'; c.lineWidth = 1; c.stroke(); c.fillStyle = '#ff4d6d'; c.beginPath(); c.arc(hd.x, by - 5 * s, 2 * s, 0, 6.283); c.fill(); }
+            const ex = hd.x + face * 5 * s, ey = hd.y - 1 * s, sp = 6.5 * s;
+            if (stun) {
+                c.strokeStyle = '#2b1b2e'; c.lineWidth = 1.6; [-1, 1].forEach(k => { c.beginPath(); for (let a = 0; a < 12; a += 0.4) { const r = a * 0.45 * s; c.lineTo(ex + k * sp + Math.cos(a + now / 80) * r, ey + Math.sin(a + now / 80) * r); } c.stroke(); });
+                for (let k = 0; k < 3; k++) { const a = now / 180 + k * 2.09; c.fillStyle = '#ffe066'; c.font = (10 * s) + 'px sans-serif'; c.textAlign = 'center'; c.fillText('★', hd.x + Math.cos(a) * 20 * s, hd.y - hr - 4 + Math.sin(a) * 6); }
+            } else if (flash) { c.strokeStyle = '#2b1b2e'; c.lineWidth = 2.2; [-1, 1].forEach(k => { const x = ex + k * sp; c.beginPath(); c.moveTo(x - 3.5 * s * k * -1, ey - 3 * s); c.lineTo(x + 2 * s * k, ey); c.lineTo(x - 3.5 * s * k * -1, ey + 3 * s); c.stroke(); }); }
+            else {
+                const blink = Math.sin(now / 1700 + i * 2) > 0.985;
+                [-1, 1].forEach(k => { const x = ex + k * sp; if (blink) { c.strokeStyle = '#2b1b2e'; c.lineWidth = 2; c.beginPath(); c.moveTo(x - 3, ey); c.lineTo(x + 3, ey); c.stroke(); return; } c.fillStyle = '#fff'; c.beginPath(); c.ellipse(x, ey, 4.4 * s, 5.4 * s, 0, 0, 6.283); c.fill(); c.fillStyle = '#2b1b2e'; c.beginPath(); c.arc(x + face * 1.4 * s, ey + 0.6, 2.7 * s, 0, 6.283); c.fill(); c.fillStyle = '#fff'; c.beginPath(); c.arc(x + face * 1.4 * s - 1, ey - 1, 0.9 * s, 0, 6.283); c.fill(); });
+            }
+            c.fillStyle = 'rgba(255,90,130,.45)'; c.beginPath(); c.ellipse(ex - sp - 2, ey + 6 * s, 3.4 * s, 2 * s, 0, 0, 6.283); c.ellipse(ex + sp + 2, ey + 6 * s, 3.4 * s, 2 * s, 0, 0, 6.283); c.fill();
+            const mxp = ex + face * 0.5, myp = ey + 8 * s;
+            c.fillStyle = '#5b1a2e'; c.strokeStyle = '#5b1a2e'; c.lineWidth = 1.8;
+            if (flash || stun) { c.beginPath(); c.ellipse(mxp, myp + 1, 3.6 * s, 4.4 * s, 0, 0, 6.283); c.fill(); }
+            else if (P.fl & 2 || P.fl & 32) { c.beginPath(); c.arc(mxp, myp, 3 * s, 0, Math.PI); c.fill(); }
+            else { c.beginPath(); c.arc(mxp, myp - 1, 3 * s, 0.2, Math.PI - 0.2); c.stroke(); }
+            limb(ch, front, 8 * s, col[1]);
+            if (P.item === 1) { c.fillStyle = '#e63946'; c.beginPath(); c.arc(front.x, front.y, 11 * s, 0, 6.283); c.fill(); c.fillStyle = '#fff'; c.fillRect(front.x - face * 12 * s - 3, front.y - 5 * s, 6, 10 * s); c.fillStyle = 'rgba(255,255,255,.45)'; c.beginPath(); c.arc(front.x - 3, front.y - 4, 3.5 * s, 0, 6.283); c.fill(); if (back) { c.fillStyle = '#e63946'; c.beginPath(); c.arc(back.x, back.y, 9 * s, 0, 6.283); c.fill(); } }
+            else { c.fillStyle = col[1]; c.beginPath(); c.arc(front.x, front.y, 6.5 * s, 0, 6.283); c.fill(); }
+            if (P.item === 2) { c.fillStyle = '#1e1e28'; c.beginPath(); c.arc(front.x + face * 6, front.y - 6, 10, 0, 6.283); c.fill(); c.fillStyle = 'rgba(255,255,255,.3)'; c.beginPath(); c.arc(front.x + face * 6 - 3, front.y - 9, 3, 0, 6.283); c.fill(); c.strokeStyle = '#8b5a2b'; c.lineWidth = 2; c.beginPath(); c.moveTo(front.x + face * 6, front.y - 16); c.quadraticCurveTo(front.x + face * 10, front.y - 22, front.x + face * 14, front.y - 20); c.stroke(); c.fillStyle = Math.sin(now / 40) > 0 ? '#ffe066' : '#ff7b00'; c.beginPath(); c.arc(front.x + face * 14, front.y - 20, 3, 0, 6.283); c.fill(); }
+            if (me) { c.fillStyle = col[0]; c.beginPath(); const by = hd.y - hr - (P.ci % 6 === 0 ? 34 : 18) * s - 6 + Math.sin(now / 200) * 2; c.moveTo(hd.x - 6, by - 8); c.lineTo(hd.x + 6, by - 8); c.lineTo(hd.x, by); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.stroke(); }
+        }
+        function jbDmgCol(d) { return d < 30 ? '#ffffff' : d < 65 ? '#ffe066' : d < 105 ? '#ff9f43' : d < 150 ? '#ff5a5a' : '#d90429'; }
+        function jbOut(c, txt, x, y, font, fill, stroke, lw) { c.font = font; c.lineJoin = 'round'; if (stroke) { c.lineWidth = lw || 6; c.strokeStyle = stroke; c.strokeText(txt, x, y); } c.fillStyle = fill; c.fillText(txt, x, y); }
+        function jbDraw(V, now, dt) {
+            const cv = document.getElementById('jb-canvas'); if (!cv) return;
+            const c = cv.getContext('2d'), s = cv.width / JB_VW, fx = jbx.fx, cam = jbCamUpdate(V, dt);
+            c.setTransform(s, 0, 0, s, 0, 0);
+            jbBg(c, V, cam, now);
+            c.save();
+            let shx = 0, shy = 0; if (fx.shake > 0.3) { shx = (Math.random() - 0.5) * fx.shake; shy = (Math.random() - 0.5) * fx.shake; fx.shake *= Math.pow(0.02, dt); }
+            c.translate(JB_VW / 2 + shx, JB_VH / 2 + shy); c.scale(cam.z, cam.z); c.translate(-cam.x, -cam.y);
+            jbDrawLiquid(c, V, now, false);
+            jbDrawPlats(c, V, now);
+            V.items.forEach(it => { const b = Math.sin(now / 200 + it.x) * 3, ic = { glove: '🥊', bomb: '💣', giant: '🍄' }[it.ty]; const g = c.createRadialGradient(it.x, it.y + b, 2, it.x, it.y + b, 30); g.addColorStop(0, 'rgba(255,255,200,.7)'); g.addColorStop(1, 'rgba(255,255,200,0)'); c.fillStyle = g; c.beginPath(); c.arc(it.x, it.y + b, 30, 0, 6.283); c.fill(); c.fillStyle = 'rgba(255,255,255,.9)'; c.beginPath(); c.arc(it.x, it.y + b, 16, 0, 6.283); c.fill(); c.strokeStyle = '#ffd23f'; c.lineWidth = 2.5; c.stroke(); c.font = '18px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(ic, it.x, it.y + b + 1); c.textBaseline = 'alphabetic'; });
+            V.bombs.forEach(b => { c.fillStyle = '#1e1e28'; c.beginPath(); c.arc(b.x, b.y, 11, 0, 6.283); c.fill(); c.fillStyle = b.t < 0.6 && Math.sin(now / 40) > 0 ? '#ff3b30' : 'rgba(255,255,255,.3)'; c.beginPath(); c.arc(b.x - 3, b.y - 3, 3.5, 0, 6.283); c.fill(); c.fillStyle = Math.sin(now / 30) > 0 ? '#ffe066' : '#ff7b00'; c.beginPath(); c.arc(b.x + 5, b.y - 13, 3, 0, 6.283); c.fill(); });
+            V.pl.forEach((P, i) => {
+                if (!P.alive || !P.pt) return; const ch = P.pt[1], vx = P.vx || 0, vy = P.vy || 0, sp = Math.hypot(vx, vy);
+                const tr = jbx.trails[i] || (jbx.trails[i] = []); if (sp > 850) tr.push({ x: ch.x, y: ch.y, l: 0.35 }); 
+                tr.forEach(q => { q.l -= dt; c.globalAlpha = Math.max(0, q.l * 1.6); c.fillStyle = JB_COL[P.ci % 6][0]; c.beginPath(); c.arc(q.x, q.y, 16 * (q.l / 0.35 + 0.3), 0, 6.283); c.fill(); });
+                jbx.trails[i] = tr.filter(q => q.l > 0); c.globalAlpha = 1;
+            });
+            V.pl.forEach((P, i) => { if (P.alive && P.pt) jbDrawJelly(c, P, i, now, i === jbx.myIdx); });
+            for (const p of fx.parts) {
+                p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 0) * dt; p.vx *= p.dr || 1; p.vy *= p.dr || 1; p.rot = (p.rot || 0) + (p.vr || 0) * dt;
+                const k = Math.max(0, p.life / p.max); c.globalAlpha = p.fade === false ? Math.min(1, k * 3) : k;
+                if (p.kind === 'line') { c.strokeStyle = p.col; c.lineWidth = p.s; c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 0.04, p.y - p.vy * 0.04); c.stroke(); }
+                else if (p.kind === 'ring') { c.strokeStyle = p.col; c.lineWidth = p.s * k; c.beginPath(); c.arc(p.x, p.y, p.r0 + (1 - k) * p.r1, 0, 6.283); c.stroke(); }
+                else if (p.kind === 'fire') { const r = p.s * (1.5 - k * 0.5), g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0, 'rgba(255,250,200,' + k + ')'); g.addColorStop(0.4, 'rgba(255,150,40,' + k * 0.9 + ')'); g.addColorStop(1, 'rgba(120,40,20,0)'); c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, 6.283); c.fill(); }
+                else if (p.kind === 'conf') { c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.col; c.fillRect(-p.s, -p.s * 0.4, p.s * 2, p.s * 0.8); c.restore(); }
+                else if (p.kind === 'txt') { const sc = Math.min(1.25, (1 - k) * 8 + 0.3) * (1 + (1 - k) * 0.2); c.save(); c.translate(p.x, p.y); c.rotate(p.rot0 || 0); c.scale(sc, sc); c.textAlign = 'center'; jbOut(c, p.txt, 0, 0, '900 ' + p.s + 'px Pretendard, sans-serif', p.col, '#1b1030', 7); c.restore(); }
+                else if (p.kind === 'pct') { c.textAlign = 'center'; jbOut(c, p.txt, p.x, p.y, '900 15px Pretendard, sans-serif', p.col, '#1b1030', 4); }
+                else { c.fillStyle = p.col; c.beginPath(); c.arc(p.x, p.y, p.s, 0, 6.283); c.fill(); }
+            }
+            c.globalAlpha = 1; fx.parts = fx.parts.filter(p => p.life > 0);
+            jbDrawLiquid(c, V, now, true);
+            c.restore();
+            if (V.wind || V.windW) { const d = V.wind || V.windDir || 1, a = V.wind ? 0.5 : 0.25; c.strokeStyle = 'rgba(255,255,255,' + a + ')'; c.lineWidth = 2; for (let k = 0; k < 26; k++) { const y = jbSeed(k) * JB_VH, L = 60 + jbSeed(k + 3) * 80, x = ((now * 1.4 * d + jbSeed(k + 7) * 1400) % 1300 + 1300) % 1300 - 170; c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + L / 2 * d, y - 6, x + L * d, y); c.stroke(); } }
+            if (V.stage === 'train') V.bars.forEach(b => { if (b.warn > 0) { const [, sy] = jbW2S(cam, 0, b.y + b.h / 2); const on = Math.sin(now / 70) > 0; c.fillStyle = on ? 'rgba(255,40,40,.95)' : 'rgba(255,200,0,.95)'; jbRRect(c, JB_VW - 96, sy - 20, 86, 40, 12); c.fill(); c.textAlign = 'center'; jbOut(c, '⚠ 숙여!', JB_VW - 53, sy + 6, '900 15px Pretendard, sans-serif', '#fff', 'rgba(0,0,0,.5)', 3); c.strokeStyle = 'rgba(255,60,60,.5)'; c.setLineDash([10, 8]); c.lineWidth = 2; c.beginPath(); c.moveTo(0, sy); c.lineTo(JB_VW - 100, sy); c.stroke(); c.setLineDash([]); } });
+            V.pl.forEach((P, i) => {
+                if (!P.alive || !P.pt) return; const [sx, sy] = jbW2S(cam, P.pt[0].x, P.pt[0].y);
+                if (sx > 10 && sx < JB_VW - 10 && sy > 10 && sy < JB_VH - 70) return;
+                const x = Math.max(34, Math.min(JB_VW - 34, sx)), y = Math.max(34, Math.min(JB_VH - 100, sy)), col = JB_COL[P.ci % 6];
+                c.fillStyle = 'rgba(20,10,30,.75)'; c.beginPath(); c.arc(x, y, 22, 0, 6.283); c.fill(); c.strokeStyle = col[0]; c.lineWidth = 3; c.stroke();
+                c.fillStyle = col[0]; c.beginPath(); c.arc(x, y - 2, 11, 0, 6.283); c.fill(); c.fillStyle = '#fff'; c.beginPath(); c.arc(x - 3.5, y - 3, 2.5, 0, 6.283); c.arc(x + 3.5, y - 3, 2.5, 0, 6.283); c.fill();
+                const a = Math.atan2(sy - y, sx - x); c.fillStyle = col[0]; c.beginPath(); c.moveTo(x + Math.cos(a) * 30, y + Math.sin(a) * 30); c.lineTo(x + Math.cos(a + 0.35) * 22, y + Math.sin(a + 0.35) * 22); c.lineTo(x + Math.cos(a - 0.35) * 22, y + Math.sin(a - 0.35) * 22); c.fill();
+                c.textAlign = 'center'; jbOut(c, Math.round(P.dmg) + '%', x, y + 17, '900 10px Pretendard, sans-serif', jbDmgCol(P.dmg), '#1b1030', 3);
+            });
+            if (fx.flash > 0) { c.fillStyle = 'rgba(255,255,255,' + Math.min(0.5, fx.flash) + ')'; c.fillRect(0, 0, JB_VW, JB_VH); fx.flash -= dt * 4; }
+            if (V.ts < 0.9) { const g = c.createRadialGradient(JB_VW / 2, JB_VH / 2, 200, JB_VW / 2, JB_VH / 2, 600); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); c.fillStyle = g; c.fillRect(0, 0, JB_VW, JB_VH); }
+            jbHud(c, V, now, dt);
+        }
+        function jbHud(c, V, now, dt) {
+            const fx = jbx.fx, n = V.pl.length, cw = Math.min(150, (JB_VW - 40) / n - 10), tot = n * (cw + 10) - 10, x0 = (JB_VW - tot) / 2, y0 = JB_VH - 64;
+            V.pl.forEach((P, i) => {
+                const x = x0 + i * (cw + 10), col = JB_COL[P.ci % 6], hit = jbx.hitT[i] > 0 ? jbx.hitT[i] : 0, sh = hit * 6;
+                c.globalAlpha = P.alive ? 1 : 0.45;
+                const g = c.createLinearGradient(0, y0, 0, y0 + 56); g.addColorStop(0, 'rgba(30,16,46,.88)'); g.addColorStop(1, 'rgba(15,8,24,.92)'); c.fillStyle = g; jbRRect(c, x, y0, cw, 56, 14); c.fill();
+                c.strokeStyle = i === jbx.myIdx ? '#ffd23f' : col[0]; c.lineWidth = i === jbx.myIdx ? 2.5 : 1.5; c.stroke();
+                c.fillStyle = col[0]; c.beginPath(); c.arc(x + 24, y0 + 28, 15, 0, 6.283); c.fill(); c.fillStyle = 'rgba(255,255,255,.5)'; c.beginPath(); c.ellipse(x + 19, y0 + 22, 5, 3, -0.6, 0, 6.283); c.fill(); c.fillStyle = '#fff'; c.beginPath(); c.arc(x + 21, y0 + 28, 3, 0, 6.283); c.arc(x + 29, y0 + 28, 3, 0, 6.283); c.fill(); c.fillStyle = '#2b1b2e'; c.beginPath(); c.arc(x + 22, y0 + 28.5, 1.6, 0, 6.283); c.arc(x + 30, y0 + 28.5, 1.6, 0, 6.283); c.fill();
+                c.textAlign = 'left'; c.font = '800 11px Pretendard, sans-serif'; c.fillStyle = 'rgba(255,255,255,.85)';
+                let nm = (jbx.names[i] || '') + (jbx.bots[i] ? ' 🤖' : ''); while (c.measureText(nm).width > cw - 50 && nm.length > 2) nm = nm.slice(0, -2) + '…'; c.fillText(nm, x + 44, y0 + 17);
+                if (P.alive) { c.textAlign = 'left'; jbOut(c, Math.round(P.dmg) + '%', x + 44 + (Math.random() - 0.5) * sh, y0 + 44 + (Math.random() - 0.5) * sh, 'italic 900 ' + (22 + hit * 8) + 'px Pretendard, sans-serif', jbDmgCol(P.dmg), '#12081c', 5); }
+                else { c.textAlign = 'left'; jbOut(c, 'KO', x + 44, y0 + 44, 'italic 900 20px Pretendard, sans-serif', '#ff8fa3', '#12081c', 4); }
+                for (let q = 0; q < jbx.target; q++) { c.fillStyle = q < P.wins ? '#ffd23f' : 'rgba(255,255,255,.18)'; c.font = '10px sans-serif'; c.textAlign = 'center'; c.fillText('★', x + cw - 10 - q * 11, y0 + 15); }
+                if (P.item) { c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText(['', '🥊', '💣', '🍄'][P.item], x + cw - 14, y0 + 44); }
+                c.globalAlpha = 1; if (jbx.hitT[i] > 0) jbx.hitT[i] -= dt * 3;
+            });
+            c.textAlign = 'center';
+            const t = Math.max(0, Math.ceil(V.rt)), name = JB_STAGE_NAME[V.stage];
+            c.fillStyle = 'rgba(20,10,30,.7)'; jbRRect(c, JB_VW / 2 - 78, 8, 156, 44, 14); c.fill();
+            jbOut(c, V.ph === 'play' || V.ph === 'ko' ? Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0') : '', JB_VW / 2, 34, '900 20px Pretendard, sans-serif', V.sd ? '#ff5d73' : '#fff', null);
+            c.font = '800 10px Pretendard, sans-serif'; c.fillStyle = 'rgba(255,255,255,.7)'; c.fillText('ROUND ' + V.rd + ' · ' + name, JB_VW / 2, 47);
+            if (V.sd && V.ph === 'play') { const a = 0.6 + 0.4 * Math.sin(now / 150); jbOut(c, V.stage === 'train' ? '⚠ 서든데스 · 열차 폭주!' : V.stage === 'roof' ? '⚠ 서든데스 · 홍수가 차올라요!' : V.stage === 'ship' ? '⚠ 서든데스 · 바다가 차올라요!' : '⚠ 서든데스 · 용암이 차올라요!', JB_VW / 2, 72, '900 14px Pretendard, sans-serif', 'rgba(255,90,110,' + a + ')', 'rgba(20,0,10,.7)', 4); }
+            const cx = JB_VW / 2, cy = JB_VH / 2 - 30;
+            if (V.ph === 'intro') {
+                const n2 = Math.ceil(V.pt);
+                jbOut(c, name, cx, cy - 40, 'italic 900 46px Pretendard, sans-serif', '#fff', '#1b1030', 9);
+                jbOut(c, 'ROUND ' + V.rd, cx, cy - 92, 'italic 900 20px Pretendard, sans-serif', '#ffd23f', '#1b1030', 6);
+                const pulse = 1 + (V.pt % 1) * 0.4; c.save(); c.translate(cx, cy + 40); c.scale(pulse, pulse); jbOut(c, String(n2), 0, 0, 'italic 900 64px Pretendard, sans-serif', '#ff6b9d', '#1b1030', 10); c.restore();
+                jbOut(c, ({ roof: '돌풍이 불어요! 바람 반대로 버티세요', train: '⚠ 표지판이 오면 S로 숙이거나 점프!', ship: '무게가 쏠리면 시소가 기울어요', lava: '컨베이어가 바깥으로 밀어내요' })[V.stage], cx, cy + 92, '800 15px Pretendard, sans-serif', '#fff', '#1b1030', 5);
+            }
+            const bn = fx.banner; if (bn && bn.life > 0) { bn.life -= dt; const k = Math.min(1, bn.life * 3, (bn.max - bn.life) * 6), sc = 0.7 + Math.min(1, (bn.max - bn.life) * 6) * 0.3; c.save(); c.globalAlpha = k; c.translate(cx, bn.y || cy); c.scale(sc, sc); jbOut(c, bn.txt, 0, 0, 'italic 900 ' + (bn.size || 52) + 'px Pretendard, sans-serif', bn.col || '#fff', '#1b1030', 10); if (bn.sub) jbOut(c, bn.sub, 0, 34, '800 16px Pretendard, sans-serif', '#fff', '#1b1030', 5); c.restore(); }
+            if (V.ph === 'play' && jbx.myIdx >= 0 && V.pl[jbx.myIdx] && !V.pl[jbx.myIdx].alive) { c.fillStyle = 'rgba(20,10,30,.7)'; jbRRect(c, cx - 130, 84, 260, 28, 14); c.fill(); jbOut(c, '👻 KO! 관전 중 — 다음 라운드를 기다려요', cx, 103, '800 12px Pretendard, sans-serif', '#dfe7ff', null); }
+        }
+
+        let jbA = null;
+        const JB_CH = [[48, 52, 55], [43, 47, 50], [45, 48, 52], [41, 45, 48]];
+        function jbAC() { try { if (!rzAudioCtx) rzAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (rzAudioCtx.state === 'suspended') rzAudioCtx.resume(); return rzAudioCtx; } catch (e) { return null; } }
+        function jbMuteSync() { const b = document.getElementById('jb-mute'); if (b && jbx) b.textContent = jbx.mute ? '🔇' : '🔊'; if (jbA) jbA.master.gain.value = jbx && jbx.mute ? 0 : 1; }
+        function jbToggleMute() { jbL(); jbx.mute = !jbx.mute; try { localStorage.setItem('jb-mute', jbx.mute ? '1' : '0'); } catch (e) {} jbMuteSync(); }
+        function jbMusicStart() {
+            const ac = jbAC(); if (!ac) return; jbMusicStop();
+            const master = ac.createGain(); master.gain.value = jbx && jbx.mute ? 0 : 1; master.connect(ac.destination);
+            const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.connect(master);
+            const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 12000; lp.connect(comp);
+            const mus = ac.createGain(); mus.gain.value = 0.16; mus.connect(lp);
+            const sfx = ac.createGain(); sfx.gain.value = 0.5; sfx.connect(comp);
+            const nb = ac.createBuffer(1, ac.sampleRate, ac.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+            jbA = { ac, master, lp, mus, sfx, nb, step: 0, next: ac.currentTime + 0.1, bpm: 128, timer: setInterval(jbMusicSched, 40), int: 0, slow: false, on: true };
+        }
+        function jbMusicStop() { if (!jbA) return; clearInterval(jbA.timer); const a = jbA; jbA = null; try { a.master.gain.setTargetAtTime(0, a.ac.currentTime, 0.1); setTimeout(() => { try { a.master.disconnect(); } catch (e) {} }, 600); } catch (e) {} }
+        function jbMusicState(V) { if (!jbA) return; const slow = V.ts < 0.9; if (slow !== jbA.slow) { jbA.slow = slow; jbA.lp.frequency.setTargetAtTime(slow ? 500 : 12000, jbA.ac.currentTime, 0.08); } jbA.int = V.sd ? 1 : 0; jbA.on = V.ph !== 'over'; jbA.bpm = V.sd ? 140 : 128; }
+        const jbHz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+        function jbNoise(dest, t, d, f, v, type, q) { const a = jbA, s = a.ac.createBufferSource(); s.buffer = a.nb; const fl = a.ac.createBiquadFilter(); fl.type = type || 'highpass'; fl.frequency.value = f; if (q) fl.Q.value = q; const g = a.ac.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); s.connect(fl); fl.connect(g); g.connect(dest); s.start(t, Math.random() * 0.5); s.stop(t + d + 0.02); }
+        function jbOsc(dest, t, f, d, type, v, f2, att) { const a = jbA, o = a.ac.createOscillator(), g = a.ac.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + (att || 0.004)); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g); g.connect(dest); o.start(t); o.stop(t + d + 0.03); }
+        function jbMusicSched() {
+            const a = jbA; if (!a) return;
+            while (a.next < a.ac.currentTime + 0.2) {
+                const t = a.next, st = a.step, beat = st % 16, bar = Math.floor(st / 16), ch = JB_CH[bar % 4], M = a.mus;
+                if (a.on) {
+                    if (beat % 4 === 0 || (beat === 14 && bar % 2)) { jbOsc(M, t, 150, 0.22, 'sine', 0.9, 45); }
+                    if (beat === 4 || beat === 12) { jbNoise(M, t, 0.16, 1500, 0.45, 'bandpass', 0.8); jbOsc(M, t, 220, 0.08, 'triangle', 0.25, 120); }
+                    if (beat % 2 === 0 || a.int) jbNoise(M, t, beat % 4 === 2 ? 0.06 : 0.025, 8000, beat % 4 === 2 ? 0.16 : 0.08);
+                    if (beat % 2 === 0) jbOsc(M, t, jbHz(ch[0] - 12 + (beat % 8 === 6 ? 7 : 0)), 0.18, 'square', 0.12, null, 0.005);
+                    const arp = [0, 1, 2, 1, 2, 0, 1, 2][beat % 8], lead = ch[arp] + 24 + (bar % 8 >= 4 && beat % 8 === 7 ? 2 : 0);
+                    if (beat % 2 === 1 || a.int) jbOsc(M, t, jbHz(lead), 0.14, 'square', 0.045);
+                    if (beat === 0) ch.forEach(m => jbOsc(M, t, jbHz(m + 12), 1.6, 'sawtooth', 0.018, null, 0.2));
+                }
+                a.next += 60 / a.bpm / 4; a.step++;
+            }
+        }
+        function jbSfx(k, v) {
+            const a = jbA; if (!a) return; const t = a.ac.currentTime, D = a.sfx;
+            if (k === 'punch') { const p = Math.min(1, (v || 300) / 900); jbOsc(D, t, 180 + p * 60, 0.12 + p * 0.12, 'sine', 0.6 + p * 0.4, 50); jbNoise(D, t, 0.08 + p * 0.1, 900 - p * 400, 0.6, 'lowpass'); jbNoise(D, t, 0.05, 3000, 0.3); }
+            else if (k === 'swing') jbNoise(D, t, 0.09, 2500, 0.12, 'bandpass', 1.5);
+            else if (k === 'dash') { jbNoise(D, t, 0.25, 1200, 0.35, 'bandpass', 0.7); jbOsc(D, t, 300, 0.2, 'sawtooth', 0.06, 900); }
+            else if (k === 'jump') jbOsc(D, t, 260, 0.16, 'sine', 0.22, 620);
+            else if (k === 'jump2') { jbOsc(D, t, 420, 0.18, 'sine', 0.22, 980); jbNoise(D, t, 0.1, 4000, 0.08); }
+            else if (k === 'grab') { jbOsc(D, t, 520, 0.08, 'sine', 0.25, 260); jbOsc(D, t + 0.05, 380, 0.1, 'sine', 0.2, 200); }
+            else if (k === 'throw') { jbNoise(D, t, 0.35, 900, 0.4, 'bandpass', 0.8); jbOsc(D, t, 200, 0.3, 'triangle', 0.2, 700); }
+            else if (k === 'escape') jbOsc(D, t, 700, 0.1, 'square', 0.08, 1400);
+            else if (k === 'item') jbOsc(D, t, 1400, 0.6, 'sine', 0.08, 500);
+            else if (k === 'pick') [880, 1175, 1568].forEach((f, i) => jbOsc(D, t + i * 0.06, f, 0.2, 'triangle', 0.18));
+            else if (k === 'boom') { jbNoise(D, t, 0.8, 500, 0.9, 'lowpass'); jbOsc(D, t, 90, 0.6, 'sine', 0.9, 30); }
+            else if (k === 'ko') { jbNoise(D, t, 1.2, 700, 0.9, 'lowpass'); jbOsc(D, t, 120, 0.9, 'sine', 1, 35); jbNoise(D, t + 0.15, 1.6, 2500, 0.18, 'bandpass', 0.4); [523, 659, 784].forEach((f, i) => jbOsc(D, t + 0.2 + i * 0.07, f, 0.5, 'square', 0.05)); }
+            else if (k === 'splash') { jbNoise(D, t, 0.7, 1800, 0.6, 'bandpass', 0.6); }
+            else if (k === 'horn') { jbOsc(D, t, 233, 0.9, 'sawtooth', 0.12); jbOsc(D, t, 294, 0.9, 'sawtooth', 0.1); }
+            else if (k === 'wind') jbNoise(D, t, 1.8, 500, 0.35, 'bandpass', 0.5);
+            else if (k === 'alarm') for (let i = 0; i < 3; i++) { jbOsc(D, t + i * 0.3, 880, 0.15, 'square', 0.12); jbOsc(D, t + i * 0.3 + 0.15, 660, 0.15, 'square', 0.12); }
+            else if (k === 'go') { jbOsc(D, t, 523, 0.12, 'square', 0.15); jbOsc(D, t + 0.1, 784, 0.12, 'square', 0.15); jbOsc(D, t + 0.2, 1047, 0.35, 'square', 0.18); }
+            else if (k === 'count') jbOsc(D, t, 660, 0.12, 'square', 0.12);
+            else if (k === 'win') [523, 659, 784, 1047].forEach((f, i) => { jbOsc(D, t + i * 0.11, f, 0.5, 'square', 0.12); jbOsc(D, t + i * 0.11, f / 2, 0.5, 'triangle', 0.15); });
+        }
+
+        let jbx = null;
+        function jbL() { if (!jbx) jbx = { fx: { parts: [], banner: null, shake: 0, flash: 0 }, names: [], bots: [], target: 3, snaps: [], keys: new Set(), pad: {}, evId: 0, pend: [], localEv: [], evq: [], trails: [], hitT: [], myIdx: -1, mute: false, cam: null }; try { jbx.mute = localStorage.getItem('jb-mute') === '1'; } catch (e) {} return jbx; }
+        function ensureJellyInit() { jbL(); mpEnsureInit('jb'); jbMuteSync(); }
+        function teardownJelly() { mpTeardown('jb'); jbMusicStop(); }
+        const JB_ITEMS = { glove: 1, bomb: 2, giant: 3 }, JB_ITEM_N = ['', 'glove', 'bomb', 'giant'], JB_PHN = ['intro', 'play', 'ko', 'result', 'over'];
+        function jbHostStart() {
+            const r = mpRooms.jb, o = r.opts || {}, nb = Math.max(0, Math.min(6 - r.players.length, +o.bots || 0));
+            const list = r.players.map(p => ({ id: p.id, name: p.name })).sort(() => Math.random() - 0.5);
+            const bn = ['말랑봇', '쫀득봇', '탱글봇', '몰캉봇', '푸딩봇'];
+            for (let i = 0; i < nb; i++) list.push({ id: 'bot' + (i + 1), name: bn[i], bot: true });
+            const S = jbNew(list, { wins: +o.wins || 3 });
+            r.H = { S, inp: {}, mem: list.map(() => ({})), lastT: 0, acc: 0, last: 0, out: [] };
+            list.forEach(p => { r.H.inp[p.id] = { mx: 0, up: 0, dn: 0, grab: 0, ev: [], seen: new Set() }; });
+            mpEmit('jb', { t: 'jb-start', ids: list.map(p => p.id), names: list.map(p => p.name), bots: list.map(p => !!p.bot), target: S.target });
+            if (r.jbTick) r.jbTick.stop(); r.jbTick = rzTicker(jbHostStep, 8);
+        }
+        function jbHostStep() {
+            const r = mpRooms.jb, H = r && r.H; if (!H) return;
+            const now = performance.now(); if (!H.lastT) H.lastT = now; const dt = Math.min(0.25, (now - H.lastT) / 1000); H.lastT = now;
+            const S = H.S; if (S.over) { if (!H.endSent) { H.endSent = true; jbPub(); } return; }
+            H.acc += dt; const step = 1 / 60; let first = true;
+            while (H.acc >= step) {
+                H.acc -= step;
+                const inputs = S.pl.map((P, i) => {
+                    if (P.bot) return jbBot(S, i, H.mem[i], step);
+                    if (P.id === r.myId) { const o = jbLocalInput(); o.ev = first ? jbx.localEv.splice(0) : []; return o; }
+                    const q = H.inp[P.id] || {}; const ev = q.ev || []; q.ev = []; return { mx: q.mx, up: q.up, dn: q.dn, grab: q.grab, ev };
+                });
+                first = false;
+                const rd = S.round;
+                jbTick(S, inputs, step);
+                if (S.ev.length) { H.out.push(...S.ev); S.ev = []; }
+                if (S.round !== rd) H.mem = S.pl.map(() => ({}));
+                if (S.over) break;
+            }
+            if (now - H.last > (rznFast(r.channel) ? 33 : 50)) { H.last = now; jbPub(); }
+        }
+        function jbSnap(S) {
+            const st = S.stage;
+            return { t: 'jb-s', q: S.seq, st: st.kind, rd: S.round, ph: JB_PHN.indexOf(S.phase), pt: Math.round(S.pt * 10), rt: Math.round(S.rt * 10), ts: Math.round(S.ts * 100), tm: Math.round(S.t * 1000), sd: S.sd ? 1 : 0, lv: Math.round(S.level), wd: S.wind || 0, ww: S.windW > 0 ? (S.windDir || 1) : 0, w: S.winner, ch: S.champ, ov: S.over ? 1 : 0, ko: S.lastKO ? [Math.round(S.lastKO.x), Math.round(S.lastKO.y)] : null,
+                pl: S.pl.map(P => { if (!P.alive || !P.pt) return [0, P.wins, P.kos, P.gone ? 1 : 0, Math.round(P.dmg || 0)]; const c = P.pt[1]; const a = [1, P.wins, P.kos, P.gone ? 1 : 0, Math.round(P.dmg), P.face, (P.stun > 0 ? 1 : 0) | (P.punch > 0 ? 2 : 0) | (P.grab ? 4 : 0) | (P.crouch ? 8 : 0) | (P.ledge ? 16 : 0) | (P.dash > 0 ? 32 : 0) | (P.flash > 0 ? 64 : 0) | (P.grabbedBy ? 128 : 0), JB_ITEMS[P.item] || 0, Math.round(P.s * 100), Math.round((c.x - c.px) * 6), Math.round((c.y - c.py) * 6)]; P.pt.forEach(q => a.push(Math.round(q.x), Math.round(q.y))); return a; }),
+                pf: st.plats.map(p => [Math.round(p.cx), Math.round(p.cy), Math.round(p.ang * 1000)]), br: (st.bars || []).map(b => [Math.round(b.x), b.warn > 0 ? 1 : 0]),
+                it: S.items.map(i => [JB_ITEMS[i.ty], Math.round(i.x), Math.round(i.y)]), bm: S.bombs.map(b => [Math.round(b.x), Math.round(b.y), Math.round(b.t * 10)]) };
+        }
+        function jbPub() { const r = mpRooms.jb, H = r.H, snap = jbSnap(H.S); snap.ev = H.out; H.out = []; jbx.evq.push(...snap.ev); rzSend(r.channel, 'msg', Object.assign({ id: r.myId }, snap)); }
+        function jbHostAction(p) {
+            const r = mpRooms.jb, H = r && r.H; if (!H || p.t !== 'jb-i') return;
+            const q = H.inp[p.from]; if (!q) return;
+            q.mx = Math.max(-1, Math.min(1, p.mx | 0)); q.up = p.up ? 1 : 0; q.dn = p.dn ? 1 : 0; q.grab = p.grab ? 1 : 0;
+            (p.ev || []).forEach(e => { if (!q.seen.has(e.id)) { q.seen.add(e.id); q.ev.push(e); } });
+        }
+        function jbHostLeave(id) {
+            const r = mpRooms.jb; if (!r) return; r.players = r.players.filter(p => p.id !== id);
+            const H = r.H; if (!H) return; const P = H.S.pl.find(P => P.id === id); if (P) { P.gone = true; if (P.alive) { P.lastT = 0; jbKO(H.S, P, 'left'); } }
+        }
+        function jbOnMsg(p) {
+            const r = mpRooms.jb; if (!r) return; jbL();
+            if (p.from && !p.id) { if (r.role === 'host') jbHostAction(p); return; }
+            if (r.role === 'guest' && p.id !== r.hostId) return;
+            if (p.t === 'jb-start') {
+                r.phase = 'game'; mpShow('jb', 'game');
+                Object.assign(jbx, { names: p.names, bots: p.bots, target: p.target, snaps: [], endShown: false, localEv: [], pend: [], evq: [], fx: { parts: [], banner: null, shake: 0, flash: 0 }, trails: [], hitT: [], myIdx: p.ids.indexOf(r.myId), cam: null, stDef: null, lastCount: -1 });
+                document.getElementById('jb-end').classList.add('hidden');
+                jbFit(); cancelAnimationFrame(jbx.raf); jbx.lastF = 0; jbx.raf = requestAnimationFrame(jbFrame);
+                jbMusicStart();
+                return;
+            }
+            if (p.t === 'jb-s') { if (r.role === 'host') return; jbx.snaps.push({ at: performance.now(), s: p }); if (jbx.snaps.length > 40) jbx.snaps.shift(); jbx.evq.push(...(p.ev || [])); }
+        }
+        function jbDecode(a, b, k) {
+            if (!jbx.stDef || jbx.stDef.kind !== b.st || jbx.stDefRd !== b.rd) { jbx.stDef = jbStage(b.st); jbx.stDefRd = b.rd; }
+            const D = jbx.stDef, L = (x, y) => x + (y - x) * k;
+            const pl = b.pl.map((q, i) => {
+                const P = { ci: i, alive: !!q[0], wins: q[1], kos: q[2], gone: !!q[3], dmg: q[4] };
+                if (!q[0]) return P;
+                const qa = a.pl[i] && a.pl[i][0] && a.pl[i].length === q.length ? a.pl[i] : q, jump = Math.abs(qa[11] - q[11]) + Math.abs(qa[12] - q[12]) > 200;
+                Object.assign(P, { face: q[5], fl: q[6], item: q[7], s: q[8] / 100, vx: q[9] * 10, vy: q[10] * 10, pt: [] });
+                for (let j = 0; j < 7; j++) { const ix = 11 + j * 2; P.pt.push({ x: jump ? q[ix] : L(qa[ix], q[ix]), y: jump ? q[ix + 1] : L(qa[ix + 1], q[ix + 1]) }); }
+                return P;
+            });
+            const plats = D.plats.map((p, i) => { const A = (a.pf && a.pf[i]) || b.pf[i], B = b.pf[i]; return Object.assign({}, p, { cx: L(A[0], B[0]), cy: L(A[1], B[1]), ang: L(A[2], B[2]) / 1000 }); });
+            const bars = b.br.map((q, i) => { const A = a.br && a.br[i]; return { x: A && Math.abs(A[0] - q[0]) < 200 ? L(A[0], q[0]) : q[0], y: 516, w: 26, h: 32, warn: q[1] }; });
+            return { stage: b.st, rd: b.rd, ph: JB_PHN[b.ph], pt: b.pt / 10, rt: L(a.rt, b.rt) / 10, ts: b.ts / 100, t: L(a.tm, b.tm) / 1000, sd: !!b.sd, level: L(a.lv, b.lv), wind: b.wd, windW: b.ww ? 1 : 0, windDir: b.ww, winner: b.w, champ: b.ch, over: !!b.ov, ko: b.ko ? { x: b.ko[0], y: b.ko[1] } : null, pl, plats, bars, items: b.it.map(q => ({ ty: JB_ITEM_N[q[0]], x: q[1], y: q[2] })), bombs: b.bm.map(q => ({ x: q[0], y: q[1], t: q[2] / 10 })) };
+        }
+        function jbView() {
+            const r = mpRooms.jb;
+            if (r.role === 'host' && r.H) { const s = jbSnap(r.H.S); return jbDecode(s, s, 0); }
+            const A = jbx.snaps; if (!A.length) return null;
+            const rt = performance.now() - rzInterpDelay(jbx, A); let a = A[0], b = A[A.length - 1];
+            for (let i = 0; i < A.length - 1; i++) if (A[i].at <= rt && A[i + 1].at >= rt) { a = A[i]; b = A[i + 1]; break; }
+            if (rt >= b.at) a = b;
+            const k = a === b ? 0 : Math.max(0, Math.min(1, (rt - a.at) / (b.at - a.at)));
+            if (a.s.rd !== b.s.rd) a = b;
+            return jbDecode(a.s, b.s, k);
+        }
+        const JB_K = { left: ['ArrowLeft', 'KeyA'], right: ['ArrowRight', 'KeyD'], up: ['ArrowUp', 'KeyW'], down: ['ArrowDown', 'KeyS'], grab: ['KeyK', 'KeyX'] };
+        function jbHas(name) { return JB_K[name].some(k => jbx.keys.has(k)) || !!jbx.pad[name]; }
+        function jbLocalInput() { return { mx: (jbHas('right') ? 1 : 0) - (jbHas('left') ? 1 : 0), up: jbHas('up') ? 1 : 0, dn: jbHas('down') ? 1 : 0, grab: jbHas('grab') ? 1 : 0, ev: [] }; }
+        function jbPlaying() { const r = mpRooms.jb; return r && r.phase === 'game' && jbx && !document.getElementById('restzone-panel-jelly').classList.contains('hidden'); }
+        function jbEvent(e) {
+            const r = mpRooms.jb, x = jbL(); if (!jbPlaying()) return;
+            const ev = { e, id: ++x.evId };
+            if (r.role === 'host') x.localEv.push(ev); else { x.pend.push(Object.assign({ at: performance.now() }, ev)); jbSendInput(true); }
+            jbAC();
+        }
+        function jbSendInput(force) {
+            const r = mpRooms.jb, x = jbx; if (!r || r.role !== 'guest' || r.phase !== 'game') return;
+            const now = performance.now(), o = jbLocalInput(), sig = [o.mx, o.up, o.dn, o.grab].join(',');
+            if (!force && sig === x.lastSig && now - x.lastSend < 120) return;
+            x.pend = x.pend.filter(e => now - e.at < 400);
+            mpToHost('jb', { t: 'jb-i', mx: o.mx, up: o.up, dn: o.dn, grab: o.grab, ev: x.pend.map(e => ({ e: e.e, id: e.id })) });
+            x.lastSig = sig; x.lastSend = now;
+        }
+        window.addEventListener('keydown', (e) => {
+            if (!jbPlaying()) return;
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+            const c = e.code, held = Object.values(JB_K).some(a => a.includes(c));
+            if (held || ['Space', 'KeyJ', 'KeyZ', 'KeyL', 'KeyC', 'ShiftLeft', 'ShiftRight'].includes(c)) e.preventDefault();
+            if (e.repeat) return;
+            if (held) { jbx.keys.add(c); }
+            if (c === 'Space' || c === 'ArrowUp' || c === 'KeyW') jbEvent('jump');
+            else if (c === 'KeyJ' || c === 'KeyZ') jbEvent('punch');
+            else if (c === 'KeyL' || c === 'KeyC' || c === 'ShiftLeft' || c === 'ShiftRight') jbEvent('dash');
+            jbSendInput(true);
+        });
+        window.addEventListener('keyup', (e) => { if (!jbx) return; if (jbx.keys.delete(e.code)) jbSendInput(true); });
+        window.addEventListener('blur', () => { if (jbx) { jbx.keys.clear(); jbx.pad = {}; } });
+        function jbPad(name, on) { jbL(); jbx.pad[name] = !!on; jbSendInput(true); jbAC(); }
+        function jbFit() {
+            const cv = document.getElementById('jb-canvas'), wrap = document.getElementById('jb-wrap'); if (!cv || !wrap) return;
+            const w = wrap.clientWidth || 960, dpr = Math.min(2, window.devicePixelRatio || 1);
+            cv.width = Math.round(w * dpr); cv.height = Math.round(w * JB_VH / JB_VW * dpr); cv.style.height = Math.round(w * JB_VH / JB_VW) + 'px';
+        }
+        window.addEventListener('resize', () => { if (mpRooms.jb && mpRooms.jb.phase !== 'waiting') jbFit(); });
+        function jbBurst(x, y, n, o) { for (let i = 0; i < n; i++) { const a = o.a != null ? o.a + (Math.random() - 0.5) * (o.spread || 6.283) : Math.random() * 6.283, v = (o.v || 300) * (0.35 + Math.random() * 0.8); jbx.fx.parts.push({ kind: o.kind, x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: o.life || 0.6, max: o.life || 0.6, s: o.s || 3, col: Array.isArray(o.col) ? o.col[i % o.col.length] : o.col, g: o.g || 0, dr: o.dr || 0.92, vr: (Math.random() - 0.5) * 14, rot: Math.random() * 6 }); } }
+        function jbBanner(txt, o) { jbx.fx.banner = Object.assign({ txt, life: 1.4, max: 1.4 }, o || {}); jbx.fx.banner.max = jbx.fx.banner.life; }
+        function jbFx(e, V) {
+            const nm = (i) => jbx.names[i] || '?', fx = jbx.fx;
+            if (e.k === 'round') { fx.parts = []; jbx.trails = []; jbx.cam = null; fx.banner = null; }
+            else if (e.k === 'go') { jbBanner('FIGHT!', { col: '#ffd23f', size: 70, life: 0.9 }); jbSfx('go'); }
+            else if (e.k === 'hit') {
+                const pw = e.pw || 300, big = pw > 720;
+                jbBurst(e.x, e.y, big ? 16 : 9, { kind: 'line', col: ['#fff', '#ffe066', '#ffb703'], v: big ? 900 : 600, life: 0.28, s: big ? 4 : 3, dr: 0.85 });
+                fx.parts.push({ kind: 'ring', x: e.x, y: e.y, vx: 0, vy: 0, life: 0.3, max: 0.3, s: big ? 7 : 4, r0: 8, r1: big ? 70 : 40, col: '#fff' });
+                const words = big ? ['쾅!!', '빠악!', '콰직!'] : ['퍽!', '빡!', '팍!', '뿅!'];
+                fx.parts.push({ kind: 'txt', txt: e.kind === 'throw' ? '휙~!' : e.kind === 'bar' ? '꽝!!' : words[Math.floor(Math.random() * words.length)], x: e.x + (Math.random() - 0.5) * 30, y: e.y - 30, vx: 0, vy: -50, life: 0.7, max: 0.7, s: big ? 36 : 26, col: big ? '#ff4d6d' : '#ffe066', rot0: (Math.random() - 0.5) * 0.5 });
+                fx.shake = Math.max(fx.shake, Math.min(20, pw / 50)); if (big) fx.flash = Math.max(fx.flash, 0.18);
+                jbx.hitT[e.p] = 1; jbSfx('punch', pw);
+            }
+            else if (e.k === 'swing') jbSfx('swing');
+            else if (e.k === 'dash') { jbSfx('dash'); const P = V.pl[e.p]; if (P && P.pt) jbBurst(P.pt[2].x, P.pt[2].y + 20, 8, { kind: 'dot', col: 'rgba(255,255,255,.7)', v: 160, life: 0.4, s: 4 }); }
+            else if (e.k === 'jump') { if (e.p === jbx.myIdx) jbSfx('jump'); const P = V.pl[e.p]; if (P && P.pt) jbBurst(P.pt[5].x, P.pt[5].y + 6, 6, { kind: 'dot', col: 'rgba(255,255,255,.6)', v: 120, life: 0.35, s: 3.5, a: -1.57, spread: 3 }); }
+            else if (e.k === 'jump2') { jbSfx('jump2'); const P = V.pl[e.p]; if (P && P.pt) fx.parts.push({ kind: 'ring', x: P.pt[2].x, y: P.pt[2].y + 24, vx: 0, vy: 0, life: 0.3, max: 0.3, s: 3, r0: 6, r1: 30, col: 'rgba(255,255,255,.8)' }); }
+            else if (e.k === 'grab') jbSfx('grab');
+            else if (e.k === 'throw') jbSfx('throw');
+            else if (e.k === 'escape') jbSfx('escape');
+            else if (e.k === 'item') jbSfx('item');
+            else if (e.k === 'pick') { jbSfx('pick'); const P = V.pl[e.p]; if (P && P.pt) jbBurst(P.pt[1].x, P.pt[1].y, 14, { kind: 'conf', col: ['#ffd23f', '#fff', '#ff6b9d'], v: 260, life: 0.7, s: 3 }); if (e.p === jbx.myIdx) jbBanner({ glove: '🥊 메가 글러브!', bomb: '💣 폭탄! (J로 던지기)', giant: '🍄 거대화!' }[e.ty], { size: 30, life: 1.2, y: 150, col: '#fff' }); }
+            else if (e.k === 'throwb') jbSfx('throw');
+            else if (e.k === 'boom') { jbSfx('boom'); fx.shake = 22; fx.flash = 0.3; for (let q = 0; q < 14; q++) fx.parts.push({ kind: 'fire', x: e.x + (Math.random() - 0.5) * 40, y: e.y + (Math.random() - 0.5) * 40, vx: (Math.random() - 0.5) * 300, vy: (Math.random() - 0.5) * 300 - 80, life: 0.7, max: 0.7, s: 40 + Math.random() * 30, dr: 0.9 }); fx.parts.push({ kind: 'ring', x: e.x, y: e.y, vx: 0, vy: 0, life: 0.45, max: 0.45, s: 10, r0: 20, r1: 180, col: '#ffd166' }); }
+            else if (e.k === 'barw') jbSfx('horn');
+            else if (e.k === 'windw') { jbSfx('wind'); jbBanner(e.d > 0 ? '💨 돌풍 → 오른쪽!' : '💨 ← 왼쪽으로 돌풍!', { size: 26, life: 1.3, y: 150, col: '#c8f1ff' }); }
+            else if (e.k === 'sd') { jbSfx('alarm'); jbBanner('SUDDEN DEATH', { size: 50, life: 1.6, col: '#ff4d6d' }); }
+            else if (e.k === 'ko') {
+                jbSfx('ko'); if (e.why === 'sea' || e.why === 'flood' || e.why === 'lava') jbSfx('splash');
+                fx.shake = 26; fx.flash = 0.55;
+                const col = JB_COL[e.p % 6][0];
+                jbBurst(e.x, e.y, 40, { kind: 'conf', col: [col, '#fff', '#ffd23f', '#ff6b9d', '#4cc9f0'], v: 700, life: 1.4, s: 5, g: 600, dr: 0.97 });
+                fx.parts.push({ kind: 'ring', x: e.x, y: e.y, vx: 0, vy: 0, life: 0.6, max: 0.6, s: 14, r0: 20, r1: 260, col });
+                if (e.why === 'lava') for (let q = 0; q < 10; q++) fx.parts.push({ kind: 'fire', x: e.x + (Math.random() - 0.5) * 50, y: e.y, vx: (Math.random() - 0.5) * 100, vy: -200 - Math.random() * 200, life: 0.8, max: 0.8, s: 30, dr: 0.95 });
+                if (e.why === 'sea' || e.why === 'flood') jbBurst(e.x, e.y, 24, { kind: 'dot', col: ['#c8f1ff', '#7fd3ff', '#fff'], v: 500, life: 1, s: 4, a: -1.57, spread: 2.2, g: 900, dr: 0.99 });
+                jbBanner(e.p === jbx.myIdx ? '아웃! 💥' : 'KO!', { size: 64, life: 1.1, col: e.p === jbx.myIdx ? '#ff8fa3' : '#fff', sub: e.by >= 0 && e.by !== e.p ? nm(e.by) + ' → ' + nm(e.p) : nm(e.p) + ' 탈락' });
+            }
+            else if (e.k === 'timeup') jbBanner('TIME!', { size: 64, life: 1.2, col: '#ffd23f' });
+            else if (e.k === 'roundwin') { jbSfx('win'); jbBanner(e.p >= 0 ? '🏆 ' + nm(e.p) + ' 승리!' : '무승부!', { size: 46, life: 3, col: e.p >= 0 ? JB_COL[e.p % 6][0] : '#fff', sub: e.p === jbx.myIdx ? '최고예요! 말랑 챔피언까지 ' + Math.max(0, jbx.target - ((V.pl[e.p] || {}).wins || 0)) + '승 남았어요' : '' }); }
+        }
+        function jbFrame(now) {
+            const r = mpRooms.jb, x = jbx; if (!r || !x || (r.phase !== 'game' && r.phase !== 'ended')) return;
+            x.raf = requestAnimationFrame(jbFrame);
+            const dt = Math.min(0.1, x.lastF ? (now - x.lastF) / 1000 : 1 / 60); x.lastF = now;
+            if (r.role === 'guest') jbSendInput(false);
+            const V = jbView(); if (!V) return;
+            if (x.evq.length) x.evq.splice(0).forEach(e => jbFx(e, V));
+            if (V.ph === 'intro') { const n = Math.ceil(V.pt); if (n !== x.lastCount) { x.lastCount = n; jbSfx('count'); } } else x.lastCount = -1;
+            jbDraw(V, now, dt);
+            jbMusicState(V);
+            if (V.over && !x.endShown) { x.endShown = true; r.phase = 'ended'; setTimeout(() => jbShowEnd(V), 1000); }
+        }
+        function jbShowEnd(V) {
+            const ch = V.champ, me = jbx.myIdx;
+            document.getElementById('jb-end-title').textContent = ch === me ? '말랑 챔피언! 🏆🍮' : ch >= 0 ? '🏆 ' + (jbx.names[ch] || '?') + ' 최종 우승!' : '대난투 종료!';
+            const rank = V.pl.map((p, i) => ({ i, p })).sort((a, b) => b.p.wins - a.p.wins || b.p.kos - a.p.kos);
+            document.getElementById('jb-end-detail').innerHTML = rank.map(({ i, p }, k) => '<span style="color:' + JB_COL[i % 6][0] + '">●</span> ' + (k + 1) + '위 ' + escapeHtml(jbx.names[i] || '') + ' · ' + p.wins + '승 · KO ' + p.kos + (p.gone ? ' (나감)' : '')).join('<br>');
+            document.getElementById('jb-end').classList.remove('hidden');
+            (ch === me ? rzSoundWin : rzSoundLose)(); jbMusicStop();
+        }
+        function jbWaitingRender(r) {
+            const box = document.getElementById('jb-opts'); if (!box) return;
+            const o = r.opts || (r.opts = { bots: 0, wins: 3 }), max = Math.max(0, 6 - r.players.length), nb = Math.min(+o.bots || 0, max);
+            if (r.role === 'host') {
+                const sel = (id, label, vals, cur, fmt) => '<label>' + label + ' <select id="' + id + '">' + vals.map(v => '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + fmt(v) + '</option>').join('') + '</select></label>';
+                box.innerHTML = sel('jb-o-bots', '🤖 컴퓨터', [0, 1, 2, 3, 4, 5].filter(n => n <= max), nb, n => n + '명') + sel('jb-o-wins', '🏆 목표', [2, 3, 5], +o.wins || 3, n => n + '승');
+                const up = () => { r.opts = { bots: +document.getElementById('jb-o-bots').value, wins: +document.getElementById('jb-o-wins').value }; mpBroadcastLobby('jb'); };
+                ['jb-o-bots', 'jb-o-wins'].forEach(id => { document.getElementById(id).onchange = up; });
+            } else box.innerHTML = '<p>컴퓨터 ' + nb + '명 · 목표 ' + (+o.wins || 3) + '승</p>';
+            const sb = document.getElementById('jb-start-btn');
+            if (sb && r.role === 'host') { const tot = r.players.length + nb; sb.disabled = tot < 2; sb.innerText = tot < 2 ? '2명 이상(컴퓨터 포함) 모이면 시작' : tot + '명으로 난투 시작!'; }
+        }
+        function jbCleanup(r) { if (r.jbTick) { r.jbTick.stop(); r.jbTick = null; } r.H = null; if (jbx) { cancelAnimationFrame(jbx.raf); jbx.snaps = []; jbx.endShown = false; jbx.keys.clear(); jbx.pad = {}; } const e = document.getElementById('jb-end'); if (e) e.classList.add('hidden'); jbMusicStop(); }
+        MP_HOOKS.jb = { onMsg: jbOnMsg, hostStart: jbHostStart, hostAction: jbHostAction, hostLeave: jbHostLeave, cleanup: jbCleanup, onWaitingRender: jbWaitingRender, canStart: (r) => r.players.length + Math.min(+((r.opts || {}).bots) || 0, 6 - r.players.length) >= 2, leaveMsg: () => '진행 중인 말랑 대난투에서 나갈까요?' };
 
         const RZ_REMATCH = {
             chess: { o: () => chess, hello: (p) => chessHandleHello(p), end: 'chess-end' },
@@ -20589,7 +21718,7 @@
             bball: { o: () => bbk, hello: (p) => bbHandleHello(p), end: 'bb-end' },
             cnr: { o: () => cnr, hello: (p) => cnrHandleHello(p), end: 'cnr-state-result' },
         };
-        const RZ_MP_AGAIN = { rm: 'rm-end', un: 'un-end', kk: 'kk-end', hg: 'hg-end', wb: 'wb-end', mq: 'mq-end' };
+        const RZ_MP_AGAIN = { rm: 'rm-end', un: 'un-end', kk: 'kk-end', hg: 'hg-end', wb: 'wb-end', mq: 'mq-end', jb: 'jb-end' };
         function rzRematchObj(g) { const d = RZ_REMATCH[g]; try { return d && d.o(); } catch (e) { return null; } }
         function rzRematchClick(g) {
             const o = rzRematchObj(g); if (!o || o.phase !== 'ended' || !o.channel) return;
