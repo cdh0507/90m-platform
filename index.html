@@ -1709,6 +1709,62 @@
         .wb-act .ndl { width: 56px; height: 56px; border-radius: 50%; font-size: 22px; background: linear-gradient(180deg,#adb5bd,#6c757d); }
         .wb-help { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; text-align: center; }
 
+        #restzone-panel-masq { --mq-gold: #e8b04a; }
+        .mq-lobby { max-width: 620px; margin: 0 auto; padding: 4px 2px 10px; }
+        .mq-hero { position: relative; overflow: hidden; border-radius: 22px; padding: 26px 18px 22px; text-align: center; background: radial-gradient(120% 90% at 50% 0%, #5e0f2c 0%, #2a0a1c 55%, #12060f 100%); box-shadow: inset 0 0 0 1px rgba(232,176,74,.45), 0 18px 40px rgba(40,5,25,.35); }
+        .mq-hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,215,140,.55) 1px, transparent 1.4px); background-size: 22px 22px; opacity: .18; animation: mqDrift 14s linear infinite; }
+        .mq-hero-glow { position: absolute; width: 260px; height: 260px; left: 50%; top: -120px; transform: translateX(-50%); background: radial-gradient(circle, rgba(255,205,120,.45), transparent 65%); filter: blur(6px); animation: mqPulse 3.2s ease-in-out infinite; }
+        @keyframes mqDrift { to { background-position: 22px 66px; } }
+        @keyframes mqPulse { 0%,100% { opacity: .7; } 50% { opacity: 1; } }
+        .mq-crest { font-size: 46px; filter: drop-shadow(0 6px 14px rgba(232,176,74,.55)); animation: mqSway 3s ease-in-out infinite; position: relative; }
+        .mq-crest.sm { font-size: 34px; margin-bottom: 4px; }
+        @keyframes mqSway { 0%,100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-4px); } }
+        .mq-kicker { position: relative; margin: 6px 0 0; font: italic 700 11px Georgia, serif; letter-spacing: .32em; color: #e8b04a; }
+        .mq-title { position: relative; margin: 2px 0 6px; font-size: 34px; font-weight: 900; letter-spacing: -.02em; background: linear-gradient(180deg, #fff3c9, #e8b04a 60%, #a8741c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .mq-sub { position: relative; margin: 0; font-size: 13px; color: rgba(255,240,225,.85); font-weight: 600; }
+        .mq-sub b { color: #ffd6a0; }
+        .mq-rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 10px; }
+        .mq-rules div { border-radius: 16px; padding: 12px 10px; background: linear-gradient(180deg, rgba(94,15,44,.08), rgba(232,176,74,.08)); border: 1px solid rgba(232,176,74,.35); display: flex; flex-direction: column; gap: 3px; }
+        .mq-rules span { font-size: 22px; }
+        .mq-rules b { font-size: 14px; font-weight: 900; color: var(--ink); }
+        .mq-rules em { font-style: normal; font-size: 11.5px; line-height: 1.45; color: var(--ink-soft); font-weight: 600; }
+        .mq-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 14px; }
+        .mq-chips span { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: rgba(94,15,44,.09); color: #8a1c3f; border: 1px solid rgba(138,28,63,.18); }
+        .mq-actions { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .mq-btn-main { border: none; padding: 12px 26px; border-radius: 99px; font-size: 14px; font-weight: 900; color: #2a0a1c; background: linear-gradient(180deg, #ffe7a8, #e8b04a); box-shadow: 0 6px 0 #9a6a1a, 0 12px 24px rgba(232,176,74,.35); }
+        .mq-btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #9a6a1a; }
+        .mq-note { font-size: 11px; color: var(--ink-soft); font-weight: 600; margin: 0; }
+        .mq-opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 12px; font-size: 13px; font-weight: 800; color: var(--ink); }
+        .mq-opts select { margin-left: 4px; padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(0,0,0,.15); background: #fff; color: #222; font-weight: 800; }
+        .mq-opts p { margin: 0; color: var(--ink-soft); }
+        .mq-game { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .mq-wrap { position: relative; width: min(100%, 1100px, calc((100vh - 250px) * 960 / 640)); min-width: 300px; border-radius: 16px; overflow: hidden; background: #12060f; box-shadow: 0 0 0 1px rgba(232,176,74,.5), 0 20px 50px rgba(30,5,20,.45); touch-action: none; }
+        .mq-wrap canvas { display: block; width: 100%; cursor: crosshair; }
+        .mq-disc { position: absolute; top: 66px; left: 50%; transform: translateX(-50%); background: rgba(255,77,109,.92); color: #fff; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 99px; }
+        .mq-end { border-radius: 16px; background: radial-gradient(120% 100% at 50% 0%, rgba(94,15,44,.96), rgba(18,6,15,.97)); }
+        .mq-end .rz-end-title { color: #ffe7a8; }
+        .mq-end .rz-end-detail { color: rgba(255,240,225,.9); line-height: 1.9; }
+        .mq-end-crest { font-size: 40px; margin: 0; animation: mqSway 3s ease-in-out infinite; }
+        .mq-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: min(100%, 1100px); user-select: none; -webkit-user-select: none; }
+        .mq-k { position: relative; touch-action: none; border: 1px solid rgba(232,176,74,.45); border-radius: 14px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; background: linear-gradient(180deg, #2c0d20, #170711); color: #fbe9d0; font-size: 12px; font-weight: 800; box-shadow: 0 3px 0 rgba(0,0,0,.35); transition: opacity .15s, box-shadow .2s; }
+        .mq-k i { font-style: normal; font-size: 16px; }
+        .mq-k kbd { font: 800 10px Pretendard, sans-serif; padding: 2px 6px; border-radius: 6px; background: rgba(232,176,74,.2); color: #e8b04a; }
+        .mq-k .bd { position: absolute; top: -7px; right: -5px; font-size: 10px; min-width: 18px; padding: 1px 5px; border-radius: 99px; background: #e8b04a; color: #2a0a1c; }
+        .mq-k .bd:empty { display: none; }
+        .mq-k.off { opacity: .42; }
+        .mq-k.glow { box-shadow: 0 0 0 2px #ffd36b, 0 0 18px rgba(255,200,90,.7); opacity: 1; animation: mqGlow 1s ease-in-out infinite; }
+        @keyframes mqGlow { 50% { box-shadow: 0 0 0 2px #ffd36b, 0 0 6px rgba(255,200,90,.4); } }
+        .mq-k:active { transform: translateY(2px); box-shadow: none; }
+        .mq-k.stab { background: linear-gradient(180deg, #7a0f2a, #3d0715); }
+        .mq-k.mute { padding: 6px 10px; }
+        .mq-help { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; text-align: center; margin: 0; }
+        .rz-touch .mq-k kbd, .rz-touch .mq-help { display: none; }
+        .rz-touch .mq-bar { gap: 8px; }
+        .rz-touch .mq-k { flex-direction: column; gap: 1px; padding: 8px 10px; min-width: 62px; font-size: 10.5px; }
+        .rz-touch .mq-k i { font-size: 22px; }
+        .rz-touch .mq-k.stab { min-width: 78px; }
+        @media (max-width: 560px) { .mq-rules { grid-template-columns: 1fr; } .mq-title { font-size: 28px; } }
+
         /* ---------- 설정 화면 ---------- */
         .st-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .st-tabs::-webkit-scrollbar { display: none; }
@@ -2987,6 +3043,11 @@
                         <button data-c="solo" onclick="rzCat('solo')">혼자서</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="restzoneOpenGame('masq')" data-cat="board" class="restzone-game-card press-feel mq-card">
+                            <span class="restzone-game-icon" style="background:radial-gradient(circle at 35% 30%,#ff9fb8,#7a0f2a 70%,#2a0a1c);box-shadow:0 0 0 1.5px #e8b04a inset;"><span style="font-size:22px;">🎭</span></span>
+                            <span class="restzone-game-name">가면무도회 <span style="font-size:10px;font-weight:900;color:#2a0a1c;background:linear-gradient(90deg,#ffe7a8,#e8b04a);padding:2px 7px;border-radius:99px;vertical-align:2px;">신작 ✨</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~6명</span></span>
+                            <span class="restzone-game-desc">손님 수십 명 속에 숨은 진짜 사람을 찾아라 · 추리+액션 · 왈츠·정전·연막 · 라운드 끝 정체 공개</span>
+                        </button>
                         <button onclick="restzoneOpenGame('water')" data-cat="action" class="restzone-game-card press-feel">
                             <span class="restzone-game-icon" style="background:linear-gradient(135deg,#bdefff,#3a86ff);"><i class="fa-solid fa-droplet" style="color:#fff;"></i></span>
                             <span class="restzone-game-name">물풍선 대작전 <span style="font-size:10px;font-weight:900;color:#fff;background:#ff4d8d;padding:2px 7px;border-radius:99px;vertical-align:2px;">NEW</span> <span style="font-size:10px;font-weight:900;color:#1b1530;background:#feca57;padding:2px 7px;border-radius:99px;vertical-align:2px;">2~4명</span></span>
@@ -3072,6 +3133,80 @@
                             <span class="restzone-game-name">끝말잇기</span>
                             <span class="restzone-game-desc">끄투 사전 60만 단어(인명·연예인·애니 이름 포함) · 끄투 규칙(두음법칙·미션·매너) 온라인 2~4인 · 컴퓨터 상대 가능 · 승률 순위</span>
                         </button>
+                    </div>
+                </div>
+
+                <div id="restzone-panel-masq" class="hidden">
+                    <div id="mq-state-loggedout" class="hidden cnr-center">
+                        <div class="mq-crest">🎭</div>
+                        <p class="cnr-msg">가면무도회는 로그인 후 이용할 수 있어요</p>
+                        <button onclick="closeRestZoneModal(); showLandingLogin();" class="press-feel accent-btn px-5 py-2.5 rounded-full text-sm">로그인하고 플레이하기</button>
+                    </div>
+                    <div id="mq-state-lobby" class="hidden">
+                        <div class="mq-lobby">
+                            <div class="mq-hero">
+                                <div class="mq-hero-glow"></div>
+                                <div class="mq-crest">🎭</div>
+                                <p class="mq-kicker">THE MIDNIGHT MASQUERADE</p>
+                                <h3 class="mq-title">가면무도회</h3>
+                                <p class="mq-sub">자정까지, 손님들 속에 숨은 <b>진짜 사람</b>을 찾아내세요</p>
+                            </div>
+                            <div class="mq-rules">
+                                <div><span>🚶</span><b>섞여라</b><em>수십 명의 손님 중 몇 명만 진짜 사람. 손님처럼 걷고 멈추고 구경하세요</em></div>
+                                <div><span>🕯️</span><b>훔쳐라</b><em>촛대 앞에서 E를 길게 누르면 편지를 훔쳐요. 3장이면 라운드 승리</em></div>
+                                <div><span>🗡️</span><b>찔러라</b><em>수상한 손님을 찌르면 탈락! 단, 엉뚱한 손님을 찌르면 빨간 조명에 들켜요</em></div>
+                            </div>
+                            <div class="mq-chips"><span>🎻 갑작스런 왈츠</span><span>🕯️ 정전</span><span>💨 연막탄</span><span>🎭 가면 바꾸기</span><span>👣 라운드 끝 정체 공개</span></div>
+                            <div class="mq-actions">
+                                <button onclick="mpCreate('mq')" class="press-feel mq-btn-main"><i class="fa-solid fa-plus mr-1.5"></i>무도회 열기 (최대 6명)</button>
+                                <div class="cnr-join-row">
+                                    <input id="mq-join-code-input" maxlength="5" placeholder="초대 코드 입력" class="cnr-join-input">
+                                    <button onclick="mpJoin('mq')" class="press-feel ghost-btn px-4 py-2.5 rounded-full text-sm">참가하기</button>
+                                </div>
+                                <p id="mq-lobby-error" class="cnr-lobby-error hidden"></p>
+                                <p class="mq-note">혼자라면 방을 열고 컴퓨터 손님을 추가해 연습할 수 있어요</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mq-state-waiting" class="hidden cnr-center">
+                        <div class="mq-crest sm">🎭</div>
+                        <p class="cnr-msg">초대 손님을 기다리는 중... <b id="mq-player-count">1 / 6</b></p>
+                        <div class="cnr-room-code-box">
+                            <span>초대 코드</span>
+                            <b id="mq-room-code-display">-----</b>
+                            <button onclick="mpCopyCode('mq')" class="press-feel cnr-copy-btn" title="복사"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <ul id="mq-player-list" class="mp-slots cm-slots"></ul>
+                        <div id="mq-opts" class="mq-opts"></div>
+                        <button id="mq-start-btn" onclick="mpStart('mq')" class="press-feel accent-btn px-6 py-2.5 rounded-full text-sm mb-3" disabled>2명 이상 모이면 시작할 수 있어요</button>
+                        <p id="mq-guest-wait" class="rz-wait-sub hidden" style="margin-top:0;">방장이 무도회를 시작하길 기다리고 있어요…</p>
+                        <button onclick="mpLeave('mq')" class="press-feel cnr-cancel-btn">나가기</button>
+                    </div>
+                    <div id="mq-state-game" class="hidden">
+                        <div class="mq-game">
+                            <div id="mq-wrap" class="mq-wrap">
+                                <canvas id="mq-canvas" onpointerdown="mqTap(event)"></canvas>
+                                <div id="mq-disc" class="mq-disc hidden">방장과 연결이 불안정해요…</div>
+                                <div id="mq-end" class="rz-end mq-end hidden">
+                                    <p class="mq-end-crest">🎭</p>
+                                    <p id="mq-end-title" class="rz-end-title"></p>
+                                    <p id="mq-end-detail" class="rz-end-detail"></p>
+                                    <div class="rz-end-actions"><button onclick="mpLeave('mq', true)" class="press-feel ghost-btn px-5 py-2.5 rounded-full text-sm">나가기</button></div>
+                                    <button onclick="document.getElementById('mq-end').classList.add('hidden')" class="rz-end-peek">무도회장 다시 보기</button>
+                                </div>
+                            </div>
+                            <div class="mq-bar">
+                                <button id="mq-b-stab" class="mq-k stab" onpointerdown="mqEvent('stab')"><i>🗡️</i><span>찌르기</span><kbd>Space</kbd><b class="bd"></b></button>
+                                <button id="mq-b-act" class="mq-k" onpointerdown="mqHold('act',true)" onpointerup="mqHold('act',false)" onpointerleave="mqHold('act',false)" onpointercancel="mqHold('act',false)"><i>🕯️</i><span>촛불 끄기</span><kbd>E 길게</kbd><b class="bd"></b></button>
+                                <button id="mq-b-dance" class="mq-k" onpointerdown="mqEvent('dance')"><i>💃</i><span>춤</span><kbd>Q</kbd><b class="bd"></b></button>
+                                <button id="mq-b-mask" class="mq-k" onpointerdown="mqEvent('mask')"><i>🎭</i><span>가면 교체</span><kbd>R</kbd><b class="bd"></b></button>
+                                <button id="mq-b-smoke" class="mq-k" onpointerdown="mqEvent('smoke')"><i>💨</i><span>연막</span><kbd>F</kbd><b class="bd"></b></button>
+                                <button id="mq-b-run" class="mq-k" onpointerdown="mqHold('run',true)" onpointerup="mqHold('run',false)" onpointerleave="mqHold('run',false)" onpointercancel="mqHold('run',false)"><i>🏃</i><span>달리기</span><kbd>Shift</kbd><b class="bd"></b></button>
+                                <button id="mq-mute" class="mq-k mute" onclick="mqToggleMute()">🔊</button>
+                            </div>
+                            <p class="mq-help">이동: <span class="rz-kbd">WASD</span>/<span class="rz-kbd">방향키</span> 또는 바닥 클릭 · 손님은 절대 달리지 않아요 — 달리면 들킬 수 있어요!</p>
+                            <button onclick="mpLeave('mq')" class="press-feel cnr-cancel-btn">나가기</button>
+                        </div>
                     </div>
                 </div>
 
@@ -5739,10 +5874,10 @@
         // 방장이 규칙 검증과 진행을 맡고, 각자의 손패는 본인에게만 따로 보낸다.
         // =====================================================================
         const MP_MAX = 4;
-        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'water' };
-        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'wbomb' };
-        const mpRooms = { rm: null, un: null, kk: null, cm: null, gp: null, hg: null, wb: null };
-        function mpMax(g) { return g === 'cm' ? 8 : g === 'gp' ? 12 : g === 'hg' ? 6 : MP_MAX; }
+        const MP_PANEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'water', mq: 'masq' };
+        const MP_CHANNEL = { rm: 'rummikub', un: 'uno', kk: 'kkutu', cm: 'catch', gp: 'gartic', hg: 'halli', wb: 'wbomb', mq: 'masq' };
+        const mpRooms = { rm: null, un: null, kk: null, cm: null, gp: null, hg: null, wb: null, mq: null };
+        function mpMax(g) { return g === 'cm' ? 8 : g === 'gp' ? 12 : g === 'hg' || g === 'mq' ? 6 : MP_MAX; }
         // 컴퓨터 참가자까지 합친 인원 (끝말잇기는 혼자서도 컴퓨터와 할 수 있다)
         function mpTotal(r) { return r.players.length + ((r.opts && r.opts.bots) || 0); }
         // 게임별 훅: onMsg(payload) 게임 메시지 처리 / hostStart() 방장이 시작할 때 / hostLeave(id) 누가 나갔을 때(방장만) / cleanup(room) 정리
@@ -7141,7 +7276,7 @@
         // 쉼터 허브 — 모달 열기/닫기, 게임 전환
         // 로그인 전(랜딩 화면)·로그인 후(앱 홈 화면) 어디서든 동일한 모달을 그대로 연다.
         // =====================================================================
-        const RESTZONE_TITLES = { water: '물풍선 대작전', bball: '스트리트 농구 1:1', halli: '할리갈리', gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
+        const RESTZONE_TITLES = { masq: '가면무도회', water: '물풍선 대작전', bball: '스트리트 농구 1:1', halli: '할리갈리', gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
 
         function openRestZoneModal() {
             if (!hasGameAccess()) { showToast('쉼터는 최고 관리자가 권한을 준 계정만 이용할 수 있어요.', 'error'); return; }
@@ -7172,6 +7307,7 @@
             if (typeof teardownHalli === 'function') teardownHalli();
             if (typeof teardownBball === 'function') teardownBball();
             if (typeof teardownWater === 'function') teardownWater();
+            if (typeof teardownMasq === 'function') teardownMasq();
         }
         function restzoneShowHub() {
             if (!rzConfirmLeaveLive()) return;
@@ -7197,6 +7333,7 @@
             if (typeof teardownHalli === 'function') teardownHalli();
             if (typeof teardownBball === 'function') teardownBball();
             if (typeof teardownWater === 'function') teardownWater();
+            if (typeof teardownMasq === 'function') teardownMasq();
         }
         function restzoneOpenGame(name) {
             document.querySelectorAll('#restzone-body > [id^="restzone-panel-"]').forEach(p => p.classList.add('hidden'));
@@ -7205,7 +7342,8 @@
             document.getElementById('restzone-back-btn').classList.remove('hidden');
             document.getElementById('restzone-modal-title').innerText = RESTZONE_TITLES[name] || '쉼터';
 
-            if (name === 'water') ensureWaterInit();
+            if (name === 'masq') ensureMasqInit();
+            else if (name === 'water') ensureWaterInit();
             else if (name === 'bball') ensureBballInit();
             else if (name === 'halli') ensureHalliInit();
             else if (name === 'gartic') ensureGarticInit();
@@ -8139,6 +8277,7 @@
             else if (mpRooms.gp && mpRooms.gp.phase === 'game') return confirm('진행 중인 갈틱폰에서 나갈까요?');
             else if (mpRooms.hg && mpRooms.hg.phase === 'game') return confirm('진행 중인 할리갈리에서 나갈까요?');
             else if (mpRooms.wb && mpRooms.wb.phase === 'game') return confirm('진행 중인 물풍선 대작전에서 나갈까요?');
+            else if (mpRooms.mq && mpRooms.mq.phase === 'game') return confirm('진행 중인 가면무도회에서 나갈까요?');
             else if (typeof bbk !== 'undefined' && bbk && bbk.phase === 'game') return confirm('진행 중인 농구 경기에서 나갈까요?');
             else if (mpRooms.kk && mpRooms.kk.phase === 'game') { const m = kkLeaveMsg(); return m ? confirm(m) : confirm('진행 중인 끝말잇기에서 나가면 패배로 기록돼요. 정말 나갈까요?'); }
             if (!name) return true;
@@ -14775,7 +14914,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return { key: 'omok:' + omok.roomCode, ch: omok.channel, id: currentUser.id, name: omok.myName };
                 if (typeof bs !== 'undefined' && bs && bs.channel) return { key: 'bs:' + bs.roomCode, ch: bs.channel, id: currentUser.id, name: bs.myName };
                 if (typeof vb !== 'undefined' && vb && vb.channel) return { key: 'vb:' + vb.roomCode, ch: vb.channel, id: currentUser.id, name: vb.myName };
-                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { key: g + ':' + r.code, ch: r.channel, id: r.myId, name: r.myName, peers: r.players.filter(x => x.id !== r.myId).map(x => ({ id: x.id, name: x.name })) };
                 }
@@ -15349,7 +15488,7 @@
                 if (typeof omok !== 'undefined' && omok && omok.channel) return mk('omok', omok);
                 if (typeof bs !== 'undefined' && bs && bs.channel) return mk('bs', bs);
                 if (typeof vb !== 'undefined' && vb && vb.channel) return mk('vball', vb);
-                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb']) {
+                for (const g of ['rm', 'un', 'kk', 'cm', 'gp', 'hg', 'wb', 'mq']) {
                     const r = mpRooms[g];
                     if (r && r.channel) return { g: MP_CHANNEL[g], code: r.code, ph: r.phase || 'waiting' };
                 }
@@ -19479,6 +19618,968 @@
         function wbCleanup(r) { clearInterval(r.wbTick); r.H = null; if (wbx) { cancelAnimationFrame(wbx.raf); wbx.snaps = []; wbx.endShown = false; } const e = document.getElementById('wb-end'); if (e) e.classList.add('hidden'); }
         MP_HOOKS.wb = { onMsg: wbOnMsg, hostStart: wbHostStart, hostAction: wbHostAction, hostLeave: wbHostLeave, cleanup: wbCleanup, onWaitingRender: wbWaitingRender, canStart: (r) => r.players.length + Math.min(+((r.opts || {}).bots) || 0, 4 - r.players.length) >= 2, leaveMsg: () => '진행 중인 물풍선 대작전에서 나갈까요?' };
 
+        const MQ = { W: 960, H: 580, R: 12, WALK: 56, RUN: 118, REACH: 44, STAB_CD: 1.1, EXPOSE: 3.2, NO_STAB: 4, HOLD: 1.8, LETTERS: 3, ROUND: 150, NPC: 26, INTRO: 3.6, REVEAL: 8, PANIC: 1.7 };
+        const MQ_WALL = { x0: 30, y0: 30, x1: 930, y1: 550 };
+        const MQ_CIRC = [
+            { x: 230, y: 150, r: 17 }, { x: 730, y: 150, r: 17 }, { x: 230, y: 430, r: 17 }, { x: 730, y: 430, r: 17 },
+            { x: 852, y: 92, r: 30 }, { x: 50, y: 530, r: 15 }, { x: 910, y: 530, r: 15 }, { x: 910, y: 50, r: 13 },
+        ];
+        const MQ_RECT = [{ x: 46, y: 46, w: 108, h: 62 }, { x: 360, y: 500, w: 240, h: 34 }];
+        const MQ_PED = [[72, 172], [888, 172], [72, 408], [888, 408], [396, 48], [564, 48], [304, 290], [656, 290]];
+        const MQ_DANCE = { x: 480, y: 290, r: 116 };
+        const MQ_POI = [[214, 42, 'p'], [746, 42, 'p'], [42, 290, 'p'], [918, 290, 'p'], [400, 486, 'b'], [480, 486, 'b'], [560, 486, 'b'], [176, 80, 'b'], [852, 138, 'b'], [100, 140, 'b'], [480, 290, 'd'], [420, 250, 'd'], [540, 330, 'd'], [440, 340, 'd'], [530, 240, 'd']];
+        const MQ_OUTFITS = 10;
+        function mqRnd(a, b) { return a + Math.random() * (b - a); }
+        function mqPick(a) { return a[Math.floor(Math.random() * a.length)]; }
+        function mqFree(x, y, pad) {
+            if (x < MQ_WALL.x0 + pad || x > MQ_WALL.x1 - pad || y < MQ_WALL.y0 + pad || y > MQ_WALL.y1 - pad) return false;
+            for (const c of MQ_CIRC) if (Math.hypot(x - c.x, y - c.y) < c.r + pad) return false;
+            for (const p of MQ_PED) if (Math.hypot(x - p[0], y - p[1]) < 9 + pad) return false;
+            for (const r of MQ_RECT) if (x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad) return false;
+            return true;
+        }
+        function mqRandPt(pad) { for (let i = 0; i < 200; i++) { const x = mqRnd(40, 920), y = mqRnd(40, 540); if (mqFree(x, y, pad || 18)) return [x, y]; } return [480, 290]; }
+        function mqEv(S, e) { S.ev.push(e); S.evNow.push(e); }
+        function mqNew(players, opts) {
+            const S = { plays: players.map(p => ({ id: p.id, name: p.name, bot: !!p.bot, wins: 0, kills: 0, letters: 0, alive: true, eid: -1, trail: [] })), round: 0, target: (opts && opts.wins) || 3, npc: (opts && opts.npc) || MQ.NPC, ev: [], evNow: [], evLast: [], seq: 0, phase: 'intro', pt: 0, over: false, champ: null };
+            mqStartRound(S);
+            return S;
+        }
+        function mqStartRound(S) {
+            S.round++; S.phase = 'intro'; S.pt = MQ.INTRO; S.rt = MQ.ROUND; S.winner = null; S.why = '';
+            const act = S.plays.map((P, i) => i).filter(i => !S.plays[i].gone);
+            const n = S.npc + act.length, ids = [...Array(n).keys()].sort(() => Math.random() - 0.5);
+            const pOut = act.map(() => Math.floor(Math.random() * MQ_OUTFITS));
+            const nOut = []; pOut.forEach(o => { nOut.push(o, o); }); while (nOut.length < S.npc) nOut.push(Math.floor(Math.random() * MQ_OUTFITS)); nOut.sort(() => Math.random() - 0.5);
+            const used = []; const spot = () => { for (let k = 0; k < 60; k++) { const p = mqRandPt(20); if (used.every(u => Math.hypot(u[0] - p[0], u[1] - p[1]) > 30)) { used.push(p); return p; } } return mqRandPt(20); };
+            S.ents = new Array(n);
+            for (let i = 0; i < n; i++) {
+                const id = ids[i], pi = i < act.length ? act[i] : -1, [x, y] = spot();
+                S.ents[id] = { id, pi, x, y, h: Math.random() * 6.283, st: 0, t: mqRnd(0.2, 2.5), o: pi >= 0 ? pOut[i] : nOut[i - act.length], spd: pi >= 0 ? MQ.WALK : mqRnd(48, 64), tx: -1, ty: -1, exp: 0, ncd: 0, cd: 0, sw: 0, dance: 0, mk: 1, sm: 1, fx: 0, fy: 0, stk: 0, sx: x, sy: y, wd: -1 };
+                if (pi >= 0) { const P = S.plays[pi]; P.eid = id; P.letters = 0; P.alive = true; P.trail = [[Math.round(x), Math.round(y)]]; P.tt = 0; }
+            }
+            S.plays.forEach(P => { if (P.gone) { P.eid = -1; P.alive = false; P.letters = 0; } });
+            S.ped = MQ_PED.map(([x, y]) => ({ x, y, lit: false, prog: 0, cool: 0, holder: -1 }));
+            [...Array(MQ_PED.length).keys()].sort(() => Math.random() - 0.5).slice(0, 3).forEach(i => { S.ped[i].lit = true; });
+            S.smokes = []; S.wz = null; S.dark = 0;
+            const wAt = mqRnd(48, 108); S.sched = [{ at: wAt, k: 'waltz' }];
+            if (Math.random() < 0.8) { let bAt = mqRnd(30, 125); if (Math.abs(bAt - wAt) < 18) bAt = wAt > 80 ? wAt - 30 : wAt + 30; S.sched.push({ at: bAt, k: 'dark' }); }
+            S.reveal = null;
+            mqEv(S, { k: 'round', n: S.round });
+        }
+        function mqCollide(S, e) {
+            const R = MQ.R;
+            for (const c of MQ_CIRC) { const dx = e.x - c.x, dy = e.y - c.y, d = Math.hypot(dx, dy) || 0.01, m = c.r + R; if (d < m) { e.x = c.x + dx / d * m; e.y = c.y + dy / d * m; } }
+            for (const p of MQ_PED) { const dx = e.x - p[0], dy = e.y - p[1], d = Math.hypot(dx, dy) || 0.01, m = 8 + R; if (d < m) { e.x = p[0] + dx / d * m; e.y = p[1] + dy / d * m; } }
+            for (const r of MQ_RECT) {
+                const cx = Math.max(r.x, Math.min(e.x, r.x + r.w)), cy = Math.max(r.y, Math.min(e.y, r.y + r.h)), dx = e.x - cx, dy = e.y - cy, d = Math.hypot(dx, dy);
+                if (d < R) { if (d > 0.01) { e.x = cx + dx / d * R; e.y = cy + dy / d * R; } else { const l = e.x - r.x, rr = r.x + r.w - e.x, t = e.y - r.y, b = r.y + r.h - e.y, m = Math.min(l, rr, t, b); if (m === l) e.x = r.x - R; else if (m === rr) e.x = r.x + r.w + R; else if (m === t) e.y = r.y - R; else e.y = r.y + r.h + R; } }
+            }
+            e.x = Math.max(MQ_WALL.x0 + R, Math.min(MQ_WALL.x1 - R, e.x)); e.y = Math.max(MQ_WALL.y0 + R, Math.min(MQ_WALL.y1 - R, e.y));
+        }
+        function mqSteer(e, ang, spd, dt) {
+            let d = ang - e.h; while (d > Math.PI) d -= 6.283; while (d < -Math.PI) d += 6.283;
+            const turn = 9 * dt; e.h += Math.max(-turn, Math.min(turn, d));
+            const k = Math.abs(d) > 1.3 ? 0.35 : 1;
+            e.x += Math.cos(e.h) * spd * k * dt; e.y += Math.sin(e.h) * spd * k * dt;
+        }
+        function mqFace(e, x, y, dt) { const a = Math.atan2(y - e.y, x - e.x); let d = a - e.h; while (d > Math.PI) d -= 6.283; while (d < -Math.PI) d += 6.283; e.h += Math.max(-5 * dt, Math.min(5 * dt, d)); }
+        function mqNpcNext(S, e) {
+            const r = Math.random();
+            if (r < 0.5) {
+                const lit = S.ped.filter(p => p.lit);
+                let poi;
+                if (lit.length && Math.random() < 0.3) { const p = mqPick(lit), a = Math.random() * 6.283; poi = [p.x + Math.cos(a) * 24, p.y + Math.sin(a) * 24, 'c', p]; }
+                else { const q = mqPick(MQ_POI); poi = [q[0] + mqRnd(-14, 14), q[1] + mqRnd(-10, 10), q[2]]; }
+                if (!mqFree(poi[0], poi[1], 12)) { const p = mqRandPt(16); poi = [p[0], p[1], 'x']; }
+                e.tx = poi[0]; e.ty = poi[1]; e.goal = poi[2]; e.gp = poi[3] || null;
+            } else { const p = mqRandPt(16); e.tx = p[0]; e.ty = p[1]; e.goal = 'x'; e.gp = null; }
+            e.st = 1; e.stk = 0; e.sx = e.x; e.sy = e.y;
+        }
+        function mqNpcArrive(S, e) {
+            e.tx = -1;
+            if (e.goal === 'c' || e.goal === 'p') { e.st = 4; e.t = mqRnd(1.6, 3.6); e.fx = e.gp ? e.gp.x : (e.goal === 'p' ? e.x + (e.x < 60 ? -40 : e.x > 900 ? 40 : 0) : e.x); e.fy = e.gp ? e.gp.y : (e.y < 60 ? e.y - 40 : e.y); return; }
+            const near = S.ents.find(o => o !== e && o.st !== 7 && o.st !== 8 && Math.hypot(o.x - e.x, o.y - e.y) < 46);
+            if (near && Math.random() < 0.7) { e.st = 3; e.t = mqRnd(2, 5); e.fx = near.x; e.fy = near.y; return; }
+            if (Math.random() < 0.06 || (e.goal === 'd' && Math.random() < 0.25)) { e.st = 5; e.t = mqRnd(1.6, 2.8); return; }
+            e.st = 0; e.t = mqRnd(0.6, 3.2);
+        }
+        function mqPanic(S, x, y, r, skip) {
+            S.ents.forEach(e => { if (e.pi >= 0 || e === skip || e.st === 7 || e.st === 8) return; if (Math.hypot(e.x - x, e.y - y) < r) { e.st = 6; e.t = mqRnd(0.9, 1.6); e.fx = x; e.fy = y; e.tx = -1; } });
+        }
+        function mqNpcTick(S, e, dt) {
+            if (e.st === 8) return;
+            if (e.st === 7) { e.t -= dt; if (e.t <= 0) { e.st = 0; e.t = mqRnd(0.5, 1.5); } return; }
+            if (S.wz && S.wz.warn <= 0) {
+                if (e.wd < 0) e.wd = mqRnd(0, 0.45);
+                if (e.wd > 0) { e.wd -= dt; if (e.wd <= 0) e.wd = 0; }
+                if (e.wd === 0) { e.st = 5; e.t = 0.5; return; }
+            } else if (e.wd >= 0) { e.wd = -1; if (e.st === 5) { e.st = 0; e.t = mqRnd(0.3, 1.2); } }
+            if (e.st === 6) {
+                e.t -= dt; const a = Math.atan2(e.y - e.fy, e.x - e.fx); mqSteer(e, a + Math.sin(e.id + S.seq * 0.05) * 0.4, e.spd * MQ.PANIC, dt);
+                if (e.t <= 0) { e.st = 0; e.t = mqRnd(0.5, 1.5); }
+                return;
+            }
+            if (e.st === 1) {
+                const d = Math.hypot(e.tx - e.x, e.ty - e.y);
+                if (d < 5) { mqNpcArrive(S, e); return; }
+                if (e.goal === 'c' && e.gp && !e.gp.lit) { e.gp = null; e.goal = 'x'; }
+                mqSteer(e, Math.atan2(e.ty - e.y, e.tx - e.x), e.spd * (d < 20 ? 0.7 : 1), dt);
+                e.stk += dt; if (e.stk > 1.2) { if (Math.hypot(e.x - e.sx, e.y - e.sy) < 14) mqNpcNext(S, e); e.stk = 0; e.sx = e.x; e.sy = e.y; }
+                return;
+            }
+            e.t -= dt;
+            if (e.st === 3 || e.st === 4) mqFace(e, e.fx, e.fy, dt);
+            if (e.st === 4 && e.gp && !e.gp.lit) e.t = Math.min(e.t, 0.4);
+            if (e.t <= 0) mqNpcNext(S, e);
+        }
+        function mqNearPed(S, e) { let best = null, bd = 34; S.ped.forEach((p, i) => { if (!p.lit) return; const d = Math.hypot(p.x - e.x, p.y - e.y); if (d < bd) { bd = d; best = i; } }); return best; }
+        function mqStab(S, e, P) {
+            let tgt = null, bd = MQ.REACH;
+            for (const o of S.ents) { if (o === e || o.st === 7 || o.st === 8) continue; const d = Math.hypot(o.x - e.x, o.y - e.y); if (d < bd) { bd = d; tgt = o; } }
+            e.cd = MQ.STAB_CD; e.sw = 0.32;
+            if (tgt) e.h = Math.atan2(tgt.y - e.y, tgt.x - e.x);
+            if (!tgt) { mqEv(S, { k: 'swing', e: e.id }); return; }
+            if (tgt.pi >= 0) {
+                const V = S.plays[tgt.pi]; tgt.st = 8; V.alive = false; P.kills++;
+                mqEv(S, { k: 'kill', e: tgt.id, p: tgt.pi, by: S.plays.indexOf(P) });
+                mqPanic(S, tgt.x, tgt.y, 130);
+            } else {
+                tgt.st = 7; tgt.t = 9; e.exp = MQ.EXPOSE; e.ncd = MQ.NO_STAB; P.wrongs = (P.wrongs || 0) + 1;
+                mqEv(S, { k: 'wrong', e: e.id, v: tgt.id });
+                mqPanic(S, tgt.x, tgt.y, 110);
+            }
+        }
+        function mqSwapOutfit(S, e) {
+            const counts = new Array(MQ_OUTFITS).fill(0); S.ents.forEach(o => { if (o.pi < 0) counts[o.o]++; });
+            const opts = [...Array(MQ_OUTFITS).keys()].filter(o => o !== e.o && counts[o] >= 2);
+            e.o = opts.length ? mqPick(opts) : (e.o + 1) % MQ_OUTFITS;
+        }
+        function mqPlayerTick(S, e, P, inp, dt) {
+            if (!P.alive) { e.st = 8; return; }
+            e.exp = Math.max(0, e.exp - dt); e.ncd = Math.max(0, e.ncd - dt); e.cd = Math.max(0, e.cd - dt); e.sw = Math.max(0, e.sw - dt); e.dance = Math.max(0, e.dance - dt);
+            const play = S.phase === 'play';
+            for (const ev of (play ? inp.ev || [] : [])) {
+                if (ev.e === 'stab') { if (e.cd <= 0 && e.ncd <= 0) mqStab(S, e, P); }
+                else if (ev.e === 'dance') { e.dance = S.wz && S.wz.warn <= 0 ? S.wz.t + 0.3 : 2.6; }
+                else if (ev.e === 'mask') { if (e.mk > 0) { e.mk--; mqSwapOutfit(S, e); mqEv(S, { k: 'swap', e: e.id }); } }
+                else if (ev.e === 'smoke') {
+                    if (e.sm > 0) {
+                        e.sm--; S.smokes.push({ x: e.x, y: e.y, t: 5.5 }); mqEv(S, { k: 'smoke', x: Math.round(e.x), y: Math.round(e.y) });
+                        S.ents.forEach(o => { if (o.pi >= 0 || o.st >= 7 || Math.hypot(o.x - e.x, o.y - e.y) > 110) return; const a = Math.random() * 6.283, r = mqRnd(50, 130); let tx = o.x + Math.cos(a) * r, ty = o.y + Math.sin(a) * r; if (!mqFree(tx, ty, 14)) { const p = mqRandPt(16); tx = p[0]; ty = p[1]; } o.tx = tx; o.ty = ty; o.goal = 'x'; o.gp = null; o.st = 1; o.stk = 0; o.sx = o.x; o.sy = o.y; });
+                    }
+                }
+            }
+            if (!play) { e.st = 0; return; }
+            const mx = inp.mx || 0, my = inp.my || 0, keys = mx || my;
+            if (keys) { e.tx = -1; }
+            else if (inp.tk && inp.tk !== e.lastTk && inp.tx >= 0) { e.tx = inp.tx; e.ty = inp.ty; e.stk = 0; e.sx = e.x; e.sy = e.y; }
+            e.lastTk = inp.tk;
+            let moving = false, ang = 0;
+            if (keys) { moving = true; ang = Math.atan2(my, mx); }
+            else if (e.tx >= 0) { const d = Math.hypot(e.tx - e.x, e.ty - e.y); if (d > 4) { moving = true; ang = Math.atan2(e.ty - e.y, e.tx - e.x); } else e.tx = -1; }
+            const pi = mqNearPed(S, e);
+            if (moving) {
+                e.dance = 0; const run = !!inp.run;
+                mqSteer(e, ang, run ? MQ.RUN : MQ.WALK, dt); e.st = run ? 2 : 1;
+                if (e.tx >= 0) { e.stk += dt; if (e.stk > 1) { if (Math.hypot(e.x - e.sx, e.y - e.sy) < 10) e.tx = -1; e.stk = 0; e.sx = e.x; e.sy = e.y; } }
+            } else if (e.dance > 0) e.st = 5;
+            else if (inp.act && pi != null) {
+                const p = S.ped[pi]; e.st = 9; mqFace(e, p.x, p.y, dt);
+                if (p.holder !== e.id) { p.holder = e.id; }
+                p.prog += dt / MQ.HOLD;
+                if (p.prog >= 1) {
+                    p.lit = false; p.prog = 0; p.cool = 5; p.holder = -1; P.letters++;
+                    const pIdx = S.plays.indexOf(P);
+                    mqEv(S, { k: 'snuff', i: pi }); mqEv(S, { k: 'letter', p: pIdx, n: P.letters });
+                    if (P.letters >= MQ.LETTERS) mqRoundWin(S, pIdx, 'letters');
+                }
+            } else e.st = 0;
+            S.ped.forEach(p => { if (p.holder === e.id && (e.st !== 9 || mqNearPed(S, e) !== S.ped.indexOf(p))) { p.prog = Math.max(0, p.prog - dt * 0.9); if (p.prog === 0) p.holder = -1; } });
+            P.tt += dt; if (P.tt > 0.25) { P.tt = 0; P.trail.push([Math.round(e.x), Math.round(e.y)]); if (P.trail.length > 60) P.trail.shift(); }
+        }
+        function mqRoundWin(S, pIdx, why) {
+            if (S.phase !== 'play') return;
+            S.phase = 'reveal'; S.pt = MQ.REVEAL; S.winner = pIdx; S.why = why;
+            if (pIdx != null && pIdx >= 0) S.plays[pIdx].wins++;
+            S.reveal = S.plays.map(P => ({ eid: P.gone ? -1 : P.eid, trail: P.gone ? [] : P.trail.slice(), alive: P.alive }));
+            mqEv(S, { k: 'roundwin', p: pIdx, why });
+        }
+        function mqTick(S, inputs, dt) {
+            if (S.over) return;
+            S.seq++; S.evLast = S.evNow; S.evNow = [];
+            if (S.phase === 'reveal') {
+                S.pt -= dt;
+                if (S.pt <= 0) {
+                    const champ = S.plays.findIndex(P => P.wins >= S.target);
+                    if (champ >= 0 || S.plays.filter(P => !P.gone).length < 2) { S.over = true; S.phase = 'over'; S.champ = champ >= 0 ? champ : S.plays.findIndex(P => !P.gone); mqEv(S, { k: 'champ', p: S.champ }); }
+                    else mqStartRound(S);
+                }
+                return;
+            }
+            if (S.phase === 'intro') { S.pt -= dt; if (S.pt <= 0) { S.phase = 'play'; mqEv(S, { k: 'go' }); } }
+            if (S.phase === 'play') {
+                S.rt -= dt;
+                const el = MQ.ROUND - S.rt;
+                S.sched = S.sched.filter(s => {
+                    if (MQ.ROUND - s.at > S.rt) return true;
+                    if (s.k === 'waltz') { S.wz = { warn: 1.6, t: 5.5 }; mqEv(S, { k: 'waltzw' }); }
+                    if (s.k === 'dark') { S.dark = 7; mqEv(S, { k: 'dark' }); }
+                    return false;
+                });
+                if (S.wz) { if (S.wz.warn > 0) { S.wz.warn -= dt; if (S.wz.warn <= 0) mqEv(S, { k: 'waltz' }); } else { S.wz.t -= dt; if (S.wz.t <= 0) { S.wz = null; mqEv(S, { k: 'waltzend' }); } } }
+                if (S.dark > 0) { S.dark -= dt; if (S.dark <= 0) { S.dark = 0; mqEv(S, { k: 'light' }); } }
+                S.smokes.forEach(s => { s.t -= dt; }); S.smokes = S.smokes.filter(s => s.t > 0);
+                const lit = S.ped.filter(p => p.lit).length;
+                S.ped.forEach(p => { if (!p.lit && p.cool > 0) p.cool -= dt; });
+                if (lit < 3) { const c = S.ped.map((p, i) => i).filter(i => !S.ped[i].lit && S.ped[i].cool <= 0); if (c.length) { const i = mqPick(c); S.ped[i].lit = true; S.ped[i].prog = 0; mqEv(S, { k: 'relight', i }); } }
+            }
+            for (const e of S.ents) {
+                if (e.pi >= 0) mqPlayerTick(S, e, S.plays[e.pi], inputs[e.pi] || {}, dt);
+                else mqNpcTick(S, e, dt);
+            }
+            const E = S.ents, R2 = MQ.R * 2 - 2;
+            for (let i = 0; i < E.length; i++) {
+                const a = E[i]; if (a.st >= 7 && a.st !== 9) continue;
+                for (let j = i + 1; j < E.length; j++) {
+                    const b = E[j]; if (b.st >= 7 && b.st !== 9) continue;
+                    const dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
+                    if (d2 < R2 * R2 && d2 > 0.0001) { const d = Math.sqrt(d2), m = (R2 - d) / 2, ux = dx / d, uy = dy / d; a.x -= ux * m; a.y -= uy * m; b.x += ux * m; b.y += uy * m; }
+                }
+            }
+            E.forEach(e => mqCollide(S, e));
+            if (S.phase === 'play') {
+                const act = S.plays.filter(P => !P.gone), alive = act.filter(P => P.alive);
+                if (act.length >= 2 && alive.length <= 1) mqRoundWin(S, alive.length ? S.plays.indexOf(alive[0]) : null, 'last');
+                else if (S.rt <= 0) {
+                    const best = Math.max(...alive.map(P => P.letters)), top = alive.filter(P => P.letters === best);
+                    mqRoundWin(S, top.length === 1 && best > 0 ? S.plays.indexOf(top[0]) : null, 'time');
+                }
+            }
+        }
+        function mqLeave(S, pi) {
+            const P = S.plays[pi]; if (!P || P.gone) return;
+            P.gone = true; P.alive = false;
+            const e = S.ents && S.ents[P.eid]; if (e) { e.pi = -1; e.spd = MQ.WALK; if (e.st === 9 || e.st === 2) e.st = 0; e.t = 1; }
+            mqEv(S, { k: 'left', p: pi });
+            if (S.phase === 'play' || S.phase === 'intro') { const act = S.plays.filter(Q => !Q.gone), alive = act.filter(Q => Q.alive); if (alive.length <= 1) { S.phase = 'play'; mqRoundWin(S, alive.length ? S.plays.indexOf(alive[0]) : null, 'last'); } }
+        }
+        function mqBot(S, pi, mem, dt) {
+            const P = S.plays[pi], e = S.ents[P.eid], out = { mx: 0, my: 0, tx: -1, ty: -1, run: 0, act: 0, ev: [] };
+            if (!P.alive || S.phase !== 'play') { mem.tx = -1; return out; }
+            if (!mem.sus) { mem.sus = new Map(); mem.thr = mqRnd(60, 95); mem.react = mqRnd(0.35, 1.1); mem.t = mqRnd(0.5, 2); mem.mode = 'idle'; mem.tx = -1; mem.patience = mqRnd(2, 5); }
+            const sus = mem.sus, add = (id, v) => { if (id === e.id) return; sus.set(id, Math.min(200, (sus.get(id) || 0) + v)); };
+            const see = S.dark > 0 ? 0.35 : 0.8;
+            const nearestTo = (x, y, skip) => { let b = null, bd = 60; for (const o of S.ents) { if (o === e || o.id === skip || o.st >= 7 && o.st !== 9) continue; const d = Math.hypot(o.x - x, o.y - y); if (d < bd) { bd = d; b = o; } } return b; };
+            for (const v of S.evLast) {
+                if (Math.random() > see) continue;
+                if (v.k === 'snuff') { const p = S.ped[v.i], o = nearestTo(p.x, p.y); if (o) add(o.id, 75); }
+                else if (v.k === 'wrong' || v.k === 'swing') add(v.e, 95);
+                else if (v.k === 'kill') { const t = S.ents[v.e], o = nearestTo(t.x, t.y, v.e); if (o) add(o.id, 85); }
+                else if (v.k === 'swap') add(v.e, 55);
+            }
+            for (const o of S.ents) {
+                if (o === e || o.st >= 7 && o.st !== 9) { if (o.st === 7 || o.st === 8) sus.delete(o.id); continue; }
+                let s = sus.get(o.id) || 0;
+                if (o.st === 2) s += 14 * dt * see;
+                if (S.wz && S.wz.warn <= 0 && S.wz.t < 4.6 && o.st !== 5) s += 30 * dt * see;
+                if (o.exp > 0) s += 60 * dt;
+                s *= 1 - 0.05 * dt;
+                if (s > 0.5) sus.set(o.id, s); else sus.delete(o.id);
+            }
+            if (S.wz && S.wz.warn <= 0) {
+                if (mem.wz !== S.wz) { mem.wz = S.wz; mem.wzT = mem.react; mem.wzOk = Math.random() < 0.85; }
+                mem.wzT -= dt;
+                if (mem.wzOk && mem.wzT <= 0 && e.st !== 5) out.ev.push({ e: 'dance' });
+                if (mem.wzOk && mem.wzT <= 0) return out;
+            }
+            const goTo = (x, y) => { out.tx = Math.round(x); out.ty = Math.round(y); out.tk = out.tx * 1000 + out.ty + 1; };
+            let best = null, bs = 0; sus.forEach((v, id) => { if (v > bs) { bs = v; best = id; } });
+            if (e.exp > 0 && e.sm > 0 && Math.random() < dt * 1.5) out.ev.push({ e: 'smoke' });
+            if (mem.mode === 'flee') { mem.t -= dt; if (mem.t <= 0) { mem.mode = 'idle'; if (e.mk > 0 && Math.random() < 0.6) out.ev.push({ e: 'mask' }); } }
+            if (best != null && bs > mem.thr && e.ncd <= 0 && mem.mode !== 'flee') {
+                const t = S.ents[best], d = Math.hypot(t.x - e.x, t.y - e.y);
+                mem.mode = 'hunt';
+                if (d < MQ.REACH - 8 && e.cd <= 0) { out.ev.push({ e: 'stab' }); sus.set(best, bs * 0.3); mem.mode = 'flee'; mem.t = mqRnd(1.5, 3); const p = mqRandPt(20); mem.tx = p[0]; mem.ty = p[1]; goTo(p[0], p[1]); return out; }
+                goTo(t.x, t.y); if (d < 70 && bs > mem.thr * 1.6) out.run = 1;
+                return out;
+            }
+            if (mem.mode === 'hunt') mem.mode = 'idle';
+            if (mem.mode === 'hold') {
+                const p = S.ped[mem.ped];
+                const danger = [...sus.entries()].some(([id, v]) => v > 50 && Math.hypot(S.ents[id].x - e.x, S.ents[id].y - e.y) < 60);
+                if (!p.lit || danger) { mem.mode = 'idle'; mem.t = mqRnd(0.5, 1.5); }
+                else { const d = Math.hypot(p.x - e.x, p.y - e.y); if (d > 30) goTo(p.x + (e.x - p.x) / d * 22, p.y + (e.y - p.y) / d * 22); else out.act = 1; return out; }
+            }
+            if (mem.mode === 'walk' || mem.mode === 'flee') {
+                if (Math.hypot(mem.tx - e.x, mem.ty - e.y) < 6 || e.tx < 0 && mem.sent) { mem.mode = mem.mode === 'flee' ? 'flee' : 'idle'; mem.t = mem.mode === 'flee' ? mem.t : mqRnd(0.6, 3.2); mem.sent = false; if (mem.mode === 'idle' && Math.random() < 0.05) out.ev.push({ e: 'dance' }); return out; }
+                goTo(mem.tx, mem.ty); mem.sent = true; return out;
+            }
+            mem.t -= dt;
+            if (mem.t > 0) return out;
+            const lit = S.ped.map((p, i) => i).filter(i => S.ped[i].lit);
+            const risky = P.letters >= 2 ? 0.25 : 0.45;
+            if (lit.length && Math.random() < risky) {
+                lit.sort((a, b) => Math.hypot(S.ped[a].x - e.x, S.ped[a].y - e.y) - Math.hypot(S.ped[b].x - e.x, S.ped[b].y - e.y));
+                mem.mode = 'hold'; mem.ped = lit[Math.random() < 0.7 ? 0 : lit.length - 1]; return out;
+            }
+            const q = Math.random() < 0.5 ? mqPick(MQ_POI) : null, p = q && mqFree(q[0], q[1], 12) ? [q[0] + mqRnd(-10, 10), q[1] + mqRnd(-8, 8)] : mqRandPt(16);
+            mem.mode = 'walk'; mem.tx = p[0]; mem.ty = p[1]; mem.sent = false; goTo(p[0], p[1]);
+            return out;
+        }
+
+        const MQ_VW = 960, MQ_VH = 640, MQ_OY = 60;
+        const MQ_LOOK = [
+            { type: 0, body: '#b3123a', body2: '#5e0a20', hair: '#2a1a14', mask: '#f5c542', acc: '#ffd86b' },
+            { type: 1, body: '#22357a', body2: '#0d1538', hair: '#1a1410', mask: '#dfe3ec', acc: '#9fb3ff', hat: 0 },
+            { type: 0, body: '#0f7a5a', body2: '#053a2c', hair: '#5b3a1c', mask: '#e8d18a', acc: '#7ef0c2' },
+            { type: 1, body: '#5a2a8a', body2: '#271042', hair: '#121010', mask: '#f2f2f2', acc: '#d6a8ff', hat: 1 },
+            { type: 0, body: '#efe6d2', body2: '#a99b7b', hair: '#c9a46a', mask: '#b8860b', acc: '#ffffff' },
+            { type: 1, body: '#24232b', body2: '#08080b', hair: '#3a2a1a', mask: '#f5c542', acc: '#e9c46a', hat: 1 },
+            { type: 0, body: '#e0567d', body2: '#7e1d3d', hair: '#1e1414', mask: '#ffffff', acc: '#ffc2d4' },
+            { type: 1, body: '#12707a', body2: '#06353b', hair: '#6b4423', mask: '#1b1b1b', acc: '#7fe3ea', hat: 0 },
+            { type: 0, body: '#e39b1b', body2: '#7a4806', hair: '#2b1b10', mask: '#5b1b6b', acc: '#ffe08a' },
+            { type: 1, body: '#7a1f4a', body2: '#360a20', hair: '#d8c7a0', mask: '#c0c0c0', acc: '#ff9ec7', hat: 1 },
+        ];
+        const MQ_SKIN = ['#f3cfae', '#e0ac82', '#b97d55'];
+        const MQ_PCOL = ['#ffd23f', '#4cc9f0', '#ff5d8f', '#7bed9f', '#c77dff', '#ff9f1c'];
+        const MQ_CHAND = [[300, 176], [660, 176], [300, 404], [660, 404]];
+        function mqSeed(n) { let x = Math.sin(n * 9301 + 49297) * 233280; return x - Math.floor(x); }
+        function mqRR(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+        function mqBuildBg(scale) {
+            const cv = document.createElement('canvas'); cv.width = Math.round(MQ_VW * scale); cv.height = Math.round(MQ_VH * scale);
+            const c = cv.getContext('2d'); c.scale(scale, scale);
+            const hb = c.createLinearGradient(0, 0, 0, MQ_OY); hb.addColorStop(0, '#1a0f1e'); hb.addColorStop(1, '#0d0710'); c.fillStyle = hb; c.fillRect(0, 0, MQ_VW, MQ_OY);
+            c.translate(0, MQ_OY);
+            const W = MQ.W, H = MQ.H, w = MQ_WALL;
+            c.fillStyle = '#3a0d1e'; c.fillRect(0, 0, W, H);
+            c.save(); c.globalAlpha = 0.16; c.fillStyle = '#e8b04a';
+            for (let y = 4; y < H; y += 16) for (let x = (y / 16 % 2) * 8 + 4; x < W; x += 16) { if (x > w.x0 - 2 && x < w.x1 + 2 && y > w.y0 - 2 && y < w.y1 + 2) continue; c.beginPath(); c.moveTo(x, y - 3.5); c.lineTo(x + 2.5, y); c.lineTo(x, y + 3.5); c.lineTo(x - 2.5, y); c.closePath(); c.fill(); }
+            c.restore();
+            c.save(); c.beginPath(); c.rect(w.x0, w.y0, w.x1 - w.x0, w.y1 - w.y0); c.clip();
+            const T = 46;
+            for (let i = -14; i < 40; i++) for (let j = -14; j < 40; j++) {
+                const cx = (i - j) * T / 2 + 480, cy = (i + j) * T / 2 - 400; if (cx < -T || cx > W + T || cy < -T || cy > H + T) continue;
+                const dark = (i + j) % 2 === 0, sd = mqSeed(i * 131 + j * 7);
+                c.fillStyle = dark ? `rgb(${34 + sd * 8},${22 + sd * 5},${30 + sd * 6})` : `rgb(${190 + sd * 12},${174 + sd * 10},${152 + sd * 8})`;
+                c.beginPath(); c.moveTo(cx, cy - T / 2); c.lineTo(cx + T / 2, cy); c.lineTo(cx, cy + T / 2); c.lineTo(cx - T / 2, cy); c.closePath(); c.fill();
+            }
+            c.globalAlpha = 0.08; c.strokeStyle = '#8a7a6a'; c.lineWidth = 0.8;
+            for (let k = 0; k < 70; k++) { const x = mqSeed(k) * W, y = mqSeed(k + 99) * H; c.beginPath(); c.moveTo(x, y); c.bezierCurveTo(x + 30 * mqSeed(k + 3), y + 20, x + 50, y - 20 * mqSeed(k + 5), x + 90 * mqSeed(k + 7), y + 30 * mqSeed(k + 9)); c.stroke(); }
+            c.globalAlpha = 1;
+            c.fillStyle = 'rgba(30,10,30,.2)'; c.fillRect(0, 0, W, H);
+            c.fillStyle = '#7d0f24'; c.fillRect(452, w.y0, 56, 150);
+            c.strokeStyle = '#d9a441'; c.lineWidth = 2; c.strokeRect(455, w.y0 - 2, 50, 152);
+            c.strokeStyle = 'rgba(217,164,65,.45)'; c.lineWidth = 1; c.strokeRect(460, w.y0 - 2, 40, 152);
+            const D = MQ_DANCE;
+            c.save(); c.beginPath(); c.arc(D.x, D.y, D.r, 0, 6.283); c.clip();
+            for (let i = -12; i < 12; i++) for (let j = -12; j < 12; j++) {
+                const x = D.x + i * 18, y = D.y + j * 18; const g = (i + j) & 1;
+                c.fillStyle = g ? '#8a5a2b' : '#a06a34'; c.fillRect(x, y, 18, 18);
+                c.strokeStyle = 'rgba(40,20,5,.35)'; c.lineWidth = 0.6; if (g) { c.beginPath(); c.moveTo(x, y + 6); c.lineTo(x + 18, y + 6); c.moveTo(x, y + 12); c.lineTo(x + 18, y + 12); c.stroke(); } else { c.beginPath(); c.moveTo(x + 6, y); c.lineTo(x + 6, y + 18); c.moveTo(x + 12, y); c.lineTo(x + 12, y + 18); c.stroke(); }
+            }
+            c.restore();
+            c.save(); c.translate(D.x, D.y);
+            const gr = c.createRadialGradient(0, 0, 10, 0, 0, D.r); gr.addColorStop(0, 'rgba(255,220,140,.22)'); gr.addColorStop(1, 'rgba(0,0,0,.25)'); c.fillStyle = gr; c.beginPath(); c.arc(0, 0, D.r, 0, 6.283); c.fill();
+            for (let k = 0; k < 16; k++) { const a = k * Math.PI / 8, r1 = k % 2 ? 46 : 78; c.fillStyle = k % 2 ? 'rgba(240,200,110,.55)' : 'rgba(255,230,160,.75)'; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.cos(a - 0.12) * 18, Math.sin(a - 0.12) * 18); c.lineTo(Math.cos(a) * r1, Math.sin(a) * r1); c.lineTo(Math.cos(a + 0.12) * 18, Math.sin(a + 0.12) * 18); c.closePath(); c.fill(); }
+            [D.r - 2, D.r - 9, 86, 20].forEach((r, i) => { c.strokeStyle = i === 1 ? 'rgba(120,70,20,.8)' : '#e2b24f'; c.lineWidth = i === 0 ? 4 : 2; c.beginPath(); c.arc(0, 0, r, 0, 6.283); c.stroke(); });
+            c.restore();
+            c.fillStyle = 'rgba(70,10,24,.85)'; mqRR(c, 38, 38, 128, 86, 10); c.fill(); c.strokeStyle = 'rgba(217,164,65,.6)'; c.lineWidth = 1.5; mqRR(c, 42, 42, 120, 78, 8); c.stroke();
+            const sh = (fn) => { c.save(); c.translate(4, 6); c.globalAlpha = 0.35; c.filter = 'blur(4px)'; c.fillStyle = '#000'; fn(); c.restore(); };
+            MQ_CIRC.forEach(o => sh(() => { c.beginPath(); c.arc(o.x, o.y, o.r + 2, 0, 6.283); c.fill(); }));
+            MQ_RECT.forEach(o => sh(() => { c.fillRect(o.x, o.y, o.w, o.h); }));
+            const pr = MQ_RECT[0];
+            c.save(); c.translate(pr.x, pr.y);
+            c.fillStyle = '#0d0b10'; c.beginPath(); c.moveTo(0, 6); c.lineTo(26, 0); c.bezierCurveTo(60, 0, 74, 8, 92, 18); c.bezierCurveTo(112, 30, 110, 58, 84, 62); c.lineTo(0, 62); c.closePath(); c.fill();
+            const pg = c.createLinearGradient(0, 0, 108, 62); pg.addColorStop(0, 'rgba(255,255,255,.18)'); pg.addColorStop(0.5, 'rgba(255,255,255,0)'); pg.addColorStop(1, 'rgba(255,255,255,.08)'); c.fillStyle = pg; c.fill();
+            c.strokeStyle = '#c9a24a'; c.lineWidth = 1.2; c.stroke();
+            c.fillStyle = '#f4efe6'; c.fillRect(2, 8, 10, 50); c.fillStyle = '#111'; for (let k = 0; k < 9; k++) if (k % 7 !== 2 && k % 7 !== 6) c.fillRect(2, 11 + k * 5.4, 6, 3);
+            c.strokeStyle = 'rgba(201,162,74,.5)'; c.beginPath(); c.moveTo(20, 10); c.lineTo(86, 52); c.stroke();
+            c.restore();
+            const tb = MQ_RECT[1];
+            c.fillStyle = '#f8f4ec'; mqRR(c, tb.x - 4, tb.y - 3, tb.w + 8, tb.h + 8, 6); c.fill();
+            c.fillStyle = 'rgba(0,0,0,.08)'; for (let x = tb.x; x < tb.x + tb.w; x += 16) { c.beginPath(); c.arc(x + 8, tb.y + tb.h + 5, 8, 0, Math.PI); c.fill(); }
+            c.strokeStyle = '#d9a441'; c.lineWidth = 1.5; c.strokeRect(tb.x, tb.y + 1, tb.w, tb.h);
+            for (let k = 0; k < 7; k++) {
+                const x = tb.x + 20 + k * 33, y = tb.y + 16, col = ['#e76f51', '#f4a261', '#2a9d8f', '#e9c46a', '#d62828', '#8ac926', '#ffafcc'][k];
+                c.fillStyle = '#fff'; c.beginPath(); c.arc(x, y, 9, 0, 6.283); c.fill(); c.strokeStyle = '#cfc6b8'; c.lineWidth = 1; c.stroke();
+                c.fillStyle = col; for (let q = 0; q < 5; q++) { c.beginPath(); c.arc(x + Math.cos(q * 1.3 + k) * 4, y + Math.sin(q * 1.3 + k) * 4, 2.4, 0, 6.283); c.fill(); }
+            }
+            const ct = MQ_CIRC[4];
+            const cg = c.createRadialGradient(ct.x - 8, ct.y - 8, 2, ct.x, ct.y, ct.r); cg.addColorStop(0, '#fff8dc'); cg.addColorStop(0.6, '#e8c86a'); cg.addColorStop(1, '#8a6a1c');
+            c.fillStyle = cg; c.beginPath(); c.arc(ct.x, ct.y, ct.r, 0, 6.283); c.fill();
+            [22, 15, 8].forEach((r, i) => { for (let k = 0; k < (i === 2 ? 4 : 10 - i * 3); k++) { const a = k / (i === 2 ? 4 : 10 - i * 3) * 6.283 + i; c.fillStyle = 'rgba(255,250,230,.9)'; c.beginPath(); c.arc(ct.x + Math.cos(a) * r, ct.y + Math.sin(a) * r, 3.4, 0, 6.283); c.fill(); c.strokeStyle = 'rgba(160,120,30,.6)'; c.lineWidth = 0.6; c.stroke(); } });
+            c.fillStyle = '#fff'; c.beginPath(); c.arc(ct.x - 2, ct.y - 2, 2.5, 0, 6.283); c.fill();
+            MQ_CIRC.slice(0, 4).forEach(o => {
+                c.fillStyle = '#bdb3a3'; c.beginPath(); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4 + Math.PI / 8; c.lineTo(o.x + Math.cos(a) * (o.r + 5), o.y + Math.sin(a) * (o.r + 5)); } c.closePath(); c.fill();
+                const g = c.createRadialGradient(o.x - 6, o.y - 6, 2, o.x, o.y, o.r); g.addColorStop(0, '#ffffff'); g.addColorStop(0.5, '#e6dfd2'); g.addColorStop(1, '#9f9585');
+                c.fillStyle = g; c.beginPath(); c.arc(o.x, o.y, o.r, 0, 6.283); c.fill();
+                c.strokeStyle = '#d9a441'; c.lineWidth = 2; c.beginPath(); c.arc(o.x, o.y, o.r - 3, 0, 6.283); c.stroke();
+                c.strokeStyle = 'rgba(120,100,80,.35)'; c.lineWidth = 1; for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; c.beginPath(); c.moveTo(o.x + Math.cos(a) * 6, o.y + Math.sin(a) * 6); c.lineTo(o.x + Math.cos(a) * (o.r - 4), o.y + Math.sin(a) * (o.r - 4)); c.stroke(); }
+            });
+            MQ_CIRC.slice(5).forEach(o => {
+                c.fillStyle = '#b8862b'; c.beginPath(); c.arc(o.x, o.y, o.r * 0.7, 0, 6.283); c.fill();
+                for (let k = 0; k < 9; k++) { const a = k / 9 * 6.283 + o.x, L = o.r + 8 + mqSeed(k + o.x) * 6; c.strokeStyle = k % 2 ? '#2d6a4f' : '#40916c'; c.lineWidth = 4.5; c.lineCap = 'round'; c.beginPath(); c.moveTo(o.x, o.y); c.quadraticCurveTo(o.x + Math.cos(a + 0.4) * L * 0.6, o.y + Math.sin(a + 0.4) * L * 0.6, o.x + Math.cos(a) * L, o.y + Math.sin(a) * L); c.stroke(); }
+                c.lineCap = 'butt';
+            });
+            MQ_PED.forEach(([x, y]) => { c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(x + 3, y + 5, 11, 8, 0, 0, 6.283); c.fill(); const g = c.createRadialGradient(x - 3, y - 3, 1, x, y, 10); g.addColorStop(0, '#fff1b8'); g.addColorStop(1, '#a8781c'); c.fillStyle = g; c.beginPath(); c.arc(x, y, 9, 0, 6.283); c.fill(); c.strokeStyle = '#6b4a0e'; c.lineWidth = 1; c.stroke(); });
+            c.restore();
+            c.save();
+            const ws = c.createLinearGradient(0, w.y0, 0, w.y0 + 26); ws.addColorStop(0, 'rgba(0,0,0,.45)'); ws.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = ws; c.fillRect(w.x0, w.y0, w.x1 - w.x0, 26);
+            const wl = c.createLinearGradient(w.x0, 0, w.x0 + 18, 0); wl.addColorStop(0, 'rgba(0,0,0,.35)'); wl.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = wl; c.fillRect(w.x0, w.y0, 18, w.y1 - w.y0);
+            const wr = c.createLinearGradient(w.x1, 0, w.x1 - 18, 0); wr.addColorStop(0, 'rgba(0,0,0,.35)'); wr.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = wr; c.fillRect(w.x1 - 18, w.y0, 18, w.y1 - w.y0);
+            c.restore();
+            const gold = c.createLinearGradient(0, 0, 0, H); gold.addColorStop(0, '#f6d27a'); gold.addColorStop(0.5, '#b8862b'); gold.addColorStop(1, '#f0c860');
+            c.strokeStyle = gold; c.lineWidth = 4; c.strokeRect(w.x0 - 2, w.y0 - 2, w.x1 - w.x0 + 4, w.y1 - w.y0 + 4);
+            c.strokeStyle = 'rgba(246,210,122,.4)'; c.lineWidth = 1; c.strokeRect(w.x0 - 7, w.y0 - 7, w.x1 - w.x0 + 14, w.y1 - w.y0 + 14);
+            const frame = (x, y, fw, fh, seed) => {
+                c.fillStyle = '#5a3a0e'; c.fillRect(x - fw / 2 - 3, y - fh / 2 - 3, fw + 6, fh + 6);
+                const g = c.createLinearGradient(x - fw / 2, y - fh / 2, x + fw / 2, y + fh / 2); g.addColorStop(0, '#f6d27a'); g.addColorStop(1, '#9a6c1a'); c.fillStyle = g; c.fillRect(x - fw / 2 - 1.5, y - fh / 2 - 1.5, fw + 3, fh + 3);
+                const bgc = ['#2b3a55', '#3b2a2a', '#25402f', '#40304d'][seed % 4]; c.fillStyle = bgc; c.fillRect(x - fw / 2 + 1.5, y - fh / 2 + 1.5, fw - 3, fh - 3);
+                c.fillStyle = ['#d4a373', '#e9c46a', '#a3b18a', '#cdb4db'][seed % 4]; c.beginPath(); c.ellipse(x, y + (fw > fh ? 0 : 1), Math.min(fw, fh) * 0.22, Math.min(fw, fh) * 0.28, 0, 0, 6.283); c.fill();
+            };
+            frame(214, 15, 46, 20, 0); frame(746, 15, 46, 20, 1); frame(15, 290, 20, 46, 2); frame(945, 290, 20, 46, 3);
+            frame(110, 15, 30, 18, 3); frame(850, 15, 30, 18, 2); frame(15, 470, 18, 30, 1); frame(945, 110, 18, 30, 0);
+            c.fillStyle = '#1a0a10'; c.fillRect(440, 0, 80, w.y0 - 2); c.strokeStyle = gold; c.lineWidth = 2; c.strokeRect(442, 2, 76, w.y0 - 6);
+            c.fillStyle = '#e8b04a'; c.font = '700 9px Georgia, serif'; c.textAlign = 'center'; c.fillText('GRAND BALLROOM', 480, 19);
+            const vg = c.createRadialGradient(480, 290, 200, 480, 290, 640); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(10,0,10,.55)'); c.fillStyle = vg; c.fillRect(0, 0, W, H);
+            return cv;
+        }
+        function mqDrawGuest(c, e, now, me, a) {
+            const L = MQ_LOOK[e.o % MQ_LOOK.length], skin = MQ_SKIN[e.id % 3], t = now / 1000 + e.id * 0.37;
+            const moving = e.st === 1 || e.st === 2, fast = e.st === 2;
+            c.save(); c.translate(e.x, e.y); c.scale(1.34, 1.34); c.globalAlpha = a == null ? 1 : a;
+            if (e.st === 7 || e.st === 8) {
+                const dead = e.st === 8;
+                c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(2, 3, 15, 9, e.h, 0, 6.283); c.fill();
+                c.rotate(e.h); if (dead) c.globalAlpha *= 0.8;
+                c.fillStyle = L.type === 0 ? L.body : L.body; c.beginPath(); c.ellipse(-3, 0, L.type === 0 ? 13 : 11, L.type === 0 ? 9 : 6.5, 0, 0, 6.283); c.fill();
+                c.fillStyle = L.body2; c.beginPath(); c.ellipse(-6, 0, 6, 5, 0, 0, 6.283); c.fill();
+                c.fillStyle = skin; c.beginPath(); c.arc(11, 0, 5, 0, 6.283); c.fill();
+                c.fillStyle = L.hair; c.beginPath(); c.arc(11, 0, 5.2, Math.PI * 0.5, Math.PI * 1.5); c.fill();
+                if (dead) { c.fillStyle = L.mask; c.save(); c.translate(19, 6); c.rotate(0.8); c.fillRect(-2, -4, 3, 8); c.restore(); }
+                else { c.fillStyle = L.mask; c.beginPath(); c.ellipse(14, 0, 1.8, 4.2, 0, 0, 6.283); c.fill(); }
+                c.restore();
+                if (!dead) { c.save(); c.translate(e.x, e.y); c.fillStyle = 'rgba(255,255,255,.85)'; c.font = '700 8px sans-serif'; for (let k = 0; k < 3; k++) { const ph = (t * 0.7 + k / 3) % 1; c.globalAlpha = (1 - ph) * (a == null ? 1 : a); c.fillText('z', 6 + ph * 8 + k * 2, -8 - ph * 16); } c.restore(); }
+                return;
+            }
+            const bob = moving ? Math.abs(Math.sin(t * (fast ? 16 : 9))) * 1.2 : Math.sin(t * 2) * 0.3;
+            c.fillStyle = 'rgba(0,0,0,.32)'; c.beginPath(); c.ellipse(2.5, 5, 12.5, 8.5, 0, 0, 6.283); c.fill();
+            if (me) { c.strokeStyle = 'rgba(255,210,63,.85)'; c.lineWidth = 1.5; c.setLineDash([3, 3]); c.lineDashOffset = -now / 60; c.beginPath(); c.arc(0, 1, 16, 0, 6.283); c.stroke(); c.setLineDash([]); }
+            let h = e.h; const dance = e.st === 5;
+            if (dance) h = e.h + t * 5.5;
+            c.rotate(h); c.translate(0, -bob * 0.2);
+            const sw = moving ? Math.sin(t * (fast ? 16 : 9)) * (fast ? 4.5 : 3) : 0, admire = e.st === 4;
+            if (admire) c.translate(1.5, 0);
+            if (L.type === 0) {
+                const fl = dance ? 1.18 : 1, R = 12.5 * fl;
+                const g = c.createRadialGradient(-3, -3, 2, 0, 0, R); g.addColorStop(0, L.body); g.addColorStop(0.75, L.body); g.addColorStop(1, L.body2);
+                c.fillStyle = g; c.beginPath(); for (let k = 0; k <= 48; k++) { const an = k / 48 * 6.283, rr = R + Math.sin(an * 5 + t * (dance ? 8 : moving ? 6 : 1)) * (dance ? 1.1 : 0.4); c.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); } c.closePath(); c.fill();
+                c.strokeStyle = L.acc; c.globalAlpha *= 0.6; c.lineWidth = 1; c.stroke(); c.globalAlpha = a == null ? 1 : a;
+                c.strokeStyle = 'rgba(0,0,0,.18)'; c.lineWidth = 1; for (let k = 0; k < 6; k++) { const an = k / 6 * 6.283 + (moving ? sw * 0.04 : 0); c.beginPath(); c.moveTo(Math.cos(an) * 5, Math.sin(an) * 5); c.lineTo(Math.cos(an) * R * 0.95, Math.sin(an) * R * 0.95); c.stroke(); }
+                c.fillStyle = L.body2; c.beginPath(); c.ellipse(0, 0, 5.5, 7, 0, 0, 6.283); c.fill();
+            } else {
+                c.fillStyle = L.body2; c.beginPath(); c.moveTo(-4, -4); c.lineTo(-15 - (moving ? Math.abs(sw) * 0.5 : 0), -3 + sw * 0.3); c.lineTo(-7, 0); c.lineTo(-15 - (moving ? Math.abs(sw) * 0.5 : 0), 3 + sw * 0.3); c.lineTo(-4, 4); c.closePath(); c.fill();
+                const g = c.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, L.body2); g.addColorStop(0.5, L.body); g.addColorStop(1, L.body2);
+                c.fillStyle = g; c.beginPath(); c.ellipse(0, 0, 7.5, 10, 0, 0, 6.283); c.fill();
+                c.fillStyle = '#f7f5f0'; c.beginPath(); c.moveTo(7.2, -3.5); c.lineTo(2.5, 0); c.lineTo(7.2, 3.5); c.closePath(); c.fill();
+                c.fillStyle = L.acc; c.beginPath(); c.moveTo(7, -2); c.lineTo(5.2, 0); c.lineTo(7, 2); c.closePath(); c.fill();
+            }
+            const armY = L.type === 0 ? 7.5 : 9.5;
+            const arms = dance ? [[3, -armY - 3], [3, armY + 3]] : admire ? [[9, -4], [sw, armY]] : [[sw, -armY], [-sw, armY]];
+            arms.forEach(([ax, ay]) => { c.fillStyle = L.type === 0 ? L.body2 : L.body; c.beginPath(); c.arc(ax * 0.6, ay * 0.85, 2.8, 0, 6.283); c.fill(); c.fillStyle = L.type === 0 ? skin : '#f7f5f0'; c.beginPath(); c.arc(ax, ay, 2.3, 0, 6.283); c.fill(); });
+            if (e.fl & 2) { c.strokeStyle = 'rgba(255,255,255,.95)'; c.lineWidth = 2.5; c.shadowColor = '#fff'; c.shadowBlur = 8; c.beginPath(); c.arc(4, 0, 22, -1, 1); c.stroke(); c.shadowBlur = 0; c.fillStyle = '#e0e0e0'; c.save(); c.translate(15, -6); c.rotate(-0.4); c.fillRect(0, -1, 9, 2); c.restore(); }
+            const hx = 1.5;
+            c.fillStyle = skin; c.beginPath(); c.arc(hx, 0, 6.4, 0, 6.283); c.fill();
+            if (L.type === 1 && L.hat) {
+                c.fillStyle = '#121014'; c.beginPath(); c.arc(hx - 0.5, 0, 7.6, 0, 6.283); c.fill();
+                c.fillStyle = '#26232b'; c.beginPath(); c.arc(hx - 0.5, 0, 5, 0, 6.283); c.fill();
+                c.strokeStyle = L.acc; c.lineWidth = 1.2; c.beginPath(); c.arc(hx - 0.5, 0, 5.4, 0, 6.283); c.stroke();
+                c.fillStyle = 'rgba(255,255,255,.18)'; c.beginPath(); c.arc(hx - 2, -2, 2, 0, 6.283); c.fill();
+            } else {
+                c.fillStyle = L.hair; c.beginPath(); c.arc(hx, 0, 6.7, Math.PI * 0.5, Math.PI * 1.5); c.closePath(); c.fill();
+                if (L.type === 0) {
+                    c.beginPath(); c.arc(hx - 5.5, 0, 3.4, 0, 6.283); c.fill();
+                    c.strokeStyle = L.acc; c.lineWidth = 2; c.lineCap = 'round'; c.beginPath(); c.moveTo(hx - 6, -1); c.quadraticCurveTo(hx - 12, -6 + Math.sin(t * 3) * 1.5, hx - 15, -3 + Math.sin(t * 3) * 2); c.stroke(); c.lineCap = 'butt';
+                }
+            }
+            c.fillStyle = L.mask; c.beginPath(); c.moveTo(hx + 1.5, -7.6); c.quadraticCurveTo(hx + 8.6, -5, hx + 7.4, 0); c.quadraticCurveTo(hx + 8.6, 5, hx + 1.5, 7.6); c.quadraticCurveTo(hx + 5.2, 0, hx + 1.5, -7.6); c.fill();
+            c.strokeStyle = '#ffd86b'; c.lineWidth = 0.8; c.stroke();
+            c.fillStyle = '#140a10'; c.beginPath(); c.ellipse(hx + 6.2, -2.6, 0.9, 1.5, 0, 0, 6.283); c.ellipse(hx + 6.2, 2.6, 0.9, 1.5, 0, 0, 6.283); c.fill();
+            c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(hx + 4.5, -5, 0.8, 0, 6.283); c.fill();
+            c.restore();
+        }
+        function mqDrawPed(c, p, i, now, dark) {
+            const x = MQ_PED[i][0], y = MQ_PED[i][1];
+            const offs = [[0, -5], [-4.5, 3], [4.5, 3]];
+            offs.forEach(([ox, oy]) => { c.fillStyle = '#fbf3e0'; c.beginPath(); c.arc(x + ox, y + oy, 2.6, 0, 6.283); c.fill(); });
+            if (!p.lit) { offs.forEach(([ox, oy]) => { c.fillStyle = '#222'; c.beginPath(); c.arc(x + ox, y + oy, 0.9, 0, 6.283); c.fill(); }); return; }
+            const k = 1 - p.prog * 0.75, fl = 1 + Math.sin(now / 70 + i) * 0.12 * (1 + p.prog * 2);
+            c.save(); c.globalCompositeOperation = 'lighter';
+            const g = c.createRadialGradient(x, y, 2, x, y, 42 * k + 6); g.addColorStop(0, 'rgba(255,200,90,' + (0.5 * k + 0.1) + ')'); g.addColorStop(1, 'rgba(255,140,40,0)'); c.fillStyle = g; c.beginPath(); c.arc(x, y, 48, 0, 6.283); c.fill();
+            c.restore();
+            offs.forEach(([ox, oy], j) => {
+                const fx = x + ox + Math.sin(now / 90 + j * 2 + i) * 0.6, fy = y + oy - 2, s = (3.4 * k + 0.8) * fl;
+                const fg = c.createRadialGradient(fx, fy + 0.5, 0.2, fx, fy, s); fg.addColorStop(0, '#fffbe6'); fg.addColorStop(0.45, '#ffd36b'); fg.addColorStop(1, 'rgba(255,120,20,0)');
+                c.fillStyle = fg; c.beginPath(); c.ellipse(fx, fy - s * 0.3, s * 0.65, s * 1.1, 0, 0, 6.283); c.fill();
+            });
+        }
+        function mqDrawChandelier(c, cx, cy, now, off) {
+            const sx = Math.sin(now / 1400 + cx) * 1.6, sy = Math.cos(now / 1700 + cy) * 1.2, x = cx + sx, y = cy + sy;
+            c.save(); c.globalAlpha = 0.5;
+            c.strokeStyle = '#e8c060'; c.lineWidth = 2; c.beginPath(); c.arc(x, y, 20, 0, 6.283); c.stroke();
+            c.lineWidth = 1; c.beginPath(); c.arc(x, y, 11, 0, 6.283); c.stroke();
+            for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4 + now / 9000; c.beginPath(); c.moveTo(x + Math.cos(a) * 5, y + Math.sin(a) * 5); c.lineTo(x + Math.cos(a) * 20, y + Math.sin(a) * 20); c.stroke(); }
+            for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6 + now / 9000; c.fillStyle = k % 2 ? 'rgba(220,240,255,.95)' : 'rgba(255,255,255,.9)'; c.beginPath(); c.arc(x + Math.cos(a) * 24, y + Math.sin(a) * 24, 1.6, 0, 6.283); c.fill(); }
+            c.fillStyle = '#f3d27a'; c.beginPath(); c.arc(x, y, 4, 0, 6.283); c.fill();
+            c.restore();
+            if (!off) {
+                c.save(); c.globalCompositeOperation = 'lighter';
+                for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4 + now / 9000, fx = x + Math.cos(a) * 20, fy = y + Math.sin(a) * 20, f = 2.4 + Math.sin(now / 80 + k * 1.7) * 0.5; const g = c.createRadialGradient(fx, fy, 0, fx, fy, f * 2.2); g.addColorStop(0, 'rgba(255,240,200,.95)'); g.addColorStop(1, 'rgba(255,170,60,0)'); c.fillStyle = g; c.beginPath(); c.arc(fx, fy, f * 2.2, 0, 6.283); c.fill(); }
+                c.restore();
+            }
+        }
+        function mqLightMask(w, h) { if (!mqx.lm || mqx.lm.width !== w || mqx.lm.height !== h) { mqx.lm = document.createElement('canvas'); mqx.lm.width = w; mqx.lm.height = h; } return mqx.lm; }
+        function mqText(c, txt, x, y, font, fill, stroke, lw) { c.font = font; c.lineJoin = 'round'; if (stroke) { c.lineWidth = lw || 5; c.strokeStyle = stroke; c.strokeText(txt, x, y); } c.fillStyle = fill; c.fillText(txt, x, y); }
+        function mqDraw(V, now, dt) {
+            const cv = document.getElementById('mq-canvas'); if (!cv) return;
+            const c = cv.getContext('2d'), s = cv.width / MQ_VW, fx = mqx.fx;
+            if (!mqx.bg || mqx.bgW !== cv.width) { mqx.bg = mqBuildBg(s); mqx.bgW = cv.width; }
+            c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(mqx.bg, 0, 0);
+            c.setTransform(s, 0, 0, s, 0, 0);
+            c.save();
+            if (fx.shake > 0.3) { c.translate((Math.random() - 0.5) * fx.shake, (Math.random() - 0.5) * fx.shake); fx.shake *= 0.88; }
+            c.translate(0, MQ_OY);
+            const dark = V.dk, waltz = V.wz === 2, me = V.me;
+            c.save(); c.globalCompositeOperation = 'lighter';
+            if (!dark) MQ_CHAND.forEach(([x, y], k) => { const f = 0.13 + Math.sin(now / 300 + k * 2) * 0.012; const g = c.createRadialGradient(x, y + 6, 10, x, y + 6, 150); g.addColorStop(0, 'rgba(255,214,140,' + f + ')'); g.addColorStop(1, 'rgba(255,180,90,0)'); c.fillStyle = g; c.fillRect(x - 160, y - 150, 320, 320); });
+            if (waltz) { const cols = ['255,90,160', '90,170,255', '255,215,90']; cols.forEach((col, k) => { const a = now / 700 + k * 2.094, x = MQ_DANCE.x + Math.cos(a) * 70, y = MQ_DANCE.y + Math.sin(a * 1.3) * 60; const g = c.createRadialGradient(x, y, 4, x, y, 75); g.addColorStop(0, 'rgba(' + col + ',.35)'); g.addColorStop(1, 'rgba(' + col + ',0)'); c.fillStyle = g; c.fillRect(x - 80, y - 80, 160, 160); }); }
+            c.restore();
+            V.ents.forEach(e => { if (e.fl & 1) { const g = c.createRadialGradient(e.x, e.y, 2, e.x, e.y, 40); g.addColorStop(0, 'rgba(255,40,60,.55)'); g.addColorStop(1, 'rgba(255,40,60,0)'); c.fillStyle = g; c.beginPath(); c.arc(e.x, e.y, 40, 0, 6.283); c.fill(); } });
+            V.ped.forEach((p, i) => mqDrawPed(c, p, i, now, dark));
+            const order = V.ents.slice().sort((a, b) => ((a.st >= 7 ? -1000 : 0) + a.y) - ((b.st >= 7 ? -1000 : 0) + b.y));
+            for (const e of order) mqDrawGuest(c, e, now, e.id === me && V.myAlive, null);
+            for (const p of fx.parts) {
+                p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; if (p.g) p.vy += p.g * dt; p.vx *= p.dr || 1; p.vy *= p.dr || 1; p.rot = (p.rot || 0) + (p.vr || 0) * dt;
+                const k = Math.max(0, p.life / p.max); c.globalAlpha = p.fade === false ? Math.min(1, k * 4) : k;
+                if (p.kind === 'petal') { c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.col; c.beginPath(); c.ellipse(0, 0, p.s, p.s * 0.55, 0, 0, 6.283); c.fill(); c.restore(); }
+                else if (p.kind === 'smoke') { const r = p.s * (1.6 - k * 0.6); const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r); g.addColorStop(0, 'rgba(200,195,210,.55)'); g.addColorStop(1, 'rgba(200,195,210,0)'); c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, 6.283); c.fill(); }
+                else if (p.kind === 'spark') { c.fillStyle = p.col; c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.fillRect(-p.s / 2, -0.6, p.s, 1.2); c.fillRect(-0.6, -p.s / 2, 1.2, p.s); c.restore(); }
+                else if (p.kind === 'ghost') { c.fillStyle = 'rgba(235,240,255,.75)'; c.beginPath(); c.arc(p.x, p.y, 7, Math.PI, 0); c.lineTo(p.x + 7, p.y + 8); for (let q = 0; q < 4; q++) c.lineTo(p.x + 7 - (q + 0.5) * 3.5, p.y + 8 - (q % 2 ? 0 : 3)); c.lineTo(p.x - 7, p.y + 8); c.closePath(); c.fill(); c.fillStyle = '#223'; c.beginPath(); c.arc(p.x - 2.5, p.y - 1, 1.2, 0, 6.283); c.arc(p.x + 2.5, p.y - 1, 1.2, 0, 6.283); c.fill(); }
+                else { c.fillStyle = p.col; c.fillRect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s); }
+            }
+            c.globalAlpha = 1; fx.parts = fx.parts.filter(p => p.life > 0);
+            for (const sm of V.sm) {
+                const k = Math.min(1, sm.t / 1.2, (5.5 - sm.t) / 0.4 + 0.2);
+                for (let q = 0; q < 9; q++) { const a = q * 0.698 + now / 2600 * (q % 2 ? 1 : -1), r = 26 + (q % 3) * 14, x = sm.x + Math.cos(a) * r * 0.9, y = sm.y + Math.sin(a) * r * 0.7, R = 40 + (q % 4) * 8; const g = c.createRadialGradient(x, y, 0, x, y, R); g.addColorStop(0, 'rgba(214,210,224,' + 0.88 * k + ')'); g.addColorStop(0.6, 'rgba(190,186,204,' + 0.6 * k + ')'); g.addColorStop(1, 'rgba(190,186,204,0)'); c.fillStyle = g; c.beginPath(); c.arc(x, y, R, 0, 6.283); c.fill(); }
+                const g = c.createRadialGradient(sm.x, sm.y, 0, sm.x, sm.y, 58); g.addColorStop(0, 'rgba(225,222,235,' + 0.95 * k + ')'); g.addColorStop(1, 'rgba(225,222,235,0)'); c.fillStyle = g; c.beginPath(); c.arc(sm.x, sm.y, 58, 0, 6.283); c.fill();
+            }
+            if (waltz) for (let q = 0; q < 2; q++) if (Math.random() < 0.6) fx.parts.push({ kind: 'petal', x: Math.random() * MQ.W, y: -10, vx: (Math.random() - 0.5) * 30, vy: 40 + Math.random() * 40, life: 8, max: 8, s: 2.5, col: ['#ffd23f', '#ff5d8f', '#4cc9f0', '#ffffff', '#c77dff'][Math.floor(Math.random() * 5)], vr: (Math.random() - 0.5) * 8, fade: false });
+            if (!dark && Math.random() < 0.25) { const [x, y] = MQ_CHAND[Math.floor(Math.random() * MQ_CHAND.length)]; fx.parts.push({ kind: 'dot', x: x + (Math.random() - 0.5) * 200, y: y + (Math.random() - 0.5) * 160, vx: (Math.random() - 0.5) * 6, vy: -3 - Math.random() * 4, life: 3, max: 3, s: 1.2, col: 'rgba(255,230,170,.7)' }); }
+            MQ_CHAND.forEach(([x, y]) => mqDrawChandelier(c, x, y, now, dark));
+            V.ents.forEach(e => { if (e.fl & 1 && e.st < 7) { const p = 1 + Math.sin(now / 90) * 0.15; c.strokeStyle = 'rgba(255,60,80,.9)'; c.lineWidth = 2; c.beginPath(); c.arc(e.x, e.y, 23 * p, 0, 6.283); c.stroke(); c.textAlign = 'center'; mqText(c, '!', e.x, e.y - 28, '900 18px Georgia, serif', '#ff3b55', 'rgba(20,0,5,.85)', 4); } });
+            if (dark || V.ph === 0 && V.myAlive) {
+                const lm = mqLightMask(cv.width, cv.height), m = lm.getContext('2d');
+                m.setTransform(1, 0, 0, 1, 0, 0); m.globalCompositeOperation = 'source-over'; m.clearRect(0, 0, lm.width, lm.height);
+                m.fillStyle = dark ? 'rgba(3,1,8,.93)' : 'rgba(6,2,12,.72)'; m.fillRect(0, 0, lm.width, lm.height);
+                m.setTransform(s, 0, 0, s, 0, s * MQ_OY); m.globalCompositeOperation = 'destination-out';
+                const hole = (x, y, r, a) => { const g = m.createRadialGradient(x, y, r * 0.15, x, y, r); g.addColorStop(0, 'rgba(0,0,0,' + a + ')'); g.addColorStop(1, 'rgba(0,0,0,0)'); m.fillStyle = g; m.beginPath(); m.arc(x, y, r, 0, 6.283); m.fill(); };
+                if (dark) { V.ped.forEach((p, i) => { if (p.lit) hole(MQ_PED[i][0], MQ_PED[i][1], 70 * (1 - p.prog * 0.5) + Math.sin(now / 80 + i) * 3, 0.95); }); V.ents.forEach(e => { if (e.fl & 1) hole(e.x, e.y, 46, 0.9); }); }
+                const mine = V.ents[me]; if (mine && V.myAlive) hole(mine.x, mine.y, V.ph === 0 ? 70 : 24, V.ph === 0 ? 1 : 0.55);
+                c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(lm, 0, 0); c.restore();
+            }
+            if (V.ph === 2 && V.rv) {
+                c.fillStyle = 'rgba(8,3,14,.55)'; c.fillRect(0, 0, MQ.W, MQ.H);
+                V.rv.forEach((r, i) => {
+                    if (r.eid < 0) return; const e = V.ents[r.eid], col = MQ_PCOL[i % 6], tr = r.trail.concat(e ? [[e.x, e.y]] : []);
+                    c.lineCap = 'round'; c.lineJoin = 'round';
+                    for (let k = 1; k < tr.length; k++) { c.globalAlpha = 0.15 + 0.85 * k / tr.length; c.strokeStyle = col; c.lineWidth = 3; c.beginPath(); c.moveTo(tr[k - 1][0], tr[k - 1][1]); c.lineTo(tr[k][0], tr[k][1]); c.stroke(); }
+                    c.globalAlpha = 1;
+                    if (e) { mqDrawGuest(c, e, now, false, 1); const p = 1 + Math.sin(now / 150 + i) * 0.1; c.strokeStyle = col; c.lineWidth = 3; c.beginPath(); c.arc(e.x, e.y, 24 * p, 0, 6.283); c.stroke(); const nm = (r.alive ? '' : '💀 ') + (mqx.names[i] || ''); c.font = '900 12px Pretendard, sans-serif'; const w = c.measureText(nm).width + 14, ly = e.y - 50 - (i % 2) * 4; c.fillStyle = col; mqRR(c, e.x - w / 2, ly, w, 19, 9); c.fill(); c.textAlign = 'center'; c.fillStyle = '#140a14'; c.fillText(nm, e.x, ly + 13.5); }
+                });
+            }
+            c.restore();
+            mqHud(c, V, now);
+            c.textAlign = 'center';
+            const cx = MQ_VW / 2, cy = MQ_OY + MQ.H / 2;
+            if (V.ph === 0) {
+                const n = Math.ceil(V.pt);
+                mqText(c, 'ROUND ' + V.rd, cx, cy - 70, 'italic 900 54px Georgia, serif', '#f6d27a', 'rgba(30,8,20,.9)', 8);
+                mqText(c, V.myAlive ? '빛나는 손님이 당신이에요. 자연스럽게 섞이세요!' : '관전 중이에요', cx, cy - 32, '800 17px Pretendard, sans-serif', '#fff', 'rgba(20,5,15,.85)', 5);
+                mqText(c, String(n), cx, cy + 40, '900 44px Georgia, serif', '#fff', 'rgba(20,5,15,.85)', 6);
+                const mine = V.ents[me]; if (mine && V.myAlive) { const b = Math.sin(now / 160) * 4; mqText(c, '▼ 나', mine.x, MQ_OY + mine.y - 32 + b, '900 14px Pretendard, sans-serif', '#ffd23f', 'rgba(20,5,15,.9)', 4); }
+            }
+            if (V.ph === 2) {
+                const w = V.win, nm = w != null && w >= 0 ? mqx.names[w] : null;
+                const sub = V.why === 'letters' ? '편지 3장을 모두 훔쳤어요!' : V.why === 'last' ? (nm ? '마지막까지 살아남았어요!' : '모두 쓰러졌어요') : nm ? '자정! 편지를 가장 많이 모았어요' : '자정이 되었지만 승자가 없어요';
+                c.fillStyle = 'rgba(10,3,14,.78)'; mqRR(c, cx - 250, MQ_OY + 18, 500, 84, 18); c.fill(); c.strokeStyle = '#d9a441'; c.lineWidth = 1.5; c.stroke();
+                mqText(c, nm ? '🏆 ' + nm + ' 라운드 승리' : '무승부', cx, MQ_OY + 56, '900 26px Pretendard, sans-serif', nm ? MQ_PCOL[w % 6] : '#fff');
+                mqText(c, sub + '  ·  누가 누구였는지 공개!', cx, MQ_OY + 84, '700 13px Pretendard, sans-serif', 'rgba(255,255,255,.85)');
+            }
+            const bn = fx.banner; if (bn && bn.life > 0) { bn.life -= dt; const k = Math.min(1, bn.life * 2, (bn.max - bn.life) * 5); c.globalAlpha = k; const y = MQ_OY + (bn.y || 120); c.fillStyle = bn.bg || 'rgba(20,6,18,.8)'; c.font = '900 22px Pretendard, sans-serif'; const tw = c.measureText(bn.txt).width; c.font = '700 12px Pretendard, sans-serif'; const w = Math.max(tw, bn.sub ? c.measureText(bn.sub).width : 0) + 50; mqRR(c, cx - w / 2, y - 30, w, bn.sub ? 58 : 44, 16); c.fill(); c.strokeStyle = bn.col || '#d9a441'; c.lineWidth = 1.5; c.stroke(); mqText(c, bn.txt, cx, y, '900 22px Pretendard, sans-serif', bn.col || '#f6d27a'); if (bn.sub) mqText(c, bn.sub, cx, y + 20, '700 12px Pretendard, sans-serif', 'rgba(255,255,255,.85)'); c.globalAlpha = 1; }
+            c.textAlign = 'left'; let fy = MQ_OY + 48;
+            fx.feed = fx.feed.filter(f => (f.life -= dt) > 0);
+            fx.feed.slice(-4).forEach(f => { c.globalAlpha = Math.min(1, f.life); c.font = '800 12px Pretendard, sans-serif'; const w = c.measureText(f.txt).width + 18; c.fillStyle = 'rgba(15,5,15,.75)'; mqRR(c, 38, fy - 15, w, 22, 11); c.fill(); c.fillStyle = f.col || '#fff'; c.fillText(f.txt, 47, fy); fy += 26; });
+            c.globalAlpha = 1;
+            if (V.ph === 1 && !V.myAlive && V.me >= -1) { c.textAlign = 'center'; c.fillStyle = 'rgba(15,5,20,.75)'; mqRR(c, cx - 150, MQ_VH - 44, 300, 30, 15); c.fill(); mqText(c, '👻 탈락 · 관전 중 — 다음 라운드를 기다려요', cx, MQ_VH - 24, '800 13px Pretendard, sans-serif', '#dfe7ff'); }
+            if (V.ph === 1 && V.rt < 15 && V.rt > 0) { const k = 0.5 + 0.5 * Math.sin(now / 160); const g = c.createRadialGradient(cx, cy, 250, cx, cy, 620); g.addColorStop(0, 'rgba(120,0,20,0)'); g.addColorStop(1, 'rgba(160,0,30,' + 0.35 * k + ')'); c.fillStyle = g; c.fillRect(0, MQ_OY, MQ_VW, MQ.H); }
+        }
+        function mqHud(c, V, now) {
+            const n = V.pl.length, left = Math.ceil(n / 2), cw = Math.min(150, (MQ_VW / 2 - 60) / Math.max(left, n - left) - 8);
+            V.pl.forEach((p, i) => {
+                const side = i < left ? 0 : 1, k = side ? i - left : i, x = side ? MQ_VW - 12 - (k + 1) * (cw + 8) + 8 : 12 + k * (cw + 8), y = 8, col = MQ_PCOL[i % 6], mine = i === V.myIdx;
+                c.globalAlpha = p.alive || V.ph !== 1 ? 1 : 0.45;
+                c.fillStyle = 'rgba(255,255,255,.06)'; mqRR(c, x, y, cw, 44, 10); c.fill();
+                c.strokeStyle = mine ? '#ffd23f' : 'rgba(217,164,65,.35)'; c.lineWidth = mine ? 2 : 1; c.stroke();
+                c.fillStyle = col; mqRR(c, x, y, 5, 44, 2.5); c.fill();
+                c.textAlign = 'left'; c.font = '900 12px Pretendard, sans-serif'; c.fillStyle = '#fff';
+                let nm = (mqx.names[i] || '') + (mqx.bots[i] ? ' 🤖' : '') + (p.gone ? ' (나감)' : ''); while (c.measureText(nm).width > cw - 16 && nm.length > 2) nm = nm.slice(0, -2) + '…';
+                c.fillText(nm, x + 12, y + 17);
+                for (let q = 0; q < MQ.LETTERS; q++) { const ex = x + 12 + q * 17, ey = y + 25; c.fillStyle = q < p.letters ? '#f6d27a' : 'rgba(255,255,255,.14)'; c.fillRect(ex, ey, 14, 10); c.strokeStyle = q < p.letters ? '#8a5a10' : 'rgba(255,255,255,.2)'; c.lineWidth = 1; c.beginPath(); c.moveTo(ex, ey); c.lineTo(ex + 7, ey + 6); c.lineTo(ex + 14, ey); c.stroke(); }
+                for (let q = 0; q < mqx.target; q++) { const gx = x + cw - 10 - q * 11, gy = y + 30; c.fillStyle = q < p.wins ? col : 'rgba(255,255,255,.15)'; c.beginPath(); c.moveTo(gx, gy - 5); c.lineTo(gx + 4, gy); c.lineTo(gx, gy + 5); c.lineTo(gx - 4, gy); c.closePath(); c.fill(); }
+                if (!p.alive && V.ph === 1) { c.font = '900 11px Pretendard, sans-serif'; c.fillStyle = '#ff8fa3'; c.textAlign = 'right'; c.fillText('💀 탈락', x + cw - 6, y + 17); }
+                c.globalAlpha = 1;
+            });
+            const cx = MQ_VW / 2, cy = 30, R = 25;
+            const g = c.createRadialGradient(cx - 6, cy - 6, 2, cx, cy, R + 4); g.addColorStop(0, '#fff8e6'); g.addColorStop(0.8, '#efe2c2'); g.addColorStop(1, '#b8862b');
+            c.fillStyle = '#7a5410'; c.beginPath(); c.arc(cx, cy, R + 4, 0, 6.283); c.fill(); c.fillStyle = g; c.beginPath(); c.arc(cx, cy, R, 0, 6.283); c.fill();
+            c.strokeStyle = '#3a2a10'; for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; c.lineWidth = k % 3 ? 1 : 2; c.beginPath(); c.moveTo(cx + Math.cos(a) * (R - 3), cy + Math.sin(a) * (R - 3)); c.lineTo(cx + Math.cos(a) * (R - (k % 3 ? 6 : 8)), cy + Math.sin(a) * (R - (k % 3 ? 6 : 8))); c.stroke(); }
+            const frac = V.ph === 1 ? Math.max(0, V.rt) / MQ.ROUND : V.ph === 0 ? 1 : 0, ma = -Math.PI / 2 - frac * Math.PI / 6 * 2.5 * 1.2, ha = -Math.PI / 2 - frac * 0.05;
+            c.strokeStyle = '#1a1208'; c.lineCap = 'round'; c.lineWidth = 3; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(ha) * 12, cy + Math.sin(ha) * 12); c.stroke();
+            c.lineWidth = 2; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(ma) * 19, cy + Math.sin(ma) * 19); c.stroke();
+            const sa = -Math.PI / 2 + (V.ph === 1 ? ((MQ.ROUND - V.rt) % 60) / 60 * 6.283 : 0); c.strokeStyle = '#b3123a'; c.lineWidth = 1; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(sa) * 21, cy + Math.sin(sa) * 21); c.stroke(); c.lineCap = 'butt';
+            c.fillStyle = '#b3123a'; c.beginPath(); c.arc(cx, cy, 2.2, 0, 6.283); c.fill();
+            const t = Math.max(0, Math.ceil(V.ph === 1 ? V.rt : V.ph === 0 ? MQ.ROUND : 0));
+            c.textAlign = 'center'; mqText(c, Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'), cx + 52, cy + 5, '900 14px Pretendard, sans-serif', V.ph === 1 && V.rt < 15 ? '#ff5d73' : '#f6d27a');
+            mqText(c, 'R' + V.rd, cx - 50, cy + 5, 'italic 900 15px Georgia, serif', '#f6d27a');
+            const gl = c.createLinearGradient(0, 0, MQ_VW, 0); gl.addColorStop(0, 'rgba(217,164,65,0)'); gl.addColorStop(0.5, 'rgba(217,164,65,.8)'); gl.addColorStop(1, 'rgba(217,164,65,0)'); c.fillStyle = gl; c.fillRect(0, MQ_OY - 2, MQ_VW, 1.5);
+        }
+
+        const MQ_PROG = [[57, 60, 64], [62, 65, 69], [55, 59, 62], [60, 64, 67], [53, 57, 60], [62, 65, 69], [52, 56, 59], [52, 56, 62]];
+        const MQ_MEL = [[2, 1, 0], [0, 1, 2], [2, 0, 1], [1, 2, 1], [0, 2, 1], [2, 1, 2], [1, 0, 2], [2, 1, 0]];
+        let mqA = null;
+        function mqAC() { try { if (!rzAudioCtx) rzAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (rzAudioCtx.state === 'suspended') rzAudioCtx.resume(); return rzAudioCtx; } catch (e) { return null; } }
+        function mqSfxUnlock() { mqAC(); }
+        function mqMuteSync() { const b = document.getElementById('mq-mute'); if (b && mqx) b.textContent = mqx.mute ? '🔇' : '🔊'; if (mqA) mqA.master.gain.value = mqx && mqx.mute ? 0 : 1; }
+        function mqToggleMute() { mqL(); mqx.mute = !mqx.mute; try { localStorage.setItem('mq-mute', mqx.mute ? '1' : '0'); } catch (e) {} mqMuteSync(); }
+        function mqMusicStart() {
+            const ac = mqAC(); if (!ac) return; mqMusicStop();
+            const master = ac.createGain(); master.gain.value = mqx && mqx.mute ? 0 : 1; master.connect(ac.destination);
+            const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 9000; lp.connect(master);
+            const mus = ac.createGain(); mus.gain.value = 0.11; mus.connect(lp);
+            const sfx = ac.createGain(); sfx.gain.value = 0.32; sfx.connect(master);
+            const rv = ac.createConvolver(); const len = ac.sampleRate * 1.6, buf = ac.createBuffer(2, len, ac.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); } rv.buffer = buf;
+            const wet = ac.createGain(); wet.gain.value = 0.28; rv.connect(wet); wet.connect(lp);
+            mqA = { ac, master, lp, mus, sfx, rv, beat: 0, next: ac.currentTime + 0.15, mode: 'normal', tempo: 160, timer: null, tick: false };
+            mqA.timer = setInterval(mqMusicSched, 50);
+        }
+        function mqMusicStop() { if (!mqA) return; clearInterval(mqA.timer); const a = mqA; mqA = null; try { a.master.gain.setTargetAtTime(0, a.ac.currentTime, 0.15); setTimeout(() => { try { a.master.disconnect(); } catch (e) {} }, 800); } catch (e) {} }
+        function mqMusicMode(m) { if (!mqA) return; mqA.mode = m; const t = mqA.ac.currentTime; mqA.lp.frequency.setTargetAtTime(m === 'dark' ? 520 : 9000, t, 0.25); mqA.mus.gain.setTargetAtTime(m === 'waltz' ? 0.17 : m === 'dark' ? 0.09 : 0.11, t, 0.3); }
+        function mqMusicTick(V) { if (!mqA) return; mqA.tick = V.ph === 1 && V.rt < 15; mqA.tempo = V.ph === 1 && V.rt < 30 ? 176 : 160; mqA.paused = V.ph === 2 || V.ph === 3; }
+        function mqNote(dest, f, t, d, type, v, att) {
+            const ac = mqA.ac, o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f;
+            g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + (att || 0.008)); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+            o.connect(g); g.connect(dest); if (dest !== mqA.rv && type !== 'sine') g.connect(mqA.rv); o.start(t); o.stop(t + d + 0.05);
+        }
+        const mqHz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+        function mqMusicSched() {
+            const a = mqA; if (!a) return; const ac = a.ac;
+            while (a.next < ac.currentTime + 0.25) {
+                const t = a.next, spb = 60 / a.tempo, bar = Math.floor(a.beat / 3), b = a.beat % 3, ch = MQ_PROG[bar % 8], waltz = a.mode === 'waltz';
+                if (!a.paused) {
+                    if (b === 0) { mqNote(a.mus, mqHz(ch[0] - 24), t, spb * 1.6, 'triangle', 0.55); mqNote(a.mus, mqHz(ch[0] - 12), t, spb * 0.9, 'sine', 0.3); }
+                    else ch.forEach(m => mqNote(a.mus, mqHz(m), t, spb * 0.45, 'triangle', 0.13));
+                    const mel = MQ_MEL[bar % 8][b], mm = ch[mel] + 12 + (bar % 16 >= 8 && b === 1 ? 2 : 0);
+                    mqNote(a.mus, mqHz(mm), t, spb * 1.4, 'sine', waltz ? 0.32 : 0.2);
+                    mqNote(a.mus, mqHz(mm + 12), t, spb * 0.5, 'sine', waltz ? 0.08 : 0.04);
+                    if (waltz && b === 0) ch.forEach(m => mqNote(a.mus, mqHz(m + 12), t, spb * 3, 'sawtooth', 0.025, spb * 0.8));
+                    if (waltz && b !== 0) mqNote(a.mus, mqHz(ch[(b + bar) % 3] + 24), t + spb / 2, spb * 0.4, 'sine', 0.06);
+                }
+                if (a.tick) { mqNote(a.sfx, 2200, t, 0.03, 'square', 0.05); }
+                a.next += spb; a.beat++;
+            }
+        }
+        function mqSfx(k) {
+            if (!mqA) return; const a = mqA, ac = a.ac, t = ac.currentTime, D = a.sfx;
+            const noise = (d, f, v, type, f2) => { const len = Math.floor(ac.sampleRate * d), buf = ac.createBuffer(1, len, ac.sampleRate), x = buf.getChannelData(0); for (let i = 0; i < len; i++) x[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.4); const s = ac.createBufferSource(); s.buffer = buf; const fl = ac.createBiquadFilter(); fl.type = type || 'lowpass'; fl.frequency.setValueAtTime(f, t); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + d); const g = ac.createGain(); g.gain.value = v; s.connect(fl); fl.connect(g); g.connect(D); g.connect(a.rv); s.start(t); };
+            const sweep = (f1, f2, d, type, v) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + d); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g); g.connect(D); o.start(t); o.stop(t + d + 0.05); };
+            const bell = (m, at, v) => { [1, 2.76, 5.4].forEach((r, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = mqHz(m) * r; g.gain.setValueAtTime(0.0001, t + at); g.gain.linearRampToValueAtTime(v / (i + 1), t + at + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + at + 2.2 / (i + 1)); o.connect(g); g.connect(D); g.connect(a.rv); o.start(t + at); o.stop(t + at + 2.4); }); };
+            if (k === 'bell') { bell(60, 0, 0.4); bell(55, 0.6, 0.3); }
+            else if (k === 'go') { bell(72, 0, 0.25); bell(79, 0.12, 0.2); }
+            else if (k === 'snuff') { noise(0.35, 900, 0.35, 'bandpass', 300); }
+            else if (k === 'letter') { [76, 79, 84].forEach((m, i) => mqNote(D, mqHz(m), t + i * 0.08, 0.5, 'triangle', 0.25)); }
+            else if (k === 'kill') { noise(0.25, 1800, 0.6, 'bandpass', 400); sweep(220, 70, 0.5, 'sine', 0.5); [63, 66, 70].forEach(m => mqNote(D, mqHz(m - 12), t + 0.05, 1.2, 'sawtooth', 0.06)); }
+            else if (k === 'wrong') { mqNote(D, mqHz(58), t, 0.8, 'sawtooth', 0.12); mqNote(D, mqHz(59), t, 0.8, 'sawtooth', 0.12); noise(0.2, 2500, 0.3, 'highpass'); }
+            else if (k === 'swing') noise(0.16, 2000, 0.5, 'highpass', 6000);
+            else if (k === 'swingFar') noise(0.12, 2600, 0.18, 'highpass', 6000);
+            else if (k === 'swap') [84, 88, 91, 96].forEach((m, i) => mqNote(D, mqHz(m), t + i * 0.05, 0.3, 'sine', 0.18));
+            else if (k === 'smoke') noise(0.9, 600, 0.5, 'lowpass', 200);
+            else if (k === 'harp') for (let i = 0; i < 10; i++) mqNote(D, mqHz([57, 60, 64, 69, 72, 76, 81, 84, 88, 93][i]), t + i * 0.045, 0.9, 'triangle', 0.14);
+            else if (k === 'dark') { sweep(400, 50, 0.7, 'sawtooth', 0.12); noise(0.3, 300, 0.4); }
+            else if (k === 'light') sweep(80, 600, 0.3, 'triangle', 0.12);
+            else if (k === 'win') [72, 76, 79, 84].forEach((m, i) => { mqNote(D, mqHz(m), t + i * 0.12, 0.9, 'triangle', 0.25); mqNote(D, mqHz(m - 12), t + i * 0.12, 0.9, 'sine', 0.15); });
+            else if (k === 'reveal') { bell(48, 0, 0.45); bell(48, 0.9, 0.35); bell(48, 1.8, 0.3); }
+        }
+
+        let mqx = null;
+        function mqL() { if (!mqx) mqx = { fx: { parts: [], feed: [], banner: null, shake: 0 }, names: [], bots: [], target: 3, snaps: [], keys: new Set(), run: 0, act: 0, tx: -1, ty: -1, tk: 0, evId: 0, pend: [], localEv: [], me: -1, rd: 0, evq: [], lastSend: 0, mute: false }; try { mqx.mute = localStorage.getItem('mq-mute') === '1'; } catch (e) {} return mqx; }
+        function ensureMasqInit() { mqL(); mpEnsureInit('mq'); mqMuteSync(); }
+        function teardownMasq() { mpTeardown('mq'); mqMusicStop(); }
+        const MQ_PH = { intro: 0, play: 1, reveal: 2, over: 3 };
+        function mqHostStart() {
+            const r = mpRooms.mq, o = r.opts || {}, nb = Math.max(0, Math.min(6 - r.players.length, +o.bots || 0));
+            const list = r.players.map(p => ({ id: p.id, name: p.name })).sort(() => Math.random() - 0.5);
+            const botNames = ['백작', '공작부인', '집사', '마담', '남작', '후작'];
+            for (let i = 0; i < nb; i++) list.push({ id: 'bot' + (i + 1), name: botNames[i], bot: true });
+            const S = mqNew(list, { wins: +o.wins || 3, npc: +o.npc || MQ.NPC });
+            r.H = { S, inp: {}, mem: list.map(() => ({})), lastT: 0, acc: 0, last: 0, out: [], rvN: 0, youAt: 0 };
+            list.forEach(p => { r.H.inp[p.id] = { mx: 0, my: 0, tx: -1, ty: -1, tk: 0, run: 0, act: 0, ev: [], seen: new Set() }; });
+            mpEmit('mq', { t: 'mq-start', ids: list.map(p => p.id), names: list.map(p => p.name), bots: list.map(p => !!p.bot), target: S.target });
+            mqSendYou();
+            clearInterval(r.mqTick); r.mqTick = setInterval(mqHostStep, 16);
+        }
+        function mqSendYou() {
+            const r = mpRooms.mq, H = r && r.H; if (!H) return; const S = H.S;
+            S.plays.forEach(P => { if (!P.bot && P.id !== r.myId) rzSend(r.channel, 'msg', { t: 'mq-you', id: r.myId, to: P.id, eid: P.eid, rd: S.round }); });
+            H.youAt = Date.now();
+        }
+        function mqHostStep() {
+            const r = mpRooms.mq, H = r && r.H; if (!H) return;
+            const now = performance.now(); if (!H.lastT) H.lastT = now; const dt = Math.min(0.25, (now - H.lastT) / 1000); H.lastT = now;
+            const S = H.S; if (S.over) { if (!H.endSent) { H.endSent = true; mqPub(); } return; }
+            H.acc += dt; const step = 1 / 60; let first = true;
+            while (H.acc >= step) {
+                H.acc -= step;
+                const inputs = S.plays.map((P, i) => {
+                    if (P.bot) return mqBot(S, i, H.mem[i], step);
+                    if (P.id === r.myId) { const o = mqLocalInput(); o.ev = first ? mqx.localEv.splice(0) : []; return o; }
+                    const q = H.inp[P.id] || {}; const ev = q.ev || []; q.ev = []; return { mx: q.mx, my: q.my, tx: q.tx, ty: q.ty, tk: q.tk, run: q.run, act: q.act, ev };
+                });
+                first = false;
+                const rd = S.round;
+                mqTick(S, inputs, step);
+                if (S.ev.length) { H.out.push(...S.ev); S.ev = []; }
+                if (S.round !== rd) { H.mem = S.plays.map(() => ({})); H.rvN = 0; mqSendYou(); }
+                if (S.over) break;
+            }
+            if (Date.now() - H.youAt > 2500) mqSendYou();
+            if (now - H.last > 66) { H.last = now; mqPub(); }
+        }
+        function mqSnap() {
+            const r = mpRooms.mq, H = r.H, S = H.S, e = [];
+            for (const n of S.ents) e.push(Math.round(n.x), Math.round(n.y), Math.round(((n.h % 6.283) + 6.283) % 6.283 / 6.283 * 64) & 63, n.st === 6 ? 2 : n.st === 9 ? 4 : n.st, n.o, (n.exp > 0 ? 1 : 0) | (n.sw > 0 ? 2 : 0));
+            const snap = { t: 'mq-s', q: S.seq, ph: MQ_PH[S.phase], pt: Math.round(S.pt * 10), rt: Math.round(S.rt * 10), rd: S.round, e,
+                pd: S.ped.map(p => p.lit ? 1 + Math.round(p.prog * 9) : 0), sm: S.smokes.map(m => [Math.round(m.x), Math.round(m.y), Math.round(m.t * 10)]),
+                wz: S.wz ? (S.wz.warn > 0 ? 1 : 2) : 0, dk: S.dark > 0 ? 1 : 0,
+                pl: S.plays.map(P => { const n = S.ents[P.eid]; return [P.letters, P.alive ? 1 : 0, P.wins, P.kills, P.gone ? 1 : 0, n && P.alive ? n.mk : 0, n && P.alive ? n.sm : 0, n ? Math.round(n.cd * 10) : 0, n ? Math.round(n.ncd * 10) : 0]; }),
+                w: S.winner == null ? -1 : S.winner, why: S.why, ov: S.over ? 1 : 0, ch: S.champ == null ? -1 : S.champ };
+            if (S.phase === 'reveal' && S.reveal) snap.rv = S.reveal;
+            return snap;
+        }
+        function mqPub() {
+            const r = mpRooms.mq, H = r.H, snap = mqSnap();
+            snap.ev = H.out; H.out = [];
+            if (!snap.rv || H.rvN++ > 4) delete snap.rv;
+            mqx.evq.push(...snap.ev);
+            rzSend(r.channel, 'msg', Object.assign({ id: r.myId }, snap));
+        }
+        function mqHostAction(p) {
+            const r = mpRooms.mq, H = r && r.H; if (!H || p.t !== 'mq-i') return;
+            const q = H.inp[p.from]; if (!q) return;
+            q.mx = Math.max(-1, Math.min(1, p.mx | 0)); q.my = Math.max(-1, Math.min(1, p.my | 0)); q.run = p.run ? 1 : 0; q.act = p.act ? 1 : 0;
+            if (p.tk && p.tk !== q.tk) { q.tk = p.tk; q.tx = +p.tx; q.ty = +p.ty; }
+            (p.ev || []).forEach(e => { if (!q.seen.has(e.id)) { q.seen.add(e.id); q.ev.push(e); } });
+        }
+        function mqHostLeave(id) {
+            const r = mpRooms.mq; if (!r) return; r.players = r.players.filter(p => p.id !== id);
+            const H = r.H; if (!H) return; const i = H.S.plays.findIndex(P => P.id === id); if (i >= 0) mqLeave(H.S, i);
+        }
+        function mqOnMsg(p) {
+            const r = mpRooms.mq; if (!r) return; mqL();
+            if (p.from && !p.id) { if (r.role === 'host') mqHostAction(p); return; }
+            if (r.role === 'guest' && p.id !== r.hostId) return;
+            if (p.t === 'mq-start') {
+                r.phase = 'game'; mpShow('mq', 'game');
+                Object.assign(mqx, { ids: p.ids, names: p.names, bots: p.bots, target: p.target, snaps: [], endShown: false, localEv: [], pend: [], evq: [], fx: { parts: [], feed: [], banner: null, shake: 0 }, myIdx: p.ids.indexOf(r.myId), rv: null, rvRd: 0 });
+                if (r.role === 'guest') { mqx.me = -1; mqx.you = null; }
+                document.getElementById('mq-end').classList.add('hidden');
+                mqFit(); cancelAnimationFrame(mqx.raf); mqx.lastF = 0; mqx.raf = requestAnimationFrame(mqFrame);
+                mqMusicStart();
+                return;
+            }
+            if (p.t === 'mq-you') { if (p.to === r.myId) { mqx.you = { eid: p.eid, rd: p.rd }; } return; }
+            if (p.t === 'mq-s') {
+                if (r.role === 'host') return;
+                mqx.snaps.push({ at: performance.now(), s: p }); if (mqx.snaps.length > 30) mqx.snaps.shift();
+                if (p.rv) { mqx.rv = p.rv; mqx.rvRd = p.rd; }
+                mqx.evq.push(...(p.ev || []));
+            }
+        }
+        function mqDecode(a, b, k) {
+            const n = b.e.length / 6, ents = new Array(n);
+            for (let i = 0; i < n; i++) {
+                const j = i * 6, B = b.e, A = a.e && a.e.length === B.length ? a.e : B;
+                let ha = A[j + 2] / 64 * 6.283, hb = B[j + 2] / 64 * 6.283, d = hb - ha; if (d > Math.PI) d -= 6.283; if (d < -Math.PI) d += 6.283;
+                const jump = Math.abs(B[j] - A[j]) + Math.abs(B[j + 1] - A[j + 1]) > 60;
+                ents[i] = { id: i, x: jump ? B[j] : A[j] + (B[j] - A[j]) * k, y: jump ? B[j + 1] : A[j + 1] + (B[j + 1] - A[j + 1]) * k, h: ha + d * k, st: B[j + 3], o: B[j + 4], fl: B[j + 5] };
+            }
+            const pt = a.pt + (b.pt - a.pt) * k, rt = a.rt + (b.rt - a.rt) * k;
+            return { ph: b.ph, pt: (a.ph === b.ph ? pt : b.pt) / 10, rt: (a.ph === b.ph ? rt : b.rt) / 10, rd: b.rd, ents, ped: b.pd.map(v => ({ lit: v > 0, prog: v > 0 ? (v - 1) / 9 : 0 })), sm: b.sm.map(m => ({ x: m[0], y: m[1], t: m[2] / 10 })), wz: b.wz, dk: b.dk,
+                pl: b.pl.map(q => ({ letters: q[0], alive: !!q[1], wins: q[2], kills: q[3], gone: !!q[4], mk: q[5], sm: q[6], cd: q[7] / 10, ncd: q[8] / 10 })), win: b.w, why: b.why, over: !!b.ov, ch: b.ch };
+        }
+        function mqView() {
+            const r = mpRooms.mq; let V;
+            if (r.role === 'host' && r.H) { const s = mqSnap(); V = mqDecode(s, s, 0); mqx.me = r.H.S.plays[mqx.myIdx] ? r.H.S.plays[mqx.myIdx].eid : -1; if (s.rv) { mqx.rv = s.rv; mqx.rvRd = s.rd; } }
+            else {
+                const A = mqx.snaps; if (!A.length) return null;
+                const rt = performance.now() - 110; let a = A[0], b = A[A.length - 1];
+                for (let i = 0; i < A.length - 1; i++) if (A[i].at <= rt && A[i + 1].at >= rt) { a = A[i]; b = A[i + 1]; break; }
+                if (rt >= b.at) a = b;
+                const k = a === b ? 0 : Math.max(0, Math.min(1, (rt - a.at) / (b.at - a.at)));
+                V = mqDecode(a.s, b.s, k);
+                mqx.me = mqx.you && mqx.you.rd === V.rd ? mqx.you.eid : -1;
+            }
+            V.me = mqx.me; V.myIdx = mqx.myIdx; const mp = V.pl[mqx.myIdx]; V.myAlive = !!(mp && mp.alive && V.me >= 0);
+            V.rv = mqx.rvRd === V.rd ? mqx.rv : null;
+            return V;
+        }
+        const MQ_KEYS = { ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1], ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0] };
+        function mqLocalInput() {
+            const x = mqx; let mx = 0, my = 0; x.keys.forEach(k => { const d = MQ_KEYS[k]; if (d) { mx += d[0]; my += d[1]; } });
+            return { mx: Math.sign(mx), my: Math.sign(my), tx: x.tx, ty: x.ty, tk: x.tk, run: x.run ? 1 : 0, act: x.act ? 1 : 0, ev: [] };
+        }
+        function mqPlaying() { const r = mpRooms.mq; return r && r.phase === 'game' && mqx && !document.getElementById('restzone-panel-masq').classList.contains('hidden'); }
+        function mqEvent(e) {
+            const r = mpRooms.mq, x = mqL(); if (!mqPlaying()) return;
+            const ev = { e, id: ++x.evId };
+            if (r.role === 'host') x.localEv.push(ev); else { x.pend.push(Object.assign({ at: performance.now() }, ev)); mqSendInput(true); }
+            mqSfxUnlock();
+        }
+        function mqSendInput(force) {
+            const r = mpRooms.mq, x = mqx; if (!r || r.role !== 'guest' || r.phase !== 'game') return;
+            const now = performance.now(), o = mqLocalInput(), sig = [o.mx, o.my, o.run, o.act, o.tk].join(',');
+            if (!force && sig === x.lastSig && now - x.lastSend < 150) return;
+            x.pend = x.pend.filter(e => now - e.at < 500);
+            mpToHost('mq', { t: 'mq-i', mx: o.mx, my: o.my, tx: o.tx, ty: o.ty, tk: o.tk, run: o.run, act: o.act, ev: x.pend.map(e => ({ e: e.e, id: e.id })) });
+            x.lastSig = sig; x.lastSend = now;
+        }
+        window.addEventListener('keydown', (e) => {
+            if (!mqPlaying()) return;
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+            if (MQ_KEYS[e.code]) { e.preventDefault(); mqx.keys.add(e.code); mqx.tx = -1; mqSendInput(true); return; }
+            if (e.repeat) { if (['Space', 'KeyE', 'ShiftLeft', 'ShiftRight'].includes(e.code)) e.preventDefault(); return; }
+            if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { mqx.run = 1; mqSendInput(true); }
+            else if (e.code === 'KeyE') { e.preventDefault(); mqx.act = 1; mqSendInput(true); }
+            else if (e.code === 'Space' || e.code === 'KeyJ') { e.preventDefault(); mqEvent('stab'); }
+            else if (e.code === 'KeyQ') mqEvent('dance');
+            else if (e.code === 'KeyR') mqEvent('mask');
+            else if (e.code === 'KeyF') mqEvent('smoke');
+        });
+        window.addEventListener('keyup', (e) => {
+            if (!mqx) return;
+            if (MQ_KEYS[e.code]) { mqx.keys.delete(e.code); mqSendInput(true); }
+            else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { mqx.run = 0; mqSendInput(true); }
+            else if (e.code === 'KeyE') { mqx.act = 0; mqSendInput(true); }
+        });
+        window.addEventListener('blur', () => { if (mqx) { mqx.keys.clear(); mqx.run = 0; mqx.act = 0; } });
+        function mqTap(ev) {
+            if (!mqPlaying()) return;
+            const cv = document.getElementById('mq-canvas'), b = cv.getBoundingClientRect(), k = MQ_VW / b.width;
+            const x = (ev.clientX - b.left) * k, y = (ev.clientY - b.top) * k - MQ_OY;
+            if (y < 0) return;
+            mqx.tx = Math.round(Math.max(40, Math.min(920, x))); mqx.ty = Math.round(Math.max(40, Math.min(540, y))); mqx.tk++;
+            mqx.tapFx = { x: mqx.tx, y: mqx.ty, t: 0.6 };
+            mqSendInput(true); mqSfxUnlock();
+        }
+        function mqHold(kind, on) { if (!mqx) return; mqx[kind] = on ? 1 : 0; mqSendInput(true); mqSfxUnlock(); }
+        function mqFit() {
+            const cv = document.getElementById('mq-canvas'), wrap = document.getElementById('mq-wrap'); if (!cv || !wrap) return;
+            const w = wrap.clientWidth || 960, dpr = Math.min(2, window.devicePixelRatio || 1);
+            cv.width = Math.round(w * dpr); cv.height = Math.round(w * MQ_VH / MQ_VW * dpr); cv.style.height = Math.round(w * MQ_VH / MQ_VW) + 'px';
+            if (mqx) mqx.bg = null;
+        }
+        window.addEventListener('resize', () => { if (mpRooms.mq && mpRooms.mq.phase !== 'waiting') mqFit(); });
+        function mqFeed(txt, col) { mqx.fx.feed.push({ txt, col, life: 4.5 }); }
+        function mqBanner(txt, sub, col, life, bg) { mqx.fx.banner = { txt, sub, col, life: life || 2.4, max: life || 2.4, bg }; }
+        function mqBurst(x, y, n, o) { for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, v = (o.v || 80) * (0.4 + Math.random()); mqx.fx.parts.push(Object.assign({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: o.life || 1, max: o.life || 1, s: o.s || 3, col: Array.isArray(o.col) ? o.col[i % o.col.length] : o.col, vr: (Math.random() - 0.5) * 10, rot: Math.random() * 6, dr: o.dr || 0.95, g: o.g }, o.extra || {})); } }
+        function mqFx(e, V) {
+            const nm = (i) => (mqx.names[i] || '누군가'), ent = (id) => V.ents[id];
+            if (e.k === 'round') { mqx.fx.parts = []; mqx.fx.feed = []; mqx.fx.banner = null; mqx.tx = -1; mqSfx('bell'); }
+            else if (e.k === 'go') { mqBanner('🎭 무도회 시작!', '손님처럼 걷고, 촛불을 끄고, 사람을 찾아내세요', '#f6d27a', 2.2); mqSfx('go'); }
+            else if (e.k === 'snuff') { const [x, y] = MQ_PED[e.i]; for (let q = 0; q < 10; q++) mqx.fx.parts.push({ kind: 'smoke', x: x + (Math.random() - 0.5) * 8, y: y - 2, vx: (Math.random() - 0.5) * 8, vy: -12 - Math.random() * 10, life: 1.8, max: 1.8, s: 5 }); mqSfx('snuff'); }
+            else if (e.k === 'relight') { const [x, y] = MQ_PED[e.i]; mqBurst(x, y, 10, { kind: 'spark', col: '#ffe9a8', v: 50, life: 0.8, s: 4 }); }
+            else if (e.k === 'letter') {
+                if (e.p === mqx.myIdx) { mqBanner('✉️ 편지 ' + e.n + ' / ' + MQ.LETTERS, e.n >= MQ.LETTERS ? '' : '들키기 전에 자연스럽게 빠져나가세요!', '#f6d27a', 2); mqSfx('letter'); }
+                else mqFeed('✉️ ' + nm(e.p) + ' 편지 ' + e.n + '/' + MQ.LETTERS + (e.n === MQ.LETTERS - 1 ? ' — 한 장 남았어요!' : ''), e.n === MQ.LETTERS - 1 ? '#ffb4c2' : '#f6d27a');
+            }
+            else if (e.k === 'kill') {
+                const t = ent(e.e); if (t) { mqBurst(t.x, t.y, 26, { kind: 'petal', col: ['#c9184a', '#ff4d6d', '#ff8fa3', '#800f2f'], v: 90, life: 1.6, s: 3, dr: 0.93 }); mqx.fx.parts.push({ kind: 'ghost', x: t.x, y: t.y - 6, vx: 0, vy: -18, life: 2.4, max: 2.4, s: 1 }); }
+                mqx.fx.shake = 6; mqSfx('kill');
+                if (e.p === mqx.myIdx) mqBanner('💀 당신은 쓰러졌어요', '관전하면서 범인을 지켜보세요', '#ff8fa3', 3);
+                else if (e.by === mqx.myIdx) mqBanner('🗡️ ' + nm(e.p) + ' 처치!', '이제 자연스럽게 섞이세요', '#ff5d73', 2.2);
+                mqFeed('💀 누군가 ' + nm(e.p) + ' 님을 쓰러뜨렸어요', '#ff8fa3');
+            }
+            else if (e.k === 'wrong') {
+                mqSfx('wrong');
+                if (e.e === V.me) mqBanner('😱 엉뚱한 손님이었어요!', '빨간 조명으로 위치가 들켰어요 · 4초간 찌르기 불가', '#ff5d73', 2.6, 'rgba(60,0,12,.85)');
+                else mqFeed('⚠ 누군가 엉뚱한 손님을 찔렀어요! (빨간 조명)', '#ffb4c2');
+            }
+            else if (e.k === 'swing') mqSfx(e.e === V.me ? 'swing' : 'swingFar');
+            else if (e.k === 'swap') { const t = ent(e.e); if (t) mqBurst(t.x, t.y, 14, { kind: 'spark', col: ['#ffd23f', '#fff'], v: 60, life: 0.7, s: 4 }); mqSfx('swap'); }
+            else if (e.k === 'smoke') { mqSfx('smoke'); for (let q = 0; q < 14; q++) mqx.fx.parts.push({ kind: 'smoke', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 120, vy: (Math.random() - 0.5) * 90, life: 1.2, max: 1.2, s: 14, dr: 0.9 }); }
+            else if (e.k === 'waltzw') { mqBanner('🎻 왈츠 타임!', '모든 손님이 춤을 춰요 — Q (💃)를 눌러 함께 추세요!', '#ffd6f0', 2.4); mqSfx('harp'); mqMusicMode('waltz'); }
+            else if (e.k === 'waltzend') mqMusicMode('normal');
+            else if (e.k === 'dark') { mqBanner('🕯️ 정전!', '촛불 근처만 보여요 · 지금이 기회일지도…', '#ffe3a3', 2.2); mqSfx('dark'); mqMusicMode('dark'); }
+            else if (e.k === 'light') { mqSfx('light'); mqMusicMode('normal'); }
+            else if (e.k === 'roundwin') { mqSfx(e.p === mqx.myIdx ? 'win' : 'reveal'); mqx.fx.banner = null; mqMusicMode('normal'); }
+            else if (e.k === 'left') mqFeed('🚪 ' + nm(e.p) + ' 님이 나갔어요', '#ccc');
+        }
+        function mqFrame(now) {
+            const r = mpRooms.mq, x = mqx; if (!r || !x || (r.phase !== 'game' && r.phase !== 'ended')) return;
+            x.raf = requestAnimationFrame(mqFrame);
+            const dt = Math.min(0.1, x.lastF ? (now - x.lastF) / 1000 : 1 / 60); x.lastF = now;
+            if (r.role === 'guest') mqSendInput(false);
+            const V = mqView(); if (!V) return;
+            if (x.evq.length) { const q = x.evq.splice(0); q.forEach(e => mqFx(e, V)); }
+            mqDraw(V, now, dt);
+            if (x.tapFx && x.tapFx.t > 0 && V.myAlive) { x.tapFx.t -= dt; const cv = document.getElementById('mq-canvas'), c = cv.getContext('2d'), s = cv.width / MQ_VW; c.setTransform(s, 0, 0, s, 0, s * MQ_OY); c.strokeStyle = 'rgba(255,210,63,' + x.tapFx.t + ')'; c.lineWidth = 1.5; c.beginPath(); c.arc(x.tapFx.tx || x.tapFx.x, x.tapFx.y, 10 * (1.4 - x.tapFx.t), 0, 6.283); c.stroke(); }
+            mqBar(V);
+            mqMusicTick(V);
+            if (V.over && !x.endShown) { x.endShown = true; r.phase = 'ended'; setTimeout(() => mqShowEnd(V), 900); }
+        }
+        function mqBar(V) {
+            const mp = V.pl[mqx.myIdx] || {}, alive = V.myAlive && V.ph === 1, mine = V.ents[V.me];
+            const near = alive && mine && V.ped.some((p, i) => p.lit && Math.hypot(MQ_PED[i][0] - mine.x, MQ_PED[i][1] - mine.y) < 34);
+            const st = [['stab', alive && mp.cd <= 0 && mp.ncd <= 0, mp.ncd > 0 ? Math.ceil(mp.ncd) + '' : ''], ['act', near, ''], ['dance', alive, ''], ['mask', alive && mp.mk > 0, mp.mk > 0 ? '×' + mp.mk : '0'], ['smoke', alive && mp.sm > 0, mp.sm > 0 ? '×' + mp.sm : '0'], ['run', alive, '']];
+            const sig = st.map(s => s[0] + (s[1] ? 1 : 0) + s[2]).join('|') + (near ? 'n' : '');
+            if (sig === mqx.barSig) return; mqx.barSig = sig;
+            st.forEach(([k, on, badge]) => { const b = document.getElementById('mq-b-' + k); if (!b) return; b.classList.toggle('off', !on); const bd = b.querySelector('.bd'); if (bd) bd.textContent = badge; });
+            const a = document.getElementById('mq-b-act'); if (a) a.classList.toggle('glow', !!near);
+        }
+        function mqShowEnd(V) {
+            const ch = V.ch, me = mqx.myIdx;
+            document.getElementById('mq-end-title').textContent = ch === me ? '당신이 무도회의 주인공! 🏆' : ch >= 0 ? '🏆 ' + (mqx.names[ch] || '?') + ' 최종 우승!' : '무도회가 끝났어요';
+            const rank = V.pl.map((p, i) => ({ i, p })).sort((a, b) => b.p.wins - a.p.wins || b.p.kills - a.p.kills);
+            document.getElementById('mq-end-detail').innerHTML = rank.map(({ i, p }, k) => '<span style="color:' + MQ_PCOL[i % 6] + '">●</span> ' + (k + 1) + '위 ' + escapeHtml(mqx.names[i] || '') + ' · 라운드 ' + p.wins + '승 · 처치 ' + p.kills + (p.gone ? ' (나감)' : '')).join('<br>');
+            document.getElementById('mq-end').classList.remove('hidden');
+            (ch === me ? rzSoundWin : rzSoundLose)();
+            mqMusicStop();
+        }
+        function mqWaitingRender(r) {
+            const box = document.getElementById('mq-opts'); if (!box) return;
+            const o = r.opts || (r.opts = { bots: 0, wins: 3, npc: 26 }), max = Math.max(0, 6 - r.players.length), nb = Math.min(+o.bots || 0, max);
+            if (r.role === 'host') {
+                const sel = (id, label, vals, cur, fmt) => '<label>' + label + ' <select id="' + id + '">' + vals.map(v => '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + fmt(v) + '</option>').join('') + '</select></label>';
+                box.innerHTML = sel('mq-o-bots', '🤖 컴퓨터', [0, 1, 2, 3, 4, 5].filter(n => n <= max), nb, n => n + '명') + sel('mq-o-wins', '🏆 목표', [2, 3, 5], +o.wins || 3, n => n + '승') + sel('mq-o-npc', '👥 손님', [18, 26, 34], +o.npc || 26, n => n === 18 ? '적게' : n === 26 ? '보통' : '북적북적');
+                const up = () => { r.opts = { bots: +document.getElementById('mq-o-bots').value, wins: +document.getElementById('mq-o-wins').value, npc: +document.getElementById('mq-o-npc').value }; mpBroadcastLobby('mq'); };
+                ['mq-o-bots', 'mq-o-wins', 'mq-o-npc'].forEach(id => { document.getElementById(id).onchange = up; });
+            } else box.innerHTML = '<p>컴퓨터 ' + nb + '명 · 목표 ' + (+o.wins || 3) + '승 · 손님 ' + ({ 18: '적게', 26: '보통', 34: '북적북적' }[+o.npc || 26]) + '</p>';
+            const sb = document.getElementById('mq-start-btn');
+            if (sb && r.role === 'host') { const tot = r.players.length + nb; sb.disabled = tot < 2; sb.innerText = tot < 2 ? '2명 이상(컴퓨터 포함) 모이면 시작' : tot + '명으로 무도회 시작'; }
+        }
+        function mqCleanup(r) { clearInterval(r.mqTick); r.H = null; if (mqx) { cancelAnimationFrame(mqx.raf); mqx.snaps = []; mqx.endShown = false; mqx.keys.clear(); mqx.act = 0; mqx.run = 0; } const e = document.getElementById('mq-end'); if (e) e.classList.add('hidden'); mqMusicStop(); }
+        MP_HOOKS.mq = { onMsg: mqOnMsg, hostStart: mqHostStart, hostAction: mqHostAction, hostLeave: mqHostLeave, cleanup: mqCleanup, onWaitingRender: mqWaitingRender, canStart: (r) => r.players.length + Math.min(+((r.opts || {}).bots) || 0, 6 - r.players.length) >= 2, leaveMsg: () => '진행 중인 가면무도회에서 나갈까요?' };
+
         const RZ_REMATCH = {
             chess: { o: () => chess, hello: (p) => chessHandleHello(p), end: 'chess-end' },
             go: { o: () => go, hello: (p) => { go.helloBusy = false; goHandleHello(p); }, end: 'go-end' },
@@ -19488,7 +20589,7 @@
             bball: { o: () => bbk, hello: (p) => bbHandleHello(p), end: 'bb-end' },
             cnr: { o: () => cnr, hello: (p) => cnrHandleHello(p), end: 'cnr-state-result' },
         };
-        const RZ_MP_AGAIN = { rm: 'rm-end', un: 'un-end', kk: 'kk-end', hg: 'hg-end', wb: 'wb-end' };
+        const RZ_MP_AGAIN = { rm: 'rm-end', un: 'un-end', kk: 'kk-end', hg: 'hg-end', wb: 'wb-end', mq: 'mq-end' };
         function rzRematchObj(g) { const d = RZ_REMATCH[g]; try { return d && d.o(); } catch (e) { return null; } }
         function rzRematchClick(g) {
             const o = rzRematchObj(g); if (!o || o.phase !== 'ended' || !o.channel) return;
