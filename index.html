@@ -939,6 +939,21 @@
         .cnr-dash-btn:active { transform: scale(.94); }
         .cnr-dash-btn.cooling { opacity: .42; }
 
+        #restzone-modal.rz-full { padding: 0; align-items: stretch; background: #0b0b12; }
+        #restzone-modal.rz-full > .card { max-width: none; width: 100%; height: 100vh !important; height: 100dvh !important; border-radius: 0; }
+        #restzone-modal.rz-full #restzone-body { padding: 10px 14px calc(14px + env(safe-area-inset-bottom)); }
+        #restzone-modal.rz-full > .card > div:first-child { padding-top: calc(10px + env(safe-area-inset-top)); padding-bottom: 10px; }
+        .rz-fs-btn { width: 32px; height: 32px; margin-right: 6px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #64748b; font-size: 14px; }
+        .rz-fs-btn:hover { background: rgba(100,116,139,.12); color: #334155; }
+        :where(#restzone-modal), :where(#restzone-modal) :where(*) { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        :where(#restzone-modal) :where(*) { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        :where(#restzone-modal) :where(input, textarea, select, [contenteditable="true"]) { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+        :where(#restzone-modal) :where(canvas, button) { -webkit-user-drag: none; }
+        #restzone-modal.rz-full .jb-wrap { width: min(100%, calc((100dvh - 150px) * 960 / 540)); }
+        #restzone-modal.rz-full .mq-wrap { width: min(100%, calc((100dvh - 175px) * 960 / 640)); }
+        #restzone-modal.rz-full .wb-wrap { width: min(100%, 900px, calc((100dvh - 150px) * 640 / 634)); }
+        #restzone-modal.rz-full .vb-wrap { width: min(100%, calc((100dvh - 190px) * 27 / 19)); }
+        #restzone-modal.rz-full .chess-wrap, #restzone-modal.rz-full .go-wrap { width: max(260px, min(100%, calc(100dvh - 230px))); }
         #restzone-modal.rz-compact { padding: 0; align-items: stretch; }
         #restzone-modal.rz-compact > .card { max-width: none; width: 100%; height: 100vh !important; height: 100dvh !important; border-radius: 0; }
         #restzone-modal.rz-compact #restzone-body { padding: 12px 12px calc(16px + env(safe-area-inset-bottom)); }
@@ -3077,6 +3092,7 @@
                 </div>
                 <div class="flex items-center">
                     <button id="spy-open-btn" class="hidden press-feel" onclick="spyOpen()" title="라이브 관전 (관리자 · 상대에게 안 보여요)" aria-label="라이브 관전"><i class="fa-solid fa-eye"></i></button>
+                    <button id="rz-fs-btn" onclick="rzToggleFull()" class="press-feel rz-fs-btn" title="전체 화면" aria-label="전체 화면"><i class="fa-solid fa-expand"></i></button>
                     <button onclick="closeRestZoneModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
@@ -7415,17 +7431,58 @@
         // =====================================================================
         const RESTZONE_TITLES = { jelly: '말랑 대난투', masq: '가면무도회', water: '물풍선 대작전', bball: '스트리트 농구 1:1', halli: '할리갈리', gartic: '갈틱폰', catch: '그림 맞히기 파티', hole: '블랙홀 시티', slash: '과일 베기', merge: '행성 합치기', surv: '네온 서바이버', ball: '왁스볼', chase: '경찰과 도둑', chess: '체스', go: '바둑', omok: '오목', battleship: '배틀쉽', vball: '배구', rummikub: '루미큐브', uno: '우노', kkutu: '끝말잇기' };
 
+        function rzFsEl() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+        function rzFullSync() {
+            const m = document.getElementById('restzone-modal'), on = m.classList.contains('rz-full'), b = document.getElementById('rz-fs-btn');
+            if (b) { b.innerHTML = on ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>'; b.title = on ? '전체 화면 끝내기' : '전체 화면'; }
+            [60, 320, 700].forEach(t => setTimeout(() => window.dispatchEvent(new Event('resize')), t));
+        }
+        function rzToggleFull(force) {
+            const m = document.getElementById('restzone-modal'), on = force != null ? force : !m.classList.contains('rz-full');
+            m.classList.toggle('rz-full', on);
+            try {
+                if (on && !rzFsEl()) { const f = m.requestFullscreen || m.webkitRequestFullscreen; if (f) { const r = f.call(m, { navigationUI: 'hide' }); if (r && r.catch) r.catch(() => {}); } }
+                else if (!on && rzFsEl()) { const f = document.exitFullscreen || document.webkitExitFullscreen; if (f) { const r = f.call(document); if (r && r.catch) r.catch(() => {}); } }
+            } catch (e) {}
+            rzFullSync();
+        }
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => { const m = document.getElementById('restzone-modal'); if (!m) return; if (!rzFsEl() && m.classList.contains('rz-full')) { m.classList.remove('rz-full'); } rzFullSync(); }));
+        const RZ_VP = { orig: null };
+        function rzViewportLock(on) {
+            const v = document.querySelector('meta[name="viewport"]'); if (!v) return;
+            if (RZ_VP.orig == null) RZ_VP.orig = v.getAttribute('content');
+            v.setAttribute('content', on ? RZ_VP.orig + ', maximum-scale=1, user-scalable=no' : RZ_VP.orig);
+        }
+        (function rzTouchGuard() {
+            const isField = (t) => t && t.closest && t.closest('input, textarea, select, [contenteditable="true"]');
+            const inModal = (t) => { const m = document.getElementById('restzone-modal'); return m && !m.classList.contains('hidden') && t && m.contains(t); };
+            let lastEnd = 0, lastX = 0, lastY = 0;
+            document.addEventListener('touchend', (e) => {
+                if (!inModal(e.target) || isField(e.target)) return;
+                const now = Date.now(), t = e.changedTouches && e.changedTouches[0], x = t ? t.clientX : 0, y = t ? t.clientY : 0;
+                if (now - lastEnd < 330 && Math.abs(x - lastX) < 40 && Math.abs(y - lastY) < 40 && e.cancelable) { e.preventDefault(); const el = e.target.closest ? e.target.closest('button, a, [onclick], label') : null; if (el && typeof el.click === 'function') el.click(); }
+                lastEnd = now; lastX = x; lastY = y;
+            }, { passive: false });
+            document.addEventListener('gesturestart', (e) => { if (inModal(e.target)) e.preventDefault(); }, { passive: false });
+            document.addEventListener('touchmove', (e) => { if (e.touches && e.touches.length > 1 && inModal(e.target)) e.preventDefault(); }, { passive: false });
+            document.addEventListener('contextmenu', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); });
+            document.addEventListener('selectstart', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); });
+            document.addEventListener('dblclick', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); }, { passive: false });
+        })();
         function openRestZoneModal() {
             if (!hasGameAccess()) { showToast('쉼터는 최고 관리자가 권한을 준 계정만 이용할 수 있어요.', 'error'); return; }
             rzApplyDeviceMode();
             document.getElementById('restzone-modal').classList.remove('hidden');
             lockBodyScroll();
+            rzViewportLock(true);
             restzoneShowHub();
         }
         function closeRestZoneModal(force) {
             if (!force && !rzConfirmLeaveLive()) return; // 진행 중인 체스/바둑 대국이 있으면 "나가면 패배" 확인
             document.getElementById('restzone-modal').classList.add('hidden');
             unlockBodyScroll();
+            rzViewportLock(false);
+            if (document.getElementById('restzone-modal').classList.contains('rz-full')) rzToggleFull(false);
             if (typeof teardownCnr === 'function') teardownCnr();
             if (typeof teardownChess === 'function') teardownChess();
             if (typeof teardownGo === 'function') teardownGo();
