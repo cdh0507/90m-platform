@@ -954,6 +954,11 @@
         #restzone-modal.rz-full .wb-wrap { width: min(100%, 900px, calc((100dvh - 150px) * 640 / 634)); }
         #restzone-modal.rz-full .vb-wrap { width: min(100%, calc((100dvh - 190px) * 27 / 19)); }
         #restzone-modal.rz-full .chess-wrap, #restzone-modal.rz-full .go-wrap { width: max(260px, min(100%, calc(100dvh - 230px))); }
+        #restzone-modal, #restzone-modal *:not(input):not(textarea):not(select):not([contenteditable="true"]) { -webkit-user-select: none !important; user-select: none !important; -webkit-touch-callout: none !important; -webkit-tap-highlight-color: rgba(0,0,0,0) !important; }
+        #restzone-modal *:not(input):not(textarea)::selection { background: transparent !important; color: inherit !important; }
+        #restzone-modal *:not(input):not(textarea)::-moz-selection { background: transparent !important; }
+        #restzone-modal :where(input, textarea, select, [contenteditable="true"]) { -webkit-user-select: text !important; user-select: text !important; -webkit-touch-callout: default !important; }
+        html.rz-open, html.rz-open body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0); }
         #restzone-modal.rz-compact { padding: 0; align-items: stretch; }
         #restzone-modal.rz-compact > .card { max-width: none; width: 100%; height: 100vh !important; height: 100dvh !important; border-radius: 0; }
         #restzone-modal.rz-compact #restzone-body { padding: 12px 12px calc(16px + env(safe-area-inset-bottom)); }
@@ -7467,6 +7472,12 @@
             document.addEventListener('touchmove', (e) => { if (e.touches && e.touches.length > 1 && inModal(e.target)) e.preventDefault(); }, { passive: false });
             document.addEventListener('contextmenu', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); });
             document.addEventListener('selectstart', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); });
+            document.addEventListener('selectionchange', () => {
+                const m = document.getElementById('restzone-modal'); if (!m || m.classList.contains('hidden')) return;
+                if (isField(document.activeElement)) return;
+                const s = window.getSelection && window.getSelection(); if (s && s.rangeCount && !s.isCollapsed) { try { s.removeAllRanges(); } catch (e) {} }
+            });
+            document.addEventListener('touchstart', (e) => { if (inModal(e.target) && !isField(e.target)) { const s = window.getSelection && window.getSelection(); if (s && !s.isCollapsed) { try { s.removeAllRanges(); } catch (x) {} } } }, { passive: true });
             document.addEventListener('dblclick', (e) => { if (inModal(e.target) && !isField(e.target)) e.preventDefault(); }, { passive: false });
         })();
         function openRestZoneModal() {
@@ -7475,6 +7486,7 @@
             document.getElementById('restzone-modal').classList.remove('hidden');
             lockBodyScroll();
             rzViewportLock(true);
+            document.documentElement.classList.add('rz-open');
             restzoneShowHub();
         }
         function closeRestZoneModal(force) {
@@ -7482,6 +7494,7 @@
             document.getElementById('restzone-modal').classList.add('hidden');
             unlockBodyScroll();
             rzViewportLock(false);
+            document.documentElement.classList.remove('rz-open');
             if (document.getElementById('restzone-modal').classList.contains('rz-full')) rzToggleFull(false);
             if (typeof teardownCnr === 'function') teardownCnr();
             if (typeof teardownChess === 'function') teardownChess();
